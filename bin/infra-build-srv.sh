@@ -18,7 +18,6 @@ ID=$(/usr/bin/cloud-id)
 
 git clone https://github.com/gombos/dotfiles.git
 
-
 install_my_package () {
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
@@ -38,8 +37,7 @@ sudo service docker start
 
 if [ "$ID" != "aws" ]; then
 
-./infra-clean-linux.sh /
-mv /*.sh /*.l tmp/
+./tmp/infra-clean-linux.sh /
 
  ---- Integrity
 ./tmp/infra-integrity.sh /var/integrity/
