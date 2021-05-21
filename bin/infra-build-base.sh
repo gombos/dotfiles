@@ -187,9 +187,6 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
 
-# Make sure it can be used as a podman base image
-mkdir -p overlay-images overlay-layers; touch overlay-images/images.lock; touch overlay-layers/layers.lock
-
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty
 rm -rf etc/machine-id /var/lib/dbus/machine-id
 touch etc/machine-id
