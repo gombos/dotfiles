@@ -21,15 +21,17 @@ cd $USERHOME
 git clone https://github.com/gombos/dotfiles.git .dotfiles
 ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
 sudo chown -R 1000 .dotfiles
-cd .dotfiles/infra/
 
-sudo chown -R 1000:1000 /home/www/
-sudo mkdir -p /home/www/
-echo "helloka" > /home/www/index.html
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-sudo apt-get install -y docker.io docker-compose
-sudo service docker start
-sudo docker-compose up -d
+#cd .dotfiles/infra/
+
+#sudo chown -R 1000:1000 /home/www/
+#sudo mkdir -p /home/www/
+#echo "helloka" > /home/www/index.html
+
+#sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+#sudo apt-get install -y docker.io docker-compose
+#sudo service docker start
+#sudo docker-compose up -d
 
 #sudo docker pull 0gombi0/homelab
