@@ -207,9 +207,8 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 # boot, home, media, run
 
 ./infra-clean-linux.sh /
-mv /*.sh /*.l tmp/
 
 # ---- Integrity
-./tmp/infra-integrity.sh /var/integrity/
+./infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
