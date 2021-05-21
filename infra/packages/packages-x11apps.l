@@ -1,0 +1,14 @@
+barrier
+google-chrome-stable
+gparted
+kitty
+libreoffice-calc
+mousepad
+pcmanfm
+qiv
+rofi
+sqlitebrowser
+thunderbird
+vlc
+xterm
+zathura

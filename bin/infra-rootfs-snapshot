@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# $1 root fs version number
+
+NEW_SNAPSHOT=$1
+
+mnt-linux
+
+# If no argument, compute the new revision
+if [ -z "$NEW_SNAPSHOT" ]
+then
+  SNAPSHOTS=`ls $MNTDIR/linux/ | cut -d'-' -f2 |  cut -d'v' -f2 | sort -n`
+  LAST_SNAPSHOT=${SNAPSHOTS##*$'\n'}
+  NEW_SNAPSHOT="$((LAST_SNAPSHOT + 1))"
+fi
+
+rw $MNTDIR/linux/linux/
+sudo btrfs subvolume snapshot $MNTDIR/linux/linux $MNTDIR/linux/linux-v$NEW_SNAPSHOT
+ro $MNTDIR/linux/linux-v$NEW_SNAPSHOT
+umnt-linux

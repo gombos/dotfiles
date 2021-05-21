@@ -1,0 +1,33 @@
+#!/bin/bash
+
+mnt-linux
+
+M="$MNTDIR/linux/linux"
+
+rw $M
+
+sudo mount -o bind /proc $M/proc/
+sudo mount -o bind /sys $M/sys/
+sudo mount -o bind /run $M/run/
+sudo mount -o bind /dev $M/dev
+sudo mount -o bind /dev/shm $M/dev/shm
+sudo mount -o bind /dev/pts $M/dev/pts
+
+if [ $# -eq 0 ]; then
+  sudo chroot "$M" bash
+else
+  sudo chroot "$M" sh -c "$@"
+fi
+
+infra-clean-linux.sh "$M"
+
+sudo umount $M/dev/shm
+sudo umount $M/dev/pts
+sudo umount $M/run
+sudo umount $M/sys
+sudo umount $M/proc
+sudo umount $M/dev
+
+ro $MNTDIR/linux/linux
+
+umnt-linux

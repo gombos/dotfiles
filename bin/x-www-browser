@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# ~/.bashrc has a conditional that explicitly stops processing if the shell is found to be non-interactive.
+# bashrc is not needed here anyway, just include the local scripts directly
+
+local_scripts=`ls ~/.env-* 2>/dev/null`
+if [ ! -z "$local_scripts" ]; then
+  for f in ~/.env-*; do source $f; done
+fi
+
+chrome_arguments="--disk-cache-dir=/tmp  $chrome_arguments"
+
+active_window_class=$(xprop -id $(xdotool getwindowfocus) | grep WM_CLASS | cut -d\" -f2)
+
+if [ "$active_window_class" = "google-chrome" ]; then
+    /bin/sh -c "google-chrome $chrome_arguments about:blank $@"
+else
+  run-or-raise.sh google-chrome "google-chrome $chrome_arguments $@" &
+fi

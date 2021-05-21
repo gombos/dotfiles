@@ -1,0 +1,32 @@
+set term postscript eps enhanced colour
+set output 'temper.eps'
+
+unset key
+set ylabel 'Temperature (Celsius)'
+set border 3
+set xtics nomirror
+set ytics nomirror
+unset xlabel
+set xdata time
+
+set multiplot
+        set size 0.5,0.45
+
+        set origin 0,0.05
+                set timefmt "%H:%M:%S"
+                set title 'Daily'
+                set xtics 30000
+                plot 'temper.dat' u 4:2 w points pt 1 ps 0.15
+
+        set origin 0.5,0.05
+                set title 'By Day'
+                set timefmt "%m/%d/%y"
+                set xtics 100000#0
+                plot 'temper.dat' u 3:2 w points pt 2 ps 0.5
+
+        set size 1.0,0.5
+        set origin 0.0,0.5
+                set timefmt "%m/%d/%y %H:%M:%S"
+                set xtics 30000
+                set title 'Log'
+                plot 'temper.dat' u 3:2 w lines

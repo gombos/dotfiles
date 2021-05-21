@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# ---------------------------------------------------------------------------
+# Chromium arguments
+#
+# Removes persistent data from Chromium and disables Google services
+# with the intention that every run behaves as a new fresh installation
+# with some pre-configured settings.
+
+# Chrome preference file to use
+if [ -z "${CHROMIUM_PARANOID_PREFS}" ]; then
+  CHROMIUM_PARANOID_PREFS=~/.dotfiles/.chromium-browser.prefs
+fi
+
+case "${OSTYPE}" in
+  darwin*)  OS_CACHE_DIR=$HOME/Library/Caches ;;
+  linux*)   OS_CACHE_DIR=$HOME/.cache ;;
+  *)        OS_CACHE_DIR=$HOME ;;
+esac
+
+# Chrome persistent directory
+if [ -z "${CHROMIUM_PARANOID_DATA}" ]; then
+  CHROMIUM_PARANOID_DATA=$OS_CACHE_DIR/chromium-paranoid
+fi
+
+CHROMIUM_PARANOID_DATA_PREFERENCE=$CHROMIUM_PARANOID_DATA/Default
+
+if [ -z "${CHROMIUM_PARANOID_FLAGS}" ]; then
+
+  # Set SCALE_FACTOR
+  SCREEN_WITH=$(xdpyinfo | grep dimensions | sed  -e 's/[^0-9]*//' | cut -d'x' -f1)
+
+  # Set HiDPI
+  if [ $SCREEN_WITH -gt 2879 ]; then
+    CHROMIUM_PARANOID_FLAGS="$CHROMIUM_PARANOID_FLAGS --force-device-scale-factor=1.80"
+  fi
+
+  # Set the data directory to a temporary folder
+  CHROMIUM_PARANOID_FLAGS=" --user-data-dir=$CHROMIUM_PARANOID_DATA"
+
+  # Incognito
+  CHROMIUM_PARANOID_FLAGS="$CHROMIUM_PARANOID_FLAGS --incognito"
+
+  # Disable some speculative and non-essential networking
+  CHROMIUM_PARANOID_FLAGS="$CHROMIUM_PARANOID_FLAGS --disable-preconnect --disable-background-networking --disable-async-dns --dns-prefetch-disable --no-referrers --no-pings"
+
+  # Disable Google services - no network socket open at startup
+  CHROMIUM_PARANOID_FLAGS="$CHROMIUM_PARANOID_FLAGS --disable-translate --no-experiments --no-first-run --disable-breakpad --disable-plugins-discovery --disable-print-preview --disable-sync --disable-component-update"
+
+  # Disable some non-essential web exposed APIs
+  CHROMIUM_PARANOID_FLAGS="$CHROMIUM_PARANOID_FLAGS --disable-3d-apis --disable-notifications --disable-permissions-api --disable-presentation-api --disable-shared-workers --disable-speech-api --disable-screen-orientation-lock --disable-file-system"
+fi
+
+if which google-chrome; then
+  CHROMIUM="google-chrome"
+else
+  if which chromium-browser; then
+    CHROMIUM="chromium-browser"
+ fi
+fi
+
+# Launch chromium
+function launch-chromium () {
+  case "$OSTYPE" in
+    darwin*)  open -a "Google Chrome" --args "$@" ;;
+    *)        $CHROMIUM "$@" ;;
+  esac
+}
+
+function launch-chromium-paranoid () {
+  # Clear and re-initialize all chromium persistent data
+  rm -rf $CHROMIUM_PARANOID_DATA
+  mkdir -p $CHROMIUM_PARANOID_DATA_PREFERENCE
+  cp $CHROMIUM_PARANOID_PREFS $CHROMIUM_PARANOID_DATA_PREFERENCE/Preferences
+
+  launch-chromium $CHROMIUM_PARANOID_FLAGS "$@"
+}

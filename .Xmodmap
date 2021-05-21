@@ -1,0 +1,11 @@
+! Not sure if this file makes anything useful
+! it also seems to interfere with ibus
+
+!clear Mod1
+!clear Mod2
+!clear Mod3
+!clear Mod4
+!clear Mod5
+
+! Use only 2 modifiers - control and "mod1"
+!add Mod1 = Alt_L Alt_R Super_L Super_R Hyper_L Meta_L ISO_Level3_Shift Mode_switch

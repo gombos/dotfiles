@@ -1,0 +1,11 @@
+base-passwd
+bash
+dash
+diffutils
+findutils
+grep
+gzip
+hostname
+ncurses-base
+ncurses-bin
+sysvinit-utils

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Poweroff
+Exec=sh -c "sudo /sbin/poweroff"
+Type=Application
+Terminal=false
+Categories=Utility

@@ -1,0 +1,6 @@
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  sudo umount $MNTDIR/bagoly /tmp/hfsplusbagoly; sudo cryptsetup close bagoly;
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  /Applications/VeraCrypt.app/Contents/MacOS/VeraCrypt --text -d -f /Volumes/bagoly
+fi

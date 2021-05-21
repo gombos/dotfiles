@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=QIV
+Exec=qiv
+Type=Application
+Terminal=false
+MimeType=image/jpeg;

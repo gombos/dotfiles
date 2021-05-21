@@ -1,0 +1,15 @@
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+
+nix-env -iA nixpkgs.apfs-fuse
+#nix-env -iA nixpkgs.google-chrome
+nix-env -iA nixpkgs.kubernetes
+nix-env -iA nixpkgs.micro
+nix-env -iA nixpkgs.rclone
+nix-env -iA nixpkgs.ripgrep-all
+nix-env -iA nixpkgs.vscode
+
+#nix-env -iA nixpkgs.torbrowser
+
+nix-env -u
+
+nix-collect-garbage -d

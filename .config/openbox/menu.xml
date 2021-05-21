@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openbox_menu xmlns="http://openbox.org/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://openbox.org/
+                file:///usr/share/openbox/menu.xsd">
+
+<menu id="root-menu" label="Openbox 3">
+  <item label=" Terminal ">
+    <action name="Execute"><execute>x-terminal-emulator</execute></action>
+  </item>
+  <item label=" Web ">
+    <action name="Execute"><execute>x-www-browser</execute></action>
+  </item>
+  <item label=" Incognito ">
+    <action name="Execute"><execute>x-www-browser-incognito</execute></action>
+  </item>
+  <item label=" Editor ">
+    <action name="Execute"><execute>x-editor</execute></action>
+  </item>
+
+  <separator />
+
+  <item label=" Switch user ">
+    <action name="Execute"><execute>lxdm -c USER_SWITCH</execute></action>
+  </item>
+
+  <item label=" Lock ">
+    <action name="Execute"><execute>xtrlock -b</execute></action>
+  </item>
+
+  <item label=" Exit ">
+    <action name="Exit"></action>
+  </item>
+
+  <item label=" Reboot ">
+    <action name="Execute"><execute>sudo /sbin/reboot</execute></action>
+  </item>
+  <item label=" Poweroff ">
+    <action name="Execute"><execute>sudo /sbin/poweroff</execute></action>
+  </item>
+
+</menu>
+
+</openbox_menu>

@@ -1,0 +1,18 @@
+# Used by shells (e.g. bash) and other apps using readline
+
+# Up
+"\e[A": history-search-backward
+# Down
+"\e[B": history-search-forward
+
+# Ctrl + Right
+"\e[1;5C": forward-word
+# Ctrol + Left
+"\e[1;5D": backward-word
+
+# Ctrl + Up
+"\e[5~": beginning-of-line
+# Ctrl + Down
+"\e[6~": end-of-line
+
+set show-all-if-ambiguous on

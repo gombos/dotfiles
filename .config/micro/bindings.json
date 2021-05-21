@@ -1,0 +1,16 @@
+{
+    "Alt-/": "lua:comment.comment",
+    "Ctrl-c": "Copy",
+    "Alt-c": "Copy",
+    "Ctrl-v": "Paste",
+    "Alt-v": "Paste",
+    "Ctrl-a": "StartOfLine",
+    "Ctrl-e": "EndOfLine",
+    "Ctrl-f": "Find",
+    "Alt-f": "Find",
+    "Ctrl-q": "Quit",
+    "Alt-q": "Quit",
+    "Ctrl-d": "DeleteLine",
+    "CtrlUnderscore": "lua:comment.comment",
+    "Esc": "Quit"
+}

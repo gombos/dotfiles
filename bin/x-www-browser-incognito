@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. $HOME/.dotfiles/.chromium-browser.init
+
+launch-chromium-paranoid "$@" &

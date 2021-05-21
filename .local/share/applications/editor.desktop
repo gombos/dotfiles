@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Text Editor
+Exec=x-editor
+Icon=code
+Type=Application
+Terminal=false
+MimeType=text/plain;inode/directory;
+Categories=Utility;TextEditor;Development;IDE;
+StartupNotify=true
+StartupWMClass=Code

@@ -1,0 +1,26 @@
+# Look for the container - last match wins
+test -f /Volumes/data/Users/adat/.bagoly && BAGOLY=/Volumes/data/Users/adat/.bagoly
+test -f /Users/adat/.bagoly && BAGOLY=/Users/adat/.bagoly
+test -f /home/adat/.bagoly && BAGOLY=/home/adat/.bagoly
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  mountpoint -q $MNTDIR/bagoly || {
+    if [ -w $BAGOLY ] && [ ! "$1" = "ro" ] ; then
+      sudo cryptsetup open --type tcrypt --veracrypt $BAGOLY bagoly
+    else
+      sudo cryptsetup open --type tcrypt --veracrypt --readonly $BAGOLY bagoly
+    fi
+    mkdir -p /tmp/hfsplusbagoly && sudo mount /dev/mapper/bagoly /tmp/hfsplusbagoly -o noexec,nosuid,nodev
+    if mountpoint -q /tmp/hfsplusbagoly/ ; then
+      mkdir -p $MNTDIR/bagoly && sudo bindfs -u $(id -u) -g $(id -g) /tmp/hfsplusbagoly $MNTDIR/bagoly;
+    fi
+  }
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  if [ -w $BAGOLY ] && [ ! "$1" = "ro" ] ; then
+    /Applications/VeraCrypt.app/Contents/MacOS/VeraCrypt --text -k '' --pim=0  --protect-hidden=no $BAGOLY /Volumes/bagoly/
+  else
+    /Applications/VeraCrypt.app/Contents/MacOS/VeraCrypt --text -k '' --pim=0  --mount-options=ro --protect-hidden=no $BAGOLY /Volumes/bagoly/
+  fi
+fi
+
+eval "go-bagoly()     { cd $MNTDIR/bagoly; }"

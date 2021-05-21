@@ -1,0 +1,56 @@
+*xterm*termName: xterm-256color
+
+*xterm*faceName: Consolas
+
+*xterm*faceSize: 10
+*xterm*geometry: 125x35
+
+! VT Font Menu: Unreadable
+*xterm*faceSize1: 8
+
+! VT font menu: Tiny
+*xterm*faceSize2: 10
+
+! VT font menu: Medium
+*xterm*faceSize3: 12
+
+! VT font menu: Large
+*xterm*faceSize4: 16
+
+! VT font menu: Huge
+*xterm*faceSize5: 22
+
+*xterm*vt100.Translations: #override \
+  Meta <Key>C: copy-selection(PRIMARY) \n\
+  Ctrl <Key>V: insert-selection(PRIMARY) \n\
+  Meta <Key>V: insert-selection(PRIMARY) \n\
+  Ctrl <Key> minus: smaller-vt-font() \n\
+  Meta <Key> minus: smaller-vt-font() \n\
+  Ctrl <Key> plus: larger-vt-font() \n\
+  Meta <Key> plus: larger-vt-font() \n\
+  Ctrl <Key> KP_Subtract: smaller-vt-font() \n\
+  Meta <Key> KP_Subtract: smaller-vt-font() \n\
+  Ctrl <Key> KP_Add: larger-vt-font() \n\
+  Meta <Key> KP_Add: larger-vt-font() \n\
+
+! Solarized color scheme for the X Window System
+!
+! http://ethanschoonover.com/solarized
+
+*xterm*background:              #002b36
+*xterm*foreground:              #839496
+*xterm*fading:                  40
+*xterm*fadeColor:               #002b36
+*xterm*cursorColor:             #93a1a1
+*xterm*pointerColorBackground:  #586e75
+*xterm*pointerColorForeground:  #93a1a1
+
+! Only select text
+*xterm*highlightSelection: true
+
+! Remove trailing spaces
+*xterm*trimSelection: true
+
+!    Ctrl <Btn1Up>: exec-formatted("xdg-open '%t'", PRIMARY)
+
+rofi.font:             sans-serif bold 18

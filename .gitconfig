@@ -1,0 +1,11 @@
+[user]
+	name = "gombi"
+	email = "gombi@"
+[core]
+	autocrlf = false
+	filemode = false
+	deltaBaseCacheLimit = 1G
+[branch]
+	autosetuprebase = always
+[push]
+	default = simple

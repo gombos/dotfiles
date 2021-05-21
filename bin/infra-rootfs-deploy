@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# $1 - target machine $2 root fs version
+mnt-linux
+ssh $1 "mkdir -p /tmp/linuxrw && sudo /usr/bin/mount /dev/disk/by-label/linux /tmp/linuxrw -o rw,subvol=/"
+sudo btrfs send /go/linux/linux | ssh $1 "sudo /bin/btrfs receive /tmp/linuxrw"
+umnt-linux

@@ -1,0 +1,19 @@
+{
+   "alternate_error_pages": {"enabled":false},
+   "autofill": {"enabled":false},
+   "local_discovery": {"notifications_enabled":false},
+   "net": {"network_prediction_options":2},
+   "plugins": {"plugins_list":[
+     {"enabled":false, "name":"Native Client"},
+     {"enabled":false, "name":"Chrome Remote Desktop Viewer"},
+     {"enabled":false, "name":"Widevine Content Decryption Module"},
+     {"enabled":false, "name":"Chrome PDF Viewer"}
+   ]},
+   "safebrowsing": {"enabled":false},
+   "search": {"suggest_enabled":false},
+   "translate": {"enabled":false},
+   "profile": {
+     "default_content_setting_values": {"plugins":5},
+     "password_manager_enabled":false
+   }
+}

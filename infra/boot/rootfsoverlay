@@ -1,0 +1,367 @@
+# Warning: error in this file will likely lead to failure to boot
+# Consider only testing/changing this file in a development environment with access to console
+
+# This script logs to /run/initramfs/rdexec.out
+
+# Do not change /usr to allow ro mount
+# Ideally only make changes in /var
+# To avoid manipulating /etc use kernel arguments when possible
+# Instead of changing existing files, try to just add new files
+# Keep changing in /run
+
+# Configuration 1 - OverlayRoot
+# Rootfs is mounted ro and EFI partition is mounted as ro to customize rootfs overlay
+# /run can be used to create new files and directories that are not persistent between boots
+# Symlink /etc to /run when possible - use relative links. This will allow editing these files even if etc itself is mounted read-only
+
+# Input:
+# - environment variables, /proc filesystem, including /proc/cmdline
+# - current directory is set to where the rd.exec file is located
+# - $mp points to EFI partition root
+# - $NEWROOT points to root filesystem
+# - all changes to root filesystem are made in ram (overlayroot)
+
+# Autodetect the environment
+# Disks - /dev/disks, /proc/partitions
+# HW - /proc/cpuinfo
+# Grub - /proc/cmdline
+# Network - DHCP
+# rootfs version
+
+# Per-host configuration directory
+cd $mp/config
+
+# Per instance configuration file
+. ./rootfs-*.cfg
+
+R="$NEWROOT"
+cpu=$(grep "model name" -m1 /proc/cpuinfo)
+
+for x in $(cat /proc/cmdline); do
+  case $x in
+  systemd.hostname=*)
+    HOST=${x#systemd.hostname=}
+  ;;
+  esac
+done
+
+grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST="vm"
+
+# dmidecode is probably more reliable
+case "$cpu" in
+  *E5-2670*)
+    echo "Booting on bestia"
+    # nvidia driver
+    echo nvidia >> $R/etc/modules
+
+    # motherboard sensors Nuvoton W83677HG-I (NCT6776)
+    echo w83627ehf >> $R/etc/modules
+  ;;
+  *i7-4870HQ*)
+    echo "Booting on MacBook"
+    if ! [ "$HOST" == "vm" ] ; then
+      echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+    fi
+  ;;
+  *)
+    # fallback
+  ;;
+esac
+
+rm $R/etc/timezone
+
+chown 0:27 /run/media
+chmod g+w /run/media
+
+ln -sf /home $R/Users
+
+# machine-id
+if [ ! -z "$MID" ]
+then
+  rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
+  echo $MID > $R/etc/machine-id
+  mkdir -p $R/var/lib/dbus
+  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
+fi
+
+# sshd host keys
+if [ ! -z "$SSHD_KEY" ]
+then
+  rm -rf $R/etc/ssh/ssh_host_*key* 2>/dev/null
+  echo -e $SSHD_KEY > $R/etc/ssh/ssh_host_ed25519_key
+  echo $SSHD_KEY_PUB > $R/etc/ssh/ssh_host_ed25519_key.pub
+  chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
+fi
+
+if [ "$HOST" == "vm" ]; then
+  # Mount home directories from the host at boot
+  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+
+  # Mask services not required inside a vm
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
+  ln -sf /dev/null $R/etc/systemd/system/smartd.service
+  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
+fi
+
+sed -i "s|bottom_pane=.*|bottom_pane=0|g" $R/etc/lxdm/lxdm.conf
+
+# server profile
+if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
+  # machinectl
+  mkdir -p $R/var/lib/machines/lab
+  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
+
+  # portablectl
+  mkdir -p $R/var/lib/portables/lab
+  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
+
+  # Persistent container storage for docker
+  ln -sf /home/containers $R/var/lib/docker
+fi
+
+if [ "$HOST" == "bestia" ]; then
+  IP=3
+
+  # configure vmware service
+  if [ -d "$R/etc/vmware" ]; then
+    ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
+    mkdir -p $R/var/lib/vmware/
+    cp license-* $R/etc/vmware/
+    chmod 444 $R/etc/vmware/license-*
+    cp vmware/* $R/etc/vmware/hostd/
+    sed -i 's/^acceptOVFEULA .*/acceptOVFEULA = "yes"/' $R/etc/vmware/config
+    sed -i 's/^acceptEULA .*/acceptEULA = "yes"/' $R/etc/vmware/config
+    sed -i 's/^installerDefaults.autoSoftwareUpdateEnabled .*/installerDefaults.autoSoftwareUpdateEnabled = "no"/' $R/etc/vmware/config
+    sed -i 's/^installerDefaults.dataCollectionEnabled .*/installerDefaults.dataCollectionEnabled = "no"/' $R/etc/vmware/config
+    sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
+  fi
+
+  if [ -f "$mp/dotfiles/boot/active.ics" ]; then
+    cp "$mp/dotfiles/boot/active.ics" /run/
+  fi
+
+  mkdir -p $R/nix $/home $R/live/image
+
+  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+
+  sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
+
+  # Power button should suspend instead of poweroff
+  sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
+
+  # IMAP
+  echo "$HOST" > $R/etc/mailname
+  sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
+  sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
+
+  # Only ask for sudo password once in a day
+  echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
+fi
+
+if [ "$HOST" == "bestia-recovery" ]; then
+  echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
+fi
+
+# Todo - make static IP configurable - maybe grub menu or grub option
+
+if [ "$HOST" == "henrik" ]; then
+  H=henrik
+
+  # static IP
+  IP=4
+
+  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
+
+  BAGOLYPWD=""
+
+  # Todo - Probably no longer needed
+  rm $R/usr/lib/modprobe.d/nvidia-graphics-drivers.conf
+
+  # Closing the lid on power should not suspend this laptop
+  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
+fi
+
+if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
+  echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
+fi
+
+if [ "$HOST" == "pincer" ]; then
+  IP=2
+
+  # /etc/fstab
+  # No persistent home, this is a piece of infrastructure
+  # sudo is disabled even for admin, so we need a way to access boot parition remotly
+  mkdir -p $R/go/efi
+  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
+
+  # /home is only for services not for users
+  echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  mkdir /home
+
+
+  # Patch apcupsd config to connect it via usb
+  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
+
+  # papertrail
+  cp papertrail.service $R/etc/systemd/system/
+  chmod 444 $R/etc/systemd/system/papertrail.service
+  ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
+
+  # disable dunst
+  rm $R/etc/systemd/user/default.target.wants/dunst.service
+
+  # disable pulseaudio
+  rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
+
+  # DHCP
+  cp dhcp.conf $R/etc/dnsmasq.d/
+  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+
+  echo "127.0.0.1 localhost" > $R/etc/hosts
+  chmod 444 $R/etc/hosts
+
+  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
+  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
+
+  # Remote wake up
+  echo '0 6 * * *  root  /usr/bin/wakeonlan 00:24:9b:28:a4:fa' >> $R/etc/crontab
+
+  # NFS exports
+  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
+fi
+
+# set static IP
+[ ! -z "$IP" ] && printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 8.8.8.8\n" > $R/etc/network/interfaces.d/eth0
+
+printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
+
+[ ! -z "$HOST" ] && echo "$HOST" > $R/etc/hostname
+[ ! -z "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+[ ! -z "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
+
+# /etc/udev/rules.d
+# support my devices
+if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]
+then
+  cp "$mp/dotfiles/boot/99-kucko.rules" /run/99-kucko.rules
+  chmod 0440 /run/99-kucko.rules
+fi
+ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
+
+# /etc/autosuspend.conf
+# configure autosuspend
+if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]
+then
+  cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
+fi
+
+# remove the admin user
+sed -i '/^admin:/d' $R/etc/passwd
+sed -i '/^admin:/d' $R/etc/shadow
+
+# harden sshd
+echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
+echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
+chmod 0440 /run/sshd_kucko.conf
+
+ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
+
+# allow some executables to run without sudo password
+# sensitive data should be all protected with additional encryption password at rest
+echo '%sudo ALL=(ALL) NOPASSWD: /usr/bin/mount, /usr/bin/umount, /usr/sbin/cryptsetup' >> /run/sudoers_kucko
+
+# make it easy to deploy new rootfs
+echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
+echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
+chmod 0440 /run/sudoers_kucko
+
+ln -sf ../../run/sudoers_kucko $R/etc/sudoers.d
+
+# These policies are for development only
+if [ "$HOST" == "vm" ] ; then
+  # Autologin
+  sed -i "s|\#\ autologin=.*|autologin=gombi|g" $R/etc/lxdm/lxdm.conf
+
+  # Only ask for sudo password once and not expire
+  echo 'Defaults timestamp_timeout=-1' >> /run/sudoers_kucko
+
+  # sudo permission for all terminal sessions - this is a privilege esculation vulnability
+  echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
+fi
+
+# Disable all the preinstaled cron jobs (except cron.d/ jobs)
+> $R/etc/crontab
+
+# gombi user
+if [ ! -z "$GOMBIPWD" ]
+then
+  echo "gombi:x:1000:1000:,,,:/home/user:/bin/bash" >> $R/etc/passwd
+  echo "gombi:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
+  echo "gombi:!::" >> $R/etc/gshadow
+  echo "gombi:x:1000:" >> $R/etc/group
+  sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
+  sed -i "s/^users:.*/&,gombi/" $R/etc/group
+fi
+
+# henrik user
+if [ ! -z "$HENRIKPWD" ]
+then
+  echo "henrik:x:1001:1001:,,,:/home/henrik:/bin/bash" >> $R/etc/passwd
+  echo "henrik:$HENRIKPWD:1:0:99999:7:::" >> $R/etc/shadow
+  echo "henrik:!::" >> $R/etc/gshadow
+  echo "henrik:x:1001:" >> $R/etc/group
+  sed -i "s/^users:.*/&,henrik/" $R/etc/group
+fi
+
+# bagoly user
+if [ ! -z "$BAGOLYPWD" ]
+then
+  echo "bagoly:x:1002:1002:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
+  echo "bagoly:$BAGOLYPWD:1:0:99999:7:::" >> $R/etc/shadow
+  echo "bagoly:!::" >> $R/etc/gshadow
+  echo "bagoly:x:1002:" >> $R/etc/group
+  sed -i "s/^sudo:.*/&,bagoly/" $R/etc/group
+  sed -i "s/^users:.*/&,bagoly/" $R/etc/group
+fi
+
+# ssh jumphost user - Restricted user, no persistent home, login only via ssh key, disabled login password
+if [ ! -z "$SSHID" ]
+then
+  mkdir -p $R/user/.ssh/
+  cat authorized_keys-user >> $R/user/.ssh/authorized_keys
+  echo "$SSHID:x:1000:1000:,,,:/user:/bin/bash" >> $R/etc/passwd
+  echo "$SSHID:*:1:0:99999:7:::" >> $R/etc/shadow
+  echo "user:!::" >> $R/etc/gshadow
+  echo "user:x:1000:" >> $R/etc/group
+  ln -sf /home/dotfiles $R/user/.dotfiles
+  ln -sf /user/.dotfiles/bin/infra-provision-user.sh $R/user/.bash_profile
+  chown -R 1000:1000 $R/user/
+fi
+
+# restricted admin, no persistent home, login only via ssh key, disabled login password
+if [ ! -z "$ADMINID" ]
+then
+  mkdir -p $R/admin/.ssh
+  cat authorized_keys >> $R/admin/.ssh/authorized_keys
+  echo "$ADMINID:x:501:27:,,,:/admin:/bin/bash" >> $R/etc/passwd
+  echo "$ADMINID:$ADMINPWD:1:0:99999:7:::" >> $R/etc/shadow
+  chown -R 501:27 $R/admin/
+fi
+
+# Done booting once-only - remove it
+if [ -f "grub-onetime.cfg" ]; then
+  cd /
+  mount -o remount, rw $mp
+  rm -f $mp/config/grub-onetime.cfg 2>/dev/null
+fi

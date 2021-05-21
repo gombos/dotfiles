@@ -1,0 +1,2 @@
+#!/bin/sh
+run-or-raise.sh Mail.Thunderbird thunderbird &

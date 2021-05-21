@@ -1,0 +1,46 @@
+#brew update
+
+# todo figure out how to pin vmware version and upgrade everything else
+
+# install manually - xquartz, google-chrome, vmware fusion
+
+# cask
+brew install osxfuse teamviewer veracrypt visual-studio-code karabiner-elements tor-browser microsoft-edge digikam google-cloud-sdk authy macs-fan-control db-browser-for-sqlite libreoffice
+
+brew install bash bash-completion pass pinentry-mac sshuttle rga rmlint lesspipe micro rclone lastpass-cli
+
+# basictex tesseract pandoc poppler wakeonlan
+
+if [[ `hostname -s` != "taska" ]]; then
+  brew install --cask slack
+  brew upgrade --cask slack
+fi
+
+python3 -m pip install --upgrade pip
+pip3 install visidata
+
+brew cleanup --prune=all
+brew doctor
+
+#sudo pmset -a standby 0
+# sudo pmset -a hibernatemode 0; sudo pmset -a disablesleep 1;
+
+# The output of this command depends on weather on charger or off charger
+#user:taska.local:~ sudo pmset -g
+# standbydelaylow      10800
+# standby              1
+# halfdim              1
+# hibernatefile        /var/vm/sleepimage
+# gpuswitch            2
+# powernap             0
+# disksleep            10
+# standbydelayhigh     86400
+# sleep                1 (sleep prevented by sharingd)
+# autopoweroffdelay    259200
+# hibernatemode        3
+# autopoweroff         1
+# ttyskeepawake        1
+# displaysleep         2
+# highstandbythreshold 50
+# acwake               0
+# lidwake              1

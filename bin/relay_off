@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+function umnt-relay() {
+  umnt-archive_media
+  umnt-archive_ice
+  umnt-borg
+}
+
+eval $(usbrelay 2>/dev/null)
+if [ "$BITFT_1" == "1" ]; then
+
+  # umount the all the partitions from the drive
+  umnt-relay
+  sync
+  sleep 1
+
+  # Spin down the drive
+  echo offline | sudo tee /sys/block/sdc/device/state
+  echo 1 | sudo tee /sys/block/sdc/device/delete
+
+  # Cut the electricity
+  usbrelay BITFT_1=0 BITFT_2=0 2>/dev/null
+  sudo rescan-scsi-bus --hosts=6 --ids=0 --luns=0 -r >/dev/null 2>/dev/null
+fi

@@ -1,0 +1,6 @@
+image/gif; qiv -tfi --browse --autorotate %s; description="GIF Image"; test=test "$DISPLAY"; nametemplate=%s.gif
+image/jpeg; qiv -tfi --browse --autorotate %s; description="JPEG Image"; test=test "$DISPLAY"; nametemplate=%s.jpeg
+image/png; qiv -tfi --browse --autorotate %s; description="PNG Image"; test=test "$DISPLAY"; nametemplate=%s.png
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; pandoc --from docx --to markdown %s; copiousoutput
+application/vnd.oasis.opendocument.text; pandoc --from odt --to markdown %s; copiousoutput
+application/pdf; pdftotext -layout %s -; copiousoutput;

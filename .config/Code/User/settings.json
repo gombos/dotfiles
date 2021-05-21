@@ -1,0 +1,21 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "editor.fontFamily": "'Consolas', 'Inconsolata', 'Courier New', monospace",
+    "editor.fontSize": 14,
+    "editor.cursorBlinking": "solid",
+    "editor.scrollBeyondLastLine": false,
+    "telemetry.enableTelemetry": false,
+    "telemetry.enableCrashReporter": false,
+    "workbench.colorTheme": "Solarized Dark",
+    "window.zoomLevel": 0,
+    "workbench.activityBar.visible": false,
+    "workbench.statusBar.visible": false,
+    "workbench.welcome.enabled": false,
+    "editor.minimap.enabled": false,
+    "breadcrumbs.enabled": false,
+    "editor.renderWhitespace": "none",
+    "update.showReleaseNotes": "false",
+    "files.autoSave": "afterDelay",
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "update.mode": "none"
+}

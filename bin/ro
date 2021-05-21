@@ -1,0 +1,15 @@
+#!/bin/bash
+
+[ ! -z "$1" ] && dir="$1"
+
+fstype=`stat -f $dir | grep "Type: " | grep -o '[^ ]*$'`
+
+case $OSTYPE in
+  *"linux-gnu"*)
+    case $fstype in
+      *"btrfs"*) sudo btrfs property set -ts $dir ro true ;;
+      *"ext"*) sudo mount -o remount,ro $dir ;;
+    esac ;;
+  *) echo "unsupported OS" ;;
+esac
+

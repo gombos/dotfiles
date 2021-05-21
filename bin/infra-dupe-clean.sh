@@ -1,0 +1,2 @@
+rm -rf ~/dupe
+sudo apt purge dh-python docutils-common gettext libexpat1-dev libpython3-dev libpython3.7-dev libqt5designer5 libqt5help5 libqt5sql5 libqt5test5 libqt5xml5 pyqt5-dev-tools python-babel-localedata python-pip-whl python3-alabaster python3-babel python3-dev python3-distutils python3-docutils python3-imagesize python3-jinja2 python3-lib2to3 python3-markupsafe python3-packaging python3-pygments python3-pyparsing python3-pyqt5 python3-roman python3-sip python3-sphinx python3-venv python3.7-dev python3.7-venv sgml-base sphinx-common xml-core python3-setuptools

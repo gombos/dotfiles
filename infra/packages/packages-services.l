@@ -1,0 +1,10 @@
+apcupsd
+autosuspend
+containerd
+cron
+dnsmasq
+docker.io
+nfs-kernel-server
+openssh-server
+open-vm-tools-desktop
+upower

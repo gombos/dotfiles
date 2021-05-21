@@ -1,0 +1,6 @@
+FROM 0gombi0/homelab:minbase
+
+COPY bin/*.sh packages/*.l /
+RUN /infra-build-base.sh
+
+CMD ["/bin/bash"]
