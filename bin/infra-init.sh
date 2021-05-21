@@ -229,7 +229,7 @@ if [ "$HOST" == "pincer" ]; then
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
-  $BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
+  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
   chmod 555 $R/usr/bin/wake-bestia
 
