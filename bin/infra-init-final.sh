@@ -37,6 +37,11 @@ sudo chown -R 1000:1000 /home/www/
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 sudo apt-get install -y docker.io docker-compose
+
 sudo service docker start
+
+# Reduce peak memory usage
+sleep 5
+
 cd $USERHOME/.dotfiles/infra/
 sudo docker-compose up -d
