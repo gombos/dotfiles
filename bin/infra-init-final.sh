@@ -25,6 +25,10 @@ sudo mkdir -p /home/www/
 echo "helloka" > /home/www/index.html
 
 cd /root/
-git clone https://github.com/gombos/dotfiles.git
-cd dotfiles
-sudo docker-compose up
+git clone https://github.com/gombos/dotfiles.git .dotfiles
+cd .dotfiles/infra/
+sudo docker-compose up -d
+
+mv /root/.dotfiles /home/ubuntu/
+sudo chown -R 1000:1000 /home/ubuntu/.dotfiles/
+ln -sf /home/ubuntu/.dotfiles/bin/infra-provision-user.sh /home/ubuntu/.bash_profile
