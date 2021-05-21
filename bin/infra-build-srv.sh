@@ -37,10 +37,10 @@ sudo service docker start
 
 if [ "$ID" != "aws" ]; then
 
-./tmp/infra-clean-linux.sh /
+./infra-clean-linux.sh /
 
  ---- Integrity
-./tmp/infra-integrity.sh /var/integrity/
+./infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
 fi

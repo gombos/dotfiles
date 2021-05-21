@@ -2,6 +2,6 @@ FROM 0gombi0/homelab:minbase
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
-RUN infra-build-base.sh
+RUN ./infra-build-base.sh
 
 CMD ["/bin/bash"]
