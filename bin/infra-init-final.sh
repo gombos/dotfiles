@@ -23,7 +23,7 @@ USERHOME=$(getent passwd 1000 | cut -d: -f6)
 
 cd $USERHOME
 
-if [ -d .dotfiles ]; then
+if ! [ -d .dotfiles ]; then
   git clone https://github.com/gombos/dotfiles.git .dotfiles
   ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
   sudo chown -R 1000 .dotfiles
@@ -38,5 +38,5 @@ sudo chown -R 1000:1000 /home/www/
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 sudo apt-get install -y docker.io docker-compose
 sudo service docker start
-cd .dotfiles/infra/
+cd $USERHOME/.dotfiles/infra/
 sudo docker-compose up -d
