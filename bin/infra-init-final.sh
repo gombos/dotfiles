@@ -30,6 +30,6 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 sudo apt-get install -y docker.io docker-compose
 sudo service docker start
 cd .dotfiles/infra/
-#sudo docker-compose up -d
+sudo docker-compose up -d
 
 #sudo docker pull 0gombi0/homelab
