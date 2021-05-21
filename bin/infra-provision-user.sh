@@ -59,6 +59,8 @@ fi
 rm ~/.bash_profile
 cd
 
+echo "User provisioning is finished, please log out and log back in again."
+
 #if [ "$HOST" == pincer ]; then
 #  sudo apt-get update
 #  sudo apt-get install python-setuptools python-dev python-pip
