@@ -22,6 +22,8 @@ if [ -z "$SCRIPTS" ]; then
 export SCRIPTS="/tmp"
 fi
 
+cd /
+
 install_my_package () {
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
