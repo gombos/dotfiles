@@ -1,3 +1,5 @@
+# first boot of a new instance, run all the “per-instance” configuration
+
 # Warning: error in this file will likely lead to failure to boot
 # Consider only testing/changing this file in a development environment with access to console
 
@@ -208,7 +210,6 @@ if [ "$HOST" == "pincer" ]; then
   echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   mkdir /home
 
-
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -227,6 +228,10 @@ if [ "$HOST" == "pincer" ]; then
   # DHCP
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+
+  $BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
+  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
+  chmod 555 $R/usr/bin/wake-bestia
 
   echo "127.0.0.1 localhost" > $R/etc/hosts
   chmod 444 $R/etc/hosts
