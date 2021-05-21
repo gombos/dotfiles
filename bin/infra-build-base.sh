@@ -8,23 +8,23 @@
 cd /
 
 if [ -z "$SCRIPTS" ]; then
-export SCRIPTS="/tmp"
+  export SCRIPTS="."
 fi
 
 if [ -z "$RELEASE" ]; then
-export RELEASE=focal
+  export RELEASE=focal
 fi
 
 if [ -z "$KERNEL" ]; then
-export KERNEL="5.4.0-52-generic"
+  export KERNEL="5.4.0-52-generic"
 fi
 
 if [ -z "$BASEIMAGE" ]; then
-BASEIMAGE=minbase
+  BASEIMAGE=minbase
 fi
 
 if [ -z "$TARGET" ]; then
-TARGET=baremetal
+  TARGET=baremetal
 fi
 
 install_my_package () {
@@ -118,8 +118,8 @@ if [ "$TARGET" = "baremetal" ]; then
  install_my_packages packages-x11.l
  install_my_packages packages-x11apps.l
 
- ./infra-install-vmware-workstation.sh
- ./infra-install-podman.sh
+ $SCRIPTS/infra-install-vmware-workstation.sh
+ $SCRIPTS/infra-install-podman.sh
 
  # Cleanup packages only needed during building the rootfs
  DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-headers-* grub-* fuse 2>/dev/null >/dev/null
@@ -210,9 +210,9 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 # Following directories should exists but should be empty
 # boot, home, media, run
 
-./$SCRIPTS/infra-clean-linux.sh /
+$SCRIPTS/infra-clean-linux.sh /
 
 # ---- Integrity
-./$SCRIPTS/infra-integrity.sh /var/integrity/
+$SCRIPTS/infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
