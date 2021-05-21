@@ -22,7 +22,7 @@ function wait_for_instance_to_run () {
 aws lightsail delete-instance --instance-name "awslab"
 sleep 10
 
-aws lightsail create-instances --instance-names "awslab" --bundle-id "nano_2_0" --blueprint-id "ubuntu_20_04" --availability-zone "us-east-1a" --key-pair-name "k_public" --user-data file://~/.dotfiles/bin/infra-launch.sh
+aws lightsail create-instances --instance-names "awslab" --bundle-id "nano_2_0" --blueprint-id "ubuntu_20_04" --availability-zone "us-east-1a" --key-pair-name "k_public" --user-data file://~/.dotfiles/bin/infra-init-final.sh
 
 wait_for_instance_to_run "awslab"
 
