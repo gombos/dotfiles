@@ -14,21 +14,22 @@
 #sudo docker pull php:5.6-apache
 #sudo docker run --name apachephp -d --restart=always -p 80:80 php:5.6-apache
 
-ID=$(/usr/bin/cloud-id)
-sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-sudo apt-get install -y docker.io docker-compose
-sudo service docker start
-sudo docker pull 0gombi0/homelab
+CLOUDID=$(/usr/bin/cloud-id)
+USERHOME=$(getent passwd 1000 | cut -d: -f6)
+
+cd $USERHOME
+git clone https://github.com/gombos/dotfiles.git .dotfiles
+ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
+sudo chown -R 1000 .dotfiles
+cd .dotfiles/infra/
 
 sudo chown -R 1000:1000 /home/www/
 sudo mkdir -p /home/www/
 echo "helloka" > /home/www/index.html
 
-cd /root/
-git clone https://github.com/gombos/dotfiles.git .dotfiles
-cd .dotfiles/infra/
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+sudo apt-get install -y docker.io docker-compose
+sudo service docker start
 sudo docker-compose up -d
 
-mv /root/.dotfiles /home/ubuntu/
-sudo chown -R 1000:1000 /home/ubuntu/.dotfiles/
-ln -sf /home/ubuntu/.dotfiles/bin/infra-provision-user.sh /home/ubuntu/.bash_profile
+#sudo docker pull 0gombi0/homelab
