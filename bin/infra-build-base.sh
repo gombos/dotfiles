@@ -7,6 +7,10 @@
 
 cd /
 
+if [ -z "$SCRIPTS" ]; then
+export SCRIPTS="/tmp"
+fi
+
 if [ -z "$RELEASE" ]; then
 export RELEASE=focal
 fi
@@ -206,9 +210,9 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 # Following directories should exists but should be empty
 # boot, home, media, run
 
-./infra-clean-linux.sh /
+./$SCRIPTS/infra-clean-linux.sh /
 
 # ---- Integrity
-./infra-integrity.sh /var/integrity/
+./$SCRIPTS/infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
