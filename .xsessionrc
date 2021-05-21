@@ -41,7 +41,7 @@ fi
   xrdb -merge ~/.Xresources-*
 
   # Set background
-  (sleep 2 && qiv -z ~/.config/.bg.jpg)
+  [ -f ~/.config/.bg.jpg ] && (sleep 2 && qiv -z ~/.config/.bg.jpg)
 
   if test "$USER" = 'henrik'; then
     lxpanel & # taskbar

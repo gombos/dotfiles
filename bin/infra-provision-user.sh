@@ -53,12 +53,6 @@ if [ -f /usr/lib/xorg/Xorg ]; then
   mkdir -p ~/.config
   cd ~/.config
   ln -sf ~/.dotfiles/.config/libfm
-
-  if [ "$HOST" == bagoly ]; then
-    ln -sf ~/.dotfiles/.config/bg-bagoly.jpg ~/.bg.jpg
-  else
-    ln -sf ~/.dotfiles/.config/bg-desert.jpg ~/.bg.jpg
-  fi
 fi
 
 # cleanup
