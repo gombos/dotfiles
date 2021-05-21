@@ -32,7 +32,7 @@ install_my_package () {
 }
 
 install_my_packages() {
-  cat $1 | sed '/^$/d' | grep -v ^\# | grep -v ^\; | awk '{print $1;}' | while read in;
+  cat $SCRIPTS/$1 | sed '/^$/d' | grep -v ^\# | grep -v ^\; | awk '{print $1;}' | while read in;
 
   do
     install_my_package "$in"
@@ -201,7 +201,6 @@ touch etc/fstab
 
 # change the date of last time password was set back to 1970 to have reproducible builds
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
-
 
 # ---- Cleanup
 
