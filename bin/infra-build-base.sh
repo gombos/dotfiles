@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Option to run this when rootfs gets instantiated/initalized/booted
-# Todo - maybe I can invoke boot/rootfsoverlay at the end of this script to share some logic between the two scrips
+# Todo - maybe I can invoke rootfsoverlay at the end of this script to share some logic between the two scrips
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
