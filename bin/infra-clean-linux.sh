@@ -78,7 +78,6 @@ image_clean_function() {
     empty_file var/log/btmp
 
     rm_file .dockerenv
-    rm_file 'tmp/{*,.*}'
     rm_file 'boot/{*,.*}'
     rm_file 'root/{*,.*}'
     rm_file 'etc/ssh/ssh_host*'

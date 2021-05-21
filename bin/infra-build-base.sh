@@ -202,6 +202,7 @@ touch etc/fstab
 # change the date of last time password was set back to 1970 to have reproducible builds
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
+
 # ---- Cleanup
 
 # Only the following directories should be non-empty
