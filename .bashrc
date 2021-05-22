@@ -171,7 +171,7 @@ fi
 
 if [ -e /home/user/.nix-profile/etc/profile.d/nix.sh ]; then . /home/user/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-if [ -e ~/.dotfiles/bin/env-bestia ]; then . ~/.dotfiles/bin/env-bestia; fi # added by Nix installer
+if [ -e ~/.dotfiles/bin/env-$(hostname) ]; then . ~/.dotfiles/bin/env-$(hostname); fi # added by Nix installer
 
 alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
 alias umnt-1="sudo umount ~/1"
