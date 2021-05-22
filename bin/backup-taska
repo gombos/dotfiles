@@ -1,0 +1,1 @@
+umnt-bagoly 2>/dev/null;  rsync -av /Volumes/shared/bagoly bestia:/home/adat/.bagoly ; rsync -av --delete-after --exclude '.Trashes' --exclude '.fseventsd' --exclude '.Spotlight-V100' --exclude '.TemporaryItems' --exclude 'Caches' --exclude '.DocumentRevisions-V100' /Volumes/data /Volumes/shared  bestia:/run/media/backup_bestia/taska

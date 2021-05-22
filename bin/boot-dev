@@ -1,0 +1,3 @@
+mnt-efi
+
+echo "set default=bestia-dev" >  /go/efi/config/grub-onetime.cfg;

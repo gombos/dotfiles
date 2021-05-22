@@ -1,0 +1,7 @@
+# Open (edit) file or url as a graphical application
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  xdg-open "$@"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  open "$@"
+fi

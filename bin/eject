@@ -1,0 +1,1 @@
+sudo udisksctl  power-off -b $1
