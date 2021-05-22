@@ -109,7 +109,9 @@ alias umnt-1="sudo umount ~/1"
 alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
 
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
-alias mnt-efi='mnt efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"'
+alias mnt-efi='mnt efi'
+
+ EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"'
 
 # -- Source externel files
 

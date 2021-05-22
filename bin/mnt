@@ -4,5 +4,11 @@
 P="$2"
 [ -z "$P" ] && P="$1"
 
+if [ "$1" == "efi" ];
+  MO="user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
+else
+  MO="$3"
+fi
+
 # by-partlabel has priority over by-label
-mountpoint -q $MNTDIR/$1 || { mkdir -p $MNTDIR/$1 && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-label/$P ]; then sudo mount /dev/disk/by-label/$P $MNTDIR/$1 -o rw,$3; fi; }
+mountpoint -q $MNTDIR/$1 || { mkdir -p $MNTDIR/$1 && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$MO; return 0; fi && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$MO; return 0; fi && if [ -L /dev/disk/by-label/$P ]; then sudo mount /dev/disk/by-label/$P $MNTDIR/$1 -o rw,$MO; fi; }
