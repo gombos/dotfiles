@@ -1,4 +1,6 @@
-#brew update
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  exit
+fi
 
 # todo figure out how to pin vmware version and upgrade everything else
 
