@@ -111,8 +111,6 @@ alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,u
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
 alias mnt-efi='mnt efi'
 
- EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"'
-
 # -- Source externel files
 
 # Enable programmable completion features
