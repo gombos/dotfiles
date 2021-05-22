@@ -1,0 +1,5 @@
+cat $1 | sed '/^$/d' | grep -v ^\# | grep -v ^\; | awk '{print $1;}' | while read in;
+
+do
+  install_package "$in"
+done
