@@ -17,9 +17,6 @@ stty intr \^d
 #I typically use stty -ixon -ixoff so I can reclaim the CTRL-S and CTRL-Q key bindings for more modern purposes
 stty -ixon -ixoff
 
-# Check terminal window size and update the values of LINES and COLUMNS
-shopt -s checkwinsize
-
 # command prompt username
 function psusername {
   if [ $UID != 1000 ] ; then
@@ -54,6 +51,20 @@ export MNTDIR="/run/media"
 # Only my user has access
 export RUNDIR="/run/user/$UID"
 
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH:."
+fi
+
+if [ -d "$HOME/.dotfiles/bin" ] ; then
+    PATH="$HOME/.dotfiles/bin:$PATH:."
+fi
+
+if [ -d "/storage/repo/depot_tools" ] ; then
+    PATH="$PATH:/storage/repo/depot_tools"
+fi
+
 # default editor
 if command -v micro &> /dev/null
 then
@@ -84,6 +95,19 @@ alias finance='EDITOR="vd -f csv" pass edit'
 alias wake-bestia='ssh pincer-wan wake-bestia'
 
 # -- Source externel files
+
+if type brew &>/dev/null; then
+  HOMEBREW_PREFIX="$(brew --prefix)"
+  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
+      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
+    done
+  fi
+fi
+
+if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 
 # google-cloud-sdk on MacOS (brew)
 if [ -x /usr/local/Caskroom/google-cloud-sdk ]; then
