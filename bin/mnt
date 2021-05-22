@@ -1,13 +1,8 @@
+#!/bin/bash
+
 # $1=mountpount $2=label $3=mntoptions
 P="$2"
 [ -z "$P" ] && P="$1"
 
 # by-partlabel has priority over by-label
-eval "mnt-$1()    { mountpoint -q $MNTDIR/$1 || { mkdir -p $MNTDIR/$1 && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-label/$P ]; then sudo mount /dev/disk/by-label/$P $MNTDIR/$1 -o rw,$3; return 0; fi; } }"
-eval "mnt-$1_ro() { mountpoint -q $MNTDIR/$1 || { mkdir -p $MNTDIR/$1 && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-label/$P ]; then sudo mount /dev/disk/by-label/$P $MNTDIR/$1 -o ro,$3; return 0; fi; } }"
-eval "umnt-$1()   { sudo umount $MNTDIR/$1 ; }"
-eval "go-$1()     { cd $MNTDIR/$1; }"
-export -f "mnt-$1"
-export -f "mnt-$1_ro"
-export -f "umnt-$1"
-export -f "go-$1"
+mountpoint -q $MNTDIR/$1 || { mkdir -p $MNTDIR/$1 && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-partlabel/$P ]; then sudo mount /dev/disk/by-partlabel/$P $MNTDIR/$1 -o rw,$3; return 0; fi && if [ -L /dev/disk/by-label/$P ]; then sudo mount /dev/disk/by-label/$P $MNTDIR/$1 -o rw,$3; fi; }

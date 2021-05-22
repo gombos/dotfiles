@@ -109,6 +109,7 @@ alias umnt-1="sudo umount ~/1"
 alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
 
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
+alias mnt-efi='mnt efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"'
 
 # -- Source externel files
 
@@ -159,8 +160,6 @@ if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linu
 
 # nix packages
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
-
-mnt efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 
 # host specific
 if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
