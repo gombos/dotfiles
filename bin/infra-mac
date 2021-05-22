@@ -4,6 +4,9 @@
 
 # install manually - xquartz, google-chrome, vmware fusion
 
+brew update
+brew upgrade
+
 # cask
 brew install osxfuse teamviewer veracrypt visual-studio-code karabiner-elements tor-browser microsoft-edge google-cloud-sdk authy macs-fan-control db-browser-for-sqlite libreoffice
 
