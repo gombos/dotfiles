@@ -19,20 +19,21 @@
 #sudo docker pull 0gombi0/homelab
 
 CLOUDID=$(/usr/bin/cloud-id)
+USERN=$(getent passwd 1000 | cut -d: -f1)
 USERHOME=$(getent passwd 1000 | cut -d: -f6)
 
 cd $USERHOME
 
 if ! [ -d .dotfiles ]; then
-   git clone --bare https://github.com/gombos/dotfiles.git $HOME/.dotfiles
-   config checkout
-   config config --local status.showUntrackedFiles no
-#  git clone https://github.com/gombos/dotfiles.git .dotfiles
-#  ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
-#  sudo chown -R 1000 .dotfiles
+  runuser -u www-data -- git clone https://github.com/gombos/dotfiles.git .dotfiles
+  ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
+  sudo chown -R 1000 .dotfiles
 else
  cd .dotfiles && git pull && cd ..
 fi
+
+source .dotfiles/.bashrc
+update-me
 
 sudo mkdir -p /home/www/
 echo "helloka" > /home/www/index.html
