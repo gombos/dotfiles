@@ -23,10 +23,6 @@ if [ -z "$BASEIMAGE" ]; then
   BASEIMAGE=minbase
 fi
 
-if [ -z "$TARGET" ]; then
-  TARGET=baremetal
-fi
-
 install_my_package () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
@@ -96,34 +92,33 @@ fi
 
 install_my_packages packages-packages.l
 
-if [ "$TARGET" = "baremetal" ]; then
- # browser
- wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
- echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
- DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+# chrome
+wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 
- mkdir -p etc/network/interfaces.d
- printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback && printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
- printf "127.0.0.1 localhost linux\n" > etc/hosts
+mkdir -p etc/network/interfaces.d
+printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback && printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
+printf "127.0.0.1 localhost linux\n" > etc/hosts
 
- # admin user to log in
- adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
- sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
+# admin user to log in
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
+sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
- install_my_package linux-modules-extra-$KERNEL
- install_my_package linux-headers-$KERNEL
+install_my_package linux-modules-extra-$KERNEL
+install_my_package linux-headers-$KERNEL
 
- install_my_packages packages-baremetal.l
- install_my_packages packages-services.l
- install_my_packages packages-x11.l
- install_my_packages packages-x11apps.l
+install_my_packages packages-baremetal.l
+install_my_packages packages-services.l
+install_my_packages packages-x11.l
+install_my_packages packages-x11apps.l
 
- $SCRIPTS/infra-install-vmware-workstation.sh
- $SCRIPTS/infra-install-podman.sh
+$SCRIPTS/infra-install-vmware-workstation.sh
+$SCRIPTS/infra-install-podman.sh
 
- # Cleanup packages only needed during building the rootfs
- DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-headers-* grub-* fuse 2>/dev/null >/dev/null
- DEBIAN_FRONTEND=noninteractiv apt-get clean
+# Cleanup packages only needed during building the rootfs
+DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-headers-* grub-* fuse 2>/dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractiv apt-get clean
 
 patch -d/ -p0 --ignore-whitespace << 'EOF'
 --- /usr/lib/dracut/modules.d/00systemd/module-setup.sh
@@ -145,7 +140,6 @@ patch -d/ -p0 --ignore-whitespace << 'EOF'
          $systemdsystemunitdir/systemd-random-seed.service \
          $systemdsystemunitdir/systemd-sysctl.service \
 EOF
-fi
 
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
 rm usr/.crates2.json
