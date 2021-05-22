@@ -106,6 +106,8 @@ alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
 alias umnt-1="sudo umount ~/1"
 alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
 
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
 # -- Source externel files
 
 # Enable programmable completion features

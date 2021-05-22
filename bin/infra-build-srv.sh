@@ -16,8 +16,6 @@
 
 ID=$(/usr/bin/cloud-id)
 
-git clone https://github.com/gombos/dotfiles.git
-
 if [ -z "$SCRIPTS" ]; then
 export SCRIPTS="/tmp"
 fi

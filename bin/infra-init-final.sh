@@ -24,9 +24,12 @@ USERHOME=$(getent passwd 1000 | cut -d: -f6)
 cd $USERHOME
 
 if ! [ -d .dotfiles ]; then
-  git clone https://github.com/gombos/dotfiles.git .dotfiles
-  ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
-  sudo chown -R 1000 .dotfiles
+   git clone --bare https://github.com/gombos/dotfiles.git $HOME/.dotfiles
+   config checkout
+   config config --local status.showUntrackedFiles no
+#  git clone https://github.com/gombos/dotfiles.git .dotfiles
+#  ln -sf .dotfiles/bin/infra-provision-user.sh .bash_profile
+#  sudo chown -R 1000 .dotfiles
 else
  cd .dotfiles && git pull && cd ..
 fi
