@@ -13,4 +13,4 @@ brew doctor
 
 # docker
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
-docker ps -q | xargs docker restart
+sudo docker ps -q | xargs sudo docker restart
