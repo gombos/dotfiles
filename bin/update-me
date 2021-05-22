@@ -1,3 +1,16 @@
 cd $DOTFILES/ && git pull
 mnt efi && cd $MNTDIR/efi/dotfiles && git pull
 infra-provision-mac
+
+# pip
+pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
+
+# brew
+brew update
+brew upgrade
+brew cleanup --prune=all
+brew doctor
+
+# docker
+sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
+docker ps -q | xargs docker restart
