@@ -5,7 +5,7 @@
 # install manually - xquartz, google-chrome, vmware fusion
 
 # cask
-brew install osxfuse teamviewer veracrypt visual-studio-code karabiner-elements tor-browser microsoft-edge digikam google-cloud-sdk authy macs-fan-control db-browser-for-sqlite libreoffice
+brew install osxfuse teamviewer veracrypt visual-studio-code karabiner-elements tor-browser microsoft-edge google-cloud-sdk authy macs-fan-control db-browser-for-sqlite libreoffice
 
 brew install bash bash-completion pass pinentry-mac sshuttle rga rmlint lesspipe micro rclone lastpass-cli
 
@@ -44,3 +44,4 @@ brew doctor
 # highstandbythreshold 50
 # acwake               0
 # lidwake              1
+# digikam
