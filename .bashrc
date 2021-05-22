@@ -160,5 +160,7 @@ if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linu
 # nix packages
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
 
+mnt efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
+
 # host specific
-if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi # added by Nix installer
+if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
