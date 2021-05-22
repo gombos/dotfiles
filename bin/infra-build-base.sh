@@ -8,7 +8,7 @@
 cd /
 
 if [ -z "$SCRIPTS" ]; then
-  export SCRIPTS="."
+  export SCRIPTS="/tmp"
 fi
 
 if [ -z "$RELEASE" ]; then

@@ -1,6 +1,5 @@
 FROM 0gombi0/homelab:minbase
 
-ENV SCRIPTS="/tmp"
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
 RUN ./infra-build-base.sh

@@ -35,14 +35,14 @@ sudo btrfs subvolume create $DIR
 
 # Deboostrap
 sudo LANG=C  debootstrap --variant=minbase --components=main,universe $RELEASE $DIR
-sudo cp ~/.dotfiles/bin/*.sh ~/.dotfiles/packages/*.l $DIR/
+sudo cp ~/.dotfiles/bin/* ~/.dotfiles/packages/* $DIR/tmp/
 
 sudo mount -t proc proc $DIR/proc/
 sudo mount --rbind /dev $DIR/dev/
 sudo mount -t sysfs sys $DIR/sys/
 
 # Enable package updates before installing rest of packages
-sudo chroot $DIR sh -c "./bootstrap.sh"
+sudo chroot $DIR sh -c "./infra-build-base.sh"
 
 # Install vmware manually if needed by running infra-rootfs and executing infra-install-vmware-workstation.sh line-by-line
 
