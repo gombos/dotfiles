@@ -94,14 +94,6 @@ alias vd='vd -f csv'
 alias finance='EDITOR="vd -f csv" pass edit'
 alias wake-bestia='ssh pincer-wan wake-bestia'
 
-# One letter acions (CLI)
-
-# BTRFS
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
- s()  { systemctl suspend -i; }
-fi
-
-# X11 aliases
 alias stop-session='openbox --exit'
 
 alias net-on='sudo ifup -a; ifconfig'
