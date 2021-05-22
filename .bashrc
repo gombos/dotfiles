@@ -41,6 +41,8 @@ export HISTSIZE=
 export HISTTIMEFORMAT="[%F %T] "
 export HISTFILE=~/.eternal_history
 
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # less
 export LESSHISTSIZE=0
 export PAGER=less
@@ -51,14 +53,14 @@ export MNTDIR="/run/media"
 # Only my user has access
 export RUNDIR="/run/user/$UID"
 
-export BASH_SILENCE_DEPRECATION_WARNING=1
+export DOTFILES="$HOME/.dotfiles"
 
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH:."
 fi
 
-if [ -d "$HOME/.dotfiles/bin" ] ; then
-    PATH="$HOME/.dotfiles/bin:$PATH:."
+if [ -d "$DOTFILES/bin" ] ; then
+    PATH="$DOTFILES/bin:$PATH:."
 fi
 
 if [ -d "/storage/repo/depot_tools" ] ; then
@@ -106,7 +108,7 @@ alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
 alias umnt-1="sudo umount ~/1"
 alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
 
-alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
 
 # -- Source externel files
 
@@ -159,4 +161,4 @@ if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linu
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
 
 # host specific
-if [ -e ~/.dotfiles/bin/env-$(hostname) ]; then . ~/.dotfiles/bin/env-$(hostname); fi # added by Nix installer
+if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi # added by Nix installer

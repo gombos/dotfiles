@@ -17,26 +17,26 @@ t=`echo "$temp - 0" | bc -l`
 
 # Evening hours after 5pm - target 19 °C
 if [ $( echo "$hour >= 17 && $hour <= 22 && $t <= 19" | bc ) -eq 1 ]; then
-  ~/.dotfiles/.bin/heat-on.sh
+  heat-on.sh
 fi
 
 # Sleeping hours after midnight - target 16 °C
 if [ $( echo "$hour >= 0 && $hour < 8" | bc ) -eq 1 ]; then
   if [ $( echo "$t <= 16" | bc ) -eq 1 ]; then
-    ~/.dotfiles/.bin/heat-on.sh
+    heat-on.sh
   else
-    ~/.dotfiles/.bin/heat-off.sh
+    heat-off.sh
   fi
 fi
 
 # Always turn off if temperature is above 20 °C
 if [ $( echo "$t >= 20.1" | bc ) -eq 1 ]; then
-  ~/.dotfiles/.bin/heat-off.sh
+  heat-off.sh
 fi
 
 # Turn off in the morning
 if [ $( echo "$hour >= 7 && $hour <= 11" | bc ) -eq 1 ]; then
-  ~/.dotfiles/.bin/heat-off.sh
+  heat-off.sh
 fi
 
 # gnuplot temper.gplt
