@@ -4,13 +4,14 @@
 
 HOST=$(hostname)
 
+export DOTFILES="$HOME/.dotfiles"
+
 cd
 
 ln -sf ~/.dotfiles/.bashrc
-ln -sf ~/.dotfiles/.hushlogin
-ln -sf ~/.dotfiles/.inputrc
 ln -sf ~/.dotfiles/.profile
-ln -sf ~/.dotfiles/.mime.types
+ln -sf ~/.dotfiles/.inputrc
+ln -sf ~/.dotfiles/.hushlogin
 
 if [ -f /usr/lib/xorg/Xorg ]; then
   ln -sf ~/.dotfiles/.gtkrc-2.0
