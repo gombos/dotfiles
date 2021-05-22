@@ -60,7 +60,6 @@ image_clean_function() {
     rm_file var/log/bootstrap.log
 
     rm_file 'var/backups/*'
-    rm_file 'var/tmp/{*,.*}'
 
     rm_file 'var/lib/sudo/*'
     rm_file 'var/lib/dkms/*'
