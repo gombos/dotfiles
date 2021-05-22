@@ -1,5 +1,3 @@
 dotfiles
-
 homelab
-
-selfhosted
+Keep size around 1 MB
