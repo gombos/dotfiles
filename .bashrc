@@ -94,7 +94,36 @@ alias vd='vd -f csv'
 alias finance='EDITOR="vd -f csv" pass edit'
 alias wake-bestia='ssh pincer-wan wake-bestia'
 
+# One letter acions (CLI)
+
+# BTRFS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+ s()  { systemctl suspend -i; }
+fi
+
+# X11 aliases
+alias stop-session='openbox --exit'
+
+alias net-on='sudo ifup -a; ifconfig'
+alias net-off='sudo ifdown -a'
+
+alias REALLYclean='git clean -xfd; git reset --hard; git gc --aggressive --prune; find . -type f -name "*~" -exec rm -f {} \;'
+alias Testclean='git clean -xfdn; find . -type f -name "*~" -exec ls {} \;'
+
+alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
+alias umnt-1="sudo umount ~/1"
+alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
+
 # -- Source externel files
+
+# Enable programmable completion features
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
 
 if type brew &>/dev/null; then
   HOMEBREW_PREFIX="$(brew --prefix)"
@@ -106,8 +135,6 @@ if type brew &>/dev/null; then
     done
   fi
 fi
-
-if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 
 # google-cloud-sdk on MacOS (brew)
 if [ -x /usr/local/Caskroom/google-cloud-sdk ]; then
@@ -127,59 +154,15 @@ fi
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 [ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
 
-# Enable programmable completion features
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
-# One letter acions (CLI)
-
-# BTRFS
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
- s()  { systemctl suspend -i; }
-fi
-
-#run-mailcap
-#lesspipe
-# plan - https://news.ycombinator.com/item?id=20196982
-# though this tool does a lot more (caching, recursing into archives and extracting all text) and is a lot faster (for the file types it can parse, lesspipe knows more), and of course lesspipe is only indirectly usable for recursive searching.
-# todo sudo apt install recollgui - vs rga
-
-# X11 aliases
-alias stop-session='openbox --exit'
-
-alias net-on='sudo ifup -a; ifconfig'
-alias net-off='sudo ifdown -a'
-
-alias REALLYclean='git clean -xfd; git reset --hard; git gc --aggressive --prune; find . -type f -name "*~" -exec rm -f {} \;'
-alias Testclean='git clean -xfdn; find . -type f -name "*~" -exec ls {} \;'
-
-# Keep this at the end
-# Allow different environment scripts to run
-#local_scripts=`ls ~/.env-* 2>/dev/null`
-#if [ ! -z "$local_scripts" ]; then
-#  for f in ~/.env-*; do source $f; done
-#fi
-
 if [ -f "/google/devshell/bashrc.google" ]; then
   source "/google/devshell/bashrc.google"
 fi
 
-if [ -e /home/user/.nix-profile/etc/profile.d/nix.sh ]; then . /home/user/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# brew packages
+if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 
+# nix packages
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
+
+# host specific
 if [ -e ~/.dotfiles/bin/env-$(hostname) ]; then . ~/.dotfiles/bin/env-$(hostname); fi # added by Nix installer
-
-alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
-alias umnt-1="sudo umount ~/1"
-alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
-
-# TODO - write a generic backup functiona that discovers on which machine it runs and it acts accordingly
-
-alias python=python3
-
-go-d() { cd ~/.dotfiles; }
-
