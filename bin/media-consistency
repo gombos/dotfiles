@@ -46,15 +46,15 @@ rmlint -o pretty:stdout
 
 #find /mnt/p/ -mindepth 10 -type d -ls
 
-#find /mnt/p/o/2018/ -type f -exec ~/.bin/my-picture-year.sh {} \; | grep -v year2018
-#find /mnt/p/o/2019/ -type f -exec ~/.bin/my-picture-year.sh {} \; | grep -v year2019
+#find /mnt/p/o/2018/ -type f -exec ~/.bin/media-year {} \; | grep -v year2018
+#find /mnt/p/o/2019/ -type f -exec ~/.bin/media-year {} \; | grep -v year2019
 
 #for i in $(seq 0 9);
 #do
-#  nohup find /mnt/p/o/200$i/ -type f -exec ~/.bin/my-picture-year.sh {} \; | grep -v year200$i  > ~/200$i &
+#  nohup find /mnt/p/o/200$i/ -type f -exec ~/.bin/media-year {} \; | grep -v year200$i  > ~/200$i &
 #done
 
 #for i in $(seq 0 9);
 #do
-#  nohup find /mnt/p/o/201$i/ -type f -exec ~/.bin/my-picture-year.sh {} \; | grep -v year201$i  > ~/201$i &
+#  nohup find /mnt/p/o/201$i/ -type f -exec ~/.bin/media-year {} \; | grep -v year201$i  > ~/201$i &
 #done

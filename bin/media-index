@@ -10,7 +10,7 @@ sudo ln -sf "$MNTDIR/archive_media/archive_media/p"
 cd /home/mediadb/db
 
 # Uncomment for full re-indexing
-#nohup find /mnt/p/ -type f -exec my-picture-hash.sh {} \; > allraw.index
+#nohup find /mnt/p/ -type f -exec media-hash.sh {} \; > allraw.index
 #cat allraw.index | sort -t ','  -k 3 > all.index
 #rm allraw.index
 #exit 0
@@ -29,7 +29,7 @@ fi
 
 touch /tmp/allhashes
 if [ -s "/tmp/filesneedtobereindexed" ]; then
-  cat /tmp/filesneedtobereindexed | xargs -d'\n' -n 1 my-picture-hash.sh > /tmp/allhashes
+  cat /tmp/filesneedtobereindexed | xargs -d'\n' -n 1 media-hash > /tmp/allhashes
 fi
 
 # Sort all index file based on filepath, at least this makes it deterministic
@@ -38,7 +38,7 @@ cat /tmp/newall.index /tmp/allhashes | sort -t ','  -k 3 > all.index
 # Used to quickly check if file is already in the database or not
 cat all.index  | cut -d, -f2 | sort | uniq > all_sorted_index.md5
 
-cat all.index | my-picture-sanitize.sh > main.index
+cat all.index | media-sanitize > main.index
 cat main.index | cut -d, -f1 > main.md5
 cat main.index | cut -d',' -f1-2 > main.md5.date
 cat main.index | cut -d, -f1,3 > main.md5.name

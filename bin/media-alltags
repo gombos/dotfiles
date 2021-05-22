@@ -1,4 +1,4 @@
-find /mnt/pictures/Pictures/ -type f -exec ~/my-picture-tags.sh {} \; | grep -v ^mr | sort | uniq   > ~/alltags
+find /mnt/pictures/Pictures/ -type f -exec media-tags {} \; | grep -v ^mr | sort | uniq   > ~/alltags
 
 
 #find /mnt/pictures/Pictures/P2015/ -type f -exec basename {} \; > ~/1
