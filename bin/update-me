@@ -20,6 +20,9 @@ $DOTFILES/packages/packages-nix
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
 sudo docker ps -q | xargs sudo docker restart
 
+cd $DOTFILES/infra
+sudo docker-compose up -d
+
 # aws
 if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
