@@ -14,7 +14,7 @@ if [ -n "$HOMEBREW_PREFIX" ]; then
 fi
 
 #nix
-source $DOTFILES/packages/packages-nix
+$DOTFILES/packages/packages-nix
 
 # docker
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
