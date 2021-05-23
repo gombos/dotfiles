@@ -11,6 +11,15 @@ brew upgrade
 brew cleanup --prune=all
 brew doctor
 
+#nix
+source $DOTFILES/packages/packages-nix
+
 # docker
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
 sudo docker ps -q | xargs sudo docker restart
+
+# aws
+if [ -e /dev/disk/by-label/cloudimg-rootfs ]; then
+  sudo apt update
+  sudo apt upgrde
+fi

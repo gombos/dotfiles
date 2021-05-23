@@ -1,4 +1,11 @@
+# Nix is only for bestia
+if [[ `hostname -s` != "bestia" ]]; then
+  exit
+fi
+
 nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+
+export NIXPKGS_ALLOW_UNFREE=1
 
 nix-env -iA nixpkgs.apfs-fuse
 #nix-env -iA nixpkgs.google-chrome
