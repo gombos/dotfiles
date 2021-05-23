@@ -3,7 +3,7 @@ mnt efi && cd $MNTDIR/efi/dotfiles && git pull
 infra-provision-mac
 
 # pip
-pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U
+pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U 2>/dev/null
 
 # brew
 if [ -n "$HOMEBREW_PREFIX" ]; then
@@ -21,7 +21,7 @@ sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pu
 sudo docker ps -q | xargs sudo docker restart
 
 # aws
-if [ -e /dev/disk/by-label/cloudimg-rootfs ]; then
+if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
   sudo apt update
   sudo apt upgrde
 fi
