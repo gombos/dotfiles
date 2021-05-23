@@ -22,6 +22,6 @@ sudo docker ps -q | xargs sudo docker restart
 
 # aws
 if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
-  sudo apt update
-  sudo apt upgrde
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 fi
