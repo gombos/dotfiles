@@ -1,6 +1,6 @@
 # Nix is only for bestia
 if [[ `hostname -s` != "bestia" ]]; then
-  exit
+  return
 fi
 
 nix-channel --add https://nixos.org/channels/nixpkgs-unstable
