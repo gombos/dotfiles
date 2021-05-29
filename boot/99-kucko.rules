@@ -24,3 +24,6 @@ ACTION=="remove", ENV{ID_MODEL_FROM_DATABASE}=="sowbug.com WebLight", RUN+="/usr
 
 # One per disk reliable uuid
 SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", SYMLINK+="disk/by-id/disk_%E{ID_SERIAL}"
+
+# ipod gray
+ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1303", ATTRS{serial}=="000A270023B60E07", MODE="0664", NAME="ipod_grey" SYMLINK="ipod"
