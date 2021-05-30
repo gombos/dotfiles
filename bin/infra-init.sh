@@ -298,9 +298,10 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
 
 #  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
-#  systemd.mask=systemd-resolved
 #  systemd.mask=rsyslog
 
 #  systemd.wants=rpcbind
