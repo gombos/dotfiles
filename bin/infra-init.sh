@@ -78,8 +78,7 @@ chmod g+w /run/media
 ln -sf /home $R/Users
 
 # machine-id
-if [ ! -z "$MID" ]
-then
+if [ ! -z "$MID" ]; then
   rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
   echo $MID > $R/etc/machine-id
   mkdir -p $R/var/lib/dbus
@@ -87,8 +86,7 @@ then
 fi
 
 # sshd host keys
-if [ ! -z "$SSHD_KEY" ]
-then
+if [ ! -z "$SSHD_KEY" ]; then
   rm -rf $R/etc/ssh/ssh_host_*key* 2>/dev/null
   echo -e $SSHD_KEY > $R/etc/ssh/ssh_host_ed25519_key
   echo $SSHD_KEY_PUB > $R/etc/ssh/ssh_host_ed25519_key.pub
@@ -129,26 +127,23 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
   ln -sf /home/containers $R/var/lib/docker
 fi
 
+# configure vmware service
+if [ -d "$R/etc/vmware" ]; then
+  mkdir -p /home/vm
+  ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
+  mkdir -p $R/var/lib/vmware/
+  cp license-* $R/etc/vmware/
+  chmod 444 $R/etc/vmware/license-*
+  cp vmware/* $R/etc/vmware/hostd/
+  sed -i 's/^acceptOVFEULA .*/acceptOVFEULA = "yes"/' $R/etc/vmware/config
+  sed -i 's/^acceptEULA .*/acceptEULA = "yes"/' $R/etc/vmware/config
+  sed -i 's/^installerDefaults.autoSoftwareUpdateEnabled .*/installerDefaults.autoSoftwareUpdateEnabled = "no"/' $R/etc/vmware/config
+  sed -i 's/^installerDefaults.dataCollectionEnabled .*/installerDefaults.dataCollectionEnabled = "no"/' $R/etc/vmware/config
+  sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
+fi
+
 if [ "$HOST" == "bestia" ]; then
   IP=3
-
-  # configure vmware service
-  if [ -d "$R/etc/vmware" ]; then
-    ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
-    mkdir -p $R/var/lib/vmware/
-    cp license-* $R/etc/vmware/
-    chmod 444 $R/etc/vmware/license-*
-    cp vmware/* $R/etc/vmware/hostd/
-    sed -i 's/^acceptOVFEULA .*/acceptOVFEULA = "yes"/' $R/etc/vmware/config
-    sed -i 's/^acceptEULA .*/acceptEULA = "yes"/' $R/etc/vmware/config
-    sed -i 's/^installerDefaults.autoSoftwareUpdateEnabled .*/installerDefaults.autoSoftwareUpdateEnabled = "no"/' $R/etc/vmware/config
-    sed -i 's/^installerDefaults.dataCollectionEnabled .*/installerDefaults.dataCollectionEnabled = "no"/' $R/etc/vmware/config
-    sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
-  fi
-
-  if [ -f "$mp/dotfiles/boot/active.ics" ]; then
-    cp "$mp/dotfiles/boot/active.ics" /run/
-  fi
 
   mkdir -p $R/nix $/home $R/live/image
 
@@ -175,23 +170,9 @@ if [ "$HOST" == "bestia-recovery" ]; then
 fi
 
 # Todo - make static IP configurable - maybe grub menu or grub option
-
-if [ "$HOST" == "henrik" ]; then
-  H=henrik
-
-  # static IP
-  IP=4
-
-  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
-
-  BAGOLYPWD=""
-
-  # Todo - Probably no longer needed
-  rm $R/usr/lib/modprobe.d/nvidia-graphics-drivers.conf
-
-  # Closing the lid on power should not suspend this laptop
-  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
-fi
+#  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
+# Closing the lid on power should not suspend this laptop
+#  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
 
 if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
   echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
@@ -256,18 +237,18 @@ printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
 
 # /etc/udev/rules.d
 # support my devices
-if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]
-then
+if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
   cp "$mp/dotfiles/boot/99-kucko.rules" /run/99-kucko.rules
   chmod 0440 /run/99-kucko.rules
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-# /etc/autosuspend.conf
-# configure autosuspend
-if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]
-then
+# autosuspend
+if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
   cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
+fi
+if [ -f "$mp/dotfiles/boot/active.ics" ]; then
+  cp "$mp/dotfiles/boot/active.ics" /run/
 fi
 
 # remove the admin user
@@ -278,7 +259,6 @@ sed -i '/^admin:/d' $R/etc/shadow
 echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
 echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
 chmod 0440 /run/sshd_kucko.conf
-
 ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
 
 # allow some executables to run without sudo password
