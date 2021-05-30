@@ -111,6 +111,13 @@ if [ -f "dhcp.conf" ]; then
   chmod 444 $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  rm -rf $R/etc/resolv.conf
+  printf "nameserver 127.0.0.1" > $R/etc/resolv.conf
+  chmod 444 $R/etc/resolv.conf
+  chattr +i $R/etc/resolv.conf
+else
+  printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
 fi
 
 # machine-id
@@ -298,7 +305,6 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
 
 #  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
