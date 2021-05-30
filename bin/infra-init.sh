@@ -344,6 +344,7 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 
   # Persistent container storage for docker
   ln -sf /home/containers $R/var/lib/docker
+  ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 fi
 
 if [ "$HOST" == "vm" ]; then
