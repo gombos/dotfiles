@@ -168,9 +168,10 @@ ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 # autosuspend
 if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
   cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
-fi
-if [ -f "$mp/dotfiles/boot/active.ics" ]; then
-  cp "$mp/dotfiles/boot/active.ics" /run/
+  ln -sf /lib/systemd/system/autosuspend.service $R/etc/systemd/system/multi-user.target.wants/autosuspend.service
+  if [ -f "$mp/dotfiles/boot/active.ics" ]; then
+    cp "$mp/dotfiles/boot/active.ics" /run/
+  fi
 fi
 
 # remove the admin user
