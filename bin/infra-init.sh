@@ -115,7 +115,6 @@ if [ -f "dhcp.conf" ]; then
   rm -rf $R/etc/resolv.conf
   printf "nameserver 127.0.0.1" > $R/etc/resolv.conf
   chmod 444 $R/etc/resolv.conf
-  chattr +i $R/etc/resolv.conf
 else
   printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
 fi
@@ -139,7 +138,7 @@ fi
 sed -i "s|bottom_pane=.*|bottom_pane=0|g" $R/etc/lxdm/lxdm.conf
 
 # configure vmware service
-if [ -d "$R/etc/vmware" ]; then
+if [ -d "vmware" ]; then
   mkdir -p /home/vm
   ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
   mkdir -p $R/var/lib/vmware/
@@ -299,7 +298,7 @@ if [ "$HOST" == "pincer" ]; then
   echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
 
   # Mask services not required on pincer
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
   ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
   ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
