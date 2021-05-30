@@ -274,8 +274,8 @@ if [ "$HOST" == "pincer" ]; then
   mkdir /home
   echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
-  mkdir /tftp
-  echo '/go/efi /tftp auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  mkdir -p /tftp/kernel
+  echo '/go/efi/kernel /tftp/kernel auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
