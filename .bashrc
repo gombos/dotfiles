@@ -26,7 +26,7 @@ function psusername {
 
 # command prompt hostname
 function pshostname {
-  if [ $(hostname) != "localhost" ] && [ $(hostname) != "taska.local" ] ; then
+  if [ $(hostname) != "localhost" ] && [ $(hostname) != "taska.kucko" ]  ; then
     echo -n $(hostname); echo -n ':';
   fi
 }
