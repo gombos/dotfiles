@@ -259,7 +259,7 @@ if [ "$HOST" == "pincer" ]; then
   # No persistent home, this is a piece of infrastructure
   # sudo is disabled even for admin, so we need a way to access boot parition remotly
   mkdir -p $R/go/efi
-  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0144,dmask=0044,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0000,dmask=0000,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
 
   # /home is only for services not for users
   mkdir /home
