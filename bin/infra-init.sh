@@ -37,6 +37,9 @@ cd $mp/config
 . ./rootfs-*.cfg
 
 R="$NEWROOT"
+
+# --- determine HOST
+
 cpu=$(grep "model name" -m1 /proc/cpuinfo)
 
 for x in $(cat /proc/cmdline); do
@@ -70,6 +73,8 @@ case "$cpu" in
   ;;
 esac
 
+# --- HOST is known
+
 rm $R/etc/timezone
 
 chown 0:27 /run/media
@@ -93,39 +98,7 @@ if [ ! -z "$SSHD_KEY" ]; then
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
 fi
 
-if [ "$HOST" == "vm" ]; then
-  # Mount home directories from the host at boot
-  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-
-  # Mask services not required inside a vm
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
-  ln -sf /dev/null $R/etc/systemd/system/smartd.service
-  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
-fi
-
 sed -i "s|bottom_pane=.*|bottom_pane=0|g" $R/etc/lxdm/lxdm.conf
-
-# server profile
-if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
-  # machinectl
-  mkdir -p $R/var/lib/machines/lab
-  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
-
-  # portablectl
-  mkdir -p $R/var/lib/portables/lab
-  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
-
-  # Persistent container storage for docker
-  ln -sf /home/containers $R/var/lib/docker
-fi
 
 # configure vmware service
 if [ -d "$R/etc/vmware" ]; then
@@ -142,41 +115,10 @@ if [ -d "$R/etc/vmware" ]; then
   sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
 fi
 
-if [ "$HOST" == "bestia" ]; then
-  IP=3
-
-  mkdir -p $R/nix $/home $R/live/image
-
-  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-
-  sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
-
-  # Power button should suspend instead of poweroff
-  sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
-
-  # IMAP
-  echo "$HOST" > $R/etc/mailname
-  sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
-  sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
-
-  # Only ask for sudo password once in a day
-  echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
-fi
-
-if [ "$HOST" == "bestia-recovery" ]; then
-  echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
-fi
-
 # Todo - make static IP configurable - maybe grub menu or grub option
 #  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
 # Closing the lid on power should not suspend this laptop
 #  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
-
-if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
-  echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
-fi
 
 # DHCP
 if [ -f "dhcp.conf" ]; then
@@ -188,42 +130,6 @@ if [ -f "dhcp.conf" ]; then
   chmod 444 $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-fi
-
-if [ "$HOST" == "pincer" ]; then
-  IP=2
-
-  # /etc/fstab
-  # No persistent home, this is a piece of infrastructure
-  # sudo is disabled even for admin, so we need a way to access boot parition remotly
-  mkdir -p $R/go/efi
-  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
-
-  # /home is only for services not for users
-  echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  mkdir /home
-
-  # Patch apcupsd config to connect it via usb
-  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
-  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
-
-  # papertrail
-  cp papertrail.service $R/etc/systemd/system/
-  chmod 444 $R/etc/systemd/system/papertrail.service
-  ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
-
-  # disable dunst
-  rm $R/etc/systemd/user/default.target.wants/dunst.service
-
-  # disable pulseaudio
-  rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
-
-  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
-  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
-  chmod 555 $R/usr/bin/wake-bestia
-
-  # NFS exports
-  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
 fi
 
 # set static IP
@@ -271,18 +177,6 @@ echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
 chmod 0440 /run/sudoers_kucko
 
 ln -sf ../../run/sudoers_kucko $R/etc/sudoers.d
-
-# These policies are for development only
-if [ "$HOST" == "vm" ] ; then
-  # Autologin
-  sed -i "s|\#\ autologin=.*|autologin=gombi|g" $R/etc/lxdm/lxdm.conf
-
-  # Only ask for sudo password once and not expire
-  echo 'Defaults timestamp_timeout=-1' >> /run/sudoers_kucko
-
-  # sudo permission for all terminal sessions - this is a privilege esculation vulnability
-  echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
-fi
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
@@ -350,4 +244,115 @@ if [ -f "grub-onetime.cfg" ]; then
   cd /
   mount -o remount, rw $mp
   rm -f $mp/config/grub-onetime.cfg 2>/dev/null
+fi
+
+# --- HOST specific logic
+
+if [ "$HOST" == "pincer" ]; then
+  IP=2
+
+  # /etc/fstab
+  # No persistent home, this is a piece of infrastructure
+  # sudo is disabled even for admin, so we need a way to access boot parition remotly
+  mkdir -p $R/go/efi
+  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
+
+  # /home is only for services not for users
+  echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  mkdir /home
+
+  # Patch apcupsd config to connect it via usb
+  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
+
+  # papertrail
+  cp papertrail.service $R/etc/systemd/system/
+  chmod 444 $R/etc/systemd/system/papertrail.service
+  ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
+
+  # disable dunst
+  rm $R/etc/systemd/user/default.target.wants/dunst.service
+
+  # disable pulseaudio
+  rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
+
+  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
+  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
+  chmod 555 $R/usr/bin/wake-bestia
+
+  # NFS exports
+  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
+fi
+
+if [ "$HOST" == "bestia" ]; then
+  IP=3
+
+  mkdir -p $R/nix $/home $R/live/image
+
+  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+
+  sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
+
+  # Power button should suspend instead of poweroff
+  sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
+
+  # IMAP
+  echo "$HOST" > $R/etc/mailname
+  sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
+  sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
+
+  # Only ask for sudo password once in a day
+  echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
+fi
+
+if [ "$HOST" == "bestia-recovery" ]; then
+  echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
+fi
+
+# server profile
+if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
+  # machinectl
+  mkdir -p $R/var/lib/machines/lab
+  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
+
+  # portablectl
+  mkdir -p $R/var/lib/portables/lab
+  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
+
+  # Persistent container storage for docker
+  ln -sf /home/containers $R/var/lib/docker
+fi
+
+if [ "$HOST" == "vm" ]; then
+  # Mount home directories from the host at boot
+  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+
+  # Mask services not required inside a vm
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
+  ln -sf /dev/null $R/etc/systemd/system/smartd.service
+  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
+
+  # These policies are for development only
+  # Autologin
+  sed -i "s|\#\ autologin=.*|autologin=gombi|g" $R/etc/lxdm/lxdm.conf
+
+  # Only ask for sudo password once and not expire
+  echo 'Defaults timestamp_timeout=-1' >> /run/sudoers_kucko
+
+  # sudo permission for all terminal sessions - this is a privilege esculation vulnability
+  echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
+fi
+
+if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
+  echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
 fi
