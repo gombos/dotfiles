@@ -290,6 +290,21 @@ if [ "$HOST" == "pincer" ]; then
 
   # NFS exports
   echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
+
+  # Mask services not required on pincer
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
+  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+
+#  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
+#  systemd.mask=systemd-resolved
+#  systemd.mask=rsyslog
+#  systemd.wants=rpcbind
+#  systemd.wants=nfs-server
+#  systemd.wants=docker"
 fi
 
 if [ "$HOST" == "bestia" ]; then
