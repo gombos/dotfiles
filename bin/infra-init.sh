@@ -197,8 +197,10 @@ if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
   echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
 fi
 
-if [ -f dhcp.conf ]; then
+if [ -f "dhcp.conf" ]; then
   # DHCP
+  echo "dhcp"
+
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
