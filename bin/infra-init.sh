@@ -85,8 +85,6 @@ fi
 
 # --- static IP is known
 
-rm $R/etc/timezone
-
 chown 0:27 /run/media
 chmod g+w /run/media
 
@@ -273,8 +271,11 @@ if [ "$HOST" == "pincer" ]; then
   echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
 
   # /home is only for services not for users
-  echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   mkdir /home
+  echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+
+  mkdir /tftp
+  echo '/go/efi /tftp auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
@@ -356,16 +357,17 @@ if [ "$HOST" == "vm" ]; then
   echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
   # Mask services not required inside a vm
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service/dmesg
   ln -sf /dev/null $R/etc/systemd/system/smartd.service
   ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
   ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
   ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
+
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
   # These policies are for development only
   # Autologin
