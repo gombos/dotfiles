@@ -294,8 +294,10 @@ if [ "$HOST" == "pincer" ]; then
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
   chmod 555 $R/usr/bin/wake-bestia
 
-  # NFS exports
+  # NFS
   echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
+  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
   # Mask services not required on pincer
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
@@ -305,11 +307,6 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
-
-#  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
-
-#  systemd.wants=rpcbind
-#  systemd.wants=nfs-server
 fi
 
 if [ "$HOST" == "bestia" ]; then
