@@ -259,7 +259,7 @@ if [ "$HOST" == "pincer" ]; then
   # No persistent home, this is a piece of infrastructure
   # sudo is disabled even for admin, so we need a way to access boot parition remotly
   mkdir -p $R/go/efi
-  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0166,dmask=0066,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
 
   # /home is only for services not for users
   mkdir /home
@@ -268,7 +268,7 @@ if [ "$HOST" == "pincer" ]; then
   mkdir -p $R/tftp/kernel
   chown -R dnsmasq $R/tftp
   chmod 777 $R/tftp
-  echo 'LABEL=EFI /tftp auto user,uid=dnsmasq,gid=27,fmask=0177,dmask=0077,noexec,nosuid,nodev 0 2' >> $R/etc/fstab
+#  echo 'LABEL=EFI /tftp auto user,uid=dnsmasq,gid=0,umask=0377,noexec,nosuid,nodev 0 2' >> $R/etc/fstab
 #  echo '/go/efi/kernel /tftp/kernel auto bind,noauto,uid=dnsmasq,umask=0300,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # Patch apcupsd config to connect it via usb
@@ -291,7 +291,7 @@ if [ "$HOST" == "pincer" ]; then
   chmod 555 $R/usr/bin/wake-bestia
 
   # NFS
-  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
+  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
