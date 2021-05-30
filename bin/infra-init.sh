@@ -302,7 +302,6 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
 
 #  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
-#  systemd.mask=rsyslog
 
 #  systemd.wants=rpcbind
 #  systemd.wants=nfs-server
