@@ -197,17 +197,15 @@ if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
   echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
 fi
 
+# DHCP
 if [ -f "dhcp.conf" ]; then
-  # DHCP
-  echo "dhcp"
-
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
   echo "127.0.0.1 localhost" > $R/etc/hosts
+  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
   chmod 444 $R/etc/hosts
 
-  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
 fi
 
