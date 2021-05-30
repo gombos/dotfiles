@@ -237,22 +237,9 @@ if [ "$HOST" == "pincer" ]; then
   # disable pulseaudio
   rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
 
-  # DHCP
-  cp dhcp.conf $R/etc/dnsmasq.d/
-  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
-
   BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
   chmod 555 $R/usr/bin/wake-bestia
-
-#  echo "127.0.0.1 localhost" > $R/etc/hosts
-#  chmod 444 $R/etc/hosts
-
-#  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
-  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-
-  # Remote wake up
-  echo '0 6 * * *  root  /usr/bin/wakeonlan 00:24:9b:28:a4:fa' >> $R/etc/crontab
 
   # NFS exports
   echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,) ' >> $R/etc/exports
