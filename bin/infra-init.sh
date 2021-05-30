@@ -113,10 +113,10 @@ if [ -f "dhcp.conf" ]; then
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
   rm -rf $R/etc/resolv.conf
-  printf "nameserver 127.0.0.1" > $R/etc/resolv.conf
+  printf "nameserver 127.0.0.1\n" > $R/etc/resolv.conf
   chmod 444 $R/etc/resolv.conf
 else
-  printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
+  printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
 
 # machine-id
