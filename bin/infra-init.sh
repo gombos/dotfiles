@@ -75,6 +75,16 @@ esac
 
 # --- HOST is known
 
+if [ "$HOST" == "pincer" ]; then
+  IP=2
+fi
+
+if [ "$HOST" == "bestia" ]; then
+  IP=3
+fi
+
+# --- static IP is known
+
 rm $R/etc/timezone
 
 chown 0:27 /run/media
@@ -249,8 +259,6 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-  IP=2
-
   # /etc/fstab
   # No persistent home, this is a piece of infrastructure
   # sudo is disabled even for admin, so we need a way to access boot parition remotly
@@ -285,8 +293,6 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  IP=3
-
   mkdir -p $R/nix $/home $R/live/image
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
