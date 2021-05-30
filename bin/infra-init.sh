@@ -268,7 +268,7 @@ if [ "$HOST" == "pincer" ]; then
   mkdir -p $R/tftp/kernel
   chown -R dnsmasq $R/tftp
   chmod 777 $R/tftp
-  echo '/go/efi/kernel /tftp/kernel auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo '/go/efi/kernel /tftp/kernel auto bind,noauto,uid=dnsmasq,umask=0300,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
