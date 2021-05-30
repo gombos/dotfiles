@@ -73,7 +73,7 @@ case "$cpu" in
   ;;
 esac
 
-# --- HOST is known
+# --- HOST is known, determine networking
 
 if [ "$HOST" == "pincer" ]; then
   IP=2
@@ -91,6 +91,27 @@ chown 0:27 /run/media
 chmod g+w /run/media
 
 ln -sf /home $R/Users
+
+# set static IP
+[ ! -z "$IP" ] && printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 8.8.8.8\n" > $R/etc/network/interfaces.d/eth0
+
+printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
+
+[ ! -z "$HOST" ] && echo "$HOST" > $R/etc/hostname
+[ ! -z "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+[ ! -z "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
+
+# DHCP
+if [ -f "dhcp.conf" ]; then
+  cp dhcp.conf $R/etc/dnsmasq.d/
+  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+
+  echo "127.0.0.1 localhost" > $R/etc/hosts
+  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
+  chmod 444 $R/etc/hosts
+
+  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
+fi
 
 # machine-id
 if [ ! -z "$MID" ]; then
@@ -129,27 +150,6 @@ fi
 #  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
 # Closing the lid on power should not suspend this laptop
 #  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
-
-# DHCP
-if [ -f "dhcp.conf" ]; then
-  cp dhcp.conf $R/etc/dnsmasq.d/
-  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
-
-  echo "127.0.0.1 localhost" > $R/etc/hosts
-  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
-  chmod 444 $R/etc/hosts
-
-  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-fi
-
-# set static IP
-[ ! -z "$IP" ] && printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 8.8.8.8\n" > $R/etc/network/interfaces.d/eth0
-
-printf "DNS=8.8.8.8" >> $R/etc/systemd/resolved.conf
-
-[ ! -z "$HOST" ] && echo "$HOST" > $R/etc/hostname
-[ ! -z "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
-[ ! -z "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
 # /etc/udev/rules.d
 # support my devices
