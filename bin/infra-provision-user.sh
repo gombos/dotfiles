@@ -54,6 +54,11 @@ if [ -f /usr/lib/xorg/Xorg ]; then
   mkdir -p ~/.config
   cd ~/.config
   ln -sf ~/.dotfiles/.config/libfm
+
+  mkdir -p ~/.config/micro
+  cd ~/.config/micro
+  ln -sf ~/.dotfiles/.config/micro/bindings.json
+  ln -sf ~/.dotfiles/.config/micro/settings.json
 fi
 
 # cleanup
