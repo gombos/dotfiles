@@ -163,15 +163,6 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-# autosuspend
-if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
-  cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
-#  ln -sf /lib/systemd/system/autosuspend.service $R/etc/systemd/system/multi-user.target.wants/autosuspend.service
-  if [ -f "$mp/dotfiles/boot/active.ics" ]; then
-    cp "$mp/dotfiles/boot/active.ics" /run/
-  fi
-fi
-
 # remove the admin user
 sed -i '/^admin:/d' $R/etc/passwd
 sed -i '/^admin:/d' $R/etc/shadow
@@ -332,6 +323,16 @@ if [ "$HOST" == "bestia" ]; then
 
   # Only ask for sudo password once in a day
   echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
+
+  # autosuspend
+  if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
+    cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
+    ln -sf /lib/systemd/system/autosuspend.service $R/etc/systemd/system/multi-user.target.wants/autosuspend.service
+    if [ -f "$mp/dotfiles/boot/active.ics" ]; then
+      cp "$mp/dotfiles/boot/active.ics" /run/
+    fi
+  fi
+
 fi
 
 if [ "$HOST" == "bestia-recovery" ]; then
