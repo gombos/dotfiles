@@ -302,9 +302,9 @@ if [ "$HOST" == "pincer" ]; then
 #  systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel
 #  systemd.mask=systemd-resolved
 #  systemd.mask=rsyslog
+
 #  systemd.wants=rpcbind
 #  systemd.wants=nfs-server
-#  systemd.wants=docker"
 fi
 
 if [ "$HOST" == "bestia" ]; then
