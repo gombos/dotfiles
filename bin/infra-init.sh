@@ -259,17 +259,17 @@ if [ "$HOST" == "pincer" ]; then
   # No persistent home, this is a piece of infrastructure
   # sudo is disabled even for admin, so we need a way to access boot parition remotly
   mkdir -p $R/go/efi
-  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=27,fmask=0000,dmask=0000,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=0,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
 
   # /home is only for services not for users
   mkdir /home
   echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
-  mkdir -p $R/tftp/kernel
-  chown -R dnsmasq $R/tftp
-  chmod 777 $R/tftp
-#  echo 'LABEL=EFI /tftp auto user,uid=dnsmasq,gid=0,umask=0377,noexec,nosuid,nodev 0 2' >> $R/etc/fstab
-#  echo '/go/efi/kernel /tftp/kernel auto bind,noauto,uid=dnsmasq,umask=0300,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  #mkdir -p $R/tftp/kernel
+  #chown -R dnsmasq $R/tftp
+  #chmod 777 $R/tftp
+  #echo 'LABEL=EFI /tftp auto user,uid=dnsmasq,gid=0,umask=0377,noexec,nosuid,nodev 0 2' >> $R/etc/fstab
+  #echo '/go/efi/kernel /tftp/kernel auto bind,noauto,uid=dnsmasq,umask=0300,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
