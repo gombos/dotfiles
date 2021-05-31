@@ -187,6 +187,10 @@ ln -sf ../../run/sudoers_kucko $R/etc/sudoers.d
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
 
+if [ -f "crontab" ]; then
+  cp crontab $R/etc/
+fi
+
 # gombi user
 if [ ! -z "$GOMBIPWD" ]
 then
@@ -265,12 +269,6 @@ if [ "$HOST" == "pincer" ]; then
   mkdir /home
   echo 'LABEL=home_pincer /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
-  #mkdir -p $R/tftp/kernel
-  #chown -R dnsmasq $R/tftp
-  #chmod 777 $R/tftp
-  #echo 'LABEL=EFI /tftp auto user,uid=dnsmasq,gid=0,umask=0377,noexec,nosuid,nodev 0 2' >> $R/etc/fstab
-  #echo '/go/efi/kernel /tftp/kernel auto bind,noauto,uid=dnsmasq,umask=0300,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -289,6 +287,9 @@ if [ "$HOST" == "pincer" ]; then
   BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
   chmod 555 $R/usr/bin/wake-bestia
+
+  # cron
+  ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
   echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
