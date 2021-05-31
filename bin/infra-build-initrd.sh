@@ -25,6 +25,8 @@
 sudo apt purge nvidia-kernel-common-*
 sudo apt-get autoremove
 
+# Make sure dracut-network is installed
+
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
 
@@ -104,7 +106,7 @@ cd /tmp/initrd
 
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 
-dracut --force --no-hostonly --reproducible --add busybox --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img 5.4.0-52-generic
+dracut --verbose --force --no-hostonly --reproducible --modules "nfs network base" --add-drivers "nfs nfs4" --add busybox --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img 5.4.0-52-generic
 #--omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset"
 
 rm -r /tmp/rdexec
