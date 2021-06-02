@@ -4,7 +4,7 @@ eval $(usbrelay 2>/dev/null)
 if [ "$BITFT_1" == "0" ]; then
   usbrelay BITFT_1=1 BITFT_2=1 2>/dev/null
   sleep 1
-  # Only rescan Host scsi6
+  # Only rescan host scsi6
   sudo rescan-scsi-bus --hosts=6 --ids=0 --luns=0 >/dev/null 2>/dev/null
   sync
 fi
