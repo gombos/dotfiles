@@ -307,7 +307,7 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  mkdir -p $R/nix $/home $R/live/image
+  mkdir -p $R/nix $R/home $R/live/image
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
@@ -315,16 +315,16 @@ if [ "$HOST" == "bestia" ]; then
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
-  echo offline | sudo tee /sys/block/sdc/device/state
-  echo 1 | sudo tee /sys/block/sdc/device/delete
+  echo offline | tee /sys/block/sdc/device/state
+  echo 1 | tee /sys/block/sdc/device/delete
 
   # Power button should suspend instead of poweroff
   sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
 
   # IMAP
-  echo "$HOST" > $R/etc/mailname
-  sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
-  sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
+  #echo "$HOST" > $R/etc/mailname
+  #sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
+  #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
   # Only ask for sudo password once in a day
   echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
