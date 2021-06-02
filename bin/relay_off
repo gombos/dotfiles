@@ -6,7 +6,21 @@ function umnt-relay() {
   umnt-borg
 }
 
+# Disk - ata-WDC_WD120EMAZ-11BLFA0_8CK26UAE
+# TODO do not hardcode 6 (and 7=6+1), use disk name instead
+
+# scsi_host6
+HOST=6
+
+# TODO - is this always the case ?
+# ata7
+ata=$((HOST+1))
+
+# Mapping SCSI HOST to Device Name
+DRIVE=$(ls -l /sys/block/sd* | grep $(grep ^$ata$ /sys/class/scsi_host/host*/unique_id | awk -F'/' '{print $5}') | cut -d\> -f1 | cut -d\/ -f4 | cut -d' ' -f1)
+
 eval $(usbrelay 2>/dev/null)
+
 if [ "$BITFT_1" == "1" ]; then
 
   # umount the all the partitions from the drive
@@ -15,10 +29,10 @@ if [ "$BITFT_1" == "1" ]; then
   sleep 1
 
   # Spin down the drive
-  echo offline | sudo tee /sys/block/sdc/device/state
-  echo 1 | sudo tee /sys/block/sdc/device/delete
+  echo offline | sudo tee /sys/block/$DRIVE/device/state
+  echo 1 | sudo tee /sys/block/$DRIVE/device/delete
 
-  # Cut the electricity
+  # Cut the electricity, without that the drive might be still spinning even if not used
   usbrelay BITFT_1=0 BITFT_2=0 2>/dev/null
-  sudo rescan-scsi-bus --hosts=6 --ids=0 --luns=0 -r >/dev/null 2>/dev/null
+  sudo rescan-scsi-bus --hosts=$HOST --ids=0 --luns=0 -r >/dev/null 2>/dev/null
 fi
