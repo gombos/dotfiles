@@ -334,11 +334,6 @@ if [ "$HOST" == "bestia" ]; then
 
 fi
 
-if [ "$HOST" == "linux-bestia" ]; then
-  #echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
-  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-fi
-
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
   # machinectl
