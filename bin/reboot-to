@@ -1,0 +1,9 @@
+if [ -z "$1" ]; then
+  GRUBTARGET="bestia-dev"
+else
+  GRUBTARGET="$1"
+fi
+
+mnt-efi
+echo "set default=$GRUBTARGET" >  /go/efi/config/grub-onetime.cfg;
+sudo /usr/sbin/reboot

@@ -249,13 +249,6 @@ then
   chown -R 501:27 $R/admin/
 fi
 
-# Done booting once-only - remove it
-if [ -f "grub-onetime.cfg" ]; then
-  cd /
-  mount -o remount, rw $mp
-  rm -f $mp/config/grub-onetime.cfg 2>/dev/null
-fi
-
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
@@ -342,7 +335,8 @@ if [ "$HOST" == "bestia" ]; then
 fi
 
 if [ "$HOST" == "bestia-recovery" ]; then
-  echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
+  #echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
+  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
 # server profile
@@ -391,4 +385,11 @@ fi
 
 if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
   echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
+fi
+
+# Done booting once-only - remove it
+if [ -f "grub-onetime.cfg" ]; then
+  cd /
+  mount -o remount, rw $mp
+  rm -f $mp/config/grub-onetime.cfg 2>/dev/null
 fi
