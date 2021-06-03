@@ -214,7 +214,8 @@ function backup-bestia() {
   fi
 
   if mountpoint -q $MNTDIR/linux_bestia/ ; then
-    rw $MNTDIR/linux_bestia/
+    rw $MNTDIR/linux_bestia
+    rw $MNTDIR/linux_bestia/linux
     sudo rm -rf $MNTDIR/linux_bestia/linux
     sudo btrfs send $MNTDIR/linux/linux/ | sudo btrfs receive $MNTDIR/linux_bestia/
   fi
