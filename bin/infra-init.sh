@@ -309,8 +309,10 @@ if [ "$HOST" == "bestia" ]; then
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
   # Do not bind the backup ssd by default at boot
-  echo offline > /sys/block/sdb/device/state
-  echo 1 > /sys/block/sdb/device/delete
+  # This is only safe to do if not booting from this drive
+  # TODO - implement safe condition
+  #echo offline > /sys/block/sdb/device/state
+  #echo 1 > /sys/block/sdb/device/delete
 
   # Power button should suspend instead of poweroff
   sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
