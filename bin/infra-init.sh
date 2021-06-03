@@ -334,7 +334,7 @@ if [ "$HOST" == "bestia" ]; then
 
 fi
 
-if [ "$HOST" == "bestia-recovery" ]; then
+if [ "$HOST" == "linux-bestia" ]; then
   #echo 'LABEL=home /home auto ro 0 2' >> $R/etc/fstab
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
