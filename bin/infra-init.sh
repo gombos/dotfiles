@@ -74,6 +74,7 @@ case "$cpu" in
 esac
 
 # --- HOST is known, determine networking
+# static IP is faster to assign more reliant
 
 if [ "$HOST" == "pincer" ]; then
   IP=2

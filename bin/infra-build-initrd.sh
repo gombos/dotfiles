@@ -103,7 +103,9 @@ cd /tmp/initrd
 
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 
-dracut --verbose --force --no-hostonly --reproducible --add busybox --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+# busybox
+#dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+dracut --add "network-legacy bash" initrd.img $(uname -r)
 #--omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset"
 
 rm -r /tmp/rdexec
