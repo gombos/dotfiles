@@ -200,6 +200,7 @@ then
   echo "gombi:!::" >> $R/etc/gshadow
   echo "gombi:x:1000:" >> $R/etc/group
   sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
+  sed -i "s/^docker:.*/&,gombi/" $R/etc/group
   sed -i "s/^users:.*/&,gombi/" $R/etc/group
 fi
 
