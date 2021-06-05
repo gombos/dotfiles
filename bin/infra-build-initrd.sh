@@ -22,9 +22,6 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
-sudo apt purge nvidia-kernel-common-*
-sudo apt-get autoremove
-
 # Make sure dracut-network is installed
 
 cat > /tmp/rdexec << 'EOF'
@@ -106,7 +103,7 @@ cd /tmp/initrd
 
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 
-dracut --verbose --force --no-hostonly --reproducible --modules "nfs network base" --add-drivers "nfs nfs4" --add busybox --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img 5.4.0-52-generic
+dracut --verbose --force --no-hostonly --reproducible --add busybox --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 #--omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset"
 
 rm -r /tmp/rdexec
@@ -118,7 +115,7 @@ rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 
 # Todo - remove assumption of kernel version
-rm -rf usr/lib/modules/5.4.0-52-generic/kernel/drivers/net/ethernet/nvidia/*
+rm -rf usr/lib/modules/$(uname -r)/kernel/drivers/net/ethernet/nvidia/*
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
