@@ -22,6 +22,12 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
+
+# initramfs for nfs
+# sudo apt install --reinstall linux-image-5.4.0-52-generic overlayroot
+# sudo update-initramfs -k all -c
+# sudo cp /boot/initrd.img /go/efi/kernel/initrd-nfs.img
+
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
