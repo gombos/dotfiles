@@ -292,7 +292,7 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
-  echo '/live/image 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
+  echo '/run/media/linux 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
@@ -311,7 +311,7 @@ if [ "$HOST" == "bestia" ]; then
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+#  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -345,13 +345,16 @@ fi
 
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
+
+  echo 'LABEL=linux /run/media/linux auto defaults 0 2' >> $R/etc/fstab
+
   # machinectl
-  mkdir -p $R/var/lib/machines/lab
-  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
+#  mkdir -p $R/var/lib/machines/lab
+#  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
 
   # portablectl
-  mkdir -p $R/var/lib/portables/lab
-  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
+#  mkdir -p $R/var/lib/portables/lab
+#  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
 
   # Persistent container storage for docker
   ln -sf /home/containers $R/var/lib/docker
