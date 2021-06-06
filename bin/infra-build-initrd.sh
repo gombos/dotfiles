@@ -25,7 +25,15 @@
 # Make sure dracut-network is installed
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
+
+rm -rf dracut-055
+wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
+unzip 055.zip
+cd dracut-055
+./configure
+make
+sudo make install
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
