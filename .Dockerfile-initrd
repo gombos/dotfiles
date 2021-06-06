@@ -1,0 +1,7 @@
+FROM 0gombi0/homelab:base
+
+COPY bin/* /tmp/
+WORKDIR /tmp/
+RUN ./infra-build-initrd.sh
+
+CMD ["/bin/bash"]
