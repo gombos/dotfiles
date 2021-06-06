@@ -54,6 +54,11 @@ rsync -av /boot/vmlinuz-$KERNEL efi/kernel/vmlinuz
 
 rsync -av /usr/lib/grub /efi/
 
+    # https://superuser.com/questions/1399463/grub2-not-loading-modules
+      # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
+      # grub-install --target=x86_64-efi --recheck --removable --no-uefi-secure-boot --efi-directory=/mnt/efi --boot-directory=/mnt/efi --install-modules="part_gpt part_msdos ntfs ntfscomp hfsplus fat ext2 btrfs normal ch
+      # grub-install --target=i386-pc    --recheck --removable /dev/sdX --boot-directory=/mnt/efi                                       --install-modules="part_gpt part_msdos ntfs ntfscomp hfsplus fat ext2
+
 rm -rf NFSroot_work.tgz
 wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
 tar -xzf NFSroot_work.tgz
