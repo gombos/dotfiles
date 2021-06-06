@@ -117,6 +117,23 @@ install_my_packages packages-x11apps.l
 $SCRIPTS/infra-install-vmware-workstation.sh
 $SCRIPTS/infra-install-podman.sh
 
+cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
+[Unit]
+Description=Regenerate SSH host keys
+Before=ssh.service
+ConditionFileIsExecutable=/usr/bin/ssh-keygen
+
+[Service]
+Type=oneshot
+ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
+ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
+ExecStart=/usr/bin/ssh-keygen -A -v
+ExecStartPost=/bin/systemctl --no-reload disable %n
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 # Cleanup packages only needed during building the rootfs
 DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-headers-* grub-* fuse 2>/dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractiv apt-get clean
