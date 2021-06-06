@@ -292,7 +292,7 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
-  echo '/run/media/linux 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
+  echo 'run/media/linux/linux 192.168.1.0/24(sync,insecure,no_subtree_check,no_root_squash,no_all_squash) ' >> $R/etc/exports
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
