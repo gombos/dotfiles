@@ -120,27 +120,6 @@ $SCRIPTS/infra-install-podman.sh
 DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-headers-* grub-* fuse 2>/dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractiv apt-get clean
 
-patch -d/ -p0 --ignore-whitespace << 'EOF'
---- /usr/lib/dracut/modules.d/00systemd/module-setup.sh
-+++ /usr/lib/dracut/modules.d/00systemd/module-setup.sh
-@@ -43,6 +43,7 @@
-         $systemdutildir/systemd-sysctl \
-         $systemdutildir/systemd-modules-load \
-         $systemdutildir/systemd-vconsole-setup \
-+        $systemdutildir/systemd-volatile-root \
-         $systemdutildir/system-generators/systemd-fstab-generator \
-         $systemdutildir/system-generators/systemd-gpt-auto-generator \
-         \
-@@ -99,6 +100,7 @@
-         $systemdsystemunitdir/systemd-ask-password-plymouth.service \
-         $systemdsystemunitdir/systemd-journald.service \
-         $systemdsystemunitdir/systemd-vconsole-setup.service \
-+        $systemdsystemunitdir/systemd-volatile-root.service \
-         $systemdsystemunitdir/systemd-random-seed-load.service \
-         $systemdsystemunitdir/systemd-random-seed.service \
-         $systemdsystemunitdir/systemd-sysctl.service \
-EOF
-
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
 rm usr/.crates2.json
 

@@ -2,7 +2,6 @@ bluez
 btrfs-progs
 busybox
 dnsmasq-base
-dracut-network
 efibootmgr
 eject
 ethtool
