@@ -4,6 +4,7 @@
 # Consider only testing/changing this file in a development environment with access to console
 
 # This script logs to /run/initramfs/rdexec.out
+# cloud-init does similar things
 
 # Do not change /usr to allow ro mount
 # Ideally only make changes in /var
