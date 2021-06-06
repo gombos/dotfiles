@@ -251,7 +251,7 @@ then
   cat authorized_keys >> $R/admin/.ssh/authorized_keys
   echo "$ADMINID:x:501:27:,,,:/admin:/bin/bash" >> $R/etc/passwd
   echo "$ADMINID:$ADMINPWD:1:0:99999:7:::" >> $R/etc/shadow
-  sed -i "s/^docker:.*/&,admin/" $R/etc/group
+  sed -i "s/^docker:.*/&,$ADMINID/" $R/etc/group
   ln -sf /home/dotfiles-admin $R/admin/.dotfiles
   ln -sf /admin/.dotfiles/bin/infra-provision-user.sh $R/admin/.bash_profile
   chown -R 501:27 $R/admin/
