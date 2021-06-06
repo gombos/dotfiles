@@ -46,13 +46,15 @@ echo $KERNEL
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL overlayroot
-DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin
+DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
 mkdir -p /efi/kernel
 rsync -av /boot/vmlinuz-$KERNEL efi/kernel/vmlinuz
 
 rsync -av /usr/lib/grub /efi/
+
+cp /boot/ipxe.* /efi/
 
     # https://superuser.com/questions/1399463/grub2-not-loading-modules
       # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
