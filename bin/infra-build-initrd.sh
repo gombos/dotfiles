@@ -27,7 +27,7 @@
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
-rm -rf dracut-055
+rm -rf 055.zip dracut-055
 wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 unzip 055.zip
 cd dracut-055
@@ -117,10 +117,10 @@ cd /tmp/initrd
 # busybox
 # > ifcfg aufs overlay-root
 
-
 # ifcfg
 # busybox
-dracut --verbose --force --no-hostonly --reproducible --add "bash busybox" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+# --verbose
+dracut --force --no-hostonly --reproducible --add "bash busybox network-legacy" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 
 #dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 #dracut --verbose --reproducible --no-hostonly --add "network-legacy" --filesystems "nfs" initrd.img $(uname -r)
@@ -133,10 +133,13 @@ rm -r /tmp/rdexec
 gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
 # Clean some files
-rm /tmp/initrd/initrd.img
+rm initrd.img
 rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -rf usr/lib/modules/$(uname -r)/kernel/drivers/net/ethernet/nvidia/*
+
+rm usr/sbin/ifup
+cp /usr/lib/dracut/modules.d/35network-legacy/ifup.sh usr/sbin/ifup
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
