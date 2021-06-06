@@ -104,8 +104,9 @@ cd /tmp/initrd
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 
 # busybox
+# > ifcfg aufs overlay-root
 
-dracut --verbose --force --no-hostonly --reproducible --add "busybox bash" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+dracut --verbose --force --no-hostonly --reproducible --add "busybox bash ifcfg aufs" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 
 #dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 #dracut --verbose --reproducible --no-hostonly --add "network-legacy" --filesystems "nfs" initrd.img $(uname -r)
