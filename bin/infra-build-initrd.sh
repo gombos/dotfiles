@@ -37,8 +37,12 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
+
+if [ -z "$KERNEL" ]; then
+  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
+fi
+
 #KERNEL=$(uname -r)
-KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 echo $KERNEL
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0

@@ -98,8 +98,9 @@ echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.l
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 mkdir -p etc/network/interfaces.d
-printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback && printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
-printf "127.0.0.1 localhost linux\n" > etc/hosts
+printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
+# && printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
+printf "127.0.0.1 localhost\n" > etc/hosts
 
 # admin user to log in
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
