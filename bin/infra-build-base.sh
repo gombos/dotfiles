@@ -74,8 +74,8 @@ if [ "$BASEIMAGE" = "minbase" ]; then
  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
  DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
- install_my_package xserver-xorg-video-nvidia-450
- install_my_package nvidia-driver-450
+ install_my_package xserver-xorg-video-nvidia-460
+ install_my_package nvidia-driver-460
  rm etc/apt/sources.list.d/restricted.list
 fi
 

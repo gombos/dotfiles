@@ -89,7 +89,7 @@ alias search='rga'
 # Default arguments
 alias apt='sudo apt'
 alias iotop='sudo iotop'
-alias docker='sudo docker'
+#alias docker='sudo docker'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
 alias vd='vd -f csv'

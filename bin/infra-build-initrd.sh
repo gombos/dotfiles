@@ -24,6 +24,9 @@
 
 # Make sure dracut-network is installed
 
+DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping
+
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
 
@@ -106,7 +109,10 @@ cd /tmp/initrd
 # busybox
 # > ifcfg aufs overlay-root
 
-dracut --verbose --force --no-hostonly --reproducible --add "busybox bash ifcfg aufs" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+
+# ifcfg
+# busybox
+dracut --verbose --force --no-hostonly --reproducible --add "bash busybox" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 
 #dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 #dracut --verbose --reproducible --no-hostonly --add "network-legacy" --filesystems "nfs" initrd.img $(uname -r)
