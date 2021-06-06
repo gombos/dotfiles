@@ -22,7 +22,9 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
-# Make sure dracut-network is installed
+rm -rf /tmp/initrd
+mkdir -p /tmp/initrd
+cd /tmp/initrd
 
 #KERNEL=$(uname -r)
 KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
@@ -118,45 +120,35 @@ cat > /tmp/20-wired.network << 'EOF'
 Name=eth0
 
 [Network]
-DHCP=yes
+DHCP=ipv4
+
+[DHCP]
+CriticalConnection=true
 EOF
 
-rm -rf /tmp/initrd
-mkdir -p /tmp/initrd
-cd /tmp/initrd
-
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
-
-# busybox
-# > ifcfg aufs overlay-root
-
-# ifcfg
-# busybox
+# ifcfg aufs overlay-root
 # --verbose
-dracut --force --no-hostonly --reproducible --add "bash busybox" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
-#dracut --force --no-hostonly --reproducible --add "bash busybox nfs" --filesystems "nfs" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+# network-legacy
 
-#dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
-#dracut --verbose --reproducible --no-hostonly --add "network-legacy" --filesystems "nfs" initrd.img $(uname -r)
-
-#--omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset"
+dracut --force --no-hostonly --reproducible --keep --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "bash busybox" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
 # Uncompress
-gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
+#gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
 # Clean some files
-rm initrd.img
-rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
-rm -f usr/lib/dracut/build-parameter.txt
-rm -rf usr/lib/modules/$KERNEL/kernel/drivers/net/ethernet/nvidia/*
+#rm initrd.img
+#rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
+#rm -f usr/lib/dracut/build-parameter.txt
+#rm -rf usr/lib/modules/$KERNEL/kernel/drivers/net/ethernet/nvidia/*
 
 #rm usr/sbin/ifup
 #cp /usr/lib/dracut/modules.d/35network-legacy/ifup.sh usr/sbin/ifup
 
 # Recompress
-find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
-cd /tmp/
+#find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
+#cd /tmp/
 
 #rm -rf /tmp/initrd
