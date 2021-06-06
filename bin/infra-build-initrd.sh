@@ -31,6 +31,7 @@
 # sudo update-initramfs -k all -c
 # sudo cp /boot/initrd.img /go/efi/kernel/initrd-nfs.img
 
+mkdir /efi
 
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
@@ -41,15 +42,25 @@ KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f
 echo $KERNEL
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-5.4.0-52-generic overlayroot
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
+
+rm -rf NFSroot_work.tgz
+wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
+tar -xzf NFSroot_work.tgz
+cp ./NFSroot_work/debcfg-nfsroot/overlay.sh /etc/initramfs-tools/scripts/init-bottom
+echo "overlay" >> /etc/initramfs-tools/modules
+update-initramfs -k all -c
+cp /boot/initrd.img /efi/initrd-nfs.img
 
 rm -rf 055.zip dracut-055
 wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
-unzip 055.zip
+unzip -q 055.zip
 cd dracut-055
 ./configure
 make
-sudo make install
+make install
+cd ..
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
@@ -140,8 +151,9 @@ EOF
 # ifcfg aufs overlay-root
 # --verbose
 # network-legacy
+# --keep
 
-dracut --force --no-hostonly --reproducible --keep --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "bash busybox" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+dracut --force --no-hostonly --reproducible --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "bash busybox" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
@@ -161,4 +173,6 @@ rm -r /tmp/rdexec
 #find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
 #cd /tmp/
 
-#rm -rf /tmp/initrd
+cp /tmp/initrd/initrd.img /efi
+
+rm -rf /tmp/initrd
