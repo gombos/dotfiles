@@ -24,6 +24,10 @@
 
 # Make sure dracut-network is installed
 
+#KERNEL=$(uname -r)
+KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
+echo $KERNEL
+
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
@@ -108,6 +112,15 @@ EOF
 
 chmod +x /tmp/rdexec
 
+
+cat > /tmp/20-wired.network << 'EOF'
+[Match]
+Name=eth0
+
+[Network]
+DHCP=yes
+EOF
+
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
@@ -120,7 +133,8 @@ cd /tmp/initrd
 # ifcfg
 # busybox
 # --verbose
-dracut --force --no-hostonly --reproducible --add "bash busybox network-legacy" --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
+dracut --force --no-hostonly --reproducible --add "bash busybox" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+#dracut --force --no-hostonly --reproducible --add "bash busybox nfs" --filesystems "nfs" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 
 #dracut --verbose --force --no-hostonly --reproducible --add "network-legacy bash" --install /etc/network/interfaces --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $(uname -r)
 #dracut --verbose --reproducible --no-hostonly --add "network-legacy" --filesystems "nfs" initrd.img $(uname -r)
@@ -136,10 +150,10 @@ gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 rm initrd.img
 rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
-rm -rf usr/lib/modules/$(uname -r)/kernel/drivers/net/ethernet/nvidia/*
+rm -rf usr/lib/modules/$KERNEL/kernel/drivers/net/ethernet/nvidia/*
 
-rm usr/sbin/ifup
-cp /usr/lib/dracut/modules.d/35network-legacy/ifup.sh usr/sbin/ifup
+#rm usr/sbin/ifup
+#cp /usr/lib/dracut/modules.d/35network-legacy/ifup.sh usr/sbin/ifup
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
