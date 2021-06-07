@@ -22,7 +22,6 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
-
 mkdir /efi
 
 rm -rf /tmp/initrd
@@ -38,7 +37,7 @@ echo $KERNEL
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL overlayroot
-DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe
+DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe grub-efi-amd64
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
 mkdir -p /efi/kernel
@@ -48,20 +47,20 @@ rsync -av /usr/lib/grub /efi/
 
 cp /boot/ipxe.* /efi/
 
-
+# TCE
 wget https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
-
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 
 mkdir -p /efi/tce
 mkdir -p /efi/ondemand
 mkdir -p /efi/optional
-
 mv Core-current.iso /efi/tce
 mv openssh* /efi/tce/optional/
-
 echo "openssh.tcz" > /efi/tce/onboot.lst
+
+grub-install --target=i386-pc    --recheck --removable /dev/sda --boot-directory=/efi
+grub-install --target=x86_64-efi --recheck --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi
 
     # https://superuser.com/questions/1399463/grub2-not-loading-modules
       # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
