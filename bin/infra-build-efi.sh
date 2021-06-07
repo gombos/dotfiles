@@ -23,14 +23,6 @@
 # For user management switch to homectl and portable home directories
 
 
-# initramfs for nfs
-# sudo apt install --reinstall linux-image-5.4.0-52-generic overlayroot
-# http://support.fccps.cz/download/adv/frr/nfs-root/nfs-root.htm#download
-# sudo cp overlay.sh /etc/initramfs-tools/scripts/init-bottom/
-# echo "overlay" >> /etc/initramfs-tools/modules
-# sudo update-initramfs -k all -c
-# sudo cp /boot/initrd.img /go/efi/kernel/initrd-nfs.img
-
 mkdir /efi
 
 rm -rf /tmp/initrd
