@@ -169,8 +169,9 @@ EOF
 # network-legacy
 # --keep
 # dmsquash-live, livenet
+# consider --omit ifcfg
 
-dracut --force --no-hostonly --reproducible --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add-drivers "loop squashfs overlay iso9660 btrfs" --add "bash busybox dmsquash-live livenet" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+dracut --force --no-hostonly --reproducible --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add-drivers "loop squashfs overlay iso9660 btrfs" --add "bash busybox dmsquash-live livenet systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
