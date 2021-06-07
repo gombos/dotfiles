@@ -17,7 +17,9 @@ fi
 
 # Todo - update to 5.10
 if [ -z "$KERNEL" ]; then
-  export KERNEL="5.4.0-52-generic"
+  # test
+  export KERNEL="unsigned-5.10.0-1029-oem"
+  #export KERNEL="5.4.0-52-generic"
 fi
 
 if [ -z "$BASEIMAGE" ]; then
