@@ -48,13 +48,14 @@ rsync -av /usr/lib/grub /efi/
 cp /boot/ipxe.* /efi/
 
 # TCE
-wget https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
+mkdir -p /efi/tce
+mkdir -p /efi/tce/ondemand
+mkdir -p /efi/tce/optional
+
+wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 
-mkdir -p /efi/tce
-mkdir -p /efi/ondemand
-mkdir -p /efi/optional
 mv Core-current.iso /efi/tce
 mv openssh* /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst

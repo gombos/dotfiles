@@ -17,5 +17,6 @@
     "update.showReleaseNotes": "false",
     "files.autoSave": "afterDelay",
     "editor.acceptSuggestionOnCommitCharacter": false,
-    "update.mode": "none"
+    "update.mode": "none",
+    "workbench.editor.untitled.hint": "hidden"
 }
