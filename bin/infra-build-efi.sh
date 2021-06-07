@@ -61,8 +61,8 @@ mv Core-current.iso /efi/tce
 mv openssh* /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst
 
-grub-install --target=i386-pc    --force --recheck /dev/sda --boot-directory=/efi --no-bootsector --skip-fs-probe
-grub-install --target=x86_64-efi --force --recheck --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi --no-nvram --no-bootsector --skip-fs-probe
+grub-install --target=i386-pc    --force --boot-directory=/efi --no-bootsector --skip-fs-probe dev/sda
+grub-install --target=x86_64-efi --force --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi --no-nvram --no-bootsector --skip-fs-probe
 
     # https://superuser.com/questions/1399463/grub2-not-loading-modules
       # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
