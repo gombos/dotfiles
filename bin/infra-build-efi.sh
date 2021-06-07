@@ -48,7 +48,8 @@ mkdir -p /efi/EFI/BOOT
 cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT
 
 # grub pc
-rsync -av /usr/lib/grub /efi/
+mkdir -p /efi/grub/
+rsync -av /usr/lib/grub/i386-pc /efi/grub/
 
 # grub ipxe
 mkdir -p /efi/grub/ipxe/
@@ -157,7 +158,6 @@ EOF
 
 chmod +x /tmp/rdexec
 
-
 cat > /tmp/20-wired.network << 'EOF'
 [Match]
 Name=eth0
@@ -171,15 +171,11 @@ EOF
 
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 # ifcfg aufs overlay-root
-# --verbose
-# network-legacy
-# --keep
-# dmsquash-live, livenet
 # consider --omit ifcfg
 
-# --omit "kernel-modules-extra" --add-drivers "loop squashfs overlay iso9660 btrfs"  --add "bash busybox dmsquash-live livenet systemd-networkd squash"
+# --add-drivers "loop squashfs overlay iso9660 btrfs" --add "squash"
 
-dracut --verbose --force --no-hostonly --reproducible --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+dracut --verbose --force --no-hostonly --reproducible --omit "kernel-modules-extra" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "btrfs nfs livenet bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
