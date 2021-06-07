@@ -41,7 +41,7 @@ DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-inst
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
 mkdir -p /efi/kernel
-rsync -av /boot/vmlinuz-$KERNEL efi/kernel/vmlinuz
+rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 rsync -av /usr/lib/grub /efi/
 
@@ -60,8 +60,8 @@ mv Core-current.iso /efi/tce
 mv openssh* /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst
 
-grub-install --target=i386-pc    --recheck --removable /dev/sda --boot-directory=/efi
-grub-install --target=x86_64-efi --recheck --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi
+grub-install --target=i386-pc    --force --recheck /dev/sda --boot-directory=/efi --no-bootsector --skip-fs-probe
+grub-install --target=x86_64-efi --force --recheck --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi --no-nvram --no-bootsector --skip-fs-probe
 
     # https://superuser.com/questions/1399463/grub2-not-loading-modules
       # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
