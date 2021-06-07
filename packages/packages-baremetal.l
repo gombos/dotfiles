@@ -26,6 +26,7 @@ python3-tzlocal
 python3-usb
 rfkill
 smartmontools
+squashfs-tools
 systemd-container
 systemd-sysv
 udev
