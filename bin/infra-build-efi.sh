@@ -37,14 +37,20 @@ echo $KERNEL
 
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL overlayroot
-DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe grub-efi-amd64
+DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
 mkdir -p /efi/kernel
 rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
+# grub efi monolith
+mkdir -p /efi/EFI/BOOT
+cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT
+
+# grub pc
 rsync -av /usr/lib/grub /efi/
 
+# grub ipxe
 mkdir -p /efi/grub/ipxe/
 cp /boot/ipxe.* /efi/grub/ipxe/
 
@@ -60,14 +66,6 @@ wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 mv Core-current.iso /efi/tce
 mv openssh* /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst
-
-grub-install --target=i386-pc    --force --boot-directory=/efi --no-bootsector --skip-fs-probe dev/sda
-grub-install --target=x86_64-efi --force --removable --no-uefi-secure-boot --efi-directory=/efi --boot-directory=/efi --no-nvram --no-bootsector --skip-fs-probe
-
-    # https://superuser.com/questions/1399463/grub2-not-loading-modules
-      # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
-      # grub-install --target=x86_64-efi --recheck --removable --no-uefi-secure-boot --efi-directory=/mnt/efi --boot-directory=/mnt/efi --install-modules="part_gpt part_msdos ntfs ntfscomp hfsplus fat ext2 btrfs normal ch
-      # grub-install --target=i386-pc    --recheck --removable /dev/sdX --boot-directory=/mnt/efi                                       --install-modules="part_gpt part_msdos ntfs ntfscomp hfsplus fat ext2
 
 rm -rf NFSroot_work.tgz
 wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
