@@ -201,3 +201,6 @@ rm -r /tmp/rdexec
 cp /tmp/initrd/initrd.img /efi
 
 rm -rf /tmp/initrd
+
+# Populate logs with the list of filenames
+find /efi
