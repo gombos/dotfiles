@@ -56,6 +56,21 @@ rsync -av /usr/lib/grub /efi/
 
 cp /boot/ipxe.* /efi/
 
+
+wget https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
+
+wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
+wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
+
+mkdir -p /efi/tce
+mkdir -p /efi/ondemand
+mkdir -p /efi/optional
+
+mv Core-current.iso /efi/tce
+mv openssh* /efi/tce/optional/
+
+echo "openssh.tcz" > /efi/tce/onboot.lst
+
     # https://superuser.com/questions/1399463/grub2-not-loading-modules
       # apt install grub2-common grub-efi-amd64-bin grub-pc-bin  --no-install-recommends
       # grub-install --target=x86_64-efi --recheck --removable --no-uefi-secure-boot --efi-directory=/mnt/efi --boot-directory=/mnt/efi --install-modules="part_gpt part_msdos ntfs ntfscomp hfsplus fat ext2 btrfs normal ch
