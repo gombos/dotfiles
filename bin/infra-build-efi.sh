@@ -45,7 +45,8 @@ rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 rsync -av /usr/lib/grub /efi/
 
-cp /boot/ipxe.* /efi/
+mkdir -p /efi/grub/ipxe/
+cp /boot/ipxe.* /efi/grub/ipxe/
 
 # TCE
 mkdir -p /efi/tce
@@ -74,7 +75,7 @@ tar -xzf NFSroot_work.tgz
 cp ./NFSroot_work/debcfg-nfsroot/overlay.sh /etc/initramfs-tools/scripts/init-bottom
 echo "overlay" >> /etc/initramfs-tools/modules
 update-initramfs -k all -c
-cp /boot/initrd.img /efi/initrd-nfs.img
+cp /boot/initrd.img /efi/kernel/initrd-nfs.img
 
 rm -rf 055.zip dracut-055
 wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
@@ -198,7 +199,7 @@ rm -r /tmp/rdexec
 #find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
 #cd /tmp/
 
-cp /tmp/initrd/initrd.img /efi
+cp /tmp/initrd/initrd.img /efi/kernel/
 
 rm -rf /tmp/initrd
 
