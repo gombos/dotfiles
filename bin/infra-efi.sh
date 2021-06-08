@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo docker run -v /tmp:/tmp 0gombi0/homelab:efi rsync -av /efi /tmp
+container_id=$(sudo docker run -v /tmp:/tmp 0gombi0/homelab:efi rsync -av /efi /tmp)
 
-#sudo docker rm $container_id
+sudo docker rm $container_id
 
