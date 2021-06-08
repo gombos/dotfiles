@@ -85,7 +85,7 @@ EOF
 
 chmod +x opt/bootsync.sh
 
-tar -czvf /efi/tce/mydata.tgz .
+tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
 rm -rf NFSroot_work.tgz
