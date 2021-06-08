@@ -70,6 +70,21 @@ mv Core-current.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst
 
+mkdir -p tce/opt
+cd tce
+echo "opt" > opt/.filetool.lst
+
+cat > opt/bootsync.sh << 'EOF'
+#!/bin/sh
+# runs at boot
+touch /usr/local/etc/ssh/sshd_config
+sed -ri "s/^tc:[^:]*:(.*)/tc:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
+/usr/local/etc/init.d/openssh start &
+EOF
+
+tar -czvf /efi/tce/mydata.tgz .
+cd ..
+
 rm -rf NFSroot_work.tgz
 wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
 tar -xzf NFSroot_work.tgz
