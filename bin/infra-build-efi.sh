@@ -50,6 +50,7 @@ cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT
 # grub pc
 mkdir -p /efi/grub/
 rsync -av /usr/lib/grub/i386-pc /efi/grub/
+echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
 
 # grub ipxe
 mkdir -p /efi/grub/ipxe/
@@ -65,7 +66,7 @@ wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 
 mv Core-current.iso /efi/tce
-mv openssh* /efi/tce/optional/
+mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
 echo "openssh.tcz" > /efi/tce/onboot.lst
 
 rm -rf NFSroot_work.tgz
