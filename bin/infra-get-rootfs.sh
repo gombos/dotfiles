@@ -12,6 +12,8 @@ DIR=$MNTDIR/linux/linux-dev
 #container_id=$(sudo docker run -dit 0gombi0/homelab:base /bin/bash)
 #sudo docker stop $container_id
 
+docker builder prune -af
+
 container_id=$(sudo docker create 0gombi0/homelab:base)
 
 sudo btrfs property set -ts $DIR ro false
