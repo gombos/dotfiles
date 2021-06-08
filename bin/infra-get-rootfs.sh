@@ -41,7 +41,7 @@ cd $DIR
 #sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR
 #sudo ./rmlint.sh -r
 
-# Make it read only
+# Make it read-only
 sudo btrfs property set -ts $DIR ro true
 
 # Print size
