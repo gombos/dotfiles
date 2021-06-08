@@ -44,8 +44,9 @@ mkdir -p /efi/kernel
 rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi monolith
-mkdir -p /efi/EFI/BOOT
-cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT
+mkdir -p /efi/EFI/ubuntu
+cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
+echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
 # grub pc
 mkdir -p /efi/grub/
@@ -53,8 +54,8 @@ rsync -av /usr/lib/grub/i386-pc /efi/grub/
 echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
 
 # grub ipxe
-mkdir -p /efi/grub/ipxe/
-cp /boot/ipxe.* /efi/grub/ipxe/
+mkdir -p /efi/ipxe/
+cp /boot/ipxe.* /efi/ipxe/
 
 # TCE
 mkdir -p /efi/tce
