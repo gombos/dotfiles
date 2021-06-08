@@ -9,6 +9,7 @@ exfat-fuse
 friendly-recovery
 fuse-overlayfs
 gddrescue
+grub2-common
 hdparm
 ifupdown
 isc-dhcp-client
