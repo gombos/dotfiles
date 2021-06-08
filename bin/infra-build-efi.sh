@@ -59,16 +59,17 @@ cp /boot/ipxe.* /efi/ipxe/
 
 # TCE
 mkdir -p /efi/tce
-mkdir -p /efi/tce/ondemand
+#mkdir -p /efi/tce/ondemand
 mkdir -p /efi/tce/optional
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
-wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
+wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 
 mv Core-current.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
-echo "openssh.tcz" > /efi/tce/onboot.lst
+echo "openssl-1.1.1.tcz " >> /efi/tce/onboot.lst
+echo "openssh.tcz" >> /efi/tce/onboot.lst
 
 mkdir -p tce/opt
 cd tce
@@ -81,6 +82,8 @@ touch /usr/local/etc/ssh/sshd_config
 sed -ri "s/^tc:[^:]*:(.*)/tc:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 /usr/local/etc/init.d/openssh start &
 EOF
+
+chmod +x opt/bootsync.sh
 
 tar -czvf /efi/tce/mydata.tgz .
 cd ..
