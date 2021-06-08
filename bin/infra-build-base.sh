@@ -17,10 +17,8 @@ fi
 
 # Todo - update to 5.10
 if [ -z "$KERNEL" ]; then
-  # test
   export KERNEL="5.8.0-55-generic"
   #"5.10.0-1029-oem"
-  #export KERNEL="5.4.0-52-generic"
 fi
 
 if [ -z "$BASEIMAGE" ]; then
@@ -181,7 +179,7 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/nfs-server.service ] && rm etc/systemd/system/multi-user.target.wants/nfs-server.service
 [ -f etc/systemd/system/multi-user.target.wants/postfix.service ] && rm etc/systemd/system/multi-user.target.wants/postfix.service
 [ -f etc/systemd/system/multi-user.target.wants/cron.service ] && rm etc/systemd/system/multi-user.target.wants/cron.service
-[ -f etc/systemd/system/multi-user.target.wants/syslog.service ] && rm etc/systemd/system/multi-user.target.wants/rsyslog.service
+[ -f etc/systemd/system/multi-user.target.wants/rsyslog.service ] && rm etc/systemd/system/multi-user.target.wants/rsyslog.service
 [ -f etc/systemd/system/multi-user.target.wants/containerd.service ] && rm etc/systemd/system/multi-user.target.wants/containerd.service
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
