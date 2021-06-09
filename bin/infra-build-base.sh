@@ -209,3 +209,5 @@ $SCRIPTS/infra-clean-linux.sh /
 $SCRIPTS/infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
+
+touch /1.0
