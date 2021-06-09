@@ -1,9 +1,9 @@
 if [ -z "$1" ]; then
-  GRUBTARGET="bestia-dev"
+  BOOTMENU="bestia-dev"
 else
-  GRUBTARGET="$1"
+  BOOTMENU="$1"
 fi
 
 mnt-efi
-grub-editenv  /go/efi/grubenv set saved_entry=$1
+grub-editenv  /go/efi/grubenv set saved_entry=$BOOTMENU
 sudo /usr/sbin/reboot
