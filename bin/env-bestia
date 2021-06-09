@@ -54,7 +54,7 @@ my-mount home_transient
 my-mount home_bestia
 
 my-mount efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
-my-mount efi_bestia EFI_BESTIA "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
+my-mount efi_backup EFI_BACKUP "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 my-mount efi_live EFI_LIVE "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 
 export -f mnt-linux
@@ -82,9 +82,9 @@ function mnt-all_partitions() {
   mnt-home_bestia
   mnt-backup_bestia
   mnt_linux
-  mnt-linux_bestia
+  mnt-linux_backup
   mnt-efi
-  mnt-efi_bestia
+  mnt-efi_backup
 
   # Manual switch drives and manual backup
   mnt-backup_archive_media
@@ -188,8 +188,8 @@ function backup-bestia() {
 
   # if source and destinations are available, run the backup
 
-  if mountpoint -q $MNTDIR/home_bestia/ ; then
-    sudo rsync -a --progress --delete-after --exclude '*.vmsd' /home/ $MNTDIR/home_bestia/
+  if mountpoint -q $MNTDIR/home_backup/ ; then
+    sudo rsync -a --progress --delete-after --exclude '*.vmsd' /home/ $MNTDIR/home_backup/
 
     # Backup cloud locally
     sync_from_cloud.sh
@@ -209,14 +209,14 @@ function backup-bestia() {
 
   backup-to-tape
 
-  if mountpoint -q $MNTDIR/efi_bestia/ ; then
-    rsync -a --delete $MNTDIR/efi/ $MNTDIR/efi_bestia/
+  if mountpoint -q $MNTDIR/efi_backup/ ; then
+    rsync -a --delete $MNTDIR/efi/ $MNTDIR/efi_backup/
   fi
 
-  if mountpoint -q $MNTDIR/linux_bestia/ ; then
-    rw $MNTDIR/linux_bestia
-    rw $MNTDIR/linux_bestia/linux
-    sudo rm -rf $MNTDIR/linux_bestia/linux
-    sudo btrfs send $MNTDIR/linux/linux/ | sudo btrfs receive $MNTDIR/linux_bestia/
+  if mountpoint -q $MNTDIR/linux_backup/ ; then
+    rw $MNTDIR/linux_backup
+    rw $MNTDIR/linux_backup/linux
+    sudo rm -rf $MNTDIR/linux_baclup/linux
+    sudo btrfs send $MNTDIR/linux/linux/ | sudo btrfs receive $MNTDIR/linux_backup/
   fi
 }
