@@ -6,4 +6,4 @@ fi
 
 mnt-efi
 grub-editenv  /go/efi/grubenv set saved_entry=$BOOTMENU
-#sudo /usr/sbin/reboot
+sudo /usr/sbin/reboot
