@@ -1,9 +1,9 @@
 if [ -z "$1" ]; then
-  BOOTMENU="bestia-dev"
+  BOOTMENU="linux_dev"
 else
   BOOTMENU="$1"
 fi
 
 mnt-efi
 grub-editenv  /go/efi/grubenv set saved_entry=$BOOTMENU
-sudo /usr/sbin/reboot
+#sudo /usr/sbin/reboot
