@@ -137,7 +137,7 @@ WantedBy=multi-user.target
 EOF
 
 # Cleanup packages only needed during building the rootfs
-DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-*headers-* grub-* fuse 2>/dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractiv apt-get clean
 
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
