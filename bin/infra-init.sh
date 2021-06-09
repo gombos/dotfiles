@@ -395,9 +395,3 @@ if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
   echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
 fi
 
-# Done booting once-only - remove it
-if [ -f "grub-onetime.cfg" ]; then
-  cd /
-  mount -o remount, rw $mp
-  rm -f $mp/config/grub-onetime.cfg 2>/dev/null
-fi

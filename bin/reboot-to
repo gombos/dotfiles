@@ -5,5 +5,5 @@ else
 fi
 
 mnt-efi
-echo "set default=$GRUBTARGET" >  /go/efi/config/grub-onetime.cfg;
+grub-editenv  /go/efi/grubenv set saved_entry=$1
 sudo /usr/sbin/reboot
