@@ -46,9 +46,7 @@ rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # grub efi monolith
 mkdir -p /efi/EFI/ubuntu
 cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
-echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/BOOT/grub.cfg
-
-# grub-install --target=x86_64-efi --efi-directory /efi/EFI --bootloader-id=grub --boot-directory=/efi/EFI --debug
+echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
 # grub pc
 mkdir -p /efi/grub/
@@ -75,8 +73,16 @@ LABEL linux
 INCLUDE /dotfiles/boot/syslinux.cfg
 EOF
 
-echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
-grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="linux normal iso9660 biosdisk memdisk search tar ls part_gpt part_gpt part_msdos regexp all_video fat btrfs" --modules="part_gpt part_msdos regexp all_video fat btrfs linux normal iso9660 biosdisk search" --locales="" --fonts="" "boot/grub/grub.cfg=/tmp/grub.cfg"
+cat > /tmp/grub.cfg << 'EOF'
+root=${cmdpath}
+prefix=${cmdpath}/grub
+configfile ${prefix}/grub.cfg
+EOF
+
+mkdir -p /efi/EFI/BOOT/
+grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+#grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
