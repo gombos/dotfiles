@@ -28,6 +28,7 @@ python3-usb
 rfkill
 smartmontools
 squashfs-tools
+syslinux-common
 systemd-container
 systemd-sysv
 udev
