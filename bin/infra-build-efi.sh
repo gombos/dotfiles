@@ -72,6 +72,8 @@ LABEL linux
  INITRD /grub/i386-pc/core.img
 EOF
 
+grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="linux normal iso9660 biosdisk memdisk search tar ls part_gpt part_gpt part_msdos regexp all_video fat btrfs" --modules="part_gpt part_msdos regexp all_video fat btrfs linux normal iso9660 biosdisk search" --locales="" --fonts=""
+
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
