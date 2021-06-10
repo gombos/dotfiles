@@ -65,6 +65,17 @@ mkdir -p /efi/tce/optional
 
 mkdir -p /efi/syslinux
 rsync -av /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
+cat > /efi/syslinux/syslinux.cfg << 'EOF'
+PROMPT 1
+TIMEOUT 5
+
+DEFAULT grub2
+
+LABEL grub2
+ MENU LABEL Grub2
+ LINUX ../grub/i386-pc/lnxboot.img
+ INITRD ../grub/i386-pc/core.img
+EOF
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
