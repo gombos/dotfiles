@@ -75,7 +75,8 @@ LABEL linux
 INCLUDE /dotfiles/boot/syslinux.cfg
 EOF
 
-grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="linux normal iso9660 biosdisk memdisk search tar ls part_gpt part_gpt part_msdos regexp all_video fat btrfs" --modules="part_gpt part_msdos regexp all_video fat btrfs linux normal iso9660 biosdisk search" --locales="" --fonts=""
+echo 'configfile ${cmdpath}/grub.cfg' > /tmp/grub.cfg
+grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="linux normal iso9660 biosdisk memdisk search tar ls part_gpt part_gpt part_msdos regexp all_video fat btrfs" --modules="part_gpt part_msdos regexp all_video fat btrfs linux normal iso9660 biosdisk search" --locales="" --fonts="" "boot/grub/grub.cfg=/tmp/grub.cfg"
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
