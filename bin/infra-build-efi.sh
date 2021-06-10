@@ -45,8 +45,10 @@ rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi monolith
 mkdir -p /efi/EFI/ubuntu
-cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
-echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
+cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
+echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/BOOT/grub.cfg
+
+# grub-install --target=x86_64-efi --efi-directory /efi/EFI --bootloader-id=grub --boot-directory=/efi/EFI --debug
 
 # grub pc
 mkdir -p /efi/grub/
@@ -59,8 +61,10 @@ cp /boot/ipxe.* /efi/ipxe/
 
 # TCE
 mkdir -p /efi/tce
-#mkdir -p /efi/tce/ondemand
 mkdir -p /efi/tce/optional
+
+mkdir -p /efi/syslinux
+rsync -av /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
