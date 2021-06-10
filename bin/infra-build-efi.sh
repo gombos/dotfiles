@@ -67,9 +67,12 @@ mkdir -p /efi/syslinux
 rsync -av /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
 cat > /efi/syslinux/syslinux.cfg << 'EOF'
 DEFAULT linux
+
 LABEL linux
- LINUX /grub/i386-pc/lnxboot.img
- INITRD /grub/i386-pc/core.img
+ LINUX /kernel/vmlinuz root=LABEL=linux rootflags=subvol=linux
+ INITRD /kernel/initrd.img
+
+INCLUDE /dotfiles/boot/syslinux.cfg
 EOF
 
 grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="linux normal iso9660 biosdisk memdisk search tar ls part_gpt part_gpt part_msdos regexp all_video fat btrfs" --modules="part_gpt part_msdos regexp all_video fat btrfs linux normal iso9660 biosdisk search" --locales="" --fonts=""
