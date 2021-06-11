@@ -1,5 +1,5 @@
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends linux-headers-$(uname -r) -y -q
+DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends libaio1 linux-headers-$(uname -r) -y -q
 
 if [ -z "$KERNEL" ]; then
   export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
