@@ -44,7 +44,7 @@ mkdir -p /efi/kernel
 rsync -av /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi monolith
-mkdir -p /efi/EFI/ubuntu
+mkdir -p /efi/EFI/BOOT/
 cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
@@ -79,8 +79,7 @@ prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
-mkdir -p /efi/EFI/BOOT/
-grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 #grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
