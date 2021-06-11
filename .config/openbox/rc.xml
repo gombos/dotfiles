@@ -187,7 +187,7 @@
         <command>xdotool keyup left keyup alt key ctrl+Page_Up</command>
       </action>
     </keybind>
-    <keybind key="A-Rigth">
+    <keybind key="A-Right">
       <action name="Execute">
         <command>xdotool keyup right keyup alt key ctrl+Page_Down</command>
       </action>
