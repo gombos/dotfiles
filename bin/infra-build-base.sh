@@ -15,9 +15,9 @@ if [ -z "$RELEASE" ]; then
   export RELEASE=focal
 fi
 
-# Todo - update to 5.10
 if [ -z "$KERNEL" ]; then
-  export KERNEL="5.8.0-55-generic"
+  export KERNEL="5.4.0-52-generic"
+  #export KERNEL="5.8.0-55-generic"
   #"5.10.0-1029-oem"
 fi
 
