@@ -1,9 +1,9 @@
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends libaio1 linux-headers-$(uname -r) -y -q
-
 if [ -z "$KERNEL" ]; then
   export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 fi
+
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libaio1 linux-headers-$KERNEL
 
 cd /
 
@@ -14,7 +14,7 @@ rm -rf /VMware-Workstation-Full-15.5.6-16341506.x86_64.bundle
 #/home/vmware/VMware-Workstation-Full-15.5.6*.x86_64.bundle
 
 # https://communities.vmware.com/thread/623768
-# make VM_UNAME='4.14.15-5-default'
+
 export VM_UNAME=$KERNEL
 git clone https://github.com/mkubecek/vmware-host-modules.git && cd vmware-host-modules && git checkout workstation-15.5.6 && make VM_UNAME=$KERNEL && make install VM_UNAME=$KERNEL && make clean VM_UNAME=$KERNEL && cd / && rm -rf vmware-host-modules
 
