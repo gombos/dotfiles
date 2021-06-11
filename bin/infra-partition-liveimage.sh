@@ -22,3 +22,7 @@ gpt add -i 3 -b  52426752 -s  66406248 -t 7C3457EF-0000-11AA-AA11-00306543ECAC $
 gpt add -i 4 -b  118833000 -t 48465300-0000-11AA-AA11-00306543ECAC $DISK
 
 diskutil umountDisk $DISK
+
+MS data
+# EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
+https://en.wikipedia.org/wiki/GUID_Partition_Table
