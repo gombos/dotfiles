@@ -114,13 +114,14 @@ chmod +x opt/bootsync.sh
 tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
-rm -rf NFSroot_work.tgz
-wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
-tar -xzf NFSroot_work.tgz
-cp ./NFSroot_work/debcfg-nfsroot/overlay.sh /etc/initramfs-tools/scripts/init-bottom
-echo "overlay" >> /etc/initramfs-tools/modules
-update-initramfs -k all -c
-cp /boot/initrd.img /efi/kernel/initrd-nfs.img
+# Only needed for nfs
+#rm -rf NFSroot_work.tgz
+#wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
+#tar -xzf NFSroot_work.tgz
+#cp ./NFSroot_work/debcfg-nfsroot/overlay.sh /etc/initramfs-tools/scripts/init-bottom
+#echo "overlay" >> /etc/initramfs-tools/modules
+#update-initramfs -k all -c
+#cp /boot/initrd.img /efi/kernel/initrd-nfs.img
 
 rm -rf 055.zip dracut-055
 wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
