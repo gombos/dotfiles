@@ -63,6 +63,9 @@ case "$cpu" in
     # motherboard sensors Nuvoton W83677HG-I (NCT6776)
     echo w83627ehf >> $R/etc/modules
   ;;
+#  *i7-3630QM*)
+#    echo "Booting on NP700"
+#  ;;
   *i7-4870HQ*)
     echo "Booting on MacBook"
     if ! [ "$HOST" == "vm" ] ; then
