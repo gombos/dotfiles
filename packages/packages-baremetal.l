@@ -9,7 +9,6 @@ exfat-fuse
 friendly-recovery
 fuse-overlayfs
 gddrescue
-grub2-common
 hdparm
 ifupdown
 isc-dhcp-client
@@ -28,7 +27,6 @@ python3-usb
 rfkill
 smartmontools
 squashfs-tools
-syslinux-common
 systemd-container
 systemd-sysv
 udev

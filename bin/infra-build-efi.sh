@@ -35,9 +35,13 @@ fi
 #KERNEL=$(uname -r)
 echo $KERNEL
 
+# todo - move these back to baremetal
+# syslinux-common grub2-common
+# do not ever run this locally, i no longer trust them
+
 DEBIAN_FRONTEND=noninteractive sudo apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL overlayroot
-DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe
+DEBIAN_FRONTEND=noninteractive sudo apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common
 DEBIAN_FRONTEND=noninteractive sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
 
 mkdir -p /efi/kernel
