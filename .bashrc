@@ -106,7 +106,7 @@ alias Testclean='git clean -xfdn; find . -type f -name "*~" -exec ls {} \;'
 
 alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
 alias umnt-1="sudo umount ~/1"
-alias lsb="lsblk -o name,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
+alias lsb="lsblk -o name,mountpoint,partlabel,label,mountpoint,fstype,size,fsavail,fsuse%,uuid"
 
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
 
