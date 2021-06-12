@@ -17,12 +17,7 @@ libblockdev-crypto2
 libu2f-udev
 linux-firmware
 network-manager
-#python3-dateutil
 python3-distutils
-#python3-icalendar
-#python3-requests
-#python3-requests-file
-#python3-tzlocal
 python3-usb
 rfkill
 smartmontools
