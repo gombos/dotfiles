@@ -248,3 +248,8 @@ rm -rf /tmp/initrd
 
 # Populate logs with the list of filenames
 find /efi
+
+# Create an image
+# https://wiki.archlinux.org/title/Syslinux
+# sgdisk /dev/sda --attributes=1:set:2
+# dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/bios/gptmbr.bin of=/dev/sda
