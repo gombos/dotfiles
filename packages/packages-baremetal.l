@@ -12,6 +12,7 @@ gddrescue
 hdparm
 ifupdown
 isc-dhcp-client
+kexec-tools # Soft reboot (without bootloader)
 kpartx
 libblockdev-crypto2
 libu2f-udev
@@ -24,6 +25,10 @@ smartmontools
 squashfs-tools
 systemd-container
 systemd-sysv
+# Laptop support
+thermald # monitors and controls temperature in laptops
+tlp # tweaking kernel settings that affect power consumption.
+tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power
 udev
 udisks2
 uhubctl

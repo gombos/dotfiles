@@ -11,6 +11,7 @@ grub-pc-bin
 grub-ipxe
 syslinux-common
 grub2-common
+linux-tools-common - for usb over ip
 
 aufs-dkms
 aufs-tools
