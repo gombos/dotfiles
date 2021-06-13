@@ -84,3 +84,12 @@ wget
 xattr
 zerofree
 zip
+gddrescue
+btrfs-progs
+squashfs-tools
+exfat-fuse
+kpartx
+wakeonlan
+python3-distutils
+busybox
+fuse-overlayfs

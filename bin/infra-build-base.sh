@@ -31,7 +31,7 @@ install_my_package () {
 }
 
 install_my_packages() {
-  cat $SCRIPTS/$1 | sed '/^$/d' | grep -v ^\# | grep -v ^\; | cut -d\# -f 1 | cut -d\; -f 1 | awk '{print $1;}' | while read in;
+  cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
 
   do
     install_my_package "$in"

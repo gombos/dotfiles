@@ -1,39 +1,43 @@
-bluez
-btrfs-progs
-busybox
-dnsmasq-base
+# Requirements - boot and further setup and configure the system
+
+# boot
 efibootmgr
-eject
-ethtool
-exfat-fuse
+kexec-tools # soft reboot (without bootloader)
 friendly-recovery
-fuse-overlayfs
-gddrescue
-hdparm
+
+# kernel
+linux-firmware
+
+# init
+systemd-sysv
+
+# networking
+dnsmasq-base
 ifupdown
 isc-dhcp-client
-kexec-tools # Soft reboot (without bootloader)
-kpartx
-libblockdev-crypto2
-libu2f-udev
-linux-firmware
 network-manager
-python3-distutils
-python3-usb
-rfkill
+ethtool
+
+# storage
+hdparm
 smartmontools
-squashfs-tools
-systemd-container
-systemd-sysv
-# Laptop support
-thermald # monitors and controls temperature in laptops
-tlp # tweaking kernel settings that affect power consumption.
-tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power
-udev
 udisks2
+
+# wireless
+rfkill
+wireless-tools
+bluez
+
+# devices
+udev
 uhubctl
 usb-modeswitch
 usbrelay
 usbutils
-wakeonlan
-wireless-tools
+libblockdev-crypto2
+libu2f-udev
+
+# laptop
+thermald # monitors and controls temperature in laptops
+tlp # tweaking kernel settings that affect power consumption.
+tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power

@@ -1,9 +1,15 @@
+# container services
+containerd
+docker.io
+systemd-container
+
+# power management
 apcupsd
 autosuspend
-containerd
+upower
+
 cron
 dnsmasq
-docker.io
 nfs-kernel-server
 openssh-server
 open-vm-tools-desktop
