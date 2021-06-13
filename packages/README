@@ -1,0 +1,5 @@
+Package managers:
+ - pip - user
+ - brew - user
+ - nix - system
+ - apt - system
