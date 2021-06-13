@@ -89,21 +89,14 @@ if [ "$BASEIMAGE" = "minbase" ]; then
  install_my_package locales
  locale-gen --purge en_US.UTF-8
  update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+
  # Make etc/default/locale deterministic between runs
  sort etc/default/locale -o etc/default/locale
+
+ mkdir -p etc/network/interfaces.d
+ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
+ printf "127.0.0.1 localhost\n" > etc/hosts
 fi
-
-install_my_packages packages-packages.l
-
-# chrome
-wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-
-mkdir -p etc/network/interfaces.d
-printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
-# && printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
-printf "127.0.0.1 localhost\n" > etc/hosts
 
 # admin user to log in
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
@@ -116,6 +109,13 @@ install_my_packages packages-baremetal.l
 install_my_packages packages-services.l
 install_my_packages packages-x11.l
 install_my_packages packages-x11apps.l
+
+install_my_packages packages-packages.l
+
+# chrome
+wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 $SCRIPTS/infra-install-vmware-workstation.sh
 #$SCRIPTS/infra-install-podman.sh
