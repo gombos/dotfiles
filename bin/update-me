@@ -1,5 +1,11 @@
 cd $DOTFILES/ && git pull
+
+# for pincer
 mnt efi && cd $MNTDIR/efi/dotfiles && git pull
+
+# for bestia
+mnt-efi_bestia && cd $MNTDIR/efi_bestia/dotfiles && git pull
+
 infra-provision-mac
 
 # pip
