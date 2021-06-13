@@ -1,5 +1,6 @@
 Package managers:
  - pip - user
- - brew - user
- - nix - system
- - apt - system
+ - brew - user and system
+ - nix - user and system
+ - apt - system only
+ - docker - system only
