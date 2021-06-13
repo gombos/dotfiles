@@ -20,6 +20,8 @@ if [ -n "$HOMEBREW_PREFIX" ]; then
   brew doctor
 fi
 
+brew install fio  micro rclone ripgrep  ripgrep-all
+
 #nix
 $DOTFILES/packages/packages-nix
 

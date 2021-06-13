@@ -6,7 +6,6 @@ apt-utils
 archivemount
 aspell-en
 attr
-awscli
 bash-completion
 bc
 bind9-dnsutils
