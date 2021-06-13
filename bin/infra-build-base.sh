@@ -17,6 +17,7 @@ fi
 
 if [ -z "$KERNEL" ]; then
   export KERNEL="5.4.0-52-generic"
+  # vmware does not seem to be stable on 5.8
   #export KERNEL="5.8.0-55-generic"
   #"5.10.0-1029-oem"
 fi
@@ -209,5 +210,3 @@ $SCRIPTS/infra-clean-linux.sh /
 $SCRIPTS/infra-integrity.sh /var/integrity/
 
 rm -rf /tmp/*
-
-touch /1.0
