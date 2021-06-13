@@ -118,7 +118,7 @@ install_my_packages packages-x11.l
 install_my_packages packages-x11apps.l
 
 $SCRIPTS/infra-install-vmware-workstation.sh
-$SCRIPTS/infra-install-podman.sh
+#$SCRIPTS/infra-install-podman.sh
 
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 [Unit]
