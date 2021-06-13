@@ -1,9 +1,16 @@
 awscli
+syslinux-common
+grub2-common
 policykit-1-gnome
 postfix
 nvidia-settings
 network-manager
 network-manager-gnome
+grub-efi-amd64-bin
+grub-pc-bin
+grub-ipxe
+syslinux-common
+grub2-common
 
 aufs-dkms
 aufs-tools
