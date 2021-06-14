@@ -1,4 +1,4 @@
-FROM ubuntu:devel
+FROM ubuntu:focal
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
