@@ -162,8 +162,8 @@ echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.l
 
 packages_update_db
 
-install_my_package xserver-xorg-video-nvidia
-install_my_package nvidia-driver
+install_my_package xserver-xorg-video-nvidia-460
+install_my_package nvidia-driver-460
 
 # Make sure that only restricted package installed is nvidia
 rm etc/apt/sources.list.d/restricted.list
