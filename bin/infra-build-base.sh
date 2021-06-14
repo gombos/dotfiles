@@ -137,7 +137,7 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 
 install_my_package wget
 install_my_package gpg
-install_my_package gpgv
+#install_my_package gpgv
 
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
