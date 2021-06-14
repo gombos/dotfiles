@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab:base
+FROM 0gombi0/homelab-base
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
