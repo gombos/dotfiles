@@ -136,6 +136,7 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> et
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
 install_my_package wget
+install_my_package gpg
 install_my_package gpgv
 
 # chrome
