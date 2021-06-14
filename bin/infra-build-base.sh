@@ -22,7 +22,7 @@ if [ -z "$KERNEL" ]; then
   #"5.10.0-1029-oem"
 fi
 
-if [ -z "$1" ]; then
+if ! [ -z "$1" ]; then
   TARGET="$1"
 else
   TARGET="base"
