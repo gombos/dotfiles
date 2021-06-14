@@ -1,4 +1,6 @@
-FROM ubuntu:rolling
+FROM ubuntu:groovy
+
+#rolling
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
