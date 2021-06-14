@@ -124,7 +124,7 @@ cd ..
 #cp /boot/initrd.img /efi/kernel/initrd-nfs.img
 
 rm -rf 055.zip dracut-055
-wget https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
+wget -no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 unzip -q 055.zip
 cd dracut-055
 ./configure

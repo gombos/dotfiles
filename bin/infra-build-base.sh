@@ -40,6 +40,9 @@ install_my_packages() {
   done
 }
 
+echo target
+echo "$TARGET"
+
 # Directory tree
 # Allow per-machine/per-instance /boot /etc /usr /home /var
 
@@ -53,6 +56,7 @@ install_my_packages() {
 # adduser apt apt-utils fdisk gcc-10-base gpg gpg-agent gpgconf gpgv locales pinentry-curses readline-common systemd systemd-sysv systemd-timesyncd ubuntu-keyring wget
 
 if [ "$TARGET" = "base" ]; then
+echo "building base"
 # /var/tmp points to /tmp
 rm -rf var/tmp
 ln -sf /tmp var/tmp
@@ -109,6 +113,7 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 fi
 
 if [ "$TARGET" = "dev" ]; then
+echo "building dev"
 # Install nvidea driver - this is the only package from restricted source
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
