@@ -1,6 +1,6 @@
 # Minimal bootable image
 
-FROM 0gombi0/homelab:minbase
+FROM 0gombi0/homelab-base:minbase
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
