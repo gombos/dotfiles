@@ -1,3 +1,5 @@
+# Minimal bootable image
+
 FROM 0gombi0/homelab:minbase
 
 COPY bin/* packages/* /tmp/
