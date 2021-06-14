@@ -1,5 +1,6 @@
-FROM ubuntu:groovy
+FROM ubuntu:focal
 
+#groovy
 #rolling
 
 COPY bin/* packages/* /tmp/
