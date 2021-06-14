@@ -12,7 +12,13 @@ if [ -z "$SCRIPTS" ]; then
 fi
 
 if [ -z "$RELEASE" ]; then
-  export RELEASE=focal
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    RELEASE=$VERSION_CODENAME
+    if [ -z "$RELEASE" ]; then
+        RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
+    fi
+  fi
 fi
 
 if [ -z "$KERNEL" ]; then
@@ -28,7 +34,7 @@ else
   TARGET="base"
 fi
 
-install_my_package () {
+install_my_package() {
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
 
@@ -40,8 +46,15 @@ install_my_packages() {
   done
 }
 
-echo target
-echo "$TARGET"
+packages_update_db() {
+  DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+}
+
+packages_upgrade() {
+  DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+}
+
+echo "Building $RELEASE $TARGET"
 
 # Directory tree
 # Allow per-machine/per-instance /boot /etc /usr /home /var
@@ -77,8 +90,8 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/s
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
 
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+packages_update_db
+packages_upgrade
 
 install_my_package locales
 locale-gen --purge en_US.UTF-8
@@ -114,8 +127,8 @@ fi
 
 if [ "$TARGET" = "dev" ]; then
 echo "building dev"
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+packages_update_db
+packages_upgrade
 
 # Install nvidea driver - this is the only package from restricted source
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
@@ -129,14 +142,14 @@ install_my_package gpgv
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
 
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+packages_update_db
 
 install_my_package xserver-xorg-video-nvidia-460
 install_my_package nvidia-driver-460
 
 # Make sure that only restricted package installed is nvidia
 rm etc/apt/sources.list.d/restricted.list
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+packages_update_db
 
 install_my_packages packages-services.l
 install_my_packages packages-x11.l
