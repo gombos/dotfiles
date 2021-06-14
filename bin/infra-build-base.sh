@@ -22,12 +22,10 @@ if [ -z "$KERNEL" ]; then
   #"5.10.0-1029-oem"
 fi
 
-if [ -z "$BASEIMAGE" ]; then
-  BASEIMAGE=minbase
-fi
-
 if [ -z "$1" ]; then
-  TARGET=$1
+  TARGET="$1"
+else
+  TARGET="base"
 fi
 
 install_my_package () {
@@ -54,6 +52,7 @@ install_my_packages() {
 # Additional packages installed after boostrap
 # adduser apt apt-utils fdisk gcc-10-base gpg gpg-agent gpgconf gpgv locales pinentry-curses readline-common systemd systemd-sysv systemd-timesyncd ubuntu-keyring wget
 
+if [ "$TARGET" = "base" ]; then
 # /var/tmp points to /tmp
 rm -rf var/tmp
 ln -sf /tmp var/tmp
@@ -65,42 +64,28 @@ ln -sf usr/opt
 # For convinience
 mkdir -p nix && ln -sf /run/media go
 
-if [ "$BASEIMAGE" = "minbase" ]; then
- # Disable installing recommended and suggested packages by default
- mkdir -p etc/apt/apt.conf.d/
- printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
+# Disable installing recommended and suggested packages by default
+mkdir -p etc/apt/apt.conf.d/
+printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
 
- # Enable package updates before installing rest of packages
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
-
- # Install nvidea driver - this is the only package from restricted source
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
- echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
-
- DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
- install_my_package xserver-xorg-video-nvidia-460
- install_my_package nvidia-driver-460
- rm etc/apt/sources.list.d/restricted.list
-fi
+# Enable package updates before installing rest of packages
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
 
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-if [ "$BASEIMAGE" = "minbase" ]; then
- install_my_package locales
- locale-gen --purge en_US.UTF-8
- update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+install_my_package locales
+locale-gen --purge en_US.UTF-8
+update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 
- # Make etc/default/locale deterministic between runs
- sort etc/default/locale -o etc/default/locale
+# Make etc/default/locale deterministic between runs
+sort etc/default/locale -o etc/default/locale
 
- mkdir -p etc/network/interfaces.d
- printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
- printf "127.0.0.1 localhost\n" > etc/hosts
-fi
+mkdir -p etc/network/interfaces.d
+printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
+printf "127.0.0.1 localhost\n" > etc/hosts
 
 # admin user to log in
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
@@ -121,6 +106,7 @@ ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
+fi
 
 if [ "$TARGET" = "dev" ]; then
 # Install nvidea driver - this is the only package from restricted source
