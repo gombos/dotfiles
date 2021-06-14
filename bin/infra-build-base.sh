@@ -26,10 +26,9 @@ if [ -z "$BASEIMAGE" ]; then
   BASEIMAGE=minbase
 fi
 
-f [ -z "$1" ]; then
+if [ -z "$1" ]; then
   TARGET=$1
 fi
-
 
 install_my_package () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
