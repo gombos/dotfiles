@@ -34,9 +34,6 @@ else
   TARGET="base"
 fi
 
-wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
-chmod 755 /usr/local/bin/pacapt
-
 install_my_package() {
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
@@ -140,6 +137,11 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 
 install_my_package wget
 install_my_package gpg
+install_my_package gpg-agent
+
+wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
+chmod 755 /usr/local/bin/pacapt
+
 #install_my_package gpgv
 
 # chrome
