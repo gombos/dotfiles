@@ -192,6 +192,7 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
 
+rm -rf 'boot/{*,.*}'
 fi
 
 # ---- Cleanup
