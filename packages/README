@@ -1,6 +1,7 @@
-Package managers:
- - pip - user
- - brew - user and system
- - nix - user and system
- - apt - system only
- - docker - system only
+Package managers (in priority order)
+ - pip - user, cross-platform
+ - conda - user, cross-platform
+ - brew - user and system, MacOS and Linux
+ - docker - system only, cross-platform
+ - nix - user and system, MacOS and Linux
+ - apt - system only, MacOS and Linux
