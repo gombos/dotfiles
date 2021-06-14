@@ -26,6 +26,11 @@ if [ -z "$BASEIMAGE" ]; then
   BASEIMAGE=minbase
 fi
 
+f [ -z "$1" ]; then
+  TARGET=$1
+fi
+
+
 install_my_package () {
   DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
 }
@@ -106,19 +111,44 @@ install_my_package linux-modules-extra-$KERNEL
 install_my_package linux-headers-$KERNEL
 
 install_my_packages packages-baremetal.l
+
+# set timezone
+ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
+
+# disable motd
+[ -f etc/default/motd-news ] && sed -i 's|^ENABLED=.*|ENABLED=0|g' etc/default/motd-news
+
+# disable starting some systemd timers by default
+ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
+ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
+ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
+
+if [ "$TARGET" = "dev" ]; then
+# Install nvidea driver - this is the only package from restricted source
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
+
+# chrome
+wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
+
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+
+install_my_package xserver-xorg-video-nvidia-460
+install_my_package nvidia-driver-460
+
+# Make sure that only restricted package installed is nvidia
+rm etc/apt/sources.list.d/restricted.list
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+
 install_my_packages packages-services.l
 install_my_packages packages-x11.l
 install_my_packages packages-x11apps.l
 
 install_my_packages packages-packages.l
 
-# chrome
-wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-
 $SCRIPTS/infra-install-vmware-workstation.sh
-#$SCRIPTS/infra-install-podman.sh
 
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 [Unit]
@@ -137,10 +167,6 @@ ExecStartPost=/bin/systemctl --no-reload disable %n
 WantedBy=multi-user.target
 EOF
 
-# Cleanup packages only needed during building the rootfs
-DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
-DEBIAN_FRONTEND=noninteractiv apt-get clean
-
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
 rm usr/.crates2.json
 
@@ -152,17 +178,8 @@ rm usr/.crates2.json
 
 [ -f etc/xdg/autostart/lxpolkit.desktop ] && sed -i "s|^Hidden=.*|Hidden=false|g" etc/xdg/autostart/lxpolkit.desktop
 
-# set timezone
-ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
-
-# disable motd
-[ -f etc/default/motd-news ] && sed -i 's|^ENABLED=.*|ENABLED=0|g' etc/default/motd-news
-
 # disable starting some systemd timers by default
 ln -sf /dev/null etc/systemd/system/timers.target.wants/man-db.timer
-ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
-ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
-ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 
 # This would blacklist noveou on nvidia HW - even if i want noveou"
 rm usr/lib/modprobe.d/nvidia-graphics-drivers.conf
@@ -185,6 +202,9 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
 
+fi
+
+# ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty
 rm -rf etc/machine-id /var/lib/dbus/machine-id
 touch etc/machine-id
@@ -196,7 +216,9 @@ touch etc/fstab
 # change the date of last time password was set back to 1970 to have reproducible builds
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
-# ---- Cleanup
+# Cleanup packages only needed during building the rootfs
+DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractiv apt-get clean
 
 # Only the following directories should be non-empty
 # etc (usually attached to root volume), usr (could be separate subvolume), var (could be separate subvolume)
