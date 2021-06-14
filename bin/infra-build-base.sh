@@ -36,7 +36,7 @@ fi
 
 install_my_package() {
   if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -S "$1"
+    usr/local/bin/pacapt -S -f -v "$1"
   else
     DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
   fi
@@ -44,7 +44,7 @@ install_my_package() {
 
 remove_my_package() {
   if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -R "$1"
+    usr/local/bin/pacapt -R -f -v "$1"
   else
     DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq -o Dpkg::Use-Pty=0 "$1"
   fi
