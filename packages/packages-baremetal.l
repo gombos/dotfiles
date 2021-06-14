@@ -8,7 +8,7 @@ friendly-recovery
 # kernel
 linux-firmware
 
-# init
+# bootmanager, init
 systemd-sysv
 
 # networking
@@ -17,7 +17,6 @@ ifupdown
 isc-dhcp-client
 network-manager
 ethtool
-wget
 
 # storage
 hdparm

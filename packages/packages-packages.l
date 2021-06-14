@@ -92,3 +92,4 @@ wakeonlan
 python3-distutils
 busybox
 fuse-overlayfs
+wget
