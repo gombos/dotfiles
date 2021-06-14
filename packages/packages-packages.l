@@ -80,7 +80,6 @@ tcpdump
 tesseract-ocr
 time
 unzip
-wget
 xattr
 zerofree
 zip

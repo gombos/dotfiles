@@ -17,6 +17,7 @@ ifupdown
 isc-dhcp-client
 network-manager
 ethtool
+wget
 
 # storage
 hdparm
