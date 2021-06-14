@@ -12,9 +12,12 @@ DIR=$MNTDIR/linux/linux-dev
 #container_id=$(sudo docker run -dit 0gombi0/homelab:base /bin/bash)
 #sudo docker stop $container_id
 
-docker builder prune -af
+#docker builder prune -af
 
-container_id=$(sudo docker create 0gombi0/homelab:base)
+# todo - does this invalidates the docker cache ?
+docker pull 0gombi0/homelab:dev
+
+container_id=$(sudo docker create 0gombi0/homelab:dev)
 
 sudo btrfs property set -ts $DIR ro false
 sudo btrfs subvolume delete $DIR 2>/dev/null
