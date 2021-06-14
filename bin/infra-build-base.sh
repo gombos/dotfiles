@@ -150,11 +150,10 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 install_my_package wget
 install_my_package gpg
 install_my_package gpg-agent
+install_my_package gpgv
 
 wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
 chmod 755 /usr/local/bin/pacapt
-
-#install_my_package gpgv
 
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
