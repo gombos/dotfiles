@@ -114,6 +114,8 @@ fi
 
 if [ "$TARGET" = "dev" ]; then
 echo "building dev"
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # Install nvidea driver - this is the only package from restricted source
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
