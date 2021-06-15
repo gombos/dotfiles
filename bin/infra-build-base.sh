@@ -61,11 +61,19 @@ install_my_packages() {
 }
 
 packages_update_db() {
-  apt-get update -y -qq -o Dpkg::Use-Pty=0
+  if [ -f usr/local/bin/pacapt ]; then
+    usr/local/bin/pacapt -Sy
+  else
+    apt-get update -y -qq -o Dpkg::Use-Pty=0
+  fi
 }
 
 packages_upgrade() {
-  apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+  if [ -f usr/local/bin/pacapt ]; then
+    usr/local/bin/pacapt -Suy
+  else
+    apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+  fi
 }
 
 echo "Building $RELEASE $TARGET"
@@ -141,6 +149,9 @@ fi
 
 if [ "$TARGET" = "dev" ]; then
 echo "building dev"
+wget
+curl
+
 packages_update_db
 packages_upgrade
 
