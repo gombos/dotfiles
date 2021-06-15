@@ -1,0 +1,7 @@
+FROM amazonlinux
+
+COPY bin/* packages/* /tmp/
+WORKDIR /tmp/
+RUN ./infra-build-base.sh dev
+
+CMD ["/bin/bash"]
