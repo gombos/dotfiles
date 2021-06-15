@@ -7,6 +7,8 @@
 
 cd /
 
+export DEBIAN_FRONTEND=noninteractive
+
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
