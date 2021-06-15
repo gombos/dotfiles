@@ -33,7 +33,7 @@ fi
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="base"
+  TARGET="dev"
 fi
 
 install_my_package() {
