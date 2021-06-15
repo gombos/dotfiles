@@ -160,13 +160,22 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sour
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
+# Try both wget first
+if ! [ -f usr/local/bin/pacapt ]; then
+  wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
+  chmod 755 /usr/local/bin/pacapt
+fi
+
+# Try curl next (arch has curl but not wget for example)
+if ! [ -f usr/local/bin/pacapt ]; then
+  curl https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
+  chmod 755 /usr/local/bin/pacapt
+fi
+
 install_my_package wget
 install_my_package gpg
 install_my_package gpg-agent
 install_my_package gpgv
-
-wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
-chmod 755 /usr/local/bin/pacapt
 
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
