@@ -40,7 +40,7 @@ install_my_package() {
   if [ -f usr/local/bin/pacapt ]; then
     usr/local/bin/pacapt -S --noconfirm "$1"
   else
-    DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
+    apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
   fi
 }
 
@@ -48,7 +48,7 @@ remove_my_package() {
   if [ -f usr/local/bin/pacapt ]; then
     usr/local/bin/pacapt -R --noconfirm "$1"
   else
-    DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq -o Dpkg::Use-Pty=0 "$1"
+    apt-get purge -y -qq -o Dpkg::Use-Pty=0 "$1"
   fi
 }
 
@@ -61,11 +61,11 @@ install_my_packages() {
 }
 
 packages_update_db() {
-  DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+  apt-get update -y -qq -o Dpkg::Use-Pty=0
 }
 
 packages_upgrade() {
-  DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+  apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 }
 
 echo "Building $RELEASE $TARGET"
@@ -246,8 +246,8 @@ touch etc/fstab
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 # Cleanup packages only needed during building the rootfs
-DEBIAN_FRONTEND=noninteractive apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
-DEBIAN_FRONTEND=noninteractiv apt-get clean
+apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
+apt-get clean
 
 # Only the following directories should be non-empty
 # etc (usually attached to root volume), usr (could be separate subvolume), var (could be separate subvolume)
