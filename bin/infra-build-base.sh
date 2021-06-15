@@ -5,6 +5,12 @@
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
+# Find out the OS running on
+
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
+fi
+
 cd /
 
 export DEBIAN_FRONTEND=noninteractive
@@ -14,12 +20,9 @@ if [ -z "$SCRIPTS" ]; then
 fi
 
 if [ -z "$RELEASE" ]; then
-  if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    RELEASE=$VERSION_CODENAME
-    if [ -z "$RELEASE" ]; then
-        RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
-    fi
+  RELEASE=$VERSION_CODENAME
+  if [ -z "$RELEASE" ]; then
+    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
   fi
 fi
 
@@ -151,6 +154,11 @@ if [ "$TARGET" = "dev" ]; then
 echo "building dev"
 wget
 curl
+
+if [ "$ID" = "alpine" ]; then
+  # get me bash
+  apk add bash
+fi
 
 packages_update_db
 packages_upgrade
