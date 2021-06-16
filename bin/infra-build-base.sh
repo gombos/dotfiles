@@ -164,9 +164,6 @@ if [ "$ID" = "alpine" ]; then
   apk add bash
 fi
 
-packages_update_db
-packages_upgrade
-
 # Install nvidea driver - this is the only package from restricted source
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
@@ -184,10 +181,12 @@ if ! [ -f usr/local/bin/pacapt ]; then
   chmod 755 /usr/local/bin/pacapt
 fi
 
+packages_update_db
+packages_upgrade
+
 install_my_package wget
 install_my_package gpg
 install_my_package gpg-agent
-install_my_package gpgv
 
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
