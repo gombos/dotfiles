@@ -41,7 +41,11 @@ fi
 
 install_my_package() {
   if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -S --noconfirm "$1"
+    if [ "$ID" = "alpine" ]; then
+      usr/local/bin/pacapt -S "$1"
+    else
+      usr/local/bin/pacapt -S --noconfirm "$1"
+    fi
   else
     apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
   fi
