@@ -260,15 +260,16 @@ then
   chown -R 501:27 $R/admin/
 fi
 
+if [ -d "$mp/modules" ]; then
+  mv $R/lib/modules $R/lib/modules.old
+  ln -sf /run/media/efi/modules $R/lib/
+fi
+
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
   # /etc/fstab
   # No persistent home, this is a piece of infrastructure
-  # sudo is disabled even for admin, so we need a way to access boot parition remotly
-  mkdir -p $R/efi
-#  echo 'LABEL=EFI /go/efi auto user,uid=501,gid=0,fmask=0177,dmask=0077,noexec,nosuid,nodev,x-systemd.automount,x-systemd.idle-timeout=3min 0 2' >> $R/etc/fstab
-  echo 'LABEL=EFI  /go/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # /home is only for services not for users
   mkdir /home
@@ -316,13 +317,7 @@ if [ "$HOST" == "bestia" ]; then
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=6min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  echo 'LABEL=EFI /efi auto noauto,ro,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-
-  if [ -d "$mp/modules" ]; then
-    mv $R/lib/modules $R/lib/modules.old
-    ln -sf /efi/modules $R/lib/
-  fi
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -356,8 +351,8 @@ fi
 
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
-
   echo 'LABEL=linux /run/media/linux auto defaults 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
