@@ -3,6 +3,8 @@
 FILE=rootfs.raw
 OUT_DIR=${OUT_DIR:=out}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
+MNT=${MNT_DIR:=$OUT_DIR/${FNAME}}/root
+MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
 
   echo "Installing $RELEASE into $FILE..."
 
@@ -18,7 +20,7 @@ MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
     sudo dd if=/dev/zero of=$FILE bs=1024k seek=${IMGSIZE} count=0
   fi
 
-  mkdir -p $MNT_DIR
+  mkdir -p $MNT $MNT_EFI
 
   # Assigning loopback device to the image file
   DISK=""
@@ -51,45 +53,24 @@ MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
   sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"
 
   # Mount device
-  echo "Mounting root partition..."
-  sudo mount ${DISK}p2 $MNT_DIR || fail "cannot mount /"
+  echo "Mounting partitions..."
+  sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount /"
+  sudo mount ${DISK}p2 $MNT || fail "cannot mount /"
 
-  cd $MNT_DIR
-  sudo docker pull 0gombi0/homelab-base
-  container_id=$(sudo docker create 0gombi0/homelab-base)
+  cd $MNT
+  sudo docker pull 0gombi0/homelab-base:latest
+  container_id=$(sudo docker create 0gombi0/homelab-base:latest)
   sudo docker export $container_id  | sudo tar xf -
   sudo docker rm $container_id
-
+  sudo umount $MNT
   cd -
 
-  cp $MNT_DIR/usr/lib/systemd/boot/efi/systemd-bootx64.efi /tmp/
-  sudo cp $MNT_DIR/boot/vmlinuz /tmp/
-  sudo umount $MNT_DIR
+  cd $MNT_EFI
+  sudo docker pull 0gombi0/homelab-base:efi
+  container_id=$(sudo docker create 0gombi0/homelab-base:efi)
+  sudo docker export $container_id  | sudo tar xf -
+  sudo umount $MNT_EFI
+  cd -
 
-  sudo mount ${DISK}p1 $MNT_DIR || fail "cannot mount /"
-
-  sudo mkdir -p $MNT_DIR/EFI/BOOT/
-  sudo mkdir -p $MNT_DIR/kernel/
-
-  sudo cp /tmp/systemd-bootx64.efi   $MNT_DIR/EFI/BOOT/BOOTX64.EFI
-  sudo cp /tmp/vmlinuz   $MNT_DIR/kernel/
-  sudo cp /go/efi_bestia/kernel/initrd.img  $MNT_DIR/kernel/
-
-  sudo mkdir -p $MNT_DIR/loader/entries
-
-cat << 'EOF' | sudo tee -a $MNT_DIR/loader/entries/linux.conf
-title   linux
-linux   /kernel/vmlinuz
-initrd  /kernel/initrd.img
-options root=/dev/sda2 rw
-EOF
-
-cat << 'EOF' | sudo tee -a $MNT_DIR/loader/loader.conf
-timeout 0
-default linux
-EOF
-
-  sudo umount $MNT_DIR
   sudo losetup -d /dev/loop* 2>/dev/null
-
   qemu-img convert -O vmdk rootfs.raw vmdkname.vmdk
