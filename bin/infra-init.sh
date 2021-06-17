@@ -311,14 +311,14 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  mkdir -p $R/nix $R/home $R/live/image /efi
+  mkdir -p $R/nix $R/home $R/live/image $R/efi
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=EFI_BESTIA /efi auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
-  mount /efi
+  mount $R/efi
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
