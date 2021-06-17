@@ -1,7 +1,7 @@
 #!/bin/bash
 
 FILE=rootfs.raw
-OUT_DIR=${OUT_DIR:=out}
+OUT_DIR=${OUT_DIR:=/tmp/img}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
 MNT=$MNT_DIR/root
 MNT_EFI=$MNT_DIR/efi
@@ -62,7 +62,8 @@ MNT_EFI=$MNT_DIR/efi
   container_id=$(sudo docker create 0gombi0/homelab-base:latest /bin/bash)
   sudo docker export $container_id  | sudo tar xf -
   sudo docker rm $container_id
-  sudo umount $MNT
+  sync
+#  sudo umount $MNT
   cd -
 
   sudo rm -rf /tmp/efi
@@ -71,8 +72,9 @@ MNT_EFI=$MNT_DIR/efi
   sudo docker pull 0gombi0/homelab-base:efi
   container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
   sudo docker export $container_id  | sudo tar xf -
-  rsync -av /tmp/efi/efi/ $MNT_EFI
-  sudo umount $MNT_EFI
+  sudo rsync -av /tmp/efi/efi/ $MNT_EFI
+  sync
+#  sudo umount $MNT_EFI
   cd -
 
   sudo losetup -d /dev/loop* 2>/dev/null
