@@ -318,8 +318,10 @@ if [ "$HOST" == "bestia" ]; then
   echo 'LABEL=EFI /efi auto noauto,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
-  mv  $R/lib/modules $R/lib/modules.old
-  ln -sf /efi/modules $R/lib/
+  if [ -d "$mp/modules" ]; then
+    mv $R/lib/modules $R/lib/modules.old
+    ln -sf /efi/modules $R/lib/
+  fi
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
