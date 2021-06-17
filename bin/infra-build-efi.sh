@@ -50,8 +50,10 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # grub efi monolith
 mkdir -p /efi/EFI/BOOT/
 mkdir -p /efi/EFI/ubuntu/
-cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
+cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/BOOTX64.EFI
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
+
+cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/BOOTX64.EFI
 
 # grub pc
 mkdir -p /efi/grub/
@@ -87,6 +89,19 @@ EOF
 grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 #grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+mkdir -p /efi/loader
+cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
+title   linux
+linux   /kernel/vmlinuz
+initrd  /kernel/initrd.img
+options root=/dev/sda2 rw
+EOF
+
+cat << 'EOF' | tee -a /efi/loader/loader.conf
+timeout 0
+default linux
+EOF
 
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
