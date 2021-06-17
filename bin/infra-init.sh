@@ -318,6 +318,9 @@ if [ "$HOST" == "bestia" ]; then
   echo 'LABEL=EFI_BESTIA /efi auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
+  mv  $R/lib/modules $R/lib/modules.old
+  ln -sf /efi/modules $R/lib/
+
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
   # Do not bind the backup ssd by default at boot
