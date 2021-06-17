@@ -355,7 +355,7 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 #  echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   echo 'LABEL=EFI  /run/media/efi auto ro,noexec,nosuid,nodev,umask=0077 0 0' >> $R/etc/fstab
-  echo '/run/media/efi/modules /run/media/modules none bind,umask=0000 0 0' >> $R/etc/fstab
+  echo '/run/media/efi/modules /run/media/modules none bind,p=o+r 0 0' >> $R/etc/fstab
 
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
