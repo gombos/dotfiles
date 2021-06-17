@@ -1,7 +1,7 @@
 FROM 0gombi0/homelab-base
 
 COPY bin/* /tmp/
-WORKDIR /tmp/
+WORKDIR /tmp
 RUN ./infra-build-efi.sh
 
 CMD ["/bin/bash"]

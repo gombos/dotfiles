@@ -1,9 +1,16 @@
-# Minimal bootable image
+# Minimal container
+
+# Docker wrapper for infra-build-base.sh
 
 FROM 0gombi0/homelab-base:minbase
 
-COPY bin/* packages/* /tmp/
-WORKDIR /tmp/
+# Setup tmp
+COPY bin/* packages/* /tmp
+
+# Change the workdir to tmp
+WORKDIR /tmp
+
+# Run
 RUN ./infra-build-base.sh base
 
 CMD ["/bin/bash"]
