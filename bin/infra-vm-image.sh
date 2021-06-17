@@ -3,8 +3,8 @@
 FILE=rootfs.raw
 OUT_DIR=${OUT_DIR:=out}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
-MNT=${MNT_DIR:=$OUT_DIR/${FNAME}}/root
-MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
+MNT=$MNT_DIR/root
+MNT_EFI=$MNT_DIR/efi
 
   echo "Installing $RELEASE into $FILE..."
 
@@ -43,7 +43,7 @@ MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
   sudo sgdisk -Z $DISK
 
   sudo sgdisk -n 0:0:+1G  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
-  sudo sgdisk -n 0:0:+6G -t 0:8300 -c 0:"linux"  $DISK
+  sudo sgdisk -n 0:0:+5G -t 0:8300 -c 0:"linux"  $DISK
 
   sudo partprobe $DISK
 
@@ -59,16 +59,19 @@ MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
 
   cd $MNT
   sudo docker pull 0gombi0/homelab-base:latest
-  container_id=$(sudo docker create 0gombi0/homelab-base:latest)
+  container_id=$(sudo docker create 0gombi0/homelab-base:latest /bin/bash)
   sudo docker export $container_id  | sudo tar xf -
   sudo docker rm $container_id
   sudo umount $MNT
   cd -
 
-  cd $MNT_EFI
+  sudo rm -rf /tmp/efi
+  mkdir /tmp/efi
+  cd /tmp/efi
   sudo docker pull 0gombi0/homelab-base:efi
-  container_id=$(sudo docker create 0gombi0/homelab-base:efi)
+  container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
   sudo docker export $container_id  | sudo tar xf -
+  rsync -av /tmp/efi/efi/ $MNT_EFI
   sudo umount $MNT_EFI
   cd -
 
