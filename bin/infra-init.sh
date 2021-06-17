@@ -313,7 +313,7 @@ fi
 if [ "$HOST" == "bestia" ]; then
   mkdir -p $R/nix $R/home $R/live/image $R/efi
 
-  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=6min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=EFI_BESTIA /efi auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
