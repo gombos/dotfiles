@@ -42,8 +42,8 @@ MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
   # format /dev/sdb as GPT, GUID Partition Table
   sudo sgdisk -Z $DISK
 
-  sudo sgdisk -n 0:0:+200M  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
-  sudo sgdisk -n 0:0:+6000M -t 0:8300 -c 0:"linux"  $DISK
+  sudo sgdisk -n 0:0:+1G  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
+  sudo sgdisk -n 0:0:+6G -t 0:8300 -c 0:"linux"  $DISK
 
   sudo partprobe $DISK
 
@@ -54,8 +54,8 @@ MNT_EFI=${MNT_DIR:=$OUT_DIR/${FNAME}}/efi
 
   # Mount device
   echo "Mounting partitions..."
-  sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount /"
-  sudo mount ${DISK}p2 $MNT || fail "cannot mount /"
+  sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+  sudo mount ${DISK}p2 $MNT || fail "cannot mount"
 
   cd $MNT
   sudo docker pull 0gombi0/homelab-base:latest
