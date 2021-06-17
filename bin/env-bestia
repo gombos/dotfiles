@@ -53,7 +53,7 @@ my-mount linux_live
 my-mount home_transient
 my-mount home_bestia
 
-my-mount efi_bestia EFI_BESTIA "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
+my-mount efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 my-mount efi_backup EFI_BACKUP "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 my-mount efi_live EFI_LIVE "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 
