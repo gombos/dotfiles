@@ -45,9 +45,9 @@ echo $KERNEL
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL install_my_package linux-headers-$KERNEL
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
@@ -58,6 +58,7 @@ mkdir -p /efi/EFI/ubuntu/
 cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/BOOTX64.EFI
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
+mkdir -p /efi/EFI/systemd
 cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/BOOTX64.EFI
 
 # grub pc
@@ -97,7 +98,7 @@ grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install
 
 cp -rv /usr/lib/modules /efi/
 
-mkdir -p /efi/loader
+mkdir -p /efi/loader/entries
 cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
 title   linux
 linux   /kernel/vmlinuz
