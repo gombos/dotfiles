@@ -26,12 +26,12 @@ if [ -z "$RELEASE" ]; then
   fi
 fi
 
-if [ -z "$KERNEL" ]; then
-  export KERNEL="5.4.0-52-generic"
+#if [ -z "$KERNEL" ]; then
+#  export KERNEL="5.4.0-52-generic"
   # vmware does not seem to be stable on 5.8
   #export KERNEL="5.8.0-55-generic"
   #"5.10.0-1029-oem"
-fi
+#fi
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -137,8 +137,8 @@ printf "127.0.0.1 localhost\n" > etc/hosts
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
 sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
-install_my_package linux-modules-extra-$KERNEL
-install_my_package linux-headers-$KERNEL
+#install_my_package linux-modules-extra-$KERNEL
+#install_my_package linux-headers-$KERNEL
 
 install_my_packages packages-baremetal.l
 

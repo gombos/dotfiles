@@ -32,7 +32,10 @@ if [ -z "$KERNEL" ]; then
   export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 fi
 
-#KERNEL=$(uname -r)
+if [ -z "$KERNEL" ]; then
+  export KERNEL="5.4.0-52-generic"
+fi
+
 echo $KERNEL
 
 # todo - move these back to baremetal
@@ -43,6 +46,8 @@ DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config
+
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL install_my_package linux-headers-$KERNEL
 
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
@@ -89,6 +94,8 @@ EOF
 grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 #grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+cp -rv /usr/lib/modules /efi/
 
 mkdir -p /efi/loader
 cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
