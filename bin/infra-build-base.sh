@@ -171,13 +171,13 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 
 # Try both wget first
 if ! [ -f usr/local/bin/pacapt ]; then
-  wget --no-check-certificate https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
+  wget --no-check-certificate https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
   chmod 755 /usr/local/bin/pacapt
 fi
 
 # Try curl next (arch has curl but not wget for example)
 if ! [ -f usr/local/bin/pacapt ]; then
-  curl https://github.com/icy/pacapt/raw/ng/pacapt -O /usr/local/bin/pacapt
+  curl https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
   chmod 755 /usr/local/bin/pacapt
 fi
 
