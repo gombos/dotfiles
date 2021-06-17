@@ -4,11 +4,10 @@ FILE=rootfs.raw
 OUT_DIR=${OUT_DIR:=out}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
 
-create_img_file() {
   echo "Installing $RELEASE into $FILE..."
 
   # 6GB image file
-  IMGSIZE=${IMGSIZE:=6144} # in megabytes
+  IMGSIZE=${IMGSIZE:=7144} # in megabytes
 
   if [ -f $FILE ]; then
     sudo rm -rf $FILE
@@ -25,7 +24,7 @@ create_img_file() {
   DISK=""
   for i in /dev/loop* # or /dev/nbd*
   do
-    if sudo losetup $i $FILE # or qemu-nbd -c $i $FILE
+    if sudo losetup $i $FILE
     then
       DISK=$i
       break
@@ -38,31 +37,59 @@ create_img_file() {
   # Partition device
   echo "Partitioning $DISK..."
 
-  printf "label: dos\n;\n" | sudo sfdisk $DISK -q || fail "cannot partition $FILE"
+  # format /dev/sdb as GPT, GUID Partition Table
+  sudo sgdisk -Z $DISK
+
+  sudo sgdisk -n 0:0:+200M  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
+  sudo sgdisk -n 0:0:+6000M -t 0:8300 -c 0:"linux"  $DISK
+
   sudo partprobe $DISK
 
+  sudo mkfs.vfat ${DISK}p1
+
   echo "Creating root partition..."
-  sudo mkfs.ext4 -L rootfs -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p1 || fail "cannot create / ext4"
+  sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"
 
   # Mount device
   echo "Mounting root partition..."
-  sudo mount ${DISK}p1 $MNT_DIR || fail "cannot mount /"
-}
+  sudo mount ${DISK}p2 $MNT_DIR || fail "cannot mount /"
 
-umount_image() {
-  sudo umount $MNT_DIR
-  sudo losetup -d /dev/loop* 2>/dev/null
-}
-
-if [ "$FILE" != "" ]; then
-  create_img_file
   cd $MNT_DIR
-
-  sudo docker pull 0gombi0/homelab:base
-  container_id=$(sudo docker create 0gombi0/homelab:base)
+  sudo docker pull 0gombi0/homelab-base
+  container_id=$(sudo docker create 0gombi0/homelab-base)
   sudo docker export $container_id  | sudo tar xf -
   sudo docker rm $container_id
 
   cd -
-  umount_image
-fi
+
+  cp $MNT_DIR/usr/lib/systemd/boot/efi/systemd-bootx64.efi /tmp/
+  sudo cp $MNT_DIR/boot/vmlinuz /tmp/
+  sudo umount $MNT_DIR
+
+  sudo mount ${DISK}p1 $MNT_DIR || fail "cannot mount /"
+
+  sudo mkdir -p $MNT_DIR/EFI/BOOT/
+  sudo mkdir -p $MNT_DIR/kernel/
+
+  sudo cp /tmp/systemd-bootx64.efi   $MNT_DIR/EFI/BOOT/BOOTX64.EFI
+  sudo cp /tmp/vmlinuz   $MNT_DIR/kernel/
+  sudo cp /go/efi_bestia/kernel/initrd.img  $MNT_DIR/kernel/
+
+  sudo mkdir -p $MNT_DIR/loader/entries
+
+cat << 'EOF' | sudo tee -a $MNT_DIR/loader/entries/linux.conf
+title   linux
+linux   /kernel/vmlinuz
+initrd  /kernel/initrd.img
+options root=/dev/sda2 rw
+EOF
+
+cat << 'EOF' | sudo tee -a $MNT_DIR/loader/loader.conf
+timeout 0
+default linux
+EOF
+
+  sudo umount $MNT_DIR
+  sudo losetup -d /dev/loop* 2>/dev/null
+
+  qemu-img convert -O vmdk rootfs.raw vmdkname.vmdk
