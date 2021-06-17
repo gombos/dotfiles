@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-efi as efi
+FROM 0gombi0/homelab-base:efi as efi
 
 FROM 0gombi0/homelab-base
 COPY bin/* packages/* /tmp/
