@@ -315,7 +315,7 @@ if [ "$HOST" == "bestia" ]; then
 
   echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=6min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  echo 'LABEL=EFI /efi auto noauto,x-systemd.automount,umask=0077,dmask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /efi auto noauto,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   mv  $R/lib/modules $R/lib/modules.old
