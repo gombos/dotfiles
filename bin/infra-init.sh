@@ -47,7 +47,6 @@ done
 
 grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST="vm"
 
-# dmidecode is probably more reliable
 case "$cpu" in
   *E5-2670*)
     echo "Booting on bestia"
