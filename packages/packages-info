@@ -1,3 +1,5 @@
+lshw
+lsscsi
 busybox
 barrier
 linux-firmware

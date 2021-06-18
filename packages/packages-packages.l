@@ -1,11 +1,10 @@
 # avoid HW packages
 # avoid distry specific packages
 
-# debian based only
+# debian system
 apt-file
 apt-transport-https
 apt-utils
-
 
 # filesystems
 fuse3
@@ -16,6 +15,11 @@ exfat-fuse
 kpartx
 bindfs
 dosfstools
+hfsprogs
+partclone
+parted
+sshfs
+cryptsetup
 
 # files
 antiword
@@ -24,26 +28,40 @@ attr
 borgbackup
 detox
 dos2unix
+file
+git
+less
+micro
+pass
+rclone
+ranger
+rename
+ripgrep
+rmlint
+rsync
+pass
 
+# languages
+python3-distutils
+golang-go
+
+# devices
 adb
+
+# tools
 aspell-en
 bash-completion
 bc
 bind9-dnsutils
 command-not-found
-cryptsetup
 curl
 debootstrap
 docker-compose
-file
 gawk
 gettext-base
-git
-golang-go
 gpg
 gpg-agent
 hashdeep
-hfsprogs
 htop
 iotop
 iperf3
@@ -52,39 +70,23 @@ iputils-tracepath
 joe
 keyutils
 lastpass-cli
-less
 libatasmart-bin
 libimage-exiftool-perl
 libnotify-bin
 locales
-lshw
 lsof
-lsscsi
 man-db
 mc
-micro
 mutt
 ncat
 net-tools
 nmap
 pandoc
-partclone
-parted
-pass
 pmount
 poppler-utils
 powertop
 psmisc
-ranger
-rclone
-rename
-ripgrep
-rmlint
-rsync
-rsyslog
-scsitools
 sqlite3
-sshfs
 sshuttle
 strace
 tcpdump
@@ -95,8 +97,6 @@ xattr
 zerofree
 zip
 gddrescue
-wakeonlan
-python3-distutils
 fuse-overlayfs
 wget
 sudo

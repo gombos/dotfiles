@@ -14,3 +14,4 @@ nfs-kernel-server
 openssh-server
 open-vm-tools-desktop
 upower
+rsyslog

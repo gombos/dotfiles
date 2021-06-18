@@ -20,11 +20,13 @@ ifupdown
 isc-dhcp-client
 network-manager
 ethtool
+wakeonlan
 
 # storage
 hdparm
 smartmontools
 udisks2
+scsitools
 
 # wireless
 rfkill
@@ -40,6 +42,8 @@ libblockdev-crypto2
 libu2f-udev
 cpufreq-info
 lm-sensors
+
+
 
 # laptop
 thermald # monitors and controls temperature in laptops
