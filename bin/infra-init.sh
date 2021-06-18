@@ -379,7 +379,7 @@ if [ "$HOST" == "vm" ]; then
   # Mask services not required inside a vm
   ln -sf /dev/null $R/etc/systemd/system/smartd.service
   ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+#  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
   ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
 
