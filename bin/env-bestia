@@ -47,8 +47,8 @@ my-mount() {
   export -f "go-$1"
 }
 
-my-mount linux subvol=/
-my-mount linux_bestia subvol=/
+my-mount linux "subvol=/"
+my-mount linux_bestia "subvol=/"
 my-mount linux_live subvol=/
 my-mount home_transient
 my-mount home_bestia
