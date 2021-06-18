@@ -22,11 +22,16 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
-mkdir /efi
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
+fi
 
-rm -rf /tmp/initrd
-mkdir -p /tmp/initrd
-cd /tmp/initrd
+if [ -z "$RELEASE" ]; then
+  RELEASE=$VERSION_CODENAME
+  if [ -z "$RELEASE" ]; then
+    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
+  fi
+fi
 
 if [ -z "$KERNEL" ]; then
   export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
@@ -38,12 +43,11 @@ fi
 
 echo $KERNEL
 
-if [ -z "$RELEASE" ]; then
-  RELEASE=$VERSION_CODENAME
-  if [ -z "$RELEASE" ]; then
-    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
-  fi
-fi
+mkdir /efi
+
+rm -rf /tmp/initrd
+mkdir -p /tmp/initrd
+cd /tmp/initrd
 
 # Install nvidea driver - this is the only package from restricted source
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
