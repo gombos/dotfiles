@@ -5,7 +5,7 @@
 # todo - discover if podman is available and use podman instead of docker if available
 # todo - does this really needs sudo ?
 
-mnt-linux
+mnt linux
 DIR=$MNTDIR/linux/linux-dev
 
 # it is only possible to “flatten” a Docker container, not an image.
