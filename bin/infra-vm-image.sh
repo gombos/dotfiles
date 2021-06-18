@@ -50,21 +50,23 @@ MNT_EFI=$MNT_DIR/efi
   sudo mkfs.vfat -F 32 -n EFI ${DISK}p1
 
   echo "Creating root partition..."
-  sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"
+#  sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"
+  sudo mkfs -t btrfs -L "linux" ${DISK}p2 || fail "cannot create /"
 
   # Mount device
   echo "Mounting partitions..."
   sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
   sudo mount ${DISK}p2 $MNT || fail "cannot mount"
+  sudo btrfs subvolume create $MNT/linux
 
-  cd $MNT
+  cd $MNT/linux
   sudo docker pull 0gombi0/homelab:stable
   container_id=$(sudo docker create 0gombi0/homelab:stable /bin/bash)
   sudo docker export $container_id | sudo tar xf -
   sudo docker rm $container_id
   sync
-#  sudo umount $MNT
   cd -
+  sudo umount $MNT
 
   sudo rm -rf /tmp/efi
   mkdir /tmp/efi
@@ -73,13 +75,14 @@ MNT_EFI=$MNT_DIR/efi
   container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
   sudo docker export $container_id | sudo tar xf -
   sudo rsync -av /tmp/efi/efi/ $MNT_EFI
-  sync
+  sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
 
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
   sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
-  sudo umount $MNT_EFI
+  sync
   cd -
+  sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
   qemu-img convert -O vmdk rootfs.raw vmdkname.vmdk

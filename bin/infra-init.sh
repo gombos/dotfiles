@@ -261,8 +261,12 @@ then
 fi
 
 if [ -d "$mp/modules" ]; then
+  # Restrict only root process to load kernel modules. This is a reasonable system hardening
+
   mv $R/lib/modules $R/lib/modules.old
   ln -sf /run/media/efi/modules $R/lib/
+
+  echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
 # --- HOST specific logic
@@ -352,9 +356,6 @@ fi
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
   echo 'LABEL=linux /run/media/linux auto defaults 0 2' >> $R/etc/fstab
-
-  # This will restrict only root process to load kernel modules. This is a reasonable system hardening
-  echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
