@@ -43,7 +43,9 @@ fi
 
 echo $KERNEL
 
-mkdir /efi
+mkdir -p /efi
+
+export DEBIAN_FRONTEND=noninteractive
 
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
@@ -54,21 +56,20 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sou
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
 
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+apt-get update -y -qq -o Dpkg::Use-Pty=0
 
-DEBIAN_FRONTEND=noninteractive apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
+apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
 echo anyad
 echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 nvidia-driver-460
+apt-get install -y nvidia-driver-460
 
 # kernel binary
 mkdir -p /efi/kernel
