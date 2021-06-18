@@ -6,6 +6,8 @@ P="$2"
 
 if [ "$1" == "efi" ]; then
   MO="user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
+elif [ "$1" == "linux" ]; then
+  MO="subvol=/"
 else
   MO="$3"
 fi
