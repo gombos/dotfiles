@@ -17,7 +17,7 @@ DIR=$MNTDIR/linux/linux-dev
 # todo - does this invalidates the docker cache ?
 docker pull 0gombi0/homelab:dev
 
-container_id=$(sudo docker create 0gombi0/homelab:dev)
+container_id=$(sudo docker create 0gombi0/homelab:stable)
 
 sudo btrfs property set -ts $DIR ro false
 sudo btrfs subvolume delete $DIR 2>/dev/null
