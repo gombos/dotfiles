@@ -79,7 +79,7 @@ MNT_EFI=$MNT_DIR/efi
   sudo btrfs property set -ts $MNT/linux ro true
   sync
   sleep 10
-  cd -
+  cd /
   sudo umount $MNT
 
   sudo rm -rf /tmp/efi
@@ -94,9 +94,9 @@ MNT_EFI=$MNT_DIR/efi
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
   sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
+  sudo extlinux --install $MNT_EFI/syslinux/
   sync
   cd -
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
-#  qemu-img convert -O vmdk $FILE /tmp/vmdkname.vmdk
