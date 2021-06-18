@@ -5,10 +5,10 @@ CID=fab64c93
 parentCID=ffffffff
 createType="monolithicFlat"
 
-# Extent description
-RW 12582912 FLAT "linux-flat.vmdk" 0
+# 7 GB (7*2*1024*1024)
+RW 14680064 FLAT "linux-flat.vmdk" 0
 
-# The Disk Data Base 
+# The Disk Data Base
 #DDB
 
 ddb.adapterType = "lsilogic"
