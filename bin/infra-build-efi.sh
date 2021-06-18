@@ -62,33 +62,57 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL nvidia-driver-460
 
+# kernel binary
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
-# grub efi monolith
-mkdir -p /efi/EFI/BOOT/
-mkdir -p /efi/EFI/ubuntu/
-cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/BOOTX64.EFI
-echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
-
+# systemd-boot binary
 mkdir -p /efi/EFI/systemd
 cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/BOOTX64.EFI
 
-# grub pc
+# systemd-boot config
+mkdir -p /efi/loader/entries
+cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
+title   linux
+linux   /kernel/vmlinuz
+initrd  /kernel/initrd.img
+options root=/dev/sda2 rw
+EOF
+
+cat << 'EOF' | tee -a /efi/loader/loader.conf
+timeout 0
+default linux
+EOF
+
+# grub efi binary
+mkdir -p /efi/EFI/BOOT/
+mkdir -p /efi/EFI/ubuntu/
+cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/BOOTX64.EFI
+
+# grub efi config
+echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
+
+# Make grub the default EFI boot mechanism
+# Maybe change this later
+cp /efi/EFI/ubuntu/BOOTX64.EFI /efi/EFI/BOOT/BOOTX64.EFI
+
+# grub pc binary
 mkdir -p /efi/grub/
 cp -rv /usr/lib/grub/i386-pc /efi/grub/
+
+# grub pc config
 echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
 
-# grub ipxe
+# grub ipxe binary
 mkdir -p /efi/ipxe/
 cp /boot/ipxe.* /efi/ipxe/
 
-# TCE
-mkdir -p /efi/tce
-mkdir -p /efi/tce/optional
-
+# syslinux binary
 mkdir -p /efi/syslinux
+cp /usr/lib/syslinux/mbr/gptmbr.bin /efi/syslinux
 cp -rv /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
+
+# syslinux config - chainload grub
 cat > /efi/syslinux/syslinux.cfg << 'EOF'
 DEFAULT linux
 
@@ -118,19 +142,9 @@ git clone https://github.com/mkubecek/vmware-host-modules.git && cd vmware-host-
 
 cp -rv /usr/lib/modules /efi/
 
-mkdir -p /efi/loader/entries
-cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
-title   linux
-linux   /kernel/vmlinuz
-initrd  /kernel/initrd.img
-options root=/dev/sda2 rw
-EOF
-
-cat << 'EOF' | tee -a /efi/loader/loader.conf
-timeout 0
-default linux
-EOF
-
+# TCE binary
+mkdir -p /efi/tce
+mkdir -p /efi/tce/optional
 wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
