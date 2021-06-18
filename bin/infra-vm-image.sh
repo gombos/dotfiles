@@ -1,11 +1,13 @@
 #!/bin/bash
 
-FILE=rootfs.raw
+FILENAME=rootfs.raw
 OUT_DIR=${OUT_DIR:=/tmp/img}
-MNT_DIR=${MNT_DIR:=$OUT_DIR/${FNAME}}
+FILE=$OUT_DIR/${FILENAME}
+MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}
 MNT=$MNT_DIR/root
 MNT_EFI=$MNT_DIR/efi
 
+  mkdir -p $MNT $MNT_EFI
   echo "Installing $RELEASE into $FILE..."
 
   # 7GB image file to fit comfortable to 8 GB sticks or larger
@@ -19,8 +21,6 @@ MNT_EFI=$MNT_DIR/efi
     echo "Creating $FILE"
     sudo dd if=/dev/zero of=$FILE bs=1024k seek=${IMGSIZE} count=0
   fi
-
-  mkdir -p $MNT $MNT_EFI
 
   # Assigning loopback device to the image file
   DISK=""
@@ -76,8 +76,9 @@ MNT_EFI=$MNT_DIR/efi
   sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
   cd ..
   # Make it read-only
-  sudo btrfs property set -ts $DIR ro true
+  sudo btrfs property set -ts $MNT/linux ro true
   sync
+  sleep 10
   cd -
   sudo umount $MNT
 
@@ -87,7 +88,7 @@ MNT_EFI=$MNT_DIR/efi
   sudo docker pull 0gombi0/homelab-base:efi
   container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
   sudo docker export $container_id | sudo tar xf -
-  sudo rsync -v /tmp/efi/efi/ $MNT_EFI
+  sudo rsync -rv /tmp/efi/efi/ $MNT_EFI
   sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
 
   # https://wiki.archlinux.org/title/Syslinux
@@ -98,4 +99,4 @@ MNT_EFI=$MNT_DIR/efi
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
-  qemu-img convert -O vmdk rootfs.raw vmdkname.vmdk
+  qemu-img convert -O vmdk $FILE /tmp/vmdkname.vmdk

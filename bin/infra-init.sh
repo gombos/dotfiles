@@ -386,17 +386,17 @@ if [ "$HOST" == "vm" ]; then
   echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
   # Mask services not required inside a vm
-  ln -sf /dev/null $R/etc/systemd/system/smartd.service
-  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+#  ln -sf /dev/null $R/etc/systemd/system/smartd.service
+#  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
 #  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
+#  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+#  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
 
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
   # These policies are for development only
   # Autologin
