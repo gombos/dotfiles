@@ -5,7 +5,7 @@
 FROM 0gombi0/homelab-base:minbase
 
 # Setup tmp
-COPY bin/* packages/* /tmp
+COPY bin/* packages/* /tmp/
 
 # Change the workdir to tmp
 WORKDIR /tmp
