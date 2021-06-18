@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILENAME=rootfs.raw
+FILENAME=linux-flat.vmdk
 OUT_DIR=${OUT_DIR:=/tmp/img}
 FILE=$OUT_DIR/${FILENAME}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}
