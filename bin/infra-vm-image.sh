@@ -47,7 +47,7 @@ MNT_EFI=$MNT_DIR/efi
 
   sudo partprobe $DISK
 
-  sudo mkfs.vfat ${DISK}p1
+  sudo mkfs.vfat -F 32 -n EFI ${DISK}p1
 
   echo "Creating root partition..."
   sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"

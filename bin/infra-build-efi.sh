@@ -59,7 +59,7 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /et
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot shim
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
@@ -69,7 +69,7 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-apt-get install -y nvidia-driver-460
+apt-get --reinstall install -y nvidia-driver-460
 
 # kernel binary
 mkdir -p /efi/kernel
@@ -88,9 +88,9 @@ initrd  /kernel/initrd.img
 options root=/dev/sda2 rw
 EOF
 
+# Default boot is first in alphabetical order
 cat << 'EOF' | tee -a /efi/loader/loader.conf
-timeout 0
-default linux
+default *
 EOF
 
 # grub efi binary
