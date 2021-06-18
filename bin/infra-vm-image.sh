@@ -99,4 +99,4 @@ MNT_EFI=$MNT_DIR/efi
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
-  qemu-img convert -O vmdk $FILE /tmp/vmdkname.vmdk
+#  qemu-img convert -O vmdk $FILE /tmp/vmdkname.vmdk
