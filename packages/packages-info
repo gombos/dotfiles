@@ -1,4 +1,5 @@
 barrier
+linux-firmware
 
 awscli
 syslinux-common

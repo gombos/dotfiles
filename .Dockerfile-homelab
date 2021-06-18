@@ -1,8 +1,5 @@
-FROM 0gombi0/homelab-base:efi as efi
-
 FROM 0gombi0/homelab-base
 COPY bin/* packages/* /tmp/
-COPY --from=efi /efi /efi
 
 WORKDIR /tmp
 RUN ./infra-build-base.sh

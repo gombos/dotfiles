@@ -1,8 +1,8 @@
-FROM 0gombi0/homelab-base as efi
+FROM 0gombi0/homelab:stable as base
 
 COPY bin/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-efi.sh
 
 FROM scratch
-COPY --from=efi /efi /efi
+COPY --from=base /efi /efi

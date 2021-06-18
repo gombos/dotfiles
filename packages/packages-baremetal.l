@@ -5,11 +5,9 @@ efibootmgr
 kexec-tools # soft reboot (without bootloader)
 friendly-recovery
 
-# kernel
-linux-firmware
-
 # bootmanager, init
 systemd-sysv
+sudo
 
 # networking
 dnsmasq-base
