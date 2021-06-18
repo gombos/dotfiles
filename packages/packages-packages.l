@@ -75,7 +75,6 @@ sqlite3
 sshfs
 sshuttle
 strace
-sudo
 tcpdump
 tesseract-ocr
 time
@@ -90,6 +89,5 @@ exfat-fuse
 kpartx
 wakeonlan
 python3-distutils
-busybox
 fuse-overlayfs
 wget

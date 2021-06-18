@@ -1,4 +1,6 @@
-# Purpose: boots at least on some HW and allows to further setup and configure the system
+# Purpose: HW-only packages
+# Can be booted with an EFI partition
+# Allows to further setup and configure the system
 
 # boot
 efibootmgr
