@@ -8,8 +8,8 @@ MNT_EFI=$MNT_DIR/efi
 
   echo "Installing $RELEASE into $FILE..."
 
-  # 6GB image file
-  IMGSIZE=${IMGSIZE:=7144} # in megabytes
+  # 7GB image file to fit comfortable to 8 GB sticks or larger
+  IMGSIZE=${IMGSIZE:=7168} # in megabytes
 
   if [ -f $FILE ]; then
     sudo rm -rf $FILE
@@ -42,8 +42,8 @@ MNT_EFI=$MNT_DIR/efi
   # format /dev/sdb as GPT, GUID Partition Table
   sudo sgdisk -Z $DISK
 
-  sudo sgdisk -n 0:0:+1G  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
-  sudo sgdisk -n 0:0:+5G -t 0:8300 -c 0:"linux"  $DISK
+  sudo sgdisk -n 0:0:+1022M  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
+  sudo sgdisk -n 0:0:+6G -t 0:8300 -c 0:"linux"  $DISK
 
   sudo partprobe $DISK
 
@@ -58,9 +58,9 @@ MNT_EFI=$MNT_DIR/efi
   sudo mount ${DISK}p2 $MNT || fail "cannot mount"
 
   cd $MNT
-  sudo docker pull 0gombi0/homelab-base:latest
-  container_id=$(sudo docker create 0gombi0/homelab-base:latest /bin/bash)
-  sudo docker export $container_id  | sudo tar xf -
+  sudo docker pull 0gombi0/homelab:stable
+  container_id=$(sudo docker create 0gombi0/homelab:stable /bin/bash)
+  sudo docker export $container_id | sudo tar xf -
   sudo docker rm $container_id
   sync
 #  sudo umount $MNT
@@ -71,7 +71,7 @@ MNT_EFI=$MNT_DIR/efi
   cd /tmp/efi
   sudo docker pull 0gombi0/homelab-base:efi
   container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
-  sudo docker export $container_id  | sudo tar xf -
+  sudo docker export $container_id | sudo tar xf -
   sudo rsync -av /tmp/efi/efi/ $MNT_EFI
   sync
 
