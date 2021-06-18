@@ -2,14 +2,17 @@
 # Can be booted with an EFI partition
 # Allows to further setup and configure the system
 
+# init
+systemd-sysv
+udev
+sudo
+
+# optional packages below
+
 # boot
 efibootmgr
 kexec-tools # soft reboot (without bootloader)
 friendly-recovery
-
-# bootmanager, init
-systemd-sysv
-sudo
 
 # networking
 dnsmasq-base
@@ -29,13 +32,14 @@ wireless-tools
 bluez
 
 # devices
-udev
 uhubctl
 usb-modeswitch
 usbrelay
 usbutils
 libblockdev-crypto2
 libu2f-udev
+cpufreq-info
+lm-sensors
 
 # laptop
 thermald # monitors and controls temperature in laptops

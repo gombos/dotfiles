@@ -1,27 +1,41 @@
-adb
-antiword
+# avoid HW packages
+# avoid distry specific packages
+
+# debian based only
 apt-file
 apt-transport-https
 apt-utils
+
+
+# filesystems
+fuse3
+ntfs-3g
+btrfs-progs
+squashfs-tools
+exfat-fuse
+kpartx
+bindfs
+dosfstools
+
+# files
+antiword
 archivemount
-aspell-en
 attr
+borgbackup
+detox
+dos2unix
+
+adb
+aspell-en
 bash-completion
 bc
 bind9-dnsutils
-bindfs
-borgbackup
 command-not-found
-cpufrequtils
 cryptsetup
 curl
 debootstrap
-detox
 docker-compose
-dos2unix
-dosfstools
 file
-fuse3
 gawk
 gettext-base
 git
@@ -42,7 +56,6 @@ less
 libatasmart-bin
 libimage-exiftool-perl
 libnotify-bin
-lm-sensors
 locales
 lshw
 lsof
@@ -54,7 +67,6 @@ mutt
 ncat
 net-tools
 nmap
-ntfs-3g
 pandoc
 partclone
 parted
@@ -83,11 +95,8 @@ xattr
 zerofree
 zip
 gddrescue
-btrfs-progs
-squashfs-tools
-exfat-fuse
-kpartx
 wakeonlan
 python3-distutils
 fuse-overlayfs
 wget
+sudo
