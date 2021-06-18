@@ -20,6 +20,8 @@ partclone
 parted
 sshfs
 cryptsetup
+extlinux
+
 
 # files
 antiword

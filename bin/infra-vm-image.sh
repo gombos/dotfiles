@@ -74,11 +74,9 @@ MNT_EFI=$MNT_DIR/efi
   # Check before doing it readlink -- "/etc/resolv.conf"
   cd etc
   sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
-  cd ..
   # Make it read-only
   sudo btrfs property set -ts $MNT/linux ro true
   sync
-  sleep 10
   cd /
   sudo umount $MNT
 
@@ -96,7 +94,7 @@ MNT_EFI=$MNT_DIR/efi
   sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
   sudo extlinux --install $MNT_EFI/syslinux/
   sync
-  cd -
+  cd /
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
