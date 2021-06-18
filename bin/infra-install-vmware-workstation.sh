@@ -1,9 +1,11 @@
-if [ -z "$KERNEL" ]; then
-  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
-fi
+#if [ -z "$KERNEL" ]; then
+#  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
+#fi
 
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libaio1 linux-headers-$KERNEL
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libaio1
+
+# linux-headers-$KERNEL build-essential
 
 cd /
 
@@ -14,16 +16,16 @@ rm -rf /VMware-Workstation-Full-15.5.6-16341506.x86_64.bundle
 
 # https://communities.vmware.com/thread/623768
 
-export VM_UNAME=$KERNEL
-cd /tmp/
-git clone https://github.com/mkubecek/vmware-host-modules.git
-cd vmware-host-modules
-git checkout workstation-15.5.6
-make VM_UNAME=$KERNEL
-make install VM_UNAME=$KERNEL
-make clean VM_UNAME=$KERNEL
-cd /
-rm -rf /tmp/mware-host-modules
+#export VM_UNAME=$KERNEL
+#cd /tmp/
+#git clone https://github.com/mkubecek/vmware-host-modules.git
+#cd vmware-host-modules
+#git checkout workstation-15.5.6
+#make VM_UNAME=$KERNEL
+#make install VM_UNAME=$KERNEL
+#make clean VM_UNAME=$KERNEL
+#cd /
+#rm -rf /tmp/mware-host-modules
 
 # Add systemd service files for vmware to make it easier to enable/disable from kernel command line
 cat <<EOF | tee lib/systemd/system/vmware.service > /dev/null
