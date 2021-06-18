@@ -31,12 +31,6 @@
 # Network - DHCP
 # rootfs version
 
-# Per-host configuration directory
-cd $mp/config
-
-# Per instance configuration file
-. ./rootfs-*.cfg
-
 R="$NEWROOT"
 
 # --- determine HOST
@@ -76,6 +70,13 @@ case "$cpu" in
     # fallback
   ;;
 esac
+
+# Per-host configuration is optional
+if [ -d "$mp/config" ]; then
+  cd $mp/config
+  # Per instance configuration file
+  . ./rootfs-*.cfg
+fi
 
 # --- HOST is known, determine networking
 # static IP is faster to assign more reliant
