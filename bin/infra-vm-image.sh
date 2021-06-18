@@ -60,6 +60,7 @@ MNT_EFI=$MNT_DIR/efi
   sudo btrfs subvolume create $MNT/linux
 
   cd $MNT/linux
+  sudo btrfs subvolume set-default .
   sudo docker pull 0gombi0/homelab:stable
   container_id=$(sudo docker create 0gombi0/homelab:stable /bin/bash)
   sudo docker export $container_id | sudo tar xf -
