@@ -38,16 +38,29 @@ fi
 
 echo $KERNEL
 
+if [ -z "$RELEASE" ]; then
+  RELEASE=$VERSION_CODENAME
+  if [ -z "$RELEASE" ]; then
+    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
+  fi
+fi
+
 # todo - move these back to baremetal
 # syslinux-common grub2-common
 # do not ever run this locally, i no longer trust them
 
+# Enable package updates before installing rest of packages
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
+
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+
 DEBIAN_FRONTEND=noninteractive apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL nvidia-driver-460
 
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
@@ -95,6 +108,13 @@ EOF
 grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 #grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+
+# Make sure we have all the required modules built
+
+export VM_UNAME=$KERNEL
+git clone https://github.com/mkubecek/vmware-host-modules.git && cd vmware-host-modules && git checkout workstation-15.5.6 && make VM_UNAME=$KERNEL && make install VM_UNAME=$KERNEL && make install VM_UNAME=$KERNEL && make clean VM_UNAME=$KERNEL && cd / && rm -rf vmware-host-modules
+
+
 
 cp -rv /usr/lib/modules /efi/
 
