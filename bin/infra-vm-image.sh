@@ -39,7 +39,7 @@ MNT_EFI=$MNT_DIR/efi
   # Partition device
   echo "Partitioning $DISK..."
 
-  # format /dev/sdb as GPT, GUID Partition Table
+  # format as GPT, GUID Partition Table
   sudo sgdisk -Z $DISK
 
   sudo sgdisk -n 0:0:+1022M  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
@@ -96,6 +96,9 @@ MNT_EFI=$MNT_DIR/efi
   sudo extlinux --install $MNT_EFI/syslinux/
   sync
   cd /
+
+  # directories that are not needed for vm
+  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/EFI/ubuntu $MNT_EFI/grub $MNT_EFI/tce $MNT_EFI/ipxe
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null

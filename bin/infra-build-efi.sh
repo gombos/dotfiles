@@ -80,19 +80,19 @@ mkdir -p /efi/loader/entries
 # Default boot is first in alphabetical order
 cat << 'EOF' | tee -a /efi/loader/loader.conf
 timeout 10
-default *
+default grub
 EOF
 
-cat << 'EOF' | tee -a /efi/loader/entries/1-grub.conf
+cat << 'EOF' | tee -a /efi/loader/entries/grub.conf
 title   grub
 efi /EFI/ubuntu/grubx64.efi
 EOF
 
-cat << 'EOF' | tee -a /efi/loader/entries/2-linux.conf
+cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
 title   linux
 linux   /kernel/vmlinuz
 initrd  /kernel/initrd.img
-options root=/dev/sda2 rw
+options root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay rd.exec=dotfiles/bin/infra-init.sh
 EOF
 
 # grub efi binary
@@ -128,7 +128,7 @@ cat > /efi/syslinux/syslinux.cfg << 'EOF'
 DEFAULT linux
 
 LABEL linux
- LINUX /kernel/vmlinuz root=LABEL=linux rootflags=subvol=linux
+ LINUX /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay rd.exec=dotfiles/bin/infra-init.sh
  INITRD /kernel/initrd.img
 
 INCLUDE /dotfiles/boot/syslinux.cfg
