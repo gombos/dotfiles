@@ -78,7 +78,7 @@ MNT_EFI=$MNT_DIR/efi
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
   sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
-#  sudo umount $MNT_EFI
+  sudo umount $MNT_EFI
   cd -
 
   sudo losetup -d /dev/loop* 2>/dev/null

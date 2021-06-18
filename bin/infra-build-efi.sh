@@ -72,7 +72,7 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # systemd-boot binary
 mkdir -p /efi/EFI/systemd
-cp /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
+cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
 
 # systemd-boot config
 mkdir -p /efi/loader/entries
@@ -97,14 +97,14 @@ EOF
 # grub efi binary
 mkdir -p /efi/EFI/boot/
 mkdir -p /efi/EFI/ubuntu/
-cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
+cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 
 # grub efi config - has a dependency on dotfiles
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
 # Make grub the default EFI boot mechanism
 # Maybe change this later
-cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/boot/bootx64.efi
+cp -v /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
 mkdir -p /efi/grub/
