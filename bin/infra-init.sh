@@ -173,10 +173,6 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-# remove the admin user
-sed -i '/^admin:/d' $R/etc/passwd
-sed -i '/^admin:/d' $R/etc/shadow
-
 # harden sshd
 echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
 echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
@@ -211,6 +207,11 @@ then
   sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
   sed -i "s/^docker:.*/&,gombi/" $R/etc/group
   sed -i "s/^users:.*/&,gombi/" $R/etc/group
+
+  # remove the admin user
+  sed -i '/^admin:/d' $R/etc/passwd
+  sed -i '/^admin:/d' $R/etc/shadow
+
 fi
 
 # henrik user
@@ -232,6 +233,10 @@ then
   echo "bagoly:x:1002:" >> $R/etc/group
   sed -i "s/^sudo:.*/&,bagoly/" $R/etc/group
   sed -i "s/^users:.*/&,bagoly/" $R/etc/group
+
+  # remove the admin user
+  sed -i '/^admin:/d' $R/etc/passwd
+  sed -i '/^admin:/d' $R/etc/shadow
 fi
 
 # ssh jumphost user - Restricted user, no persistent home, login only via ssh key, disabled login password
@@ -259,6 +264,10 @@ then
   ln -sf /home/dotfiles-admin $R/admin/.dotfiles
   ln -sf /admin/.dotfiles/bin/infra-provision-user.sh $R/admin/.bash_profile
   chown -R 501:27 $R/admin/
+
+  # remove the admin user
+  sed -i '/^admin:/d' $R/etc/passwd
+  sed -i '/^admin:/d' $R/etc/shadow
 fi
 
 if [ -d "$mp/modules" ]; then
