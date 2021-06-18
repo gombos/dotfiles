@@ -64,6 +64,19 @@ MNT_EFI=$MNT_DIR/efi
   container_id=$(sudo docker create 0gombi0/homelab:stable /bin/bash)
   sudo docker export $container_id | sudo tar xf -
   sudo docker rm $container_id
+  sudo rm -rf dev
+  sudo rm -rf run
+  # Todo - do we actually need to make these directories ?
+  sudo mkdir dev
+  sudo mkdir run
+  sudo rm -rf etc/hostname
+  sudo rm -rf .dockerenv
+  # Check before doing it readlink -- "/etc/resolv.conf"
+  cd etc
+  sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
+  cd ..
+  # Make it read-only
+  sudo btrfs property set -ts $DIR ro true
   sync
   cd -
   sudo umount $MNT
@@ -74,7 +87,7 @@ MNT_EFI=$MNT_DIR/efi
   sudo docker pull 0gombi0/homelab-base:efi
   container_id=$(sudo docker create 0gombi0/homelab-base:efi /bin/bash)
   sudo docker export $container_id | sudo tar xf -
-  sudo rsync -av /tmp/efi/efi/ $MNT_EFI
+  sudo rsync -v /tmp/efi/efi/ $MNT_EFI
   sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
 
   # https://wiki.archlinux.org/title/Syslinux
