@@ -74,6 +74,10 @@ MNT_EFI=$MNT_DIR/efi
   sudo docker export $container_id  | sudo tar xf -
   sudo rsync -av /tmp/efi/efi/ $MNT_EFI
   sync
+
+  # https://wiki.archlinux.org/title/Syslinux
+  sudo sgdisk $DISK --attributes=1:set:2
+  sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
 #  sudo umount $MNT_EFI
   cd -
 

@@ -316,18 +316,4 @@ rm -rf /tmp/initrd
 # Populate logs with the list of filenames
 find /efi
 
-# Create an image
-# https://wiki.archlinux.org/title/Syslinux
-# sgdisk /dev/sda --attributes=1:set:2
-# dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/bios/gptmbr.bin of=/dev/sda
-
 # use syslinux only for booting legacy/non-ufi systems - for uefi system, no need to introduce an extra complexity into booting
-
-# Before making changes to a disk, you may want to backup the partition table and partition scheme of the drive. You can also use a backup to copy the same partition layout to numerous drives.
-# The MBR is stored in the the first 512 bytes of the disk. It consists of 4 parts:
-# The first 440 bytes contain the bootstrap code (boot loader).
-# The next 6 bytes contain the disk signature.
-# The next 64 bytes contain the partition table (4 entries of 16 bytes each, one entry for each primary partition).
-# The last 2 bytes contain a boot signature.
-# To save the MBR as mbr_file.img:
-# dd if=/dev/sdX of=/path/to/mbr_file.img bs=512 count=1
