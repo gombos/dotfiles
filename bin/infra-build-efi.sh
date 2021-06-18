@@ -98,12 +98,12 @@ mkdir -p /efi/EFI/BOOT/
 mkdir -p /efi/EFI/ubuntu/
 cp /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/BOOTX64.EFI
 
-# grub efi config
+# grub efi config - has a dependency on dotfiles
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
 # Make grub the default EFI boot mechanism
 # Maybe change this later
-cp /efi/EFI/ubuntu/BOOTX64.EFI /efi/EFI/BOOT/BOOTX64.EFI
+cp /efi/EFI/systemd/BOOTX64.EFI /efi/EFI/BOOT/
 
 # grub pc binary
 mkdir -p /efi/grub/

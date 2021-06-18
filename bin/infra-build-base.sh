@@ -97,6 +97,8 @@ echo "Building $RELEASE $TARGET"
 # Additional packages installed after boostrap
 # adduser apt apt-utils fdisk gcc-10-base gpg gpg-agent gpgconf gpgv locales pinentry-curses readline-common systemd systemd-sysv systemd-timesyncd ubuntu-keyring wget
 
+
+# TODO - make these idenpotent and run it all the time
 if [ "$TARGET" = "base" ]; then
 echo "building base"
 # /var/tmp points to /tmp
@@ -108,7 +110,8 @@ mv opt usr
 ln -sf usr/opt
 
 # For convinience
-mkdir -p nix && ln -sf /run/media go
+mkdir -p nix
+ln -sf /run/media go
 
 # Disable installing recommended and suggested packages by default
 mkdir -p etc/apt/apt.conf.d/
