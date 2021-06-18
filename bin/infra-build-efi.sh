@@ -79,6 +79,7 @@ mkdir -p /efi/loader/entries
 
 # Default boot is first in alphabetical order
 cat << 'EOF' | tee -a /efi/loader/loader.conf
+timeout 10
 default *
 EOF
 
