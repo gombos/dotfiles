@@ -39,19 +39,15 @@ MNT_EFI=$MNT_DIR/efi
   # Partition device
   echo "Partitioning $DISK..."
 
-  # format as GPT, GUID Partition Table
+  # format as GPT
   sudo sgdisk -Z $DISK
-
   sudo sgdisk -n 0:0:+1022M  -t 0:ef00 -c 0:"EFI System Partition"  $DISK
   sudo sgdisk -n 0:0:+6G -t 0:8300 -c 0:"linux"  $DISK
-
   sudo partprobe $DISK
 
-  sudo mkfs.vfat -F 32 -n EFI ${DISK}p1
-
-  echo "Creating root partition..."
-#  sudo mkfs.ext4 -L "linux" -U '76e94507-14c7-4d4a-9154-e70a4c7f8441' ${DISK}p2 || fail "cannot create / ext4"
-  sudo mkfs -t btrfs -L "linux" ${DISK}p2 || fail "cannot create /"
+  echo "Creating filesystems..."
+  sudo mkfs.vfat -F 32 -n EFI -i 00000001 ${DISK}p1 || fail "cannot create efi"
+  sudo mkfs.btrfs --label "linux" --uuid 00000000-0000-0000-0000-200000000001 ${DISK}p2 || fail "cannot create root"
 
   # Mount device
   echo "Mounting partitions..."
