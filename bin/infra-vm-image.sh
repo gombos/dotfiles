@@ -46,8 +46,8 @@ MNT_EFI=$MNT_DIR/efi
   sudo partprobe $DISK
 
   echo "Creating filesystems..."
-  sudo mkfs.vfat -F 32 -n EFI -i 00000001 ${DISK}p1 || fail "cannot create efi"
-  sudo mkfs.btrfs -L "linux" -U 00000000-0000-0000-0000-200000000001 ${DISK}p2 || fail "cannot create root"
+  sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
+  sudo mkfs.btrfs -L "linux" -U 10000000-0000-0000-0000-000000000000 ${DISK}p2 || fail "cannot create root"
 
   # Mount device
   echo "Mounting partitions..."
