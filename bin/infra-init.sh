@@ -388,7 +388,7 @@ if [ "$HOST" == "vm" ]; then
   echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
 
   # Mount home directories from the host at boot
-#  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
   # Mask services not required inside a vm
