@@ -91,7 +91,7 @@ cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
 title   linux
 linux   /kernel/vmlinuz
 initrd  /kernel/initrd.img
-options root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay rd.exec=dotfiles/bin/infra-init.sh quiet
+options root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet
 EOF
 
 # grub efi binary
@@ -127,7 +127,7 @@ cat > /efi/syslinux/syslinux.cfg << 'EOF'
 DEFAULT linux
 
 LABEL linux
- LINUX /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay rd.exec=dotfiles/bin/infra-init.sh quiet
+ LINUX /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet
  INITRD /kernel/initrd.img
 
 INCLUDE /dotfiles/boot/syslinux.cfg
@@ -229,6 +229,18 @@ else
   done
 fi
 
+RDEXECFULL="/sbin/infra-init.sh"
+
+# Execute the rd.exec script
+if [ -f "$RDEXECFULL" ]; then
+  printf "[rd.exec] start executing $RDEXECFULL \n"
+  scriptname="${RDEXECFULL##*/}"
+  scriptpath=${RDEXECFULL%/*}
+  configdir="$scriptpath"
+  ( cd $configdir && . "./$scriptname" )
+  printf "[rd.exec] stop executing $RDEXEC \n"
+fi
+
 for x in $(cat /proc/cmdline); do
   case $x in
   rd.dev=*)
@@ -248,25 +260,23 @@ for x in $(cat /proc/cmdline); do
       printf "[rd.exec] Mounting $configdrive to $mp\n"
       mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
       RDEXECFULL="$mp/$RDEXEC"
-    else
-      RDEXECFULL="/sbin/infra-init.sh"
-    fi
 
-    # Execute the rd.exec script
-    if [ -f "$RDEXECFULL" ]; then
-      printf "[rd.exec] start executing $RDEXECFULL \n"
-      scriptname="${RDEXECFULL##*/}"
-      scriptpath=${RDEXECFULL%/*}
-      configdir="$scriptpath"
-      ( cd $configdir && . "./$scriptname" )
-      printf "[rd.exec] stop executing $RDEXEC \n"
-    fi
+      # Execute the rd.exec script
+      if [ -f "$RDEXECFULL" ]; then
+        printf "[rd.exec] start executing $RDEXECFULL \n"
+        scriptname="${RDEXECFULL##*/}"
+        scriptpath=${RDEXECFULL%/*}
+        configdir="$scriptpath"
+        ( cd $configdir && . "./$scriptname" )
+        printf "[rd.exec] stop executing $RDEXEC \n"
+      fi
 
-    if [ -d "$mp" ]; then
-      # Umount EFI
-      cd /
-      umount "$mp"
-      rm -rf "$mp"
+      if [ -d "$mp" ]; then
+        # Umount EFI
+        cd /
+        umount "$mp"
+        rm -rf "$mp"
+      fi
     fi
     ;;
   esac
