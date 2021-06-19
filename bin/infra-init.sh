@@ -277,6 +277,8 @@ if [ -d "$mp/modules" ]; then
   mv $R/lib/modules $R/lib/modules.old
   ln -sf /run/media/efi/modules $R/lib/
 
+  mkdir -p /run/media/efi
+
   echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
