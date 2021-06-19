@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab:desktop
+FROM 0gombi0/homelab:base
 
 LABEL name=desktop
 
