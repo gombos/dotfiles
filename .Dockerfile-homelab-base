@@ -2,7 +2,7 @@
 
 # Docker wrapper for infra-build-base.sh
 
-FROM 0gombi0/homelab-base:minbase
+FROM 0gombi0/homelab:minbase
 
 LABEL name=base
 
