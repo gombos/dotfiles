@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab:stable as base
+FROM 0gombi0/homelab:desktop as base
 
 LABEL name=efi
 
