@@ -298,7 +298,7 @@ EOF
 # --add-drivers "loop squashfs overlay iso9660 btrfs" --add "squash"
 
 # nfs livenet
-dracut --verbose --force --no-hostonly --reproducible --omit "kernel-modules-extra" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "btrfs bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/infra-init.sh /sbin/infra-init.sh --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+dracut --verbose --force --no-hostonly --reproducible --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "btrfs bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/infra-init.sh /sbin/infra-init.sh --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
