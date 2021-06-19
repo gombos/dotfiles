@@ -90,8 +90,10 @@ fi
 
 # --- static IP is known
 
-#chown 0:27 /run/media
-#chmod g+w /run/media
+mkdir -p /run/media
+
+chown 0:27 /run/media
+chmod g+w /run/media
 
 ln -sf /home $R/Users
 
