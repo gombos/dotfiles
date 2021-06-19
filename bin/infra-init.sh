@@ -380,26 +380,30 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 fi
 
 if [ "$HOST" == "vm" ]; then
+
+  mkdir -p /home/bagoly
+  echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
+
   # Mount home directories from the host at boot
-  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=1002,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+#  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=1002,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
   # Mask services not required inside a vm
 #  ln -sf /dev/null $R/etc/systemd/system/smartd.service
-#  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-#  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
 #  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-#  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
+  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
 
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
 #  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
   # These policies are for development only
   # Autologin
-  sed -i "s|\#\ autologin=.*|autologin=gombi|g" $R/etc/lxdm/lxdm.conf
+  sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
 
   # Only ask for sudo password once and not expire
   echo 'Defaults timestamp_timeout=-1' >> /run/sudoers_kucko
