@@ -4,6 +4,8 @@
 
 FROM 0gombi0/homelab-base:minbase
 
+LABEL name=base
+
 # Setup tmp
 COPY bin/* packages/* /tmp/
 

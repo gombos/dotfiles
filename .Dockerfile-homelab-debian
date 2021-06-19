@@ -1,5 +1,7 @@
 FROM debian:unstable
 
+LABEL name=debian
+
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
 RUN ./infra-build-base.sh

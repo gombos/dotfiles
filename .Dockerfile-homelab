@@ -1,4 +1,7 @@
 FROM 0gombi0/homelab-base
+
+LABEL name=desktop
+
 COPY bin/* packages/* /tmp/
 
 WORKDIR /tmp

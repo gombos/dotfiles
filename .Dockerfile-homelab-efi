@@ -1,5 +1,7 @@
 FROM 0gombi0/homelab:stable as base
 
+LABEL name=efi
+
 COPY bin/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-efi.sh
