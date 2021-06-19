@@ -229,17 +229,7 @@ else
   done
 fi
 
-RDEXECFULL="/sbin/infra-init.sh"
-
-# Execute the rd.exec script
-if [ -f "$RDEXECFULL" ]; then
-  printf "[rd.exec] start executing $RDEXECFULL \n"
-  scriptname="${RDEXECFULL##*/}"
-  scriptpath=${RDEXECFULL%/*}
-  configdir="$scriptpath"
-  ( cd $configdir && . "./$scriptname" )
-  printf "[rd.exec] stop executing $RDEXEC \n"
-fi
+RDEXEC="/sbin/infra-init.sh"
 
 for x in $(cat /proc/cmdline); do
   case $x in
@@ -252,35 +242,39 @@ for x in $(cat /proc/cmdline); do
   rd.exec=*)
     printf "[rd.exec] $x \n"
     RDEXEC=${x#rd.exec=}
-    if ! [ -z "$RDEXEC" ]; then
-      # Mount EFI as that is where rd.exec scripts are executed from
-      mp="/run/media/efi"
-      mkdir -p "$mp"
-
-      printf "[rd.exec] Mounting $configdrive to $mp\n"
-      mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
-      RDEXECFULL="$mp/$RDEXEC"
-
-      # Execute the rd.exec script
-      if [ -f "$RDEXECFULL" ]; then
-        printf "[rd.exec] start executing $RDEXECFULL \n"
-        scriptname="${RDEXECFULL##*/}"
-        scriptpath=${RDEXECFULL%/*}
-        configdir="$scriptpath"
-        ( cd $configdir && . "./$scriptname" )
-        printf "[rd.exec] stop executing $RDEXEC \n"
-      fi
-
-      if [ -d "$mp" ]; then
-        # Umount EFI
-        cd /
-        umount "$mp"
-        rm -rf "$mp"
-      fi
     fi
-    ;;
+  ;;
   esac
 done
+
+# default init included in the initramfs
+if [ -z "$RDEXEC" ]; then
+  RDEXEC="/sbin/infra-init.sh"
+fi
+
+if [ -f "$RDEXEC" ]; then
+  # Mount EFI as that is where rd.exec scripts are executed from
+  mp="/run/media/efi"
+  mkdir -p "$mp"
+
+  printf "[rd.exec] Mounting $configdrive to $mp\n"
+  mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
+
+  # Execute the rd.exec script in a sub-shell
+  printf "[rd.exec] start executing $RDEXECFULL \n"
+  scriptname="${RDEXEC##*/}"
+  scriptpath=${RDEXEC%/*}
+  configdir="$scriptpath"
+  ( cd $configdir && . "./$scriptname" )
+  printf "[rd.exec] stop executing $RDEXEC \n"
+
+  if [ -d "$mp" ]; then
+    # Umount EFI
+    cd /
+    umount "$mp"
+    rm -rf "$mp"
+  fi
+fi
 
 exit 0
 EOF
