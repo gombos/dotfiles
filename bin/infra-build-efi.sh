@@ -247,21 +247,26 @@ for x in $(cat /proc/cmdline); do
 
       printf "[rd.exec] Mounting $configdrive to $mp\n"
       mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
+      RDEXECFULL="$mp/$RDEXEC"
+    else
+      RDEXECFULL="/sbin/infra-init.sh"
+    fi
 
-      # Execute the rd.exec script
-      if [ -f "$mp/$RDEXEC" ]; then
-        printf "[rd.exec] start executing $RDEXEC \n"
-        scriptname="${RDEXEC##*/}"
-        scriptpath=${RDEXEC%/*}
-        configdir="$mp/$scriptpath"
-        ( cd $configdir && . "./$scriptname" )
-        printf "[rd.exec] stop executing $RDEXEC \n"
-      fi
+    # Execute the rd.exec script
+    if [ -f "$RDEXECFULL" ]; then
+      printf "[rd.exec] start executing $RDEXECFULL \n"
+      scriptname="${RDEXECFULL##*/}"
+      scriptpath=${RDEXECFULL%/*}
+      configdir="$scriptpath"
+      ( cd $configdir && . "./$scriptname" )
+      printf "[rd.exec] stop executing $RDEXEC \n"
+    fi
 
+    if [ -d "$mp" ]; then
       # Umount EFI
       cd /
       umount "$mp"
-      [ -d "$mp" ] && rmdir "$mp"
+      rm -rf "$mp"
     fi
     ;;
   esac
