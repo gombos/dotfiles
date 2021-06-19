@@ -102,8 +102,7 @@ cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 # grub efi config - has a dependency on dotfiles
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
-# Make grub the default EFI boot mechanism
-# Maybe change this later
+# Make grub the default EFI boot mechanism, I had better luck on some HW
 cp -v /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
