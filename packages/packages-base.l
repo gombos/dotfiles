@@ -3,10 +3,6 @@
 # Allows to further setup and configure the system
 # Does not change often
 
-# firware
-# NEO needs this for networking
-linux-firmware
-
 # init
 systemd-sysv
 udev
@@ -16,6 +12,9 @@ sudo
 wget
 
 # --- below packages are all optional
+
+# firware
+linux-firmware
 
 # boot
 efibootmgr
