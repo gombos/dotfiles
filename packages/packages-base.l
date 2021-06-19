@@ -3,17 +3,23 @@
 # Allows to further setup and configure the system
 # Does not change often
 
+# firware
+# NEO needs this for networking
+linux-firmware
+
 # init
 systemd-sysv
 udev
-sudo
 
-# --- below packages are optional for boot
+# tools
+sudo
+wget
+
+# --- below packages are all optional
 
 # boot
 efibootmgr
-kexec-tools # soft reboot (without bootloader)
-friendly-recovery
+kexec-tools #soft reboot (without bootloader)
 
 # networking
 dnsmasq-base
@@ -22,7 +28,6 @@ isc-dhcp-client
 network-manager
 ethtool
 wakeonlan
-wget
 
 # storage
 hdparm
@@ -44,6 +49,7 @@ libblockdev-crypto2
 libu2f-udev
 cpufreq-info
 lm-sensors
+dmidecode
 
 # laptop
 thermald # monitors and controls temperature in laptops
