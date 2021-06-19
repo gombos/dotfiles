@@ -143,7 +143,7 @@ sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTr
 #install_my_package linux-modules-extra-$KERNEL
 #install_my_package linux-headers-$KERNEL
 
-install_my_packages packages-baremetal.l
+install_my_packages packages-base.l
 
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
@@ -208,6 +208,7 @@ install_my_packages packages-services.l
 install_my_packages packages-x11.l
 install_my_packages packages-x11apps.l
 
+install_my_packages packages-filesystems.l
 install_my_packages packages-packages.l
 
 $SCRIPTS/infra-install-vmware-workstation.sh

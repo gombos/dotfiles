@@ -6,23 +6,6 @@ apt-file
 apt-transport-https
 apt-utils
 
-# filesystems
-fuse3
-ntfs-3g
-btrfs-progs
-squashfs-tools
-exfat-fuse
-kpartx
-bindfs
-dosfstools
-hfsprogs
-partclone
-parted
-sshfs
-cryptsetup
-extlinux
-
-
 # files
 antiword
 archivemount
@@ -96,7 +79,6 @@ tesseract-ocr
 time
 unzip
 xattr
-zerofree
 zip
 gddrescue
 fuse-overlayfs

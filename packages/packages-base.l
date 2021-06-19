@@ -1,13 +1,14 @@
 # Purpose: HW-only packages
 # Can be booted with an EFI partition
 # Allows to further setup and configure the system
+# Does not change often
 
 # init
 systemd-sysv
 udev
 sudo
 
-# optional packages below
+# --- below packages are optional for boot
 
 # boot
 efibootmgr
@@ -21,6 +22,7 @@ isc-dhcp-client
 network-manager
 ethtool
 wakeonlan
+wget
 
 # storage
 hdparm
@@ -42,8 +44,6 @@ libblockdev-crypto2
 libu2f-udev
 cpufreq-info
 lm-sensors
-
-
 
 # laptop
 thermald # monitors and controls temperature in laptops
