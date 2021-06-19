@@ -15,7 +15,7 @@ DIR=$MNTDIR/linux/linux-dev
 #docker builder prune -af
 
 # todo - does this invalidates the docker cache ?
-docker pull 0gombi0/homelab:dev
+docker pull 0gombi0/homelab:stable
 
 container_id=$(sudo docker create 0gombi0/homelab:stable)
 

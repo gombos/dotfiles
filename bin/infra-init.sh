@@ -364,7 +364,7 @@ fi
 
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
-  echo 'LABEL=linux /run/media/linux auto defaults 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/linux btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab

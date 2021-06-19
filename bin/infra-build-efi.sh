@@ -145,10 +145,7 @@ grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install
 #grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
 
 # Make sure we have all the required modules built
-
-export VM_UNAME=$KERNEL
-cd /
-git clone https://github.com/mkubecek/vmware-host-modules.git && cd vmware-host-modules && git checkout workstation-15.5.6 && make VM_UNAME=$KERNEL && make install VM_UNAME=$KERNEL && make install VM_UNAME=$KERNEL && make clean VM_UNAME=$KERNEL && cd / && rm -rf vmware-host-modules
+infra-install-vmware-workstation-modules.sh
 
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
