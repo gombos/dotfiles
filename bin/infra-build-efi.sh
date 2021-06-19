@@ -211,6 +211,7 @@ exec 1>/run/initramfs/rd.exec.log 2>&1
 
 # TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
+# calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
 
 # rd.exec should not used in the LIVE disk
 # disk that contains the executable code
