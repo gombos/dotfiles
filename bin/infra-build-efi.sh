@@ -241,7 +241,6 @@ for x in $(cat /proc/cmdline); do
   rd.exec=*)
     printf "[rd.exec] $x \n"
     RDEXEC=${x#rd.exec=}
-    fi
   ;;
   esac
 done
