@@ -144,6 +144,7 @@ sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTr
 #install_my_package linux-headers-$KERNEL
 
 install_my_packages packages-base.l
+install_my_packages packages-base-optional.l
 
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
