@@ -313,13 +313,13 @@ if [ "$HOST" == "pincer" ]; then
 
 lsmod
 
-  echo "blacklist bluetooth" >> $R/etc/etc/modprobe.d/initrd.conf
-  echo "blacklist nouveau" >> $R/etc/modprobe.d/initrd.conf
-  echo "blacklist cfg80211" >> $R/etc/modprobe.d/initrd.conf
-  echo "blacklist soundcore" >> $R/etc/modprobe.d/initrd.conf
-  echo "blacklist dm_mirror" >> $R/etc/modprobe.d/initrd.conf
-  echo "blacklist dw_dmac" >> $R/etc/modprobe.d/initrd.conf
-  echo "blacklist dw_dmac_core" >> $R/etc/modprobe.d/initrd.conf
+  echo "install bluetooth /bin/true" >> $R/etc/etc/modprobe.d/initrd.conf
+  echo "install nouveau /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install cfg80211 /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install soundcore /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install dm_mirror /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install dw_dmac /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install dw_dmac_core /bin/true" >> $R/etc/modprobe.d/initrd.conf
 
   # Change the default to multiuser (non graphical)
   ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
