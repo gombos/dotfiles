@@ -302,10 +302,6 @@ DHCP=ipv4
 CriticalConnection=true
 EOF
 
-cat > /tmp/fstab << 'EOF'
-EOF
-
-
 # TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 # ifcfg aufs overlay-root
 # consider --omit ifcfg
@@ -315,7 +311,6 @@ EOF
 # nfs livenet
 
 dracut --keep --verbose --force --no-hostonly --reproducible  --kernel-cmdline "$CMDLINE" \
-  --
   --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
   --add "btrfs bash busybox systemd-networkd" \
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
