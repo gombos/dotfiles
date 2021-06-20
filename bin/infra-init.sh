@@ -310,6 +310,9 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
+
+lsmod
+
   echo "blacklist bluetooth" >> $R/etc/modules
   echo "blacklist nouveau" >> $R/etc/modules
   echo "blacklist cfg80211" >> $R/etc/modules
