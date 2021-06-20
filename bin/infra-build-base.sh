@@ -26,13 +26,6 @@ if [ -z "$RELEASE" ]; then
   fi
 fi
 
-#if [ -z "$KERNEL" ]; then
-#  export KERNEL="5.4.0-52-generic"
-  # vmware does not seem to be stable on 5.8
-  #export KERNEL="5.8.0-55-generic"
-  #"5.10.0-1029-oem"
-#fi
-
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
@@ -96,6 +89,12 @@ echo "Building $RELEASE $TARGET"
 
 # Additional packages installed after boostrap
 # adduser apt apt-utils fdisk gcc-10-base gpg gpg-agent gpgconf gpgv locales pinentry-curses readline-common systemd systemd-sysv systemd-timesyncd ubuntu-keyring wget
+
+if [ "$TARGET" = "container" ]; then
+  packages_update_db
+  packages_upgrade
+  install_my_packages packages-packages.l
+fi
 
 
 # TODO - make these idenpotent and run it all the time

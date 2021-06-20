@@ -1,0 +1,18 @@
+# Minimal container
+
+# Docker wrapper for infra-build-base.sh
+
+FROM 0gombi0/homelab:minbase
+
+LABEL name=container
+
+# Setup tmp
+COPY bin/* packages/* /tmp/
+
+# Change the workdir to tmp
+WORKDIR /tmp
+
+# Run
+RUN ./infra-build-base.sh container
+
+CMD ["/bin/bash"]
