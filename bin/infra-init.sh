@@ -51,11 +51,10 @@ if [ -n "$EFI" ]; then
   HOST_DISK=$(echo $EFI | cut -d_ -f2)
 fi
 
-# Find the first partition that is candidate for home
+# Find the partition labels (first match)
 HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
-
-# Find the first partition that is candidate for home
 SWAP_PART=$(cd /dev/disk/by-label/ && ls --color=never swap* | head -n1)
+LINUX_PART=$(cd /dev/disk/by-label/ && ls --color=never linux* | head -n1)
 
 # cpu
 grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
@@ -66,20 +65,12 @@ if [ -z "$HOST_CPU" ]; then
   case "$cpu" in
     *E5-2670*)
       HOST_CPU="bestia"
-      # nvidia driver
-      echo nvidia >> $R/etc/modules
-
-      # motherboard sensors Nuvoton W83677HG-I (NCT6776)
-      echo w83627ehf >> $R/etc/modules
     ;;
     *i7-3630QM*)
       HOST_CPU="np700g"
     ;;
     *i7-4870HQ*)
       HOST_CPU="taska"
-    ;;
-    *)
-      # fallback
     ;;
   esac
 fi
@@ -114,11 +105,8 @@ fi
 # --- static IP is known
 
 mkdir -p /run/media
-
 chown 0:27 /run/media
 chmod g+w /run/media
-
-ln -sf /home $R/Users
 
 # set static IP
 if [ -n "$IP" ]; then
@@ -298,10 +286,15 @@ fi
 if [ -n "$HOME_PART" ]; then
   mkdir -p /home
   echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  ln -sf /home $R/Users
 fi
 
 if [ -n "$SWAP_PART" ]; then
   echo "LABEL=$SWAP_PART none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
+fi
+
+if [ -n "$LINUX_PART" ]; then
+  echo "LABEL=$LINUX_PART /run/media/linux btrfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min,subvol=/ 0 2" >> $R/etc/fstab
 fi
 
 if [ -d "$mp/modules" ]; then
@@ -314,7 +307,7 @@ if [ -d "$mp/modules" ]; then
   ln -sf /run/media/efi/modules $R/lib/
 
   mkdir -p /run/media/efi
-  echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
 # --- HOST specific logic
@@ -400,8 +393,6 @@ fi
 
 # server profile
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
-  echo 'LABEL=linux /run/media/linux btrfs subvol=/ 0 2' >> $R/etc/fstab
-
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
 #  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
@@ -416,14 +407,11 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 fi
 
 if [ "$HOST" == "vm" ]; then
-
-  mkdir -p /home/bagoly
-
   sed -i '/^admin:/d' $R/etc/passwd
-
   echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
 
   # Mount home directories from the host at boot
+  mkdir -p /home/bagoly
   echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
@@ -431,7 +419,6 @@ if [ "$HOST" == "vm" ]; then
   ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
   ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
   ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
-
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
