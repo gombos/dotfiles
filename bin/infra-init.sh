@@ -293,7 +293,7 @@ fi
 # fstab
 if [ -n "$HOME" ]; then
   mkdir /home
-  echo 'LABEL=$HOME /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo "LABEL=$HOME /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
 fi
 
 if [ -d "$mp/modules" ]; then
