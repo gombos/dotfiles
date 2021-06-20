@@ -39,6 +39,16 @@ R="$NEWROOT"
 
 ls -la /dev/disk/by-partlabel
 
+L=$(ls /dev/disk/by-partlabel/efi_*)
+
+echo $L
+
+
+if [ -z "$L" ]; then
+  HOST=$(echo $L | cut -d_ -f2)
+  echo $HOST
+fi
+
 cpu=$(grep "model name" -m1 /proc/cpuinfo)
 
 for x in $(cat /proc/cmdline); do
