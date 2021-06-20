@@ -262,6 +262,10 @@ mkdir -p "$mp"
 printf "[rd.exec] Mounting $configdrive to $mp\n"
 mount -o ro,noexec,nosuid,nodev,umask=0077 "$configdrive" "$mp"
 
+printf "[rd.exec] Mounted $configdrive to $mp\n"
+
+printf "[rd.exec] About to run $RDEXEC \n"
+
 if [ -f "$RDEXEC" ]; then
   # Mount EFI as that is where rd.exec scripts are executed from
 #  mp="/run/media/efi"
