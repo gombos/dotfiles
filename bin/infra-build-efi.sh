@@ -233,8 +233,6 @@ else
   done
 fi
 
-RDEXEC="/sbin/infra-init.sh"
-
 for x in $(cat /proc/cmdline); do
   case $x in
   rd.dev=*)
@@ -250,11 +248,6 @@ for x in $(cat /proc/cmdline); do
   esac
 done
 
-# default init included in the initramfs
-if [ -z "$RDEXEC" ]; then
-  RDEXEC="/sbin/infra-init.sh"
-fi
-
 # EFI needs to be mounted as early as possible and needs to stay mounted for modules to load properly
 mp="/run/media/efi"
 mkdir -p "$mp"
@@ -263,6 +256,13 @@ printf "[rd.exec] Mounting $configdrive to $mp\n"
 mount -o ro,noexec,nosuid,nodev,umask=0077 "$configdrive" "$mp"
 
 printf "[rd.exec] Mounted $configdrive to $mp\n"
+
+# default init included in the initramfs
+if [ -z "$RDEXEC" ]; then
+  RDEXEC="/sbin/infra-init.sh"
+else
+  RDEXEC="$mp/$RDEXEC"
+fi
 
 printf "[rd.exec] About to run $RDEXEC \n"
 
@@ -275,7 +275,7 @@ if [ -f "$RDEXEC" ]; then
 #  mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
 
   # Execute the rd.exec script in a sub-shell
-  printf "[rd.exec] start executing $RDEXECFULL \n"
+  printf "[rd.exec] start executing $RDEXEC \n"
   scriptname="${RDEXEC##*/}"
   scriptpath=${RDEXEC%/*}
   configdir="$scriptpath"

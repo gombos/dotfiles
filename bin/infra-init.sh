@@ -315,8 +315,8 @@ if [ -d "$mp/modules" ]; then
   echo $R
   ls -la $R
 
-  mount /dev/disk/by-label/EFI /run/media/efi
-  echo 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev,umask=0077 0 0' >> $R/etc/fstab
+#  mount /dev/disk/by-label/EFI /run/media/efi
+#  echo 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev,umask=0077 0 0' >> $R/etc/fstab
 fi
 
 # --- HOST specific logic
