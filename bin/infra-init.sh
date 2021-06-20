@@ -320,6 +320,7 @@ lsmod
   echo "install dm_mirror /bin/true" >> $R/etc/modprobe.d/initrd.conf
   echo "install dw_dmac /bin/true" >> $R/etc/modprobe.d/initrd.conf
   echo "install dw_dmac_core /bin/true" >> $R/etc/modprobe.d/initrd.conf
+  echo "install hci_uart /bin/true" >> $R/etc/modprobe.d/initrd.conf
 
   # Change the default to multiuser (non graphical)
   ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
