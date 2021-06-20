@@ -8,7 +8,7 @@ case $OSTYPE in
   *"linux-gnu"*)
     case $fstype in
       *"btrfs"*) sudo btrfs property set -ts $dir ro true ;;
-      *"ext"*) sudo mount -o remount,ro $dir ;;
+      *) sudo mount -o remount,ro $dir ;;
     esac ;;
   *) echo "unsupported OS" ;;
 esac
