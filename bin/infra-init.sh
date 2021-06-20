@@ -320,9 +320,6 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-  # /etc/fstab
-  # No persistent home, this is a piece of infrastructure
-
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -361,10 +358,15 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  mkdir -p $R/nix $R/home $R/live/image
+  # nvidia driver
+  echo nvidia >> $R/etc/modules
+
+  # motherboard sensors Nuvoton W83677HG-I (NCT6776)
+  echo w83627ehf >> $R/etc/modules
+
+  mkdir -p $R/nix
 
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-#  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
