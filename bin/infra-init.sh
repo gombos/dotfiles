@@ -51,7 +51,8 @@ if [ -n "$EFI" ]; then
   HOST_DISK=$(echo $EFI | cut -d_ -f2)
 fi
 
-HOME=$(cd /dev/disk/by-label/ && ls home*)
+# Find the first partition that is candidate for home
+HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
 
 # cpu
 grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
@@ -291,9 +292,9 @@ then
 fi
 
 # fstab
-if [ -n "$HOME" ]; then
-  mkdir /home
-  echo "LABEL=$HOME /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+if [ -n "$HOME_PART" ]; then
+  mkdir -p /home
+  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
 fi
 
 if [ -d "$mp/modules" ]; then
