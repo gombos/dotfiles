@@ -43,8 +43,7 @@ L=$(ls /dev/disk/by-partlabel/efi_*)
 
 echo $L
 
-
-if [ -z "$L" ]; then
+if ! [ -z "$L" ]; then
   HOST=$(echo $L | cut -d_ -f2)
   echo $HOST
 fi
