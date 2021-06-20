@@ -310,7 +310,14 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-#  echo nfsd >> $R/etc/modules
+  echo "blacklist bluetooth" >> $R/etc/modules
+  echo "blacklist nouveau" >> $R/etc/modules
+  echo "blacklist cfg80211" >> $R/etc/modules
+  echo "blacklist soundcore" >> $R/etc/modules
+  echo "blacklist dm_mirror" >> $R/etc/modules
+  echo "blacklist dw_dmac" >> $R/etc/modules
+  echo "blacklist dw_dmac_core" >> $R/etc/modules
+
   # Change the default to multiuser (non graphical)
   ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
 
