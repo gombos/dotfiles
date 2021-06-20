@@ -307,7 +307,7 @@ if [ -d "$mp/modules" ]; then
   ln -sf /run/media/efi/modules $R/lib/
 
   mkdir -p /run/media/efi
-  echo 'LABEL=EFI /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev,umask=0077 0 0' >> $R/etc/fstab
 fi
 
 # --- HOST specific logic
