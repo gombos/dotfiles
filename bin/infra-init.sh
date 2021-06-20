@@ -305,24 +305,12 @@ if [ -d "$mp/modules" ]; then
   fi
 
   ln -sf /run/media/efi/modules $R/lib/
-
-  mkdir -p /run/media/efi
-
-  ls -la /dev/disk/by-label/EFI
-  ls -la /dev/disk/by-label
-  ls -la /run/media/
-  ls -la /
-  echo $R
-  ls -la $R
-
-#  mount /dev/disk/by-label/EFI /run/media/efi
-#  echo 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev,umask=0077 0 0' >> $R/etc/fstab
 fi
 
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-  echo nfsd >> $R/etc/modules
+#  echo nfsd >> $R/etc/modules
   # Change the default to multiuser (non graphical)
   ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
 
