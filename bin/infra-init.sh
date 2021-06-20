@@ -35,6 +35,10 @@ R="$NEWROOT"
 
 # --- determine HOST
 
+# todo implement parsing EFI drive partuuid
+
+ls -la /dev/disk/by-partlabel
+
 cpu=$(grep "model name" -m1 /proc/cpuinfo)
 
 for x in $(cat /proc/cmdline); do
