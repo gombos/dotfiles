@@ -33,55 +33,61 @@
 
 R="$NEWROOT"
 
-# --- determine HOST
+# --- detect the environment
 
-# todo implement parsing EFI drive partuuid
-
-ls -la /dev/disk/by-partlabel
-
-L=$(ls /dev/disk/by-partlabel/efi_*)
-
-echo $L
-
-if ! [ -z "$L" ]; then
-  HOST=$(echo $L | cut -d_ -f2)
-  echo $HOST
-fi
-
-cpu=$(grep "model name" -m1 /proc/cpuinfo)
-
+# command line
 for x in $(cat /proc/cmdline); do
   case $x in
   systemd.hostname=*)
-    HOST=${x#systemd.hostname=}
+    HOST_CMDLINE=${x#systemd.hostname=}
   ;;
   esac
 done
 
-grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST="vm"
+# storage
+EFI=$(cd /dev/disk/by-partlabel/ && ls efi_*)
 
-case "$cpu" in
-  *E5-2670*)
-    echo "bestia"
-    # nvidia driver
-    echo nvidia >> $R/etc/modules
+if [ -n "$EFI" ]; then
+  HOST_DISK=$(echo $EFI | cut -d_ -f2)
+fi
 
-    # motherboard sensors Nuvoton W83677HG-I (NCT6776)
-    echo w83627ehf >> $R/etc/modules
-  ;;
-#  *i7-3630QM*)
-#    echo "Booting on NP700"
-#  ;;
-  *i7-4870HQ*)
-    echo "MacBook"
-    if ! [ "$HOST" == "vm" ] ; then
-      echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-    fi
-  ;;
-  *)
-    # fallback
-  ;;
-esac
+HOME=$(cd /dev/disk/by-label/ && ls home*)
+
+# cpu
+grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
+
+cpu=$(grep "model name" -m1 /proc/cpuinfo)
+
+if [ -z "$HOST_CPU" ]; then
+  case "$cpu" in
+    *E5-2670*)
+      HOST_CPU="bestia"
+      # nvidia driver
+      echo nvidia >> $R/etc/modules
+
+      # motherboard sensors Nuvoton W83677HG-I (NCT6776)
+      echo w83627ehf >> $R/etc/modules
+    ;;
+    *i7-3630QM*)
+      HOST_CPU="np700g"
+    ;;
+    *i7-4870HQ*)
+      HOST_CPU="taska"
+    ;;
+    *)
+      # fallback
+    ;;
+  esac
+fi
+
+# Set host based on priorities
+if [ -n "$HOST_CMDLINE" ]; then
+  HOST="$HOST_CMDLINE"
+elif [ -n "$HOST_DISK" ]; then
+  HOST="$HOST_DISK"
+elif [ -n "$HOST_CPU" ]; then
+ HOST="$HOST_CPU"
+fi
 
 # Per-host configuration is optional
 if [ -d "$mp/config" ]; then
@@ -111,16 +117,16 @@ chmod g+w /run/media
 ln -sf /home $R/Users
 
 # set static IP
-if [ ! -z "$IP" ]; then
+if [ -n "$IP" ]; then
   printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 else
   printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
 
-[ ! -z "$HOST" ] && echo "$HOST" > $R/etc/hostname
+[ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
 
-[ ! -z "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
-[ ! -z "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
+[ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+[ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
 # DHCP
 if [ -f "dhcp.conf" ]; then
@@ -284,6 +290,12 @@ then
   sed -i '/^admin:/d' $R/etc/shadow
 fi
 
+# fstab
+if [ -n "$HOME" ]; then
+  mkdir /home
+  echo 'LABEL=$HOME /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+fi
+
 if [ -d "$mp/modules" ]; then
   # Restrict only root process to load kernel modules. This is a reasonable system hardening
 
@@ -347,7 +359,7 @@ fi
 if [ "$HOST" == "bestia" ]; then
   mkdir -p $R/nix $R/home $R/live/image
 
-  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=6min 0 2' >> $R/etc/fstab
+  echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo 'LABEL=linux /live/image auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
