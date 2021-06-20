@@ -255,13 +255,20 @@ if [ -z "$RDEXEC" ]; then
   RDEXEC="/sbin/infra-init.sh"
 fi
 
+# EFI needs to be mounted as early as possible and needs to stay mounted for modules to load properly
+mp="/run/media/efi"
+mkdir -p "$mp"
+
+printf "[rd.exec] Mounting $configdrive to $mp\n"
+mount -o ro,noexec,nosuid,nodev,umask=0077 "$configdrive" "$mp"
+
 if [ -f "$RDEXEC" ]; then
   # Mount EFI as that is where rd.exec scripts are executed from
-  mp="/run/media/efi"
-  mkdir -p "$mp"
+#  mp="/run/media/efi"
+#  mkdir -p "$mp"
 
-  printf "[rd.exec] Mounting $configdrive to $mp\n"
-  mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
+#  printf "[rd.exec] Mounting $configdrive to $mp\n"
+#  mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
 
   # Execute the rd.exec script in a sub-shell
   printf "[rd.exec] start executing $RDEXECFULL \n"
@@ -271,12 +278,12 @@ if [ -f "$RDEXEC" ]; then
   ( cd $configdir && . "./$scriptname" )
   printf "[rd.exec] stop executing $RDEXEC \n"
 
-  if [ -d "$mp" ]; then
-    # Umount EFI
-    cd /
-    umount "$mp"
-    rm -rf "$mp"
-  fi
+#  if [ -d "$mp" ]; then
+#    # Umount EFI
+#    cd /
+#    umount "$mp"
+#    rm -rf "$mp"
+#  fi
 fi
 
 exit 0
