@@ -313,7 +313,7 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-  echo "nomodeset systemd.unit=multi-user.target" >> /etc/cmdline.d/90-console.conf
+  echo "nomodeset systemd.unit=multi-user.target gombi" >> /etc/cmdline.d/90-console.conf
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
