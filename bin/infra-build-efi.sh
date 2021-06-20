@@ -43,6 +43,10 @@ fi
 
 echo $KERNEL
 
+if [ -z "$CMDLINE" ]; then
+  CMDLINE="root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet"
+fi
+
 mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
@@ -91,7 +95,7 @@ cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
 title   linux
 linux   /kernel/vmlinuz
 initrd  /kernel/initrd.img
-options root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet
+options $CMDLINE
 EOF
 
 # grub efi binary
@@ -126,7 +130,7 @@ cat > /efi/syslinux/syslinux.cfg << 'EOF'
 DEFAULT linux
 
 LABEL linux
- LINUX /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet
+ LINUX /kernel/vmlinuz $CMDLINE
  INITRD /kernel/initrd.img
 
 INCLUDE /dotfiles/boot/syslinux.cfg
@@ -298,7 +302,8 @@ EOF
 # --add-drivers "loop squashfs overlay iso9660 btrfs" --add "squash"
 
 # nfs livenet
-dracut --verbose --force --no-hostonly --reproducible --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "btrfs bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/infra-init.sh /sbin/infra-init.sh --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
+
+dracut --keep --verbose --force --no-hostonly --reproducible  --kernel-cmdline "$CMDLINE" --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" --add "btrfs bash busybox systemd-networkd" --include /tmp/20-wired.network /etc/systemd/network/20-wired.network --include /tmp/infra-init.sh /sbin/infra-init.sh --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh initrd.img $KERNEL
 
 rm -r /tmp/rdexec
 
