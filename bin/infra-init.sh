@@ -313,8 +313,9 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
-  # Does not work, this is set too late in the boot process
-  echo "nomodeset systemd.unit=multi-user.target" >> /etc/cmdline.d/90-console.conf
+  echo nfsd >> $R/etc/modules
+  # Change the default to multiuser (non graphical)
+  ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
