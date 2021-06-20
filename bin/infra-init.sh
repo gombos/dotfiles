@@ -54,6 +54,9 @@ fi
 # Find the first partition that is candidate for home
 HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
 
+# Find the first partition that is candidate for home
+SWAP_PART=$(cd /dev/disk/by-label/ && ls --color=never swap* | head -n1)
+
 # cpu
 grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
 
@@ -297,6 +300,10 @@ if [ -n "$HOME_PART" ]; then
   echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
 fi
 
+if [ -n "$SWAP_PART" ]; then
+  echo "LABEL=$SWAP_PART none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
+fi
+
 if [ -d "$mp/modules" ]; then
   # Restrict only root process to load kernel modules. This is a reasonable system hardening
 
@@ -438,8 +445,3 @@ if [ "$HOST" == "vm" ]; then
   # sudo permission for all terminal sessions - this is a privilege esculation vulnability
   echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
 fi
-
-if ! [ "$HOST" == "vm" ] && ! [ "$HOST" == "pincer" ] ; then
-  echo "LABEL=swap none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
-fi
-
