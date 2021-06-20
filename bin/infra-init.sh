@@ -49,7 +49,7 @@ grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST="vm"
 
 case "$cpu" in
   *E5-2670*)
-    echo "Booting on bestia"
+    echo "bestia"
     # nvidia driver
     echo nvidia >> $R/etc/modules
 
@@ -60,7 +60,7 @@ case "$cpu" in
 #    echo "Booting on NP700"
 #  ;;
   *i7-4870HQ*)
-    echo "Booting on MacBook"
+    echo "MacBook"
     if ! [ "$HOST" == "vm" ] ; then
       echo 'LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
     fi
@@ -274,11 +274,13 @@ fi
 if [ -d "$mp/modules" ]; then
   # Restrict only root process to load kernel modules. This is a reasonable system hardening
 
-  mv $R/lib/modules $R/lib/modules.old
+  if [ -d $R/lib/modules ]; then
+    mv $R/lib/modules $R/lib/modules.root
+  fi
+
   ln -sf /run/media/efi/modules $R/lib/
 
   mkdir -p /run/media/efi
-
   echo 'LABEL=EFI  /run/media/efi auto noauto,ro,noexec,nosuid,nodev,x-systemd.automount,umask=0077,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
