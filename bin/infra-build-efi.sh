@@ -267,13 +267,6 @@ fi
 printf "[rd.exec] About to run $RDEXEC \n"
 
 if [ -f "$RDEXEC" ]; then
-  # Mount EFI as that is where rd.exec scripts are executed from
-#  mp="/run/media/efi"
-#  mkdir -p "$mp"
-
-#  printf "[rd.exec] Mounting $configdrive to $mp\n"
-#  mount -o ro,fmask=0177,dmask=0077,noexec,nosuid,nodev "$configdrive" "$mp"
-
   # Execute the rd.exec script in a sub-shell
   printf "[rd.exec] start executing $RDEXEC \n"
   scriptname="${RDEXEC##*/}"
@@ -281,19 +274,13 @@ if [ -f "$RDEXEC" ]; then
   configdir="$scriptpath"
   ( cd $configdir && . "./$scriptname" )
   printf "[rd.exec] stop executing $RDEXEC \n"
-
-#  if [ -d "$mp" ]; then
-#    # Umount EFI
-#    cd /
-#    umount "$mp"
-#    rm -rf "$mp"
-#  fi
 fi
 
 exit 0
 EOF
 
 chmod +x /tmp/rdexec
+
 
 cat > /tmp/20-wired.network << 'EOF'
 [Match]
@@ -320,6 +307,7 @@ dracut --keep --verbose --force --no-hostonly --reproducible  --kernel-cmdline "
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
+  --include /tmp/rdexec /usr/lib/dracut/hooks/cmdline/90-exec.sh \
   initrd.img $KERNEL
 
 rm -r /tmp/rdexec

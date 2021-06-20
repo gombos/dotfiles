@@ -84,6 +84,19 @@ elif [ -n "$HOST_CPU" ]; then
  HOST="$HOST_CPU"
 fi
 
+echo "gombi1"
+
+echo "$R"
+
+if [ -z "$R" ]; then
+  # set the command line and bail
+  echo "gombi=1" > /etc/cmdline.d/gombi.conf
+  echo "gombi3"
+  exit 0
+fi
+
+echo "gombi2"
+
 # Per-host configuration is optional
 if [ -d "$mp/config" ]; then
   cd $mp/config
