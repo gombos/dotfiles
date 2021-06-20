@@ -82,16 +82,16 @@ cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
 mkdir -p /efi/loader/entries
 
 # Default boot is first in alphabetical order
-cat << 'EOF' | tee -a /efi/loader/loader.conf
+cat << EOF | tee -a /efi/loader/loader.conf
 default grub
 EOF
 
-cat << 'EOF' | tee -a /efi/loader/entries/grub.conf
+cat << EOF | tee -a /efi/loader/entries/grub.conf
 title   grub
 efi /EFI/ubuntu/grubx64.efi
 EOF
 
-cat << 'EOF' | tee -a /efi/loader/entries/linux.conf
+cat << EOF | tee -a /efi/loader/entries/linux.conf
 title   linux
 linux   /kernel/vmlinuz
 initrd  /kernel/initrd.img
@@ -126,7 +126,7 @@ cp /usr/lib/syslinux/mbr/gptmbr.bin /efi/syslinux
 cp -rv /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
 
 # syslinux config - chainload grub
-cat > /efi/syslinux/syslinux.cfg << 'EOF'
+cat > /efi/syslinux/syslinux.cfg <<EOF
 DEFAULT linux
 
 LABEL linux
