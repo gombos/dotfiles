@@ -32,7 +32,7 @@
 # rootfs version
 
 
-echo "ggomvi"
+echo "anyad"
 
 me="${0##*/}"
 echo "$me"
