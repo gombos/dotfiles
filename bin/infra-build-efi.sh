@@ -231,7 +231,7 @@ echo "# path to me --------------->  ${0}     "
 echo "# parent path -------------->  ${0%/*}  "
 echo "# my name ------------------>  ${0##*/} "
 
-
+lsmod
 
 # TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
