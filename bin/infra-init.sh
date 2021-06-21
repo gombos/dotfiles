@@ -32,17 +32,17 @@
 # rootfs version
 
 
-printf "ggomvi"
+echo "ggomvi"
 
-me=${0##*/}
-printf "$me"
+me="${0##*/}"
+echo "$me"
 
 
-if [ "$me" == dracut-cmdline ]; then
-  printf "first"
+if [ "$me" = "dracut-cmdline" ]; then
+  echo "first"
   lsmod
 else
-  printf "second"
+  echo "second"
 fi
 
 
