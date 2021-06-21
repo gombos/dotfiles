@@ -211,7 +211,19 @@ cat > /tmp/rdexec << 'EOF'
 
 exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>/run/initramfs/rd.exec.log 2>&1
+exec 1>>/run/initramfs/rd.exec.log 2>&1
+
+printf "ggomvi"
+
+printf "$0"
+
+me=`basename "$0"`
+
+printf "$me"
+
+printf "ggomvi2"
+
+
 
 # TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
