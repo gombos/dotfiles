@@ -34,23 +34,16 @@
 
 printf "ggomvi"
 
-printf "$0"
-
-me=`basename "$0"`
-
+me=${0##*/}
 printf "$me"
 
-printf "ggomvi2"
 
-
-echo "# arguments called with ---->  ${@}     "
-echo "# \$1 ---------------------->  $1       "
-echo "# \$2 ---------------------->  $2       "
-echo "# path to me --------------->  ${0}     "
-echo "# parent path -------------->  ${0%/*}  "
-echo "# my name ------------------>  ${0##*/} "
-
-lsmod
+if [ "$me" == dracut-cmdline ]; then
+  printf "first"
+  lsmod
+else
+  printf "second"
+fi
 
 
 R="$NEWROOT"
