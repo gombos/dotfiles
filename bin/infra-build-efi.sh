@@ -26,6 +26,11 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
+if [ -z "$SCRIPTS" ]; then
+  export SCRIPTS="/tmp"
+fi
+
+
 if [ -z "$RELEASE" ]; then
   RELEASE=$VERSION_CODENAME
   if [ -z "$RELEASE" ]; then
@@ -148,11 +153,12 @@ prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
+mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
 grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootX64.EFI"  --install-modules="part_msdos part_gpt configfile fat"          --modules="part_msdos part_gpt configfile fat"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
-infra-install-vmware-workstation-modules.sh
+$SCRIPTS/infra-install-vmware-workstation-modules.sh
 
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
