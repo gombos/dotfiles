@@ -107,7 +107,7 @@ cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 
 # Make grub the default EFI boot mechanism, I had better luck on some HW
-cp -v /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/boot/bootx64.efi
+cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
 mkdir -p /efi/grub/
@@ -136,15 +136,20 @@ LABEL linux
 INCLUDE /dotfiles/boot/syslinux.cfg
 EOF
 
-cat > /tmp/grub.cfg << 'EOF'
+cat > /tmp/grub_bios.cfg << 'EOF'
 root=${cmdpath}
 prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
-grub-mkstandalone --format=i386-pc --output=/efi/grub/i386-pc/core.img --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+cat > /tmp/grub_efi.cfg << 'EOF'
+root=${cmdpath}
+prefix=${cmdpath}/grub
+configfile ${prefix}/grub.cfg
+EOF
 
-#grub-mkstandalone -d /usr/lib/grub/x86_64-efi/ -O x86_64-efi --install-modules="part_msdos part_gpt configfile fat" --modules="part_msdos part_gpt configfile fat" --locales="" --themes="" -o "/efi/EFI/BOOT/BOOTX64.EFI" --fonts="" "/boot/grub/grub.cfg=/tmp/grub.cfg" -v
+grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="biosdisk part_msdos part_gpt configfile fat" --modules="biosdisk part_msdos part_gpt configfile fat" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
+grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootX64.EFI"  --install-modules="part_msdos part_gpt configfile fat"          --modules="part_msdos part_gpt configfile fat"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
 infra-install-vmware-workstation-modules.sh
