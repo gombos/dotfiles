@@ -31,6 +31,28 @@
 # Network - DHCP
 # rootfs version
 
+
+printf "ggomvi"
+
+printf "$0"
+
+me=`basename "$0"`
+
+printf "$me"
+
+printf "ggomvi2"
+
+
+echo "# arguments called with ---->  ${@}     "
+echo "# \$1 ---------------------->  $1       "
+echo "# \$2 ---------------------->  $2       "
+echo "# path to me --------------->  ${0}     "
+echo "# parent path -------------->  ${0%/*}  "
+echo "# my name ------------------>  ${0##*/} "
+
+lsmod
+
+
 R="$NEWROOT"
 
 # --- detect the environment
