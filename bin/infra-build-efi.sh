@@ -116,7 +116,7 @@ cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
 mkdir -p /efi/grub/
-cp -rv /usr/lib/grub/i386-pc /efi/grub/
+cp -rv /usr/lib/grub/i386-pc/lnxboot.img /efi/grub/
 
 # grub pc config
 echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
@@ -127,18 +127,14 @@ cp /boot/ipxe.* /efi/ipxe/
 
 # syslinux binary
 mkdir -p /efi/syslinux
-cp /usr/lib/syslinux/mbr/gptmbr.bin /efi/syslinux
-cp -rv /usr/lib/syslinux/modules/bios/*.c32 /efi/syslinux/
+cp -v /usr/lib/syslinux/mbr/gptmbr.bin /efi/syslinux
+cp -v /usr/lib/syslinux/modules/bios/ldlinux.c32 /efi/syslinux/
 
 # syslinux config - chainload grub
 cat > /efi/syslinux/syslinux.cfg <<EOF
-DEFAULT linux
-
-LABEL linux
- LINUX /kernel/vmlinuz $CMDLINE
- INITRD /kernel/initrd.img
-
-INCLUDE /dotfiles/boot/syslinux.cfg
+LABEL grub
+ LINUX /grub/i386-pc/lnxboot.img
+ INITRD /grub/i386-pc/core.img
 EOF
 
 cat > /tmp/grub_bios.cfg << 'EOF'
