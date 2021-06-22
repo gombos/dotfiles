@@ -115,8 +115,8 @@ echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
 cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
-mkdir -p /efi/grub/
-cp -rv /usr/lib/grub/i386-pc/lnxboot.img /efi/grub/
+mkdir -p /efi/grub/i386-pc/
+cp -rv /usr/lib/grub/i386-pc/lnxboot.img /efi/grub/i386-pc/
 
 # grub pc config
 echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
@@ -150,7 +150,7 @@ prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
-GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd"
+GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain"
 
 mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
