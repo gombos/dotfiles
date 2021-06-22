@@ -105,7 +105,14 @@ mkdir -p /efi/EFI/boot/
 #cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 
 # grub efi config - has a dependency on dotfiles
-echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/boot/grub.cfg
+echo "configfile /dotfiles/boot/grub.cfg" > /efi/EFI/boot/grub.cfg
+
+cat > /efi/EFI/boot/grub.cfg << 'EOF'
+regexp --set base "(.*)/" $cmdpath
+regexp --set base "(.*)/" $base
+set root=$base
+configfile /dotfiles/boot/grub.cfg
+EOF
 
 # Make grub the default EFI boot mechanism, I had better luck on some HW
 #cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
