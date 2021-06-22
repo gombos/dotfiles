@@ -132,6 +132,7 @@ cp -v /usr/lib/syslinux/modules/bios/ldlinux.c32 /efi/syslinux/
 
 # syslinux config - chainload grub
 cat > /efi/syslinux/syslinux.cfg <<EOF
+DEFAULT grub
 LABEL grub
  LINUX /grub/i386-pc/lnxboot.img
  INITRD /grub/i386-pc/core.img
