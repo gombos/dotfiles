@@ -79,40 +79,36 @@ apt-get --reinstall install -y nvidia-driver-460
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
-# systemd-boot binary
-mkdir -p /efi/EFI/systemd
-cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
-
-# systemd-boot config
-mkdir -p /efi/loader/entries
-
-# Default boot is first in alphabetical order
-cat << EOF | tee -a /efi/loader/loader.conf
-default grub
-EOF
-
-cat << EOF | tee -a /efi/loader/entries/grub.conf
-title   grub
-efi /EFI/ubuntu/grubx64.efi
-EOF
-
-cat << EOF | tee -a /efi/loader/entries/linux.conf
-title   linux
-linux   /kernel/vmlinuz
-initrd  /kernel/initrd.img
-options $CMDLINE
-EOF
+## systemd-boot binary
+#mkdir -p /efi/EFI/systemd
+#cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
+## systemd-boot config
+#mkdir -p /efi/loader/entries
+## Default boot is first in alphabetical order
+#cat << EOF | tee -a /efi/loader/loader.conf
+#default grub
+#EOF
+#cat << EOF | tee -a /efi/loader/entries/grub.conf
+#title   grub
+#efi /EFI/ubuntu/grubx64.efi
+#EOF
+#cat << EOF | tee -a /efi/loader/entries/linux.conf
+#title   linux
+#linux   /kernel/vmlinuz
+#initrd  /kernel/initrd.img
+#options $CMDLINE
+#EOF
 
 # grub efi binary
 mkdir -p /efi/EFI/boot/
-mkdir -p /efi/EFI/ubuntu/
-cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
+#mkdir -p /efi/EFI/ubuntu/
+#cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 
 # grub efi config - has a dependency on dotfiles
-echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/ubuntu/grub.cfg
+echo "source /dotfiles/boot/grub.cfg" > /efi/EFI/boot/grub.cfg
 
 # Make grub the default EFI boot mechanism, I had better luck on some HW
-cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
+#cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
 mkdir -p /efi/grub/i386-pc/
@@ -157,7 +153,7 @@ GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd sea
 
 mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
-grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
+grub-mkstandalone --format x86_64-efi --output="/efi/EFI/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
