@@ -143,16 +143,11 @@ EOF
 
 cat > /tmp/grub_bios.cfg << 'EOF'
 root=${cmdpath}
-prefix=${cmdpath}/grub
-#prefix=${cmdpath}/EFI/boot
 configfile ${prefix}/grub.cfg
 EOF
 
 cat > /tmp/grub_efi.cfg << 'EOF'
 configfile ${cmdpath}/grub.cfg
-configfile /grub.cfg
-configfile /EFI/boot/grub.cfg
-configfile /grub/grub.cfg
 EOF
 
 GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
