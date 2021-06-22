@@ -153,9 +153,11 @@ prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
+GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd"
+
 mkdir -p /efi/EFI/test/
-grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="part_msdos part_gpt configfile fat smbios biosdisk" --modules="part_msdos part_gpt configfile fat smbios biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
-grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootX64.EFI"  --install-modules="part_msdos part_gpt configfile fat smbios"          --modules="part_msdos part_gpt configfile fat smbios"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
+grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
+grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootX64.EFI"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
