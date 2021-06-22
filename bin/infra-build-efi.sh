@@ -148,7 +148,7 @@ configfile /EFI/boot/grub.cfg
 configfile /grub/grub.cfg
 EOF
 
-GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain regexp ls cat"
+GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
 
 # grub-mkimage --config=
 
