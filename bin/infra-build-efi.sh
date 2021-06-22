@@ -140,21 +140,24 @@ EOF
 
 cat > /tmp/grub_bios.cfg << 'EOF'
 root=${cmdpath}
-prefix=${cmdpath}/grub
+prefix=${cmdpath}/EFI/boot
 configfile ${prefix}/grub.cfg
 EOF
 
 cat > /tmp/grub_efi.cfg << 'EOF'
-root=${cmdpath}
-prefix=${cmdpath}/grub
-configfile ${prefix}/grub.cfg
+configfile ${cmdpath}/grub.cfg
+configfile /grub.cfg
+configfile /EFI/boot/grub.cfg
+configfile /grub/grub.cfg
 EOF
 
 GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain"
 
+# grub-mkimage --config=
+
 mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
-grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootX64.EFI"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
+grub-mkstandalone --format x86_64-efi --output="/efi/EFI/test/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
