@@ -101,12 +101,10 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi binary
 mkdir -p /efi/EFI/boot/
-#mkdir -p /efi/EFI/ubuntu/
-#cp -v /usr/lib/grub/x86_64-efi/monolithic/grubx64.efi /efi/EFI/ubuntu/
 
 # grub efi config - has a dependency on dotfiles
-echo "configfile /dotfiles/boot/grub.cfg" > /efi/EFI/boot/grub.cfg
 
+# remove path part of the variable to determine the root
 cat > /efi/EFI/boot/grub.cfg << 'EOF'
 regexp --set base "(.*)/" $cmdpath
 regexp --set base "(.*)/" $base
