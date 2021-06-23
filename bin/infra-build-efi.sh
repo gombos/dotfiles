@@ -125,7 +125,8 @@ EOF
 cat > /tmp/grub_efi.cfg << EOF
 regexp --set base "(.*)/" \$cmdpath
 regexp --set base "(.*)/" \$base
-set root=\$base EOF
+set root=\$base
+EOF
 
 source \$cmdpath/EFI/boot/grub.cfg
 EOF
@@ -157,7 +158,7 @@ LABEL grub
  INITRD /grub/i386-pc/core.img
 EOF
 
-GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
+GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios loopback chain configfile minicmd search ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
