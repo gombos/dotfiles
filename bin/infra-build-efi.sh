@@ -102,18 +102,29 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # grub efi binary
 mkdir -p /efi/EFI/boot/
 
-# grub efi config - has a dependency on dotfiles
+# grub efi config
 
-# remove path part of the variable to determine the root
-cat > /efi/EFI/boot/grub.cfg << 'EOF'
-regexp --set base "(.*)/" $cmdpath
-regexp --set base "(.*)/" $base
-set root=$base
-configfile /dotfiles/boot/grub.cfg
+# use regexp to remove path part to determine the root
+cat > /tmp/grub_efi.cfg << EOF
+regexp --set base "(.*)/" \$cmdpath
+regexp --set base "(.*)/" \$base
+set root=\$base
+
+set timeout=0
+
+if [ -s /dotfiles/boot/grub.cfg ]; then
+  source /dotfiles/boot/grub.cfg
+fi
+
+if [ -s /config/grub.cfg ]; then
+  source /config/grub.cfg
+fi
+
+menuentry linux_default {
+  linux /kernel/vmlinuz $CMDLINE
+  initrd /kernel/initrd.img
+}
 EOF
-
-# Make grub the default EFI boot mechanism, I had better luck on some HW
-#cp -v /efi/EFI/ubuntu/grubx64.efi /efi/EFI/boot/bootx64.efi
 
 # grub pc binary
 mkdir -p /efi/grub/i386-pc/
@@ -145,16 +156,11 @@ root=$cmdpath
 source $cmdpath/grub/grub.cfg
 EOF
 
-cat > /tmp/grub_efi.cfg << 'EOF'
-source $cmdpath/grub.cfg
-EOF
-
 GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
-mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
 grub-mkstandalone --format x86_64-efi --output="/efi/EFI/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
@@ -225,7 +231,7 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
 exec 1>>/run/initramfs/rd.exec.log 2>&1
 
-echo "# my name ------------------>  ${0##*/} "
+echo "stage ${0##*/} "
 
 # TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
