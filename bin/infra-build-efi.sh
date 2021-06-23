@@ -126,8 +126,6 @@ cat > /tmp/grub_efi.cfg << EOF
 regexp --set base "(.*)/" \$cmdpath
 regexp --set base "(.*)/" \$base
 set root=\$base
-EOF
-
 source \$cmdpath/EFI/boot/grub.cfg
 EOF
 
