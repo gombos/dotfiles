@@ -126,13 +126,13 @@ cat > /tmp/grub_efi.cfg << EOF
 regexp --set base "(.*)/" \$cmdpath
 regexp --set base "(.*)/" \$base
 set root=\$base
-confgifile \$cmdpath/EFI/boot/grub.cfg
+configfile \$cmdpath/grub.cfg
 EOF
 
 cat > /tmp/grub_bios.cfg << EOF
 prefix=
 root=\$cmdpath
-confgifile \$cmdpath/EFI/boot/grub.cfg
+configfile \$cmdpath/EFI/boot/grub.cfg
 EOF
 
 # grub pc binary
