@@ -142,18 +142,19 @@ LABEL grub
 EOF
 
 cat > /tmp/grub_bios.cfg << 'EOF'
-root=${cmdpath}
-prefix=${cmdpath}/grub
-configfile ${prefix}/grub.cfg
+prefix=
+root=$cmdpath
+source $cmdpath/grub/grub.cfg
 EOF
 
 cat > /tmp/grub_efi.cfg << 'EOF'
-configfile ${cmdpath}/grub.cfg
+source $cmdpath/grub.cfg
 EOF
 
 GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
 
-# grub-mkimage --config=
+# for more control, consider just invoking grub-mkimage directly
+# grub-mkstandalone just a wrapper on top of grub-mkimage
 
 mkdir -p /efi/EFI/test/
 grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
