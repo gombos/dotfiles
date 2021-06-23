@@ -225,25 +225,7 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
 exec 1>>/run/initramfs/rd.exec.log 2>&1
 
-printf "ggomvi"
-
-printf "$0"
-
-me=`basename "$0"`
-
-printf "$me"
-
-printf "ggomvi2"
-
-
-echo "# arguments called with ---->  ${@}     "
-echo "# \$1 ---------------------->  $1       "
-echo "# \$2 ---------------------->  $2       "
-echo "# path to me --------------->  ${0}     "
-echo "# parent path -------------->  ${0%/*}  "
 echo "# my name ------------------>  ${0##*/} "
-
-lsmod
 
 # TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
@@ -284,10 +266,12 @@ done
 mp="/run/media/efi"
 mkdir -p "$mp"
 
-printf "[rd.exec] Mounting $configdrive to $mp\n"
-mount -o ro,noexec,nosuid,nodev,umask=0077 "$configdrive" "$mp"
+drive=$(readlink -f $configdrive)
 
-printf "[rd.exec] Mounted $configdrive to $mp\n"
+printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
+mount -o ro,noexec,nosuid,nodev,umask=0077 "$drive" "$mp"
+
+printf "[rd.exec] Mounted $drive to $mp\n"
 
 # default init included in the initramfs
 if [ -z "$RDEXEC" ]; then
@@ -339,7 +323,6 @@ dracut --keep --verbose --force --no-hostonly --reproducible  --kernel-cmdline "
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
-  --include /tmp/rdexec /usr/lib/dracut/hooks/cmdline/90-exec.sh \
   initrd.img $KERNEL
 
 rm -r /tmp/rdexec
