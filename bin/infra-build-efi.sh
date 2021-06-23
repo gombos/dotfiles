@@ -143,6 +143,7 @@ EOF
 
 cat > /tmp/grub_bios.cfg << 'EOF'
 root=${cmdpath}
+prefix=${cmdpath}/grub
 configfile ${prefix}/grub.cfg
 EOF
 
