@@ -102,14 +102,9 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # grub efi binary
 mkdir -p /efi/EFI/boot/
 
-# grub efi config
+# grub configs (efi and bios)
 
-# use regexp to remove path part to determine the root
-cat > /tmp/grub_efi.cfg << EOF
-regexp --set base "(.*)/" \$cmdpath
-regexp --set base "(.*)/" \$base
-set root=\$base
-
+cat > /efi/EFI/boot/grub.cfg << EOF
 set timeout=0
 
 if [ -s /dotfiles/boot/grub.cfg ]; then
@@ -126,12 +121,24 @@ menuentry linux_default {
 }
 EOF
 
+# use regexp to remove path part to determine the root
+cat > /tmp/grub_efi.cfg << EOF
+regexp --set base "(.*)/" \$cmdpath
+regexp --set base "(.*)/" \$base
+set root=\$base EOF
+
+source \$cmdpath/EFI/boot/grub.cfg
+EOF
+
+cat > /tmp/grub_bios.cfg << EOF
+prefix=
+root=\$cmdpath
+source \$cmdpath/EFI/boot/grub.cfg
+EOF
+
 # grub pc binary
 mkdir -p /efi/grub/i386-pc/
 cp -rv /usr/lib/grub/i386-pc/lnxboot.img /efi/grub/i386-pc/
-
-# grub pc config
-echo "source /dotfiles/boot/grub.cfg" > /efi/grub/grub.cfg
 
 # grub ipxe binary
 mkdir -p /efi/ipxe/
@@ -148,12 +155,6 @@ DEFAULT grub
 LABEL grub
  LINUX /grub/i386-pc/lnxboot.img
  INITRD /grub/i386-pc/core.img
-EOF
-
-cat > /tmp/grub_bios.cfg << 'EOF'
-prefix=
-root=$cmdpath
-source $cmdpath/grub/grub.cfg
 EOF
 
 GRUB_MODULES="normal part_msdos part_gpt configfile fat smbios linux minicmd search chain test regexp ls cat"
