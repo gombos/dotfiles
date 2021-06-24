@@ -136,24 +136,26 @@ configfile \$cmdpath/EFI/boot/grub.cfg
 EOF
 
 # grub pc binary
-mkdir -p /efi/grub/i386-pc/
-cp -rv /usr/lib/grub/i386-pc/lnxboot.img /efi/grub/i386-pc/
+#mkdir -p /efi/grub/i386-pc/
+cp -rv /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR
 
 # grub ipxe binary
 mkdir -p /efi/ipxe/
 cp /boot/ipxe.* /efi/ipxe/
 
+LEGACYDIR="/efi/syslinux"
+
 # syslinux binary
-mkdir -p /efi/syslinux
-cp -v /usr/lib/syslinux/mbr/gptmbr.bin /efi/syslinux
-cp -v /usr/lib/syslinux/modules/bios/ldlinux.c32 /efi/syslinux/
+mkdir -p $LEGACYDIR
+cp -v /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
+cp -v /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
 
 # syslinux config - chainload grub
-cat > /efi/syslinux/syslinux.cfg <<EOF
+cat > $LEGACYDIR/syslinux.cfg <<EOF
 DEFAULT grub
 LABEL grub
- LINUX /grub/i386-pc/lnxboot.img
- INITRD /grub/i386-pc/core.img
+ LINUX lnxboot.img
+ INITRD core.img
 EOF
 
 GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios loopback chain configfile minicmd search ls cat"
@@ -161,7 +163,7 @@ GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios lo
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
-grub-mkstandalone --format=i386-pc    --output="/efi/grub/i386-pc/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
+grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
 grub-mkstandalone --format x86_64-efi --output="/efi/EFI/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built

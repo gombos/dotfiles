@@ -96,7 +96,7 @@ MNT_EFI=$MNT_DIR/efi
   cd /
 
   # directories that are not needed for vm
-  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/EFI/ubuntu $MNT_EFI/grub $MNT_EFI/tce $MNT_EFI/ipxe $MNT_EFI/dotfiles
+  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce $MNT_EFI/ipxe $MNT_EFI/dotfiles
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
