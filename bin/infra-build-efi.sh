@@ -30,7 +30,6 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-
 if [ -z "$RELEASE" ]; then
   RELEASE=$VERSION_CODENAME
   if [ -z "$RELEASE" ]; then
@@ -80,8 +79,8 @@ mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 ## systemd-boot binary
-#mkdir -p /efi/EFI/systemd
-#cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/EFI/systemd/
+#mkdir -p /efi/efi/systemd
+#cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/efi/systemd/
 ## systemd-boot config
 #mkdir -p /efi/loader/entries
 ## Default boot is first in alphabetical order
@@ -90,7 +89,7 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 #EOF
 #cat << EOF | tee -a /efi/loader/entries/grub.conf
 #title   grub
-#efi /EFI/ubuntu/grubx64.efi
+#efi /efi/ubuntu/grubx64.efi
 #EOF
 #cat << EOF | tee -a /efi/loader/entries/linux.conf
 #title   linux
@@ -100,11 +99,11 @@ cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 #EOF
 
 # grub efi binary
-mkdir -p /efi/EFI/boot/
+mkdir -p /efi/efi/boot/
 
 # grub configs (efi and bios)
 
-cat > /efi/EFI/boot/grub.cfg << EOF
+cat > /efi/efi/boot/grub.cfg << EOF
 set timeout=5
 
 if [ -s /dotfiles/boot/grub.cfg ]; then
@@ -132,7 +131,7 @@ EOF
 cat > /tmp/grub_bios.cfg << EOF
 prefix=
 root=\$cmdpath
-configfile \$cmdpath/EFI/boot/grub.cfg
+configfile \$cmdpath/efi/boot/grub.cfg
 EOF
 
 # grub pc binary
@@ -181,7 +180,7 @@ GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 linux ntldr
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
 grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
-grub-mkstandalone --format x86_64-efi --output="/efi/EFI/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
+grub-mkstandalone --format x86_64-efi --output="/efi/efi/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
@@ -252,12 +251,8 @@ exec 1>>/run/initramfs/rd.exec.log 2>&1
 
 echo "stage ${0##*/} "
 
-# TODO - do not hardcode EFI label
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
-
-# rd.exec should not used in the LIVE disk
-# disk that contains the executable code
 
 # EFI label has priority over EFI_* labels
 configdrive=""
