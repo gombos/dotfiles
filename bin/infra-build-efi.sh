@@ -158,7 +158,7 @@ LABEL grub
  INITRD core.img
 EOF
 
-GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios loopback chain configfile minicmd search ls cat ntfs ntldr"
+GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios loopback chain configfile minicmd search ls cat ntfs ntldr btrfs"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
