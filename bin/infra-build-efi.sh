@@ -159,7 +159,7 @@ EOF
 
 # normal - loaded by default
 # part_msdos part_gpt - mbr and gpt partition table support
-# fat btrfs ext2 ntfs iso9660 - search by fs labels and read files from fs
+# fat btrfs ext2 ntfs iso9660 hfsplus - search by fs labels and read files from fs
 # linux - boot linux kernel
 # ntldr - boot windows
 # loadenv - read andd write grub file used for boot once configuration
@@ -174,7 +174,7 @@ EOF
 
 # minicmd ls cat - interactive debug in grub shell
 
-GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 linux ntldr loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
+GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux ntldr loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
