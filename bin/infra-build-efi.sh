@@ -158,7 +158,24 @@ LABEL grub
  INITRD core.img
 EOF
 
-GRUB_MODULES="normal part_msdos part_gpt fat linux loadenv test regexp smbios loopback chain configfile minicmd search ls cat ntfs ntldr btrfs"
+# normal - loaded by default
+# part_msdos part_gpt - mbr and gpt partition table support
+# fat btrfs ext2 ntfs - search by fs labels and read files from fs
+# linux - boot linux kernel
+# ntldr - boot windows
+# loadenv - read andd write grub file used for boot once configuration
+# test - conditionals in grub config file
+# regexp - regexp, used to remove path part from a variable
+# smbios - detect motherboard ID
+# loopback - boot iso files
+# chain - chain boot
+# search - finfd partitions (by label or uuid, but no suport for part_label)
+
+# configfile - is this really needed
+
+# minicmd ls cat - interactive debug in grub shell
+
+GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs linux ntldr loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
