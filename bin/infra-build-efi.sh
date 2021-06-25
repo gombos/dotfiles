@@ -174,12 +174,12 @@ EOF
 
 # minicmd ls cat - interactive debug in grub shell
 
-GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux ntldr loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
+GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
-grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
+grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
 grub-mkstandalone --format x86_64-efi --output="/efi/efi/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
 
 # Make sure we have all the required modules built
