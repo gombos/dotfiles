@@ -105,7 +105,7 @@ mkdir -p /efi/EFI/boot/
 # grub configs (efi and bios)
 
 cat > /efi/EFI/boot/grub.cfg << EOF
-set timeout=0
+set timeout=5
 
 if [ -s /dotfiles/boot/grub.cfg ]; then
   source /dotfiles/boot/grub.cfg
