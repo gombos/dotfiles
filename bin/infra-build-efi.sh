@@ -193,11 +193,10 @@ tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
 # netboot-xyz
-mkdir -p netboot
-cd netboot
 wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
 wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
-cd ..
+mkdir -p /efi/netboot
+mv netboot.xyz* /efi/netboot/
 
 # dracut
 rm -rf 055.zip dracut-055
@@ -303,14 +302,12 @@ EOF
 
 # ifcfg aufs overlay-root
 # consider --omit ifcfg
-
 # --add-drivers "squashfs overlay iso9660 btrfs" --add "squash"
-
 # nfs livenet
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
-  --add "loop btrfs bash busybox systemd-networkd" \
+  --add "btrfs bash busybox systemd-networkd" \
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
