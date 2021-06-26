@@ -44,7 +44,7 @@ fi
 echo $KERNEL
 
 if [ -z "$CMDLINE" ]; then
-  CMDLINE="root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet"
+  CMDLINE='root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet $OVERRIDE'
 fi
 
 mkdir -p /efi
