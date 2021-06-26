@@ -43,10 +43,6 @@ fi
 
 echo $KERNEL
 
-if [ -z "$CMDLINE" ]; then
-  CMDLINE='root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet $OVERRIDE'
-fi
-
 mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
@@ -79,11 +75,42 @@ mkdir -p /efi/efi/boot/
 
 # grub configs (efi and bios)
 
-cat > /efi/efi/boot/grub.cfg << EOF
+cat > /efi/efi/boot/grub.cfg << 'EOF'
 set timeout=5
+set default=linux_default
 
-if [ -s /dotfiles/boot/grub.cfg ]; then
-  source /dotfiles/boot/grub.cfg
+# Detect smbios
+smbios --type 2 --get-string 5 --set smbios_system
+
+if [ "$smbios_system" == "DX79TO" ]; then
+  set h=bestia
+  OVERRIDE="module_blacklist=nouveau acpi_enforce_resources=lax"
+fi
+
+if [ "$smbios_system" == "NEO Z83-4" ]; then
+  set h=pincer
+  set timeout=0
+
+  # Disable Wifi, bluetooth, sound kernel modules
+  # dw_dmac and dw_dmac_core can cause hang at reboot on Minix
+  OVERRIDE="module_blacklist=bluetooth,nouveau,cfg80211,soundcore,dm_mirror,dw_dmac,dw_dmac_core systemd.unit=multi-user.target"
+fi
+
+if [ "$smbios_system" == "Mac-3CBD00234E554E41" ]; then
+  set h=taska
+  OVERRIDE="rd.dev=by-label/EFI_MAC"
+fi
+
+if [ -s /config/grub.cfg ]; then
+  source /config/grub.cfg
+fi
+
+if [ "$smbios_system" == "440BX Desktop Reference Platform" ]; then
+  set h=vm
+  set timeout=0
+  set timeout_style=hidden
+
+  OVERRIDE="systemd.mask=bluetooth.service systemd.mask=getty@tty1.service systemd.mask=vgauth.service systemd.mask=smartmontools.service systemd.mask=ssh.service systemd.mask=NetworkManager.service systemd.mask=wpa_supplicant.service"
 fi
 
 if [ -s /config/grub.cfg ]; then
@@ -91,7 +118,7 @@ if [ -s /config/grub.cfg ]; then
 fi
 
 menuentry linux_default {
-  linux /kernel/vmlinuz $CMDLINE
+  linux /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet $OVERRIDE
   initrd /kernel/initrd.img
 }
 EOF
