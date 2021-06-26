@@ -117,8 +117,10 @@ if [ -s /config/grub.cfg ]; then
   source /config/grub.cfg
 fi
 
+#set DEFAULT="root=LABEL=$label rootfstype=btrfs ro quiet net.ifnames=0 d.luks=0 rd.lvm=0 rd.md=0 rd.dm=0 rd.hostonly=0 systemd.hostname=$h grub_root=$root grub_system=$smbios_system"
+
 menuentry linux_default {
-  linux /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay quiet $OVERRIDE
+  linux /kernel/vmlinuz root=LABEL=linux rootfstype=btrfs ro net.ifnames=0 systemd.volatile=overlay systemd.hostname=$h grub_root=$root grub_system=$smbios_system quiet $OVERRIDE
   initrd /kernel/initrd.img
 }
 EOF
