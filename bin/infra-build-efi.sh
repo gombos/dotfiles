@@ -193,9 +193,13 @@ tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
 # netboot-xyz
+mkdir -p netboot
+cd netboot
 wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
 wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+cd ..
 
+# dracut
 rm -rf 055.zip dracut-055
 wget --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 unzip -q 055.zip
