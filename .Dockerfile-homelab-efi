@@ -3,6 +3,7 @@ FROM 0gombi0/homelab:desktop as base
 LABEL name=efi
 
 COPY bin/* /tmp/
+COPY boot/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-efi.sh
 
