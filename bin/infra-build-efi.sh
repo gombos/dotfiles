@@ -37,12 +37,12 @@ if [ -z "$RELEASE" ]; then
   fi
 fi
 
-if [ -z "$KERNEL" ]; then
-  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
-fi
+#if [ -z "$KERNEL" ]; then
+#  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
+#fi
 
 if [ -z "$KERNEL" ]; then
-  export KERNEL="5.4.0-52-generic"
+  export KERNEL="5.8.0-59-generic"
 fi
 
 echo $KERNEL
