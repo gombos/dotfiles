@@ -9,7 +9,7 @@
 # In general each kernel version will have to have its own initramfs
 # but with a bit of work it is possible to make initramfs generic (not HW or host SW specific)
 
-# drakut-network to enable nfsroot - https://fai-project.org/
+# https://fai-project.org/
 # This is also way more powerful (systemd volatile)
 
 # A read-only /etc is increasingly common on embedded devices.
@@ -59,7 +59,7 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /et
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub-ipxe syslinux-common grub2-common unzip overlayroot shim dmidecode
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin syslinux-common grub2-common unzip
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
@@ -73,26 +73,6 @@ apt-get --reinstall install -y nvidia-driver-460
 # kernel binary
 mkdir -p /efi/kernel
 cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
-
-## systemd-boot binary
-#mkdir -p /efi/efi/systemd
-#cp -v /usr/lib/systemd/boot/efi/systemd-bootx64.efi /efi/efi/systemd/
-## systemd-boot config
-#mkdir -p /efi/loader/entries
-## Default boot is first in alphabetical order
-#cat << EOF | tee -a /efi/loader/loader.conf
-#default grub
-#EOF
-#cat << EOF | tee -a /efi/loader/entries/grub.conf
-#title   grub
-#efi /efi/ubuntu/grubx64.efi
-#EOF
-#cat << EOF | tee -a /efi/loader/entries/linux.conf
-#title   linux
-#linux   /kernel/vmlinuz
-#initrd  /kernel/initrd.img
-#options $CMDLINE
-#EOF
 
 # grub efi binary
 mkdir -p /efi/efi/boot/
@@ -131,12 +111,7 @@ configfile \$cmdpath/efi/boot/grub.cfg
 EOF
 
 # grub pc binary
-#mkdir -p /efi/grub/i386-pc/
 cp -rv /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR
-
-# grub ipxe binary
-mkdir -p /efi/ipxe/
-cp /boot/ipxe.* /efi/ipxe/
 
 LEGACYDIR="/efi/syslinux"
 
@@ -157,6 +132,7 @@ EOF
 # part_msdos part_gpt - mbr and gpt partition table support
 # fat btrfs ext2 ntfs iso9660 hfsplus - search by fs labels and read files from fs
 # linux - boot linux kernel
+# linux16 - boot linux kernel 16 bit for netboot-xyz
 # ntldr - boot windows
 # loadenv - read andd write grub file used for boot once configuration
 # test - conditionals in grub config file
@@ -170,7 +146,7 @@ EOF
 
 # minicmd ls cat - interactive debug in grub shell
 
-GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
+GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux linux16 loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
@@ -216,14 +192,9 @@ chmod +x opt/bootsync.sh
 tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
-# Only needed for nfs
-#rm -rf NFSroot_work.tgz
-#wget http://support.fccps.cz/download/adv/frr/nfs-root/NFSroot_work.tgz
-#tar -xzf NFSroot_work.tgz
-#cp ./NFSroot_work/debcfg-nfsroot/overlay.sh /etc/initramfs-tools/scripts/init-bottom
-#echo "overlay" >> /etc/initramfs-tools/modules
-#update-initramfs -k all -c
-#cp /boot/initrd.img /efi/kernel/initrd-nfs.img
+# netboot-xyz
+wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
+wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 
 rm -rf 055.zip dracut-055
 wget --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
@@ -249,6 +220,8 @@ echo "stage ${0##*/} "
 
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
+
+# todo - add support loopback mount a file
 
 # EFI label has priority over EFI_* labels
 configdrive=""
@@ -313,7 +286,6 @@ EOF
 
 chmod +x /tmp/rdexec
 
-
 cat > /tmp/20-wired.network << 'EOF'
 [Match]
 Name=eth0
@@ -325,17 +297,16 @@ DHCP=ipv4
 CriticalConnection=true
 EOF
 
-# TODO - add dmidecode to initramfs so that I can autodiscover HW in the rootfs script  -s bios-version
 # ifcfg aufs overlay-root
 # consider --omit ifcfg
 
-# --add-drivers "loop squashfs overlay iso9660 btrfs" --add "squash"
+# --add-drivers "squashfs overlay iso9660 btrfs" --add "squash"
 
 # nfs livenet
 
-dracut --keep --verbose --force --no-hostonly --reproducible  --kernel-cmdline "$CMDLINE" \
+dracut --keep --verbose --force --no-hostonly --reproducible \
   --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
-  --add "btrfs bash busybox systemd-networkd" \
+  --add "loop btrfs bash busybox systemd-networkd" \
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
