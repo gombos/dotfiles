@@ -88,10 +88,10 @@ root=\$cmdpath
 configfile \$cmdpath/efi/boot/grub.cfg
 EOF
 
-# grub pc binary
-cp -rv /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR
-
 LEGACYDIR="/efi/syslinux"
+
+# grub pc binary
+cp -rv /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR/
 
 # syslinux binary
 mkdir -p $LEGACYDIR
