@@ -5,7 +5,7 @@
 # todo - discover if podman is available and use podman instead of docker if available
 # todo - does this really needs sudo ?
 
-mnt linux
+mnt linux_bestia
 DIR=$MNTDIR/linux/linux-dev
 
 # it is only possible to “flatten” a Docker container, not an image.
@@ -40,14 +40,20 @@ sudo rm -rf .dockerenv
 # Check before doing it readlink -- "/etc/resolv.conf"
 cd $DIR/etc
 sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
+
 cd $DIR
+version=$(cat var/integrity/id)
+echo $version
+cd ..
+sudo mv $DIR linux-$version
 
 # Todo - Dedup
 #sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR
 #sudo ./rmlint.sh -r
 
 # Make it read-only
-sudo btrfs property set -ts $DIR ro true
+sudo btrfs property set -ts linux-$version ro true
+sudo btrfs subvolume set-default linux-$version
 
 # Print size
-sudo du -hs $DIR
+sudo du -hs linux-$version
