@@ -4,8 +4,10 @@ mkdir -p $1
 
 # todo - should not need to specify exclude here
 
-find . -mount -type f -not -path "./tmp/*" -not -path "./run/*" -not -path "./etc/hostname" -exec md5sum "{}" + | sed 's/  \.\//  /' > /tmp/rootfs.chk
-find . -mount -type l -not -path "./tmp/*" -not -path "./run/*" -exec ls -lQ {} \; | cut -d\" -f2-4 | sed 's/^\.\///' > /tmp/rootfs-links.chk
-find . -mount -type d -empty | sed 's/^\.\///' > /tmp/rootfs-dirs.chk
+LC_ALL=C find . -mount -type f -not -path "./tmp/*" -not -path "./run/*" -not -path "./etc/hostname" -not -path "./etc/resolv.conf" -exec md5sum "{}" + | sed 's/  \.\//  /' | sort --key=2 > /tmp/rootfs.chk
+LC_ALL=C find . -mount -type l -not -path "./tmp/*" -not -path "./run/*" -exec ls -lQ {} \; | cut -d\" -f2-4 | sed 's/^\.\///' > sort > /tmp/rootfs-links.chk
+LC_ALL=C find . -mount -type d -empty | sed 's/^\.\///' | sort > /tmp/rootfs-dirs.chk
 
-mv /tmp/rootfs*.chk $1
+cat /tmp/rootfs.chk /tmp/rootfs-links.chk /tmp/rootfs-dirs.chk | md5sum | head -c 4 > /tmp/id
+
+mv /tmp/rootfs*.chk /tmp/id $1
