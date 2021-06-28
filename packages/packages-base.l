@@ -13,4 +13,3 @@ udev
 
 # tools
 sudo
-wget

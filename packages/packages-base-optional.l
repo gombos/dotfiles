@@ -41,3 +41,8 @@ dmidecode
 thermald # monitors and controls temperature in laptops
 tlp # tweaking kernel settings that affect power consumption.
 tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power
+
+# tools
+wget
+gpg
+gpg-agent

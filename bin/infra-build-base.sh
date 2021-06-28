@@ -124,6 +124,20 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> 
 packages_update_db
 packages_upgrade
 
+install_my_packages packages-base.l
+install_my_packages packages-base-optional.l
+
+# chrome
+wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
+
+# Install nvidea driver - this is the only package from restricted source
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
+
+packages_update_db
+
 install_my_package locales
 locale-gen --purge en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
@@ -139,8 +153,11 @@ printf "127.0.0.1 localhost\n" > etc/hosts
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
 sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
-install_my_packages packages-base.l
-install_my_packages packages-base-optional.l
+install_my_package xserver-xorg-video-nvidia-460
+
+# Make sure that only restricted package installed is nvidia
+rm etc/apt/sources.list.d/restricted.list
+fi
 
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
@@ -152,7 +169,6 @@ ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
-fi
 
 if [ "$TARGET" = "dev" ]; then
 # Could run on my base image or other distro's base image
@@ -165,11 +181,6 @@ if [ "$ID" = "alpine" ]; then
   # get me bash
   apk add bash
 fi
-
-# Install nvidea driver - this is the only package from restricted source
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
 # Try both wget first
 if ! [ -f usr/local/bin/pacapt ]; then
@@ -185,23 +196,6 @@ fi
 
 packages_update_db
 packages_upgrade
-
-install_my_package wget
-install_my_package gpg
-install_my_package gpg-agent
-
-# chrome
-wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
-
-packages_update_db
-
-install_my_package xserver-xorg-video-nvidia-460
-#install_my_package nvidia-driver-460
-
-# Make sure that only restricted package installed is nvidia
-rm etc/apt/sources.list.d/restricted.list
-packages_update_db
 
 install_my_packages packages-services.l
 install_my_packages packages-x11.l
