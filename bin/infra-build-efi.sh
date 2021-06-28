@@ -68,7 +68,7 @@ apt-get --reinstall install -y nvidia-driver-460
 
 # kernel binary
 mkdir -p /efi/kernel
-cp -rv /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
+cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi binary
 mkdir -p /efi/efi/boot/
@@ -91,12 +91,12 @@ EOF
 LEGACYDIR="/efi/syslinux"
 
 # grub pc binary
-cp -rv /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR/
+cp -r /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR/
 
 # syslinux binary
 mkdir -p $LEGACYDIR
-cp -v /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
-cp -v /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
+cp /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
+cp /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
 
 # syslinux config - chainload grub
 cat > $LEGACYDIR/syslinux.cfg <<EOF
@@ -129,8 +129,8 @@ GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus lin
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
-grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg" -v
-grub-mkstandalone --format x86_64-efi --output="/efi/efi/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg" -v
+grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
+grub-mkstandalone --format x86_64-efi --output="/efi/efi/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
@@ -139,7 +139,7 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
-cp -rv /usr/lib/modules /efi/
+cp -r /usr/lib/modules /efi/
 
 # TCE binary
 mkdir -p /efi/tce
@@ -314,6 +314,6 @@ cp initrd.img /efi/kernel/
 rm -rf /tmp/initrd
 
 # Populate logs with the list of filenames
-find /efi
+#find /efi
 
 # use syslinux only for booting legacy/non-ufi systems - for uefi system, no need to introduce an extra complexity into booting

@@ -44,7 +44,7 @@ MNT_EFI=$MNT_DIR/efi
   # https://wiki.archlinux.org/title/GPT_fdisk
   sudo sgdisk -Z $DISK
   sudo sgdisk -n 0:0:+1022M  -t 0:ef00 -c 0:"efi_vm"   $DISK
-  sudo sgdisk -n 0:0:+6G     -t 0:8304 -c 0:"linux_vm" $DISK
+  sudo sgdisk -n 0:0:       -t 0:8304 -c 0:"linux_vm" $DISK
   sudo partprobe $DISK
 
   echo "Creating filesystems..."
