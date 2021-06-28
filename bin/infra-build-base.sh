@@ -96,10 +96,6 @@ if [ "$TARGET" = "container" ]; then
   install_my_packages packages-packages.l
 fi
 
-
-# TODO - make these idenpotent and run it all the time
-if [ "$TARGET" = "base" ]; then
-echo "building base"
 # /var/tmp points to /tmp
 rm -rf var/tmp
 ln -sf /tmp var/tmp
@@ -112,6 +108,8 @@ ln -sf usr/opt
 mkdir -p nix
 ln -sf /run/media go
 
+
+if [ "$TARGET" = "base" ]; then
 # Disable installing recommended and suggested packages by default
 mkdir -p etc/apt/apt.conf.d/
 printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
@@ -138,6 +136,13 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 
 packages_update_db
 
+install_my_package xserver-xorg-video-nvidia-460
+
+# Make sure that only restricted package installed is nvidia
+rm etc/apt/sources.list.d/restricted.list
+fi
+
+
 install_my_package locales
 locale-gen --purge en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
@@ -152,12 +157,6 @@ printf "127.0.0.1 localhost\n" > etc/hosts
 # admin user to log in
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
 sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
-
-install_my_package xserver-xorg-video-nvidia-460
-
-# Make sure that only restricted package installed is nvidia
-rm etc/apt/sources.list.d/restricted.list
-fi
 
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
@@ -174,13 +173,6 @@ if [ "$TARGET" = "dev" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
 echo "building dev"
-wget
-curl
-
-if [ "$ID" = "alpine" ]; then
-  # get me bash
-  apk add bash
-fi
 
 # Try both wget first
 if ! [ -f usr/local/bin/pacapt ]; then
