@@ -54,6 +54,9 @@ MNT_EFI=$MNT_DIR/efi
   # Mount device
   echo "Mounting partitions..."
   sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+
+  # Todo - test compress
+  # -o compress
   sudo mount ${DISK}p2 $MNT || fail "cannot mount"
   sudo btrfs subvolume create $MNT/linux
 
