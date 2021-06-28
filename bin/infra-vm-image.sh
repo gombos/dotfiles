@@ -11,7 +11,7 @@ MNT_EFI=$MNT_DIR/efi
   echo "Installing $RELEASE into $FILE..."
 
   # 7GB image file to fit comfortable to 8 GB sticks or larger
-  IMGSIZE=${IMGSIZE:=7168} # in megabytes
+  IMGSIZE=${IMGSIZE:=3072} # in megabytes
 
   if [ -f $FILE ]; then
     sudo rm -rf $FILE
@@ -43,7 +43,7 @@ MNT_EFI=$MNT_DIR/efi
   # See also https://systemd.io/DISCOVERABLE_PARTITIONS/
   # https://wiki.archlinux.org/title/GPT_fdisk
   sudo sgdisk -Z $DISK
-  sudo sgdisk -n 0:0:+1022M  -t 0:ef00 -c 0:"efi_vm"   $DISK
+  sudo sgdisk -n 0:0:+510M  -t 0:ef00 -c 0:"efi_vm"   $DISK
   sudo sgdisk -n 0:0:       -t 0:8304 -c 0:"linux_vm" $DISK
   sudo partprobe $DISK
 
@@ -57,7 +57,7 @@ MNT_EFI=$MNT_DIR/efi
 
   # Todo - test compress
   # -o compress
-  sudo mount ${DISK}p2 $MNT || fail "cannot mount"
+  sudo mount -o compress ${DISK}p2 $MNT || fail "cannot mount"
   sudo btrfs subvolume create $MNT/linux
 
   cd $MNT/linux
@@ -88,8 +88,8 @@ MNT_EFI=$MNT_DIR/efi
   sudo docker pull 0gombi0/homelab:efi
   container_id=$(sudo docker create 0gombi0/homelab:efi /bin/bash)
   sudo docker export $container_id | sudo tar xf -
-  sudo rsync -rv /tmp/efi/efi/ $MNT_EFI
-  sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
+  sudo rsync -r /tmp/efi/efi/ $MNT_EFI
+#  sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
 
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
@@ -99,7 +99,7 @@ MNT_EFI=$MNT_DIR/efi
   cd /
 
   # directories that are not needed for vm
-  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce $MNT_EFI/ipxe $MNT_EFI/dotfiles
+  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
   sudo umount $MNT_EFI
 
   sudo losetup -d /dev/loop* 2>/dev/null
