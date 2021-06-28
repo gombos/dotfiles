@@ -168,6 +168,12 @@ if [ ! -z "$SSHD_KEY" ]; then
   echo -e $SSHD_KEY > $R/etc/ssh/ssh_host_ed25519_key
   echo $SSHD_KEY_PUB > $R/etc/ssh/ssh_host_ed25519_key.pub
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
+
+  #harden sshd
+  echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
+  echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
+  chmod 0440 /run/sshd_kucko.conf
+  ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
 fi
 
 sed -i "s|bottom_pane=.*|bottom_pane=0|g" $R/etc/lxdm/lxdm.conf
@@ -199,12 +205,6 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
   chmod 0440 /run/99-kucko.rules
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
-
-# harden sshd
-echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
-echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
-chmod 0440 /run/sshd_kucko.conf
-ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
 
 # allow some executables to run without sudo password
 # sensitive data should be all protected with additional encryption password at rest

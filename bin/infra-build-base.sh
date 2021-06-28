@@ -217,7 +217,7 @@ cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 Description=Regenerate SSH host keys
 Before=ssh.service
 ConditionFileIsExecutable=/usr/bin/ssh-keygen
-!ConditionFileNotEmpty=/etc/ssh/ssh_host_ed25519_key
+ConditionFileNotEmpty=!/etc/ssh/ssh_host_ed25519_key
 
 [Service]
 Type=oneshot
