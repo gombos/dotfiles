@@ -1,9 +1,19 @@
 # first boot of a new instance, run all the “per-instance” configuration
 
 # Warning: error in this file will likely lead to failure to boot
+
+# Idea: detect if cloud-init is installed in the image and run the script during later in the boot phase
+# Any of thid is needed when a container is initialized ?
+# For LXC-like containers, ssh keys are needed
+# also - thsi is a useful way to run containers - https://medium.com/swlh/docker-and-systemd-381dfd7e4628
+
 # Consider only testing/changing this file in a development environment with access to console
 
 # This script logs to /run/initramfs/rdexec.out
+# Determine where this script is called from - either as a dracut hook or as a cloud-init phase or 'docker run'
+
+# This script is optional for containers, that are not "booted" and do not initialize systemd. Keep it that way
+
 # cloud-init does similar things
 
 # Do not change /usr to allow ro mount

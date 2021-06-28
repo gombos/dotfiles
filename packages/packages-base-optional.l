@@ -4,6 +4,7 @@ linux-firmware
 # boot
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
+cloud-init # to make the image compatible with cloud providers
 
 # networking
 dnsmasq-base

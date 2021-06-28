@@ -218,6 +218,7 @@ cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 Description=Regenerate SSH host keys
 Before=ssh.service
 ConditionFileIsExecutable=/usr/bin/ssh-keygen
+!ConditionFileNotEmpty=/etc/ssh/ssh_host_ed25519_key
 
 [Service]
 Type=oneshot
@@ -229,6 +230,9 @@ ExecStartPost=/bin/systemctl --no-reload disable %n
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# Enable ssh-keygen.service by default
+ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
 rm usr/.crates2.json
