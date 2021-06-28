@@ -139,9 +139,6 @@ printf "127.0.0.1 localhost\n" > etc/hosts
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /dev/shm --gecos "" admin --gid 0 && usermod -aG sudo admin
 sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
-#install_my_package linux-modules-extra-$KERNEL
-#install_my_package linux-headers-$KERNEL
-
 install_my_packages packages-base.l
 install_my_packages packages-base-optional.l
 
@@ -158,6 +155,8 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 fi
 
 if [ "$TARGET" = "dev" ]; then
+# Could run on my base image or other distro's base image
+# Does not need to be bootable
 echo "building dev"
 wget
 curl

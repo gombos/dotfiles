@@ -1,3 +1,4 @@
+# Purpose: HW-only packages
 # firware
 linux-firmware
 

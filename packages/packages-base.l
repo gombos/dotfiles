@@ -1,5 +1,4 @@
-# Purpose: HW-only packages
-# Can be booted with an EFI partition
+# Can be booted with or without an EFI partition
 # Allows to further setup and configure the system
 # Not meant to change often
 
