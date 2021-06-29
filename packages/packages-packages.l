@@ -19,12 +19,15 @@ less
 micro
 pass
 rclone
-ranger
 rename
 ripgrep
 rmlint
 rsync
 pass
+sqlite3
+tesseract-ocr
+pandoc
+poppler-utils
 
 # languages
 python3-distutils
@@ -52,7 +55,6 @@ iotop
 iperf3
 iputils-ping
 iputils-tracepath
-joe
 keyutils
 lastpass-cli
 libatasmart-bin
@@ -61,21 +63,17 @@ libnotify-bin
 locales
 lsof
 man-db
-mc
 mutt
 ncat
 net-tools
 nmap
-pandoc
 pmount
 poppler-utils
 powertop
 psmisc
-sqlite3
 sshuttle
 strace
 tcpdump
-tesseract-ocr
 time
 unzip
 xattr

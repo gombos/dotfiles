@@ -8,10 +8,13 @@ apcupsd
 autosuspend
 upower
 
+# compute
 cron
+
+# networking
 dnsmasq
 nfs-kernel-server
 openssh-server
-open-vm-tools-desktop
-upower
+
+# log
 rsyslog
