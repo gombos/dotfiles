@@ -1,1 +1,1 @@
-systemctl --user import-environment DISPLAY
+# systemctl --user import-environment DISPLAY

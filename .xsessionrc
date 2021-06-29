@@ -1,36 +1,17 @@
 #!/bin/sh
 
-systemctl --user import-environment DISPLAY
+# systemctl --user import-environment DISPLAY
 
 # keymaps
 [ -f ~/.Xmodmap ] && xmodmap ~/.Xmodmap
 
 xsetroot -solid black
 
-# Allow local script
-if [ -x ~/.env_local ]; then
-  . ~/.env_local
-fi
-
 if test "$USER" = 'bagoly'; then
   eval $(gpg-agent --daemon)
 fi
 
-# This should run only one time per X11 instance and not user session
-# intance and only for vmware. Only needed pref.autoFitFullScreen = "stretchGuestToHost"
-#if [ -f ~/.Xresources-HiDPI ]; then
-#  xrandr --newmode "2880x1800_60.00"  442.00  2880 3104 3416 3952  1800 1803 1809 1865 -hsync +vsync
-#  xrandr --addmode Virtual1 "2880x1800_60.00"
-#  xrandr --output Virtual1 --mode  "2880x1800_60.00"
-#fi
-
-# todo - change this test to be based on HW config not user ID
-if test "$USER" = 'henrik'; then
-  xrandr --output DP-1 --right-of HDMI-1
-  xrandr --output HDMI-1 --primary
-  xrandr --output eDP-1 --off
-  xinput --set-prop 14 "libinput Accel Speed" -0.6
-fi
+#  xinput --set-prop 14 "libinput Accel Speed" -0.6
 
 # Syncronize X clipboard and selection buffers.
 if [ -x /usr/bin/autocutsel ]; then
@@ -44,9 +25,4 @@ fi
 
   # Set background
   [ -f ~/.config/.bg.jpg ] && (sleep 2 && qiv -z ~/.config/.bg.jpg)
-
-  if test "$USER" = 'henrik'; then
-    lxpanel & # taskbar
-    x-www-browser & # browser
-  fi
 ) &
