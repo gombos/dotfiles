@@ -252,6 +252,7 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/rsyslog.service ] && rm etc/systemd/system/multi-user.target.wants/rsyslog.service
 [ -f etc/systemd/system/multi-user.target.wants/containerd.service ] && rm etc/systemd/system/multi-user.target.wants/containerd.service
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
+[ -f etc/systemd/system/multi-user.target.wants/wpa_supplicant.service ] && rm etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
 
