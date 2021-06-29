@@ -82,14 +82,8 @@ MNT_EFI=$MNT_DIR/efi
   cd /
   sudo umount $MNT
 
-  sudo rm -rf /tmp/efi
-  mkdir /tmp/efi
-  cd /tmp/efi
-  sudo docker pull 0gombi0/homelab:efi
-  container_id=$(sudo docker create 0gombi0/homelab:efi /bin/bash)
-  sudo docker export $container_id | sudo tar xf -
+  infra-get-efi.sh
   sudo rsync -r /tmp/efi/efi/ $MNT_EFI
-#  sudo git clone https://github.com/gombos/dotfiles $MNT_EFI/dotfiles
 
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
