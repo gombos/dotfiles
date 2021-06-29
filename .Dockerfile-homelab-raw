@@ -3,8 +3,9 @@ FROM 0gombi0/homelab:efi as efi
 
 LABEL name=raw
 
-FROM docker
 COPY bin/* /tmp/
+
+FROM docker
 #COPY --from=base / /base/
 #COPY --from=efi /efi /efi/
 WORKDIR /tmp
