@@ -47,3 +47,8 @@ tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power
 wget
 gpg
 gpg-agent
+
+# debian system
+apt-file
+apt-transport-https
+apt-utils

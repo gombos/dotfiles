@@ -1,10 +1,6 @@
 # avoid HW packages
-# avoid distry specific packages
-
-# debian system
-apt-file
-apt-transport-https
-apt-utils
+# avoid distro specific packages
+# The idea is that these pacages are always available
 
 # files
 antiword
