@@ -1,7 +1,19 @@
-LABEL name=raw
+#LABEL name=raw
 
 FROM 0gombi0/homelab:desktop
-COPY bin/* /tmp/
+
+
+
+COPY bin/* packages/* /tmp/
+WORKDIR /tmp/
+RUN ./infra-vm-image.sh
+
+CMD ["/bin/bash"]
+
+
+
+
+
 
 #FROM 0gombi0/homelab:desktop as base
 
@@ -9,5 +21,3 @@ COPY bin/* /tmp/
 #COPY --from=base / /base/
 #COPY --from=efi /efi /efi/
 #COPY --from=efi /tmp /tmp/
-WORKDIR /tmp
-RUN ./infra-vm-image.sh

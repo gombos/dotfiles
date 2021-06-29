@@ -5,27 +5,14 @@
 # todo - discover if podman is available and use podman instead of docker if available
 # todo - does this really needs sudo ?
 
-mnt linux_bestia
-DIR=$MNTDIR/linux/linux-dev
+DIR=$1
 
-# it is only possible to “flatten” a Docker container, not an image.
-#container_id=$(sudo docker run -dit 0gombi0/homelab:base /bin/bash)
-#sudo docker stop $container_id
-
-#docker builder prune -af
-
-# todo - does this invalidates the docker cache ?
 docker pull 0gombi0/homelab:desktop
-
 container_id=$(sudo docker create 0gombi0/homelab:desktop)
 
-sudo btrfs property set -ts $DIR ro false
-sudo btrfs subvolume delete $DIR 2>/dev/null
-sudo btrfs subvolume create $DIR
-
 cd $DIR
-sudo docker export $container_id  | sudo tar xf -
-sudo docker rm $container_id
+docker export $container_id  | sudo tar xf -
+docker rm $container_id
 
 sudo rm -rf dev
 sudo rm -rf run
@@ -41,19 +28,3 @@ sudo rm -rf .dockerenv
 cd $DIR/etc
 sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
 
-cd $DIR
-version=$(cat var/integrity/id)
-echo $version
-cd ..
-sudo mv $DIR linux-$version
-
-# Todo - Dedup
-#sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR
-#sudo ./rmlint.sh -r
-
-# Make it read-only
-sudo btrfs property set -ts linux-$version ro true
-sudo btrfs subvolume set-default linux-$version
-
-# Print size
-sudo du -hs linux-$version
