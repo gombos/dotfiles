@@ -58,7 +58,9 @@ MNT_EFI=$MNT_DIR/efi
   # Todo - test compress
   # -o compress
   sudo mount -o compress ${DISK}p2 $MNT || fail "cannot mount"
+  sudo chmod g+w  $MNT
   sudo btrfs subvolume create $MNT/linux
+  sudo chmod g+w  $MNT/linux
 
   cd $MNT/linux
   sudo btrfs subvolume set-default .
