@@ -1,12 +1,13 @@
-FROM 0gombi0/homelab:desktop as base
-FROM 0gombi0/homelab:efi as efi
-
 LABEL name=raw
 
+FROM 0gombi0/homelab:efi as efi
 COPY bin/* /tmp/
 
+FROM 0gombi0/homelab:desktop as base
+
 FROM docker
-#COPY --from=base / /base/
-#COPY --from=efi /efi /efi/
+COPY --from=base / /base/
+COPY --from=efi /efi /efi/
+COPY --from=efi /tmp /tmp/
 WORKDIR /tmp
 RUN ./infra-vm-image.sh
