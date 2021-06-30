@@ -321,10 +321,7 @@ if [ "$HOST" == "pincer" ]; then
   echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
   echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
 
-  echo "install bluetooth /bin/true" >> $R/etc/etc/modprobe.d/initrd.conf
-
-  # Change the default to multiuser (non graphical)
-  #ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
+#  echo "install bluetooth /bin/true" >> $R/etc/modprobe.d/initrd.conf
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
@@ -335,12 +332,6 @@ if [ "$HOST" == "pincer" ]; then
   chmod 444 $R/etc/systemd/system/papertrail.service
   ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
 
-  # disable dunst
-  #rm $R/etc/systemd/user/default.target.wants/dunst.service
-
-  # disable pulseaudio
-  #rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
-
   BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
   chmod 555 $R/usr/bin/wake-bestia
@@ -349,18 +340,18 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
-  echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
-  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
+  #echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
+  #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+  #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
   # Mask services not required on pincer
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
-  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
+#  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
+#  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+#  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
   #ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
+#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
 fi
 
 if [ "$HOST" == "bestia" ]; then
