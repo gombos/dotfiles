@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# $1 - efi
+# $2 - rootfs
+
 FILENAME=linux-flat.vmdk
 OUT_DIR=${OUT_DIR:=/tmp/img}
 FILE=$OUT_DIR/${FILENAME}
@@ -65,21 +68,28 @@ MNT_EFI=$MNT_DIR/efi
   cd $MNT/linux
   sudo btrfs subvolume set-default .
 
+if [ -z $2 ]; then
   infra-get-rootfs.sh $MNT/linux
+else
+  sudo rsync -av $2 $MNT/linux/
+fi
 
   # Make it read-only
   sudo btrfs property set -ts $MNT/linux ro true
   cd /
   sudo umount $MNT
 
+if [ -z $1 ]; then
   infra-get-efi.sh
   sudo rsync -r /tmp/efi/efi/ $MNT_EFI
+else
+  sudo rsync -av $1 $MNT/linux/
+fi
 
   # https://wiki.archlinux.org/title/Syslinux
   sudo sgdisk $DISK --attributes=1:set:2
   sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
   sudo extlinux --install $MNT_EFI/syslinux/
-  sync
   cd /
 
   # directories that are not needed for vm
