@@ -64,23 +64,11 @@ MNT_EFI=$MNT_DIR/efi
 
   cd $MNT/linux
   sudo btrfs subvolume set-default .
-  sudo docker pull 0gombi0/homelab:desktop
-  container_id=$(sudo docker create 0gombi0/homelab:desktop /bin/bash)
-  sudo docker export $container_id | sudo tar xf -
-  sudo docker rm $container_id
-  sudo rm -rf dev
-  sudo rm -rf run
-  # Todo - do we actually need to make these directories ?
-  sudo mkdir dev
-  sudo mkdir run
-  sudo rm -rf etc/hostname
-  sudo rm -rf .dockerenv
-  # Check before doing it readlink -- "/etc/resolv.conf"
-  cd etc
-  sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
+
+  infra-get-rootfs.sh $MNT/linux
+
   # Make it read-only
   sudo btrfs property set -ts $MNT/linux ro true
-  sync
   cd /
   sudo umount $MNT
 
