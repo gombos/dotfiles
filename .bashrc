@@ -1,5 +1,11 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
+export DOTFILES="$HOME/.dotfiles"
+
+if [ -d "$DOTFILES/bin" ] ; then
+    PATH="$DOTFILES/bin:$PATH:."
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -53,14 +59,8 @@ export MNTDIR="/run/media"
 # Only my user has access
 export RUNDIR="/run/user/$UID"
 
-export DOTFILES="$HOME/.dotfiles"
-
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH:."
-fi
-
-if [ -d "$DOTFILES/bin" ] ; then
-    PATH="$DOTFILES/bin:$PATH:."
 fi
 
 if [ -d "/storage/repo/depot_tools" ] ; then

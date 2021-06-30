@@ -122,7 +122,7 @@
     </keybind>
     <keybind key="C-Return Mod1-Return">
       <action name="Execute">
-        <command>x-terminal-emulator</command>
+        <command>~/.dotfiles/bin/x-terminal-emulator</command>
       </action>
     </keybind>
     <keybind key="A-e">
@@ -140,10 +140,10 @@
         <command>x-www-browser</command>
       </action>
     </keybind>
-    <!-- Rebind keys for all apps -->
+    <!-- Rebind keys for all apps
     <keybind key="A-t">
       <action name="Execute">
-        <command>xdotool keyup t keyup alt key ctrl+t</command>
+        <command>xdotool keyup t keyup alt key ctrl+t alt+t</command>
       </action>
     </keybind>
     <keybind key="A-c">
@@ -211,6 +211,7 @@
         <command>xdotool key --clearmodifiers End</command>
       </action>
     </keybind>
+     -->
   </keyboard>
   <mouse>
     <dragThreshold>1</dragThreshold>

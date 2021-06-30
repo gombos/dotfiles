@@ -1,11 +1,6 @@
 #!/bin/bash
 
-local_scripts=`ls ~/.env-* 2>/dev/null`
-if [ ! -z "$local_scripts" ]; then
-  for f in ~/.env-*; do source $f; done
-fi
-
-active_window_class=$(xprop -id $(xdotool getwindowfocus) | grep WM_CLASS | cut -d\" -f2)
+#active_window_class=$(xprop -id $(xdotool getwindowfocus) | grep WM_CLASS | cut -d\" -f2)
 
 run-or-raise.sh kitty.kitty "kitty"
 
