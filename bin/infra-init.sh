@@ -193,8 +193,6 @@ if [ -d "vmware" ]; then
   sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
 fi
 
-# Todo - make static IP configurable - maybe grub menu or grub option
-#  sed -i "s|\#\ autologin=.*|autologin=henrik|g" $R/etc/lxdm/lxdm.conf
 # Closing the lid on power should not suspend this laptop
 #  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
 
@@ -393,9 +391,6 @@ if [ "$HOST" == "bestia" ]; then
   #echo "$HOST" > $R/etc/mailname
   #sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
-
-  # Only ask for sudo password once in a day
-  echo 'Defaults timestamp_timeout=1440' >> /run/sudoers_kucko
 
   # autosuspend
   if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
