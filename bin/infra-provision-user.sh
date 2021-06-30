@@ -18,6 +18,7 @@ if [ -f /usr/lib/xorg/Xorg ]; then
   ln -sf ~/.dotfiles/.mailcap
   ln -sf ~/.dotfiles/.Xresources
   ln -sf ~/.dotfiles/.xsessionrc
+  ln -sf ~/.dotfiles/.Xmodmap
 
   if test "$HOST" = 'bagoly' || test "$HOST" = 'bestia'; then
     ln -sf ~/.dotfiles/.Xresources-HiDPI

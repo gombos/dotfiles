@@ -96,10 +96,7 @@
   </resize>
   <keyboard>
     <!-- Keybindings for window management -->
-    <keybind key="C-A-q">
-      <action name="Close"/>
-    </keybind>
-    <keybind key="A-Tab">
+    <keybind key="Mod1-Tab">
       <action name="NextWindow">
         <dialog>list</dialog>
         <finalactions>
@@ -109,31 +106,23 @@
         </finalactions>
       </action>
     </keybind>
-    <keybind key="C-backslash A-backslash">
+    <keybind key="C-backslash Mod1-backslash">
       <action name="ToggleFullscreen"/>
     </keybind>
-    <keybind key="A-Escape">
-      <action name="Iconify"/>
-    </keybind>
     <!-- Keybindings for application launching -->
-    <keybind key="C-space A-space">
+    <keybind key="C-space Mod1-space">
       <action name="Execute">
         <command>~/.dotfiles/bin/my-launcher.sh</command>
       </action>
     </keybind>
-    <keybind key="A-grave">
+    <keybind key="Mod1-grave">
       <action name="Execute">
         <command>~/.config/openbox/stiler.py cycle</command>
       </action>
     </keybind>
-    <keybind key="C-Return A-Return">
+    <keybind key="C-Return Mod1-Return">
       <action name="Execute">
         <command>x-terminal-emulator</command>
-      </action>
-    </keybind>
-    <keybind key="A-m">
-      <action name="Execute">
-        <command>x-mail</command>
       </action>
     </keybind>
     <keybind key="A-e">
@@ -141,12 +130,12 @@
         <command>x-editor</command>
       </action>
     </keybind>
-    <keybind key="A-l">
+    <keybind key="Mod1-l">
       <action name="Execute">
         <command>xtrlock -b</command>
       </action>
     </keybind>
-    <keybind key="C-slash A-slash">
+    <keybind key="C-slash Mod1-slash">
       <action name="Execute">
         <command>x-www-browser</command>
       </action>

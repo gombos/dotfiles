@@ -1,3 +1,11 @@
 ! Map all non-control modifier to mod1, so that they all behave the same on X11
+
+! make all modifier aliases empty
 clear mod1
-add mod1 = Alt_L Alt_R Super_L Super_R Hyper_L Meta_L ISO_Level3_Shift Mode_switch
+clear mod2
+clear mod3
+clear mod4
+clear mod5
+
+! assign only mod1 to the keys I use
+add mod1 = Alt_L Alt_R Super_L
