@@ -118,7 +118,7 @@
     <!-- Keybindings for application launching -->
     <keybind key="C-space A-space">
       <action name="Execute">
-        <command>my-launcher.sh</command>
+        <command>~/.dotfiles/bin/my-launcher.sh</command>
       </action>
     </keybind>
     <keybind key="A-grave">

@@ -1,11 +1,3 @@
-! Not sure if this file makes anything useful
-! it also seems to interfere with ibus
-
-!clear Mod1
-!clear Mod2
-!clear Mod3
-!clear Mod4
-!clear Mod5
-
-! Use only 2 modifiers - control and "mod1"
-!add Mod1 = Alt_L Alt_R Super_L Super_R Hyper_L Meta_L ISO_Level3_Shift Mode_switch
+! Map all non-control modifier to mod1, so that they all behave the same on X11
+clear mod1
+add mod1 = Alt_L Alt_R Super_L Super_R Hyper_L Meta_L ISO_Level3_Shift Mode_switch
