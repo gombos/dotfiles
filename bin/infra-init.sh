@@ -321,8 +321,6 @@ if [ "$HOST" == "pincer" ]; then
   echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
   echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
 
-#  echo "install bluetooth /bin/true" >> $R/etc/modprobe.d/initrd.conf
-
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -344,14 +342,11 @@ if [ "$HOST" == "pincer" ]; then
   #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
-  # Mask services not required on pincer
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
-#  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-#  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-#  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-  #ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
+  # Mask services not required
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
+  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
 fi
 
 if [ "$HOST" == "bestia" ]; then

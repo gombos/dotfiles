@@ -14,7 +14,7 @@ services:
     image: nginx
     restart: always
     ports:
-      - 80:80
+      - 55555:80
     volumes:
       - /home/www:/usr/share/nginx/html
 
