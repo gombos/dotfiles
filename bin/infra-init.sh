@@ -341,12 +341,6 @@ if [ "$HOST" == "pincer" ]; then
   #echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
   #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-
-  # Mask services not required
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/dmesg.service
-  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-  ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
 fi
 
 if [ "$HOST" == "bestia" ]; then
@@ -413,21 +407,8 @@ if [ "$HOST" == "vm" ]; then
   echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
-  # Mask services not required inside a vm
-  ln -sf /dev/null $R/etc/systemd/system/bluetooth.target.wants/bluetooth.service
-  ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
-  ln -sf /dev/null $R/etc/systemd/system/open-vm-tools.service.requires/vgauth.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/smartmontools.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/ssh.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-
-  # These policies are for development only
   # Autologin
   sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
-
-  # Only ask for sudo password once and not expire
-  echo 'Defaults timestamp_timeout=-1' >> /run/sudoers_kucko
 
   # sudo permission for all terminal sessions - this is a privilege esculation vulnability
   echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
