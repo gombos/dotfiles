@@ -324,7 +324,7 @@ if [ "$HOST" == "pincer" ]; then
   echo "install bluetooth /bin/true" >> $R/etc/etc/modprobe.d/initrd.conf
 
   # Change the default to multiuser (non graphical)
-  ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
+  #ln -sf multi-user.target $R/usr/lib/systemd/system/default.target
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
@@ -336,10 +336,10 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
 
   # disable dunst
-  rm $R/etc/systemd/user/default.target.wants/dunst.service
+  #rm $R/etc/systemd/user/default.target.wants/dunst.service
 
   # disable pulseaudio
-  rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
+  #rm $R/etc/init.d/pulseaudio-enable-autospawn $R/etc/systemd/user/default.target.wants/pulseaudio.service $R/etc/systemd/user/sockets.target.wants/pulseaudio.socket
 
   BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
@@ -359,7 +359,7 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /dev/null $R/etc/systemd/system/getty.target.wants/getty@tty1.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/NetworkManager.service
   ln -sf /dev/null $R/etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  #ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/rsyslog.service
 fi
 
