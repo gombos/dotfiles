@@ -206,15 +206,8 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-# allow some executables to run without sudo password
-# sensitive data should be all protected with additional encryption password at rest
-echo '%sudo ALL=(ALL) NOPASSWD: /usr/bin/mount, /usr/bin/umount, /usr/sbin/cryptsetup' >> /run/sudoers_kucko
-
-# make it easy to deploy new rootfs
-echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
-echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
+touch /run/sudoers_kucko
 chmod 0440 /run/sudoers_kucko
-
 ln -sf ../../run/sudoers_kucko $R/etc/sudoers.d
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
@@ -240,7 +233,6 @@ then
   # remove the admin user
   sed -i '/^admin:/d' $R/etc/passwd
   sed -i '/^admin:/d' $R/etc/shadow
-
 fi
 
 # henrik user
@@ -327,6 +319,10 @@ fi
 # --- HOST specific logic
 
 if [ "$HOST" == "pincer" ]; then
+  # make it easy to deploy new rootfs
+  echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
+  echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
+
   echo "install bluetooth /bin/true" >> $R/etc/etc/modprobe.d/initrd.conf
 
   # Change the default to multiuser (non graphical)
@@ -370,6 +366,8 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /run/sudoers_kucko
+
   # nvidia driver
   echo nvidia >> $R/etc/modules
 
