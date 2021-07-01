@@ -1,0 +1,1 @@
+sudo kexec -l /go/efi/kernel/vmlinuz --initrd=/go/efi/kernel/initrd.img --reuse-cmdline && sudo systemctl kexec
