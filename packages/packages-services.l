@@ -15,6 +15,3 @@ cron
 dnsmasq
 nfs-kernel-server
 openssh-server
-
-# log
-rsyslog

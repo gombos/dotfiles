@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# systemctl --user import-environment DISPLAY
-
 # keymaps
 [ -f ~/.Xmodmap ] && xmodmap ~/.Xmodmap
 
