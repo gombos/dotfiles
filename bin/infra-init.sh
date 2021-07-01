@@ -65,6 +65,8 @@ if [ -n "$EFI" ]; then
   HOST_DISK=$(echo $EFI | cut -d_ -f2)
 fi
 
+rm $R/lib/systemd/system/nfs-blkmap.service
+
 # Find the partition labels (first match)
 HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
 SWAP_PART=$(cd /dev/disk/by-label/ && ls --color=never swap* | head -n1)

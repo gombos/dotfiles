@@ -243,13 +243,10 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/dnsmasq.service ] && rm etc/systemd/system/multi-user.target.wants/dnsmasq.service
 [ -f etc/systemd/system/multi-user.target.wants/autosuspend.service ] && rm etc/systemd/system/multi-user.target.wants/autosuspend.service
 [ -f etc/systemd/system/multi-user.target.wants/apcupsd.service ] && rm etc/systemd/system/multi-user.target.wants/apcupsd.service
-[ -f etc/systemd/system/multi-user.target.wants/dovecot.service ] && rm etc/systemd/system/multi-user.target.wants/dovecot.service
 [ -f etc/systemd/system/multi-user.target.wants/open-vm-tools.service ] && rm etc/systemd/system/multi-user.target.wants/open-vm-tools.service
 [ -f etc/systemd/system/multi-user.target.wants/rpcbind.service ] && rm etc/systemd/system/multi-user.target.wants/rpcbind.service
 [ -f etc/systemd/system/multi-user.target.wants/nfs-server.service ] && rm etc/systemd/system/multi-user.target.wants/nfs-server.service
-[ -f etc/systemd/system/multi-user.target.wants/postfix.service ] && rm etc/systemd/system/multi-user.target.wants/postfix.service
 [ -f etc/systemd/system/multi-user.target.wants/cron.service ] && rm etc/systemd/system/multi-user.target.wants/cron.service
-[ -f etc/systemd/system/multi-user.target.wants/rsyslog.service ] && rm etc/systemd/system/multi-user.target.wants/rsyslog.service
 [ -f etc/systemd/system/multi-user.target.wants/containerd.service ] && rm etc/systemd/system/multi-user.target.wants/containerd.service
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/multi-user.target.wants/wpa_supplicant.service ] && rm etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
