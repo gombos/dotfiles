@@ -347,13 +347,9 @@ if [ "$HOST" == "bestia" ]; then
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /run/sudoers_kucko
 
   # nvidia driver
-  echo nvidia >> $R/etc/modules
-
-  # motherboard sensors Nuvoton W83677HG-I (NCT6776)
-  echo w83627ehf >> $R/etc/modules
+#  echo nvidia >> $R/etc/modules
 
   mkdir -p $R/nix
-
   echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
@@ -363,9 +359,6 @@ if [ "$HOST" == "bestia" ]; then
   # TODO - implement safe condition
   #echo offline > /sys/block/sdb/device/state
   #echo 1 > /sys/block/sdb/device/delete
-
-  # Power button should suspend instead of poweroff
-  sed -i 's|\#HandlePowerKey=.*|HandlePowerKey=suspend|g' $R/etc/systemd/logind.conf
 
   # IMAP
   #echo "$HOST" > $R/etc/mailname
