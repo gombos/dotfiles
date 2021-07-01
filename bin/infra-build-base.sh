@@ -251,12 +251,15 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
 [ -f etc/systemd/system/multi-user.target.wants/wpa_supplicant.service ] && rm etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
+[ -f etc/systemd/system/remote-fs.target.wants/nfs-client.target ] && rm etc/systemd/system/remote-fs.target.wants/nfs-client.target
+[ -f etc/systemd/system/multi-user.target.wants/nfs-client.target ] && rm etc/systemd/system/multi-user.target.wants/nfs-client.target
+
 [ -f etc/systemd/system/syslog.service ] && rm etc/systemd/system/syslog.service
 
 # disable dunst - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service
 
-  # disable pulseaudio - will start anyway for proper x11 sessions
+# disable pulseaudio - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/pulseaudio.service ] && rm etc/systemd/user/default.target.wants/pulseaudio.service
 
 rm -rf 'boot/{*,.*}'
