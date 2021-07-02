@@ -18,7 +18,6 @@ wakeonlan
 # storage
 hdparm
 smartmontools
-udisks2
 scsitools
 
 # wireless
@@ -31,7 +30,6 @@ uhubctl
 usb-modeswitch
 usbrelay
 usbutils
-libblockdev-crypto2
 libu2f-udev
 cpufreq-info
 lm-sensors

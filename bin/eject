@@ -1,1 +1,11 @@
-sudo udisksctl  power-off -b $1
+if grep -qs "${1} " /proc/mounts; then
+  sudo umount -v ${1}?*
+fi
+
+if ! grep -qs "${1} " /proc/mounts; then
+  sudo sg_sync ${1}
+  sudo sg_start 0 ${1}
+  sudo sg_start --eject ${1}
+else
+  echo "eject failed!"
+fi
