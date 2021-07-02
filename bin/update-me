@@ -30,7 +30,7 @@ sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pu
 sudo docker ps -q | xargs sudo docker restart
 
 cd $DOTFILES/infra
-sudo docker-compose up -d --force-recreate
+sudo docker-compose up -d --force-recreate --remove-orphans
 
 # aws
 if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
