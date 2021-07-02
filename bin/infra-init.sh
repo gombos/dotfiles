@@ -403,6 +403,6 @@ if [ "$HOST" == "vm" ]; then
   # Autologin
   sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
 
-  # sudo permission for all terminal sessions - this is a privilege esculation vulnability
+  # sudo permission for all terminal sessions instead of per terminal - this is a privilege esculation vulnability
   echo 'Defaults  !tty_tickets' >> $R/etc/sudoers.d/sudoers
 fi
