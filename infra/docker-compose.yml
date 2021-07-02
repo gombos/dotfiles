@@ -1,25 +1,33 @@
 version: '3.3'
 
 services:
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval "3600" --cleanup
-    restart: always
+#  watchtower:
+#    container_name: watchtower
+#    image: containrrr/watchtower
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    command: --interval "3600" --cleanup
+#    restart: always
 
   nginx:
     container_name: nginx
     image: nginx
     restart: always
     ports:
-      - 55555:80
+#      - 55555:80
+      - 443:443
+
     volumes:
       - /home/www:/usr/share/nginx/html
+      - .:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   certbot:
     image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
 #services:
 #  mailserver:
