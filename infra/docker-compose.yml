@@ -18,6 +18,9 @@ services:
     volumes:
       - /home/www:/usr/share/nginx/html
 
+  certbot:
+    image: certbot/certbot
+
 #services:
 #  mailserver:
 #    image: docker.io/mailserver/docker-mailserver:latest
