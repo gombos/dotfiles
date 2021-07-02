@@ -1,4 +1,16 @@
 # Purpose: HW-only packages
+
+# debian system
+apt-file
+apt-transport-https
+apt-utils
+
+# tools - should be first
+fuse3
+wget
+gpg
+gpg-agent
+
 # firware
 linux-firmware
 
@@ -40,13 +52,3 @@ open-vm-tools-desktop
 thermald # monitors and controls temperature in laptops
 tlp # tweaking kernel settings that affect power consumption.
 tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power
-
-# tools
-wget
-gpg
-gpg-agent
-
-# debian system
-apt-file
-apt-transport-https
-apt-utils

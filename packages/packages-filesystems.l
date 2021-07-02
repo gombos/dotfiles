@@ -1,4 +1,5 @@
 # filesystems
+gdisk
 fuse3
 ntfs-3g
 btrfs-progs
