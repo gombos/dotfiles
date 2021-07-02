@@ -206,9 +206,8 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-touch /run/sudoers_kucko
-chmod 0440 /run/sudoers_kucko
-ln -sf ../../run/sudoers_kucko $R/etc/sudoers.d
+touch $R/etc/sudoers.d/sudoers
+chmod 0440 $R/etc/sudoers.d/sudoers
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
@@ -320,8 +319,7 @@ fi
 
 if [ "$HOST" == "pincer" ]; then
   # make it easy to deploy new rootfs
-  echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> /run/sudoers_kucko
-  echo '%sudo ALL=NOPASSWD:/usr/sbin/reboot' >> /run/sudoers_kucko
+  echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> $R/etc/sudoers.d/sudoers
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
@@ -346,7 +344,7 @@ if [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /run/sudoers_kucko
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
   # nvidia driver
 #  echo nvidia >> $R/etc/modules
@@ -406,5 +404,5 @@ if [ "$HOST" == "vm" ]; then
   sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
 
   # sudo permission for all terminal sessions - this is a privilege esculation vulnability
-  echo 'Defaults  !tty_tickets' >> /run/sudoers_kucko
+  echo 'Defaults  !tty_tickets' >> $R/etc/sudoers.d/sudoers
 fi
