@@ -317,6 +317,13 @@ fi
 
 # --- HOST specific logic
 
+# install all service files
+for f in *.service; do
+  cp $f $R/etc/systemd/system/
+  chmod 444 $R/etc/systemd/system/$f
+  ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
+done
+
 if [ "$HOST" == "pincer" ]; then
   # make it easy to deploy new rootfs
   echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> $R/etc/sudoers.d/sudoers
@@ -324,11 +331,6 @@ if [ "$HOST" == "pincer" ]; then
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
-
-  # papertrail
-  cp papertrail.service $R/etc/systemd/system/
-  chmod 444 $R/etc/systemd/system/papertrail.service
-  ln -sf /etc/systemd/system/papertrail.service $R/etc/systemd/system/multi-user.target.wants/papertrail.service
 
   BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
   echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
