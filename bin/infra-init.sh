@@ -389,7 +389,10 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
   # Persistent container storage for docker
   ln -sf /home/containers $R/var/lib/docker
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
-  ln -sf /run/media/efi/config/letsencrypt $R/etc/letsencrypt
+
+  # Make a rw copy
+  mkdir -p /run/media/letsencrypt
+  cp -r /run/media/efi/config/letsencrypt /run/media/
 fi
 
 if [ "$HOST" == "vm" ]; then
