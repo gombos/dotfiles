@@ -19,7 +19,7 @@ services:
     volumes:
       - /home/www:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - /run/media/efi/config/letsencrypt:/etc/letsencrypt
+      - /run/media/letsencrypt:/etc/letsencrypt
       # Required during certificate renewal
 #      - ./certbot/www:/var/www/certbot
 
