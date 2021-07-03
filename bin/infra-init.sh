@@ -148,7 +148,10 @@ if [ -f "dhcp.conf" ]; then
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
   rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
-  ln -sf /home/log/dnsmasq.log $R/var/log/dnsmasq.log
+
+  rm -rf $R/var/log/journal
+  ln -sf /home/log/journal $R/var/log/journal
+
   printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
   chmod 444 $R/etc/resolv.conf
 else
