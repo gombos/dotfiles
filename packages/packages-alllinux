@@ -99,6 +99,7 @@ gawk
 gcc-10-base
 gcc-9-base
 gddrescue
+gdisk
 gettext-base
 git
 git-man
@@ -771,6 +772,7 @@ openssh-server
 openssh-sftp-server
 openssl
 open-vm-tools
+open-vm-tools-desktop
 pandoc
 pandoc-data
 partclone

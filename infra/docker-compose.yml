@@ -14,20 +14,20 @@ services:
     image: nginx
     restart: always
     ports:
-      - 55555:80
+      - 80:80
       - 443:443
 
     volumes:
-#      - /home/www:/usr/share/nginx/html
+      - /home/www:/usr/share/nginx/html
       - ./data/:/etc/nginx/conf.d
-#      - ./data/certbot/conf:/etc/letsencrypt
-#      - ./data/certbot/www:/var/www/certbot
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
-#  certbot:
-#    image: certbot/certbot
-#    volumes:
-#      - ./data/certbot/conf:/etc/letsencrypt
-#      - ./data/certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
 #services:
 #  mailserver:
