@@ -78,3 +78,6 @@ gddrescue
 fuse-overlayfs
 wget
 sudo
+
+
+open-vm-tools-desktop
