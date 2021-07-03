@@ -20,15 +20,17 @@ services:
       - /home/www:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      # Required during certificate renewal
+#      - ./certbot/www:/var/www/certbot
 
-  certbot:
-    image: certbot/certbot
-    # Renew certificate every 12 hours as recommended by Let’s Encrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
+# meant to run as a cron job to renew certificate, this would require write access to certbot directory
+#  certbot:
+#    image: certbot/certbot
+#    # Renew certificate every 12 hours as recommended by Let’s Encrypt
+#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+#    volumes:
+#      - ./certbot/conf:/etc/letsencrypt
+#      - ./certbot/www:/var/www/certbot
 
 #services:
 #  mailserver:
