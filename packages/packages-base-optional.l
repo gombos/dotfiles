@@ -12,7 +12,7 @@ gpg
 gpg-agent
 
 # firware
-linux-firmware
+#linux-firmware
 
 # boot
 efibootmgr
