@@ -1,5 +1,11 @@
 #!/bin/bash
 
 # $1 - target machine $2 root fs version
+
+# example invocation
+# infra-rootfs-deploy pincer-admin linux-1fca
+
 ssh $1 "mkdir -p /tmp/linuxrw && sudo -S /usr/bin/mount /dev/disk/by-label/linux /tmp/linuxrw -o rw,subvol=/"
+cd /run/media/linux_bestia
 sudo btrfs send $2 | ssh $1 "sudo /bin/btrfs receive /tmp/linuxrw/"
+ssh $1 "sudo /bin/btrfs subvolume set-default /tmp/linuxrw/$2"

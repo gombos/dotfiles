@@ -284,7 +284,7 @@ EOF
 # nfs livenet
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
-  --modules "bash systemd systemd-initrd busybox btrfs kernel-modules nvdimm resume rootfs-block terminfo udev-rules dracut-systemd usrmount base fs-lib shutdown" \
+  --modules "bash systemd systemd-initrd busybox btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib" \
   --add-drivers "nls_iso8859_1" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
