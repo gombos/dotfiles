@@ -5,7 +5,7 @@ LABEL name=efi
 COPY bin/* /tmp/
 COPY boot/* /tmp/
 WORKDIR /tmp
-RUN ./infra-build-efi.sh
+RUN export TERM=ansi-m && ./infra-build-efi.sh
 
 FROM scratch
 COPY --from=base /efi /efi

@@ -144,9 +144,9 @@ cp -r /usr/lib/modules /efi/
 # TCE binary
 mkdir -p /efi/tce
 mkdir -p /efi/tce/optional
-wget --no-check-certificate https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
-wget http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
-wget http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
+wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
 
 mv Core-current.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
@@ -171,14 +171,14 @@ tar -czvf /efi/tce/mydata.tgz opt
 cd ..
 
 # netboot-xyz
-wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
-wget --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
 # dracut
 rm -rf 055.zip dracut-055
-wget --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
+wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 unzip -q 055.zip
 cd dracut-055
 ./configure
@@ -284,8 +284,8 @@ EOF
 # nfs livenet
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
-  --omit "kernel-modules-extra" --add-drivers "nls_iso8859_1"  --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
-  --add "btrfs bash busybox systemd-networkd" \
+  --modules "bash systemd systemd-initrd busybox btrfs kernel-modules nvdimm resume rootfs-block terminfo udev-rules dracut-systemd usrmount base fs-lib shutdown" \
+  --add-drivers "nls_iso8859_1" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
   --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
