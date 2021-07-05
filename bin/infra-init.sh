@@ -68,7 +68,7 @@ fi
 #rm $R/lib/systemd/system/nfs-blkmap.service
 
 # Find the partition labels (first match)
-#HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
+HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* 2>/dev/null | head -n1)
 LINUX_PART=$(cd /dev/disk/by-label/ && ls --color=never linux* 2>/dev/null| head -n1)
 
 # cpu
@@ -291,11 +291,11 @@ then
 fi
 
 # fstab
-#if [ -n "$HOME_PART" ]; then
-#  mkdir -p /home
-#  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
-#  ln -sf /home $R/Users
-#fi
+if [ -n "$HOME_PART" ]; then
+  mkdir -p /home
+  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  ln -sf /home $R/Users
+fi
 
 # --- HOST specific logic
 
