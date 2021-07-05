@@ -240,8 +240,14 @@ drive=$(readlink -f $configdrive)
 
 printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
 mount -o ro,noexec,nosuid,nodev,umask=0077 "$drive" "$mp"
+printf "[rd.exec] Mounted config\n"
 
-printf "[rd.exec] Mounted $drive to $mp\n"
+if [ -f /run/media/efi/kernel/modules ]; then
+  mkdir -p /run/media/modules
+  printf "[rd.exec] Mounting modules $configdrive = $drive to $mp\n"
+  mount -o loop,ro,noexec,nosuid,nodev,umask=0077 /run/media/efi/kernel/modules  /run/media/modules
+  printf "[rd.exec] Mounted modules\n"
+fi
 
 # default init included in the initramfs
 if [ -z "$RDEXEC" ]; then
