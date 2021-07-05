@@ -224,6 +224,8 @@ rm usr/.crates2.json
 
 # ---- Configure etc
 
+# Defaults are optimized for vm/container use
+
 # LXDM should use openbox
 [ -f etc/lxdm/lxdm.conf ] && sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
 [ -f etc/lxdm/lxdm.conf ] && sed -i "s|^bottom_pane=.*|bottom_pane=0|g" etc/lxdm/lxdm.conf
