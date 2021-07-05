@@ -300,24 +300,6 @@ if [ -n "$HOME_PART" ]; then
   ln -sf /home $R/Users
 fi
 
-if [ -n "$SWAP_PART" ]; then
-  echo "LABEL=$SWAP_PART none swap nofail,x-systemd.device-timeout=5 0 0" >> $R/etc/fstab
-fi
-
-if [ -n "$LINUX_PART" ]; then
-  echo "LABEL=$LINUX_PART /run/media/linux btrfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min,subvol=/ 0 2" >> $R/etc/fstab
-fi
-
-if [ -d "$mp/modules" ]; then
-  # Restrict only root process to load kernel modules. This is a reasonable system hardening
-
-  if [ -d $R/lib/modules ]; then
-    mv $R/lib/modules $R/lib/modules.root
-  fi
-
-  ln -sf /run/media/efi/modules $R/lib/
-fi
-
 # --- HOST specific logic
 
 # install all service files

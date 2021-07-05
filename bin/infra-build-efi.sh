@@ -242,6 +242,9 @@ printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
 mount -o ro,noexec,nosuid,nodev,umask=0077 "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
+# Restrict only root process to load kernel modules. This is a reasonable system hardening
+# todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
+# todo - so build and test dracut with --no-kernel
 if [ -f /run/media/efi/kernel/modules ]; then
   mkdir -p /run/media/modules
   printf "[rd.exec] Mounting modules \n"
@@ -291,8 +294,12 @@ EOF
 # ifcfg aufs overlay-root
 # consider --omit ifcfg
 # --add-drivers "squashfs overlay iso9660 btrfs" --add "squash"
-# nfs livenet
 
+# Keep initramfs simply and do not require networking
+# For netboot, use a dedicated project and boot option - like netboot.
+# This will save you a lot of headache and disk space
+
+# todo --no-kernel
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --modules "bash systemd systemd-initrd busybox btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib" \
   --add-drivers "nls_iso8859_1" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
