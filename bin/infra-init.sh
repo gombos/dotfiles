@@ -381,14 +381,14 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
   cp -r /run/media/efi/config/letsencrypt /run/media/
 fi
 
-if [ "$HOST" == "vm" ]; then
-  sed -i '/^admin:/d' $R/etc/passwd
-  echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
+if [ "$HOST" == "linux" ]; then
+#  sed -i '/^admin:/d' $R/etc/passwd
+#  echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
 
   # Mount home directories from the host at boot
-  mkdir -p /home/bagoly
-  echo '.host:/home /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  echo '.host:/bagoly /home/bagoly fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  mkdir -p /home/host
+  echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 
   # Autologin
   sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
