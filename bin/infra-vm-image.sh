@@ -87,17 +87,16 @@ if [ "$TARGET" != "rootfs" ]; then
   sudo rm -rf /tmp/modules
   sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
   sudo losetup $DISK /tmp/modules
-  sudo sgdisk -Z $DISK
-  sudo sgdisk -n 0:0: -t 0:8300 -c 0:"modules" $DISK
   sudo partprobe $DISK
-  sudo mkfs.btrfs -L "modules" ${DISK}p1 || fail "cannot create root"
-  sudo mount -o compress ${DISK}p1 $MNT || fail "cannot mount"
-  infra-get-efi.sh
+  sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
+  sudo mount -o compress $DISK $MNT || fail "cannot mount"
   sudo rsync -a /tmp/efi/efi/modules/ $MNT
   sudo umount $MNT
   sudo losetup -d $DISK
 
   sudo losetup $DISK $FILE
+  sudo partprobe $DISK
+
   sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
   sudo cp /tmp/modules $MNT_EFI/kernel/
   sudo umount $MNT_EFI
