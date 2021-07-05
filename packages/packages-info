@@ -1,5 +1,6 @@
-udisks2
-rsyslog
+linux-firmware # takes up a lot of space and not needed for my HW
+udisks2 # runs an extra service, mostly meant for graphical use
+rsyslog # journalctl is good enough
 ranger
 joe
 mc
@@ -8,8 +9,6 @@ lshw
 lsscsi
 busybox
 barrier
-linux-firmware
-
 awscli
 syslinux-common
 grub2-common

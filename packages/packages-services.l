@@ -12,6 +12,7 @@ upower
 cron
 
 # networking
+nginx-light
 dnsmasq
 nfs-kernel-server
 openssh-server

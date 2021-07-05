@@ -11,9 +11,6 @@ wget
 gpg
 gpg-agent
 
-# firware
-#linux-firmware
-
 # boot
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
