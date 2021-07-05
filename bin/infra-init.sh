@@ -65,12 +65,11 @@ if [ -n "$EFI" ]; then
   HOST_DISK=$(echo $EFI | cut -d_ -f2)
 fi
 
-rm $R/lib/systemd/system/nfs-blkmap.service
+#rm $R/lib/systemd/system/nfs-blkmap.service
 
 # Find the partition labels (first match)
-HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
-SWAP_PART=$(cd /dev/disk/by-label/ && ls --color=never swap* | head -n1)
-LINUX_PART=$(cd /dev/disk/by-label/ && ls --color=never linux* | head -n1)
+#HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* | head -n1)
+LINUX_PART=$(cd /dev/disk/by-label/ && ls --color=never linux* 2>/dev/null| head -n1)
 
 # cpu
 grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
@@ -180,8 +179,6 @@ if [ ! -z "$SSHD_KEY" ]; then
   chmod 0440 /run/sshd_kucko.conf
   ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
 fi
-
-sed -i "s|bottom_pane=.*|bottom_pane=0|g" $R/etc/lxdm/lxdm.conf
 
 # configure vmware service
 if [ -d "vmware" ]; then
@@ -294,11 +291,11 @@ then
 fi
 
 # fstab
-if [ -n "$HOME_PART" ]; then
-  mkdir -p /home
-  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
-  ln -sf /home $R/Users
-fi
+#if [ -n "$HOME_PART" ]; then
+#  mkdir -p /home
+#  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+#  ln -sf /home $R/Users
+#fi
 
 # --- HOST specific logic
 
