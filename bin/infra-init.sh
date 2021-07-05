@@ -321,11 +321,13 @@ fi
 # --- HOST specific logic
 
 # install all service files
-for f in *.service; do
-  cp $f $R/etc/systemd/system/
-  chmod 444 $R/etc/systemd/system/$f
-  ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
-done
+if [ -d "$mp/config" ]; then
+  for f in *.service; do
+    cp $f $R/etc/systemd/system/
+    chmod 444 $R/etc/systemd/system/$f
+    ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
+  done
+fi
 
 if [ "$HOST" == "pincer" ]; then
   # make it easy to deploy new rootfs

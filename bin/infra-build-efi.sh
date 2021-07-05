@@ -244,9 +244,13 @@ printf "[rd.exec] Mounted config\n"
 
 if [ -f /run/media/efi/kernel/modules ]; then
   mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules $configdrive = $drive to $mp\n"
+  printf "[rd.exec] Mounting modules \n"
   mount /run/media/efi/kernel/modules /run/media/modules
-  printf "[rd.exec] Mounted modules\n"
+  if [ -d $NEWROOT/lib/modules ]; then
+    mv $NEWROOT/lib/modules $NEWROOT/lib/modules.root
+  fi
+  ln -sf /run/media/modules $NEWROOT/lib/
+  printf "[rd.exec] Mounted modules \n"
 fi
 
 # default init included in the initramfs
