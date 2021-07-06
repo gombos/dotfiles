@@ -89,14 +89,14 @@ configfile \$cmdpath/efi/boot/grub.cfg
 EOF
 
 LEGACYDIR="/efi/syslinux"
+mkdir -p $LEGACYDIR
+
+# syslinux binary
+cp /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
+cp /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
 
 # grub pc binary
 cp -r /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR/
-
-# syslinux binary
-mkdir -p $LEGACYDIR
-cp /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
-cp /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
 
 # syslinux config - chainload grub
 cat > $LEGACYDIR/syslinux.cfg <<EOF
