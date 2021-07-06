@@ -57,7 +57,7 @@ sudo sgdisk -Z $DISK
 
 # Add efi partition
 if [ "$TARGET" != "rootfs" ]; then
-  sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_vm" $DISK
+  sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
   sudo partprobe $DISK
   sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
   sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
@@ -102,7 +102,7 @@ if [ "$TARGET" != "rootfs" ]; then
   sudo umount $MNT_EFI
 fi
 
-sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_vm" $DISK
+sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
 sudo partprobe $DISK
 
 echo "Creating filesystems..."
