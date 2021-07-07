@@ -1,6 +1,6 @@
 {
     "type": "script",
-    "description": "next",
+    "description": "ctrl+right",
     "store": {},
     "modes": [
         3

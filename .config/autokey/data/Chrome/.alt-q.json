@@ -1,6 +1,6 @@
 {
     "type": "script",
-    "description": "ctrl+q",
+    "description": "alt+q",
     "store": {},
     "modes": [
         3
@@ -19,7 +19,7 @@
     },
     "hotkey": {
         "modifiers": [
-            "<ctrl>"
+            "<alt>"
         ],
         "hotKey": "q"
     },

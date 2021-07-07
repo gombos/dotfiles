@@ -1,11 +1,11 @@
 {
     "type": "script",
-    "description": "ctrl+q",
+    "description": "ctrl+left",
     "store": {},
     "modes": [
         3
     ],
-    "usageCount": 9,
+    "usageCount": 0,
     "prompt": false,
     "omitTrigger": false,
     "showInTrayMenu": false,
@@ -21,7 +21,7 @@
         "modifiers": [
             "<ctrl>"
         ],
-        "hotKey": "q"
+        "hotKey": "<left>"
     },
     "filter": {
         "regex": "google-chrome.*",
