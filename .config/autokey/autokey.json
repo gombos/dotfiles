@@ -5,8 +5,8 @@
         "isFirstRun": false,
         "serviceRunning": true,
         "menuTakesFocus": false,
-        "showTrayIcon": false,
-        "sortByUsageCount": false,
+        "showTrayIcon": true,
+        "sortByUsageCount": true,
         "promptToSave": false,
         "enableQT4Workaround": false,
         "interfaceType": "XRecord",
@@ -15,11 +15,11 @@
             600,
             400
         ],
-        "hPanePosition": 260,
+        "hPanePosition": 314,
         "columnWidths": [
-            74,
+            95,
             41,
-            139
+            172
         ],
         "showToolbar": true,
         "notificationIcon": "autokey-status",
@@ -30,7 +30,7 @@
     },
     "folders": [],
     "toggleServiceHotkey": {
-        "enabled": false,
+        "enabled": true,
         "modifiers": [
             "<shift>",
             "<super>"
@@ -38,7 +38,7 @@
         "hotKey": "k"
     },
     "configHotkey": {
-        "enabled": false,
+        "enabled": true,
         "modifiers": [
             "<super>"
         ],

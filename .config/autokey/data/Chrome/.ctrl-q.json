@@ -1,6 +1,6 @@
 {
     "type": "script",
-    "description": "Chrome-Ctrl-q",
+    "description": "Quit tab",
     "store": {},
     "modes": [
         3
