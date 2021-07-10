@@ -14,7 +14,6 @@ git
 less
 micro
 pass
-rclone
 rename
 ripgrep
 rmlint
@@ -24,6 +23,11 @@ sqlite3
 tesseract-ocr
 pandoc
 poppler-utils
+zip
+unzip
+xattr
+hashdeep
+libimage-exiftool-perl
 
 # languages
 python3-distutils
@@ -32,52 +36,39 @@ golang-go
 # devices
 adb
 
-# tools
-aspell-en
-bash-completion
-bc
-bind9-dnsutils
-command-not-found
+# networking
+rclone
+lastpass-cli
+wget
 curl
-debootstrap
-docker-compose
-gawk
-gettext-base
-gpg
-gpg-agent
-hashdeep
-htop
-iotop
 iperf3
 iputils-ping
 iputils-tracepath
-keyutils
-lastpass-cli
-libatasmart-bin
-libimage-exiftool-perl
+net-tools
+nmap
+ncat
+bind9-dnsutils
+mutt
+tcpdump
+sshuttle
+
+# tools
+bash-completion
+bc
+command-not-found
+debootstrap
+docker-compose
+gawk
+gpg
+gpg-agent
+htop
+iotop
 libnotify-bin
 locales
 lsof
 man-db
-mutt
-ncat
-net-tools
-nmap
-pmount
-poppler-utils
 powertop
 psmisc
-sshuttle
 strace
-tcpdump
 time
-unzip
-xattr
-zip
-gddrescue
-fuse-overlayfs
-wget
 sudo
-
-
-open-vm-tools-desktop

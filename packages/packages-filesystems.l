@@ -1,6 +1,8 @@
 # filesystems
-gdisk
 fuse3
+open-vm-tools-desktop
+gdisk
+gddrescue
 ntfs-3g
 btrfs-progs
 squashfs-tools

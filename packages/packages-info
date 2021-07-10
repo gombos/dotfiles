@@ -1,3 +1,7 @@
+aspell-en
+keyutils
+libatasmart-bin
+fuse-overlayfs
 linux-firmware # takes up a lot of space and not needed for my HW
 udisks2 # runs an extra service, mostly meant for graphical use
 rsyslog # journalctl is good enough

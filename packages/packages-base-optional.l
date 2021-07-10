@@ -43,7 +43,6 @@ libu2f-udev
 cpufreq-info
 lm-sensors
 dmidecode
-open-vm-tools-desktop
 
 # laptop
 thermald # monitors and controls temperature in laptops
