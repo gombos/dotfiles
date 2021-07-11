@@ -9,18 +9,18 @@ services:
 #    command: --interval "3600" --cleanup
 #    restart: always
 
-  nginx:
-    container_name: nginx
-    image: nginx
-    restart: always
-    ports:
-      -  80:80
-      - 443:443
+#  nginx:
+#    container_name: nginx
+#    image: nginx
+#    restart: always
+#    ports:
+#      -  80:80
+#      - 443:443
 
-    volumes:
-      - /home/www:/usr/share/nginx/html
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /run/media/letsencrypt:/etc/letsencrypt
+#    volumes:
+#      - /home/www:/usr/share/nginx/html
+#      - ./nginx.conf:/etc/nginx/nginx.conf
+#      - /run/media/letsencrypt:/etc/letsencrypt
 
 #services:
 #  mailserver:
