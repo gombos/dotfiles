@@ -22,9 +22,9 @@ fi
 
 IN_EXT="${IN#*.}"
 
-if [ "$IN_EXT" == "tar.xz" ] || [ "$IN_EXT" == "tar.gz" ] || [ "$IN_EXT" == "tgz" ] || [ "$IN_EXT" == "txz" ] || [ "$IN_EXT" == "tar" ]; then
-  archivemount $IN $OUT
-fi
+#if [ "$IN_EXT" == "tar.xz" ] || [ "$IN_EXT" == "tar.gz" ] || [ "$IN_EXT" == "tgz" ] || [ "$IN_EXT" == "txz" ] || [ "$IN_EXT" == "tar" ]; then
+#  archivemount $IN $OUT
+#fi
 
 if [ "$IN_EXT" == "img" ]; then
   DEV=$(sudo losetup --show -f -P $IN)

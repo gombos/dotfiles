@@ -4,7 +4,6 @@
 
 # files
 antiword
-archivemount
 attr
 borgbackup
 detox
