@@ -1,4 +1,4 @@
-FROM archlinux
+FROM archlinux:base-devel-20210205.0.15146
 
 LABEL name=arch
 
