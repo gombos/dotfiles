@@ -14,8 +14,6 @@ apt-file
 apt-transport-https
 apt-utils
 archivemount
-aspell
-aspell-en
 attr
 autocutsel
 autokey-common
@@ -60,7 +58,6 @@ debianutils
 debootstrap
 desktop-file-utils
 detox
-dictionaries-common
 diffutils
 dirmngr
 distro-info-data
@@ -76,7 +73,6 @@ dpkg
 dunst
 e2fsprogs
 efibootmgr
-emacsen-common
 ethtool
 exfat-fuse
 extlinux
@@ -94,13 +90,11 @@ fonts-liberation
 fonts-opensymbol
 fonts-wqy-zenhei
 fuse3
-fuse-overlayfs
 gawk
 gcc-10-base
 gcc-9-base
 gddrescue
 gdisk
-gettext-base
 git
 git-man
 glib-networking
@@ -171,12 +165,9 @@ libasn1-8-heimdal
 libasound2
 libasound2-data
 libasound2-plugins
-libaspell15
 libass9
 libassuan0
 libasyncns0
-libatasmart4
-libatasmart-bin
 libatk1.0-0
 libatk1.0-data
 libatk-bridge2.0-0
@@ -441,6 +432,7 @@ libnfs13
 libnfsidmap2
 libnftnl11
 libnghttp2-14
+libnginx-mod-http-echo
 libnl-3-200
 libnl-genl-3-200
 libnl-route-3-200
@@ -595,7 +587,6 @@ libtasn1-6
 libtdb1
 libteamdctl0
 libtesseract4
-libtext-iconv-perl
 libthai0
 libthai-data
 libtheora0
@@ -728,7 +719,6 @@ libyaml-0-2
 libzstd1
 libzvbi0
 libzvbi-common
-linux-firmware
 lm-sensors
 locales
 login
@@ -761,6 +751,8 @@ net-tools
 network-manager
 nfs-common
 nfs-kernel-server
+nginx-common
+nginx-light
 nilfs-tools
 nmap
 nmap-common
@@ -787,7 +779,6 @@ perl
 perl-base
 perl-modules-5.30
 pinentry-curses
-pmount
 policykit-1
 poppler-utils
 powertop

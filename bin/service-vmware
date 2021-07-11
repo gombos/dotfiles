@@ -11,12 +11,11 @@
 #     for a password, run:
 #         sudo visudo
 #     and append these lines, substituting myusername with your username:
-#         %myusername ALL=(root) NOPASSWD:/usr/bin/service vmamqpd *
 #         %myusername ALL=(root) NOPASSWD:/usr/bin/service vmware *
 #         %myusername ALL=(root) NOPASSWD:/usr/bin/service vmware-workstation-server *
 #         %myusername ALL=(root) NOPASSWD:/usr/bin/service vmware-USBArbitrator *
 #     and of course save :P
-# 
+#
 # Usage:
 #     To start VMWare services and VMWare Workstation run:
 #         my-vmware start
@@ -27,7 +26,6 @@
 if [[ $1 == 'start' ]]; then
         # Start all the vmware services, one by one, in the right order
         echo "*** First, we start the services..."
-        sudo service vmamqpd start | grep failed
         sudo service vmware-USBArbitrator start | grep failed
         echo "*** Starting the server (takes some time)..."
         sudo service vmware-workstation-server start | grep failed
@@ -52,7 +50,6 @@ elif [[ $1 == 'stop' ]]; then
         sudo service vmware stop | grep failed
         sudo service vmware-workstation-server stop | grep failed
         sudo service vmware-USBArbitrator stop | grep failed
-        sudo service vmamqpd stop | grep failed
 
         # Also kill the workaround process
         # Get pid from file and kill the watch process
