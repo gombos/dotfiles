@@ -223,6 +223,12 @@ ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.t
 # Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
 rm usr/.crates2.json
 
+if [ -f /etc/arch-version ]; then
+  git clone https://aur.archlinux.org/google-chrome.git
+  cd google-chrome/
+  makepkg -si
+fi
+
 # ---- Configure etc
 
 # Defaults are optimized for vm/container use

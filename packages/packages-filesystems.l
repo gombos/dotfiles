@@ -1,6 +1,6 @@
 # filesystems
 fuse3
-open-vm-tools-desktop
+open-vm-tools
 gdisk
 gddrescue
 ntfs-3g
