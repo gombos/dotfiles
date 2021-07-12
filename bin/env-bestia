@@ -62,7 +62,7 @@ export -f umnt-linux
 
 ## SPEACIAL
 
-alias mnt-backup_pancel='sudo cryptsetup open --type tcrypt --veracrypt --verbose /dev/disk/by-partlabel/backup_pancel backup_pancel && mkdir -p /tmp/hfspluspancel && sudo mount /dev/mapper/backup_pancel /tmp/hfspluspancel -o rw,noexec,nosuid,nodev && mkdir -p $MNTDIR/backup_pancel && sudo bindfs -u $(id -u) -g $(id -g) -o rw /tmp/hfspluspancel $MNTDIR/backup_pancel'
+alias mnt-backup_pancel='sudo cryptsetup open --type tcrypt --veracrypt --verbose /dev/disk/by-partlabel/backup_pancel backup_pancel && mkdir -p /tmp/hfspluspancel && sudo mount /dev/mapper/backup_pancel /tmp/hfspluspancel -o force,rw,noexec,nosuid,nodev && mkdir -p $MNTDIR/backup_pancel && sudo bindfs -u $(id -u) -g $(id -g) -o rw /tmp/hfspluspancel $MNTDIR/backup_pancel'
 alias umnt-backup_pancel='sudo umount $MNTDIR/backup_pancel /tmp/hfspluspancel; sudo cryptsetup close backup_pancel;'
 
 mnt-archive_bagoly()    { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o user,user_xattr,noexec,nosuid,nodev,noatime; } }
