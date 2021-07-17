@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
 #  watchtower:
@@ -22,7 +22,6 @@ services:
 #      - ./nginx.conf:/etc/nginx/nginx.conf
 #      - /run/media/letsencrypt:/etc/letsencrypt
 
-#services:
 #  mailserver:
 #    image: docker.io/mailserver/docker-mailserver:latest
 #    hostname: <HOSTNAME> # <-- CHANGE THIS

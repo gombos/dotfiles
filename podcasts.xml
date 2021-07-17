@@ -17,7 +17,6 @@
       <outline type="rss" text="Uncle Jonny's Virtual Reality Podcast" xmlUrl="http://unclejonny.com/category/podcasts/feed/" />
       <outline type="rss" text="This Week in Tech (MP3)" xmlUrl="http://leoville.tv/podcasts/twit.xml" />
       <outline type="rss" text="The Diff: A Podcast from Facebook Open Source" xmlUrl="https://anchor.fm/s/953b200/podcast/rss" />
-      <outline type="rss" text="The Silver Bullet Security Podcast with Gary McGraw" xmlUrl="http://feeds.feedburner.com/TheSilverBulletSecurityPodcastWithGaryMcgraw" />
       <outline type="rss" text="The Secure Developer" xmlUrl="https://feeds.simplecast.com/47yfLpm0" />
       <outline type="rss" text="Beyond CAD by Civil FX | BIM, 3D Visualization, UAVs and Aerial Drones, Photogrammetry, Virtual Reality, Real-Time Game Engines" xmlUrl="http://feeds.feedburner.com/CivilFxPodcast" />
       <outline type="rss" text="The Science Hour" xmlUrl="https://podcasts.files.bbci.co.uk/p016tmt2.rss" />
@@ -27,7 +26,6 @@
       <outline type="rss" text="Seeking Wisdom" xmlUrl="https://feeds.casted.us/13/Seeking-Wisdom-22c38a4d/feed" />
       <outline type="rss" text="Coding Blocks" xmlUrl="https://www.codingblocks.net/podcast-feed.xml" />
       <outline type="rss" text="Techmeme Ride Home" xmlUrl="https://rss.art19.com/techmeme-ridehome" />
-      <outline type="rss" text="Startup Chat" xmlUrl="http://feeds.feedburner.com/StartupChat" />
       <outline type="rss" text="Linux Action News" xmlUrl="https://feeds.fireside.fm/linuxactionnews/rss" />
       <outline type="rss" text="Voices of VR Podcast – Designing for Virtual Reality" xmlUrl="http://voicesofvr.com/?feed=podcast" />
       <outline type="rss" text="Programming Throwdown" xmlUrl="https://feeds.transistor.fm/programming-throwdown" />
@@ -41,7 +39,6 @@
       <outline type="rss" text="How I Built It" xmlUrl="https://howibuilt.it/feed/podcast/" />
       <outline type="rss" text="Software Engineering Daily" xmlUrl="https://softwareengineeringdaily.com/feed/podcast/" />
       <outline type="rss" text="Windows Weekly (MP3)" xmlUrl="https://feeds.twit.tv/ww.xml" />
-      <outline type="rss" text="StartUp Podcast" xmlUrl="http://feeds.hearstartup.com/hearstartup" />
       <outline type="rss" text="All JavaScript Podcasts by Devchat.tv" xmlUrl="https://feeds.feedwrench.com/JavaScriptJabber.rss" />
       <outline type="rss" text="How I Built This with Guy Raz" xmlUrl="https://feeds.npr.org/510313/podcast.xml" />
       <outline type="rss" text="FT Start-Up Stories" xmlUrl="http://rss.acast.com/ft-startup-stories" />
@@ -56,6 +53,14 @@
       <outline type="rss" text="a16z Podcast" xmlUrl="https://feeds.simplecast.com/JGE3yC0V" />
       <outline type="rss" text="Software Engineering Radio - The Podcast for Professional Software Developers" xmlUrl="https://seradio.libsyn.com/rss" />
       <outline type="rss" text="EconTalk" xmlUrl="https://feeds.simplecast.com/wgl4xEgL" />
+      <outline type="rss" text="Bixby Developers Chat" xmlUrl="https://feeds.buzzsprout.com/793529.rss" />
+      <outline type="rss" text="Contributor" xmlUrl="https://anchor.fm/s/2904e74/podcast/rss" />
+      <outline type="rss" text="Practical AI: Machine Learning &amp; Data Science" xmlUrl="https://changelog.com/practicalai/feed" />
+      <outline type="rss" text="Storynory - Stories for Kids" xmlUrl="http://feeds.feedburner.com/Storynory" />
+      <outline type="rss" text="The Best Stocks To Buy" xmlUrl="http://gmcstockpicks.libsyn.com/rss" />
+      <outline type="rss" text="The Voicebot Podcast" xmlUrl="https://voicebot.libsyn.com/rss" />
+      <outline type="rss" text="The Web Ahead" xmlUrl="http://feeds.5by5.tv/webahead" />
+      <outline type="rss" text="ThoughtWorks Technology Podcast" xmlUrl="https://thoughtworks.libsyn.com/rss" />
     </outline>
   </body>
 </opml>
