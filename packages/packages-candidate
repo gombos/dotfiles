@@ -1,21 +1,13 @@
-apt install barrier
-
 catdoc
 docx2txt
 pdfgrep
 im-config
-
-scanning:
-apt install sane
-apt install gscan2pdf imagemagic
-apt install simple-scan
-apt install xsane
-
-pdf2djvu poppler-utils
-tesseract-ocr
+sane
+gscan2pdf
+imagemagic
+simple-scan
+xsane
+pdf2djvu
 evince
 qpdfview
-zathura
-
 ocrmypdf
-

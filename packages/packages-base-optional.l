@@ -28,6 +28,7 @@ wakeonlan
 hdparm
 smartmontools
 scsitools
+eject
 
 # wireless
 rfkill
