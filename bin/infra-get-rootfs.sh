@@ -7,6 +7,8 @@
 
 DIR=$1
 
+[ -z "$DIR" ] && exit
+
 docker pull 0gombi0/homelab:desktop
 container_id=$(sudo docker create 0gombi0/homelab:desktop)
 
