@@ -11,7 +11,7 @@ infra-get-rootfs.sh $DIR
 cd $DIR
 version=$(cat var/integrity/id)
 cd ..
-mv tmp linux-$version
+sudo mv tmp linux-$version
 
 # Todo - Dedup
 #sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR

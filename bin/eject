@@ -3,6 +3,7 @@ if grep -qs "${1} " /proc/mounts; then
 fi
 
 if ! grep -qs "${1} " /proc/mounts; then
+  sudo /usr/bin/eject ${1}
   sudo sg_sync ${1}
   sudo sg_start 0 ${1}
   sudo sg_start --eject ${1}
