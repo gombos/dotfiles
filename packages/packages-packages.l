@@ -71,3 +71,6 @@ psmisc
 strace
 time
 sudo
+
+# virtualization
+qemu-system-x86
