@@ -11,7 +11,7 @@ sudo rm -rf /tmp/efi
 mkdir /tmp/efi
 cd /tmp/efi
 
-container_id=$(sudo docker create $image /bin/bash)
+container_id=$(sudo docker create $image /)
 sudo docker export $container_id | sudo tar xf -
 
 sudo chown -R 1000:1000 /tmp/efi
