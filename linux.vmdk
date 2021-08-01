@@ -1,12 +1,13 @@
 # Disk DescriptorFile
 version=1
 encoding="UTF-8"
-CID=fab64c93
+CID=d80e3db3
 parentCID=ffffffff
 createType="monolithicFlat"
 
-# 7 GB (7*2*1024*1024)
-RW 14680064 FLAT "linux.img" 0
+# Extent description
+# 3GB (3*2*1024*1024)
+RW 6291456 FLAT "linux.img" 0
 
 # The Disk Data Base
 #DDB
@@ -15,8 +16,8 @@ ddb.adapterType = "lsilogic"
 ddb.geometry.cylinders = "1566"
 ddb.geometry.heads = "255"
 ddb.geometry.sectors = "63"
-ddb.longContentID = "17846e033c606205613ba74afab64c93"
+ddb.longContentID = "63839586e0e9e2a5c680c10cd80e3db3"
 ddb.toolsInstallType = "4"
-ddb.toolsVersion = "11269"
+ddb.toolsVersion = "11333"
 ddb.uuid = "60 00 C2 91 3f 72 22 39-b9 1c 3e fd 87 0d fb 04"
 ddb.virtualHWVersion = "16"
