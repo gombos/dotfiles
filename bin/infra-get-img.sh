@@ -12,5 +12,5 @@ sudo docker export $container_id | sudo tar xf -
 
 sudo chown -R 1000:1000 /tmp/img
 
-sudo mv /tmp/img/tmp/linux-flat.vmdk /tmp
+sudo mv /tmp/img/tmp/linux.img /tmp
 sudo rm -rf /tmp/img

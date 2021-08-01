@@ -13,7 +13,7 @@ export VM_UNAME=$KERNEL
 cd /tmp/
 git clone https://github.com/mkubecek/vmware-host-modules.git
 cd vmware-host-modules
-git checkout workstation-15.5.6
+git checkout workstation-15.5.7
 make VM_UNAME=$KERNEL
 make install VM_UNAME=$KERNEL
 make clean VM_UNAME=$KERNEL

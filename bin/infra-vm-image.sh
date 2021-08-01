@@ -11,7 +11,7 @@ else
   TARGET="$3"
 fi
 
-FILENAME=linux-flat.vmdk
+FILENAME=linux.img
 OUT_DIR=${OUT_DIR:=/tmp}
 FILE=$OUT_DIR/${FILENAME}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}

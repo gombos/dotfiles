@@ -6,7 +6,7 @@ parentCID=ffffffff
 createType="monolithicFlat"
 
 # 7 GB (7*2*1024*1024)
-RW 14680064 FLAT "linux-flat.vmdk" 0
+RW 14680064 FLAT "linux.img" 0
 
 # The Disk Data Base
 #DDB

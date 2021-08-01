@@ -22,5 +22,5 @@ docker push 0gombi0/homelab:efi
 
 infra-vm-image.sh
 
-sudo tar -c /tmp/linux-flat.vmdk | docker import - 0gombi0/homelab:raw
+sudo tar -c /tmp/linux.img | docker import - 0gombi0/homelab:raw
 docker push 0gombi0/homelab:raw
