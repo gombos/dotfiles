@@ -12,11 +12,13 @@ else
 fi
 
 FILENAME=linux-flat.vmdk
-OUT_DIR=${OUT_DIR:=/tmp/img}
+OUT_DIR=${OUT_DIR:=/tmp}
 FILE=$OUT_DIR/${FILENAME}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}
 MNT=$MNT_DIR/root
 MNT_EFI=$MNT_DIR/efi
+
+sudo rm -rf $MNT $MNT_EFI $MNT_DIR
 
 mkdir -p $MNT $MNT_EFI
 echo "Installing $RELEASE into $FILE..."
@@ -128,3 +130,6 @@ cd /
 sudo umount $MNT
 
 sudo losetup -d $DISK
+
+sudo rm -rf $MNT $MNT_EFI $MNT_DIR
+sudo rm -rf /tmp/modules /tmp/efi
