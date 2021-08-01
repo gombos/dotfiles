@@ -10,6 +10,7 @@ sudo LANG=C  debootstrap --variant=minbase --components=main,universe $RELEASE /
 
 sudo tar -c /tmp/minbase | docker import - 0gombi0/homelab:minbase
 docker push 0gombi0/homelab:minbase
+sudo rm -rf /tmp/minbase
 
 docker build -t 0gombi0/homelab:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
 docker push 0gombi0/homelab:base
