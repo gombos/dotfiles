@@ -460,7 +460,6 @@ python-twython
 python-usb
 qemu-kvm
 qemu-system-arm
-qemu-system-x86
 qemu-user-static
 qemu-utils
 ragel

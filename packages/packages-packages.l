@@ -50,6 +50,7 @@ bind9-dnsutils
 mutt
 tcpdump
 sshuttle
+nethogs
 
 # tools
 bash-completion
@@ -74,3 +75,4 @@ sudo
 
 # virtualization
 qemu-system-x86
+qemu-system-gui
