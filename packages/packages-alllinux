@@ -1,3 +1,4 @@
+acl
 adb
 adduser
 adwaita-icon-theme
@@ -13,7 +14,6 @@ apt
 apt-file
 apt-transport-https
 apt-utils
-archivemount
 attr
 autocutsel
 autokey-common
@@ -73,6 +73,7 @@ dpkg
 dunst
 e2fsprogs
 efibootmgr
+eject
 ethtool
 exfat-fuse
 extlinux
@@ -138,8 +139,11 @@ iproute2
 iptables
 iputils-ping
 iputils-tracepath
+ipxe-qemu
+ipxe-qemu-256k-compat-efi-roms
 isc-dhcp-client
 iso-codes
+jmtpfs
 kexec-tools
 keyboard-configuration
 keyutils
@@ -196,11 +200,13 @@ libboost-filesystem1.71.0
 libboost-iostreams1.71.0
 libboost-locale1.71.0
 libboost-thread1.71.0
+libbrlapi0.7
 libbrotli1
 libbsd0
 libbz2-1.0
 libc6
 libcaca0
+libcacard0
 libcairo2
 libcairo-gobject2
 libcairomm-1.0-1v5
@@ -270,6 +276,7 @@ libexttextcat-2.0-0
 libexttextcat-data
 libfaad2
 libfdisk1
+libfdt1
 libffi7
 libfido2-1
 libflac8
@@ -337,6 +344,7 @@ libhogweed5
 libhunspell-1.7-0
 libhx509-5-heimdal
 libhyphen0
+libibverbs1
 libice6
 libicu66
 libid3tag0
@@ -351,6 +359,7 @@ libip4tc2
 libip6tc2
 libiperf0
 libisc-export1105
+libiscsi7
 libisl22
 libiw30
 libixml10
@@ -480,6 +489,7 @@ libpipeline1
 libpixman-1-0
 libplacebo7
 libplist3
+libpmem1
 libpng16-16
 libpolkit-agent-1-0
 libpolkit-gobject-1-0
@@ -513,10 +523,13 @@ libqt5test5
 libqt5widgets5
 libqt5x11extras5
 libqt5xml5
+librados2
 libraptor2-0
 librasqal3
 libraw1394-11
+librbd1
 librdf0
+librdmacm1
 libreadline8
 libregexp-assemble-perl
 libreoffice-base-core
@@ -555,6 +568,7 @@ libsidplay2
 libsigc++-2.0-0v5
 libsigsegv2
 libslang2
+libslirp0
 libsm6
 libsmartcols1
 libsnapd-glib1
@@ -567,6 +581,7 @@ libsoxr0
 libspatialaudio0
 libspeex1
 libspeexdsp1
+libspice-server1
 libsqlite3-0
 libsrt1
 libss2
@@ -613,6 +628,7 @@ libusageenvironment3
 libusb-0.1-4
 libusb-1.0-0
 libusbmuxd6
+libusbredirparser1
 libutempter0
 libuuid1
 libuv1
@@ -621,6 +637,7 @@ libva-drm2
 libva-wayland2
 libva-x11-2
 libvdpau1
+libvirglrenderer1
 libvlc5
 libvlc-bin
 libvlccore9
@@ -628,6 +645,8 @@ libvorbis0a
 libvorbisenc2
 libvorbisfile3
 libvpx6
+libvte-2.91-0
+libvte-2.91-common
 libvulkan1
 libwacom2
 libwacom-common
@@ -746,6 +765,7 @@ ncat
 ncurses-base
 ncurses-bin
 netbase
+nethogs
 netplan.io
 net-tools
 network-manager
@@ -841,6 +861,11 @@ python3-xlib
 python3-yaml
 python3-zipp
 python-apt-common
+qemu-block-extra
+qemu-system-common
+qemu-system-data
+qemu-system-gui
+qemu-system-x86
 qiv
 rclone
 readline-common
@@ -854,6 +879,7 @@ rsync
 rtkit
 runc
 scsitools
+seabios
 sed
 sensible-utils
 sg3-utils
