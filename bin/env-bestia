@@ -24,6 +24,8 @@ my-luks-mount backup_bestia_aged
 my-luks-mount backup_archive_media
 my-luks-mount backup_archive_ice
 my-luks-mount backup_borg
+my-luks-mount backup_pancel
+my-luks-mount backup_large
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
@@ -61,9 +63,6 @@ export -f mnt-linux
 export -f umnt-linux
 
 ## SPEACIAL
-
-alias mnt-backup_pancel='sudo cryptsetup open --type tcrypt --veracrypt --verbose /dev/disk/by-partlabel/backup_pancel backup_pancel && mkdir -p /tmp/hfspluspancel && sudo mount /dev/mapper/backup_pancel /tmp/hfspluspancel -o force,rw,noexec,nosuid,nodev && mkdir -p $MNTDIR/backup_pancel && sudo bindfs -u $(id -u) -g $(id -g) -o rw /tmp/hfspluspancel $MNTDIR/backup_pancel'
-alias umnt-backup_pancel='sudo umount $MNTDIR/backup_pancel /tmp/hfspluspancel; sudo cryptsetup close backup_pancel;'
 
 mnt-archive_bagoly()    { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o user,user_xattr,noexec,nosuid,nodev,noatime; } }
 mnt-archive_bagoly_ro() { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o ro,user,user_xattr,noexec,nosuid,nodev,noatime; } }
@@ -111,6 +110,8 @@ export BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes
 export MEDIA_DB_DIR=$MNTDIR/archive_media/archive_media/meta/db
 
 borg-archive_media()  { cd $MNTDIR/archive_media && nohup borg create --noatime --nobsdflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media-`date -Iseconds` archive_media >/tmp/nohup-borg-archive_media.out 2>&1; }
+
+borg-archive_mail()   { cd $MNTDIR/archive_ice/archive && nohup borg create --noatime --nobsdflags -s -x --list $MNTDIR/backup_pancel/borg/archive_mail::archive_mail-`date -Iseconds` archive_mail >/tmp/nohup-borg-archive_mail.out 2>&1; }
 
 borg-archive_media_image()  { cd $MNTDIR/archive_media && nohup borg create --noatime --nobsdflags --compression none --exclude-from ~/.dotfiles/doc/videoextensions-exclude -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_image-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_image.out 2>&1; }
 borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --noatime --nobsdflags --compression none --patterns-from ~/.dotfiles/doc/videoextensions -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_video-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_video.out 2>&1; }

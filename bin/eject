@@ -10,3 +10,6 @@ if ! grep -qs "${1} " /proc/mounts; then
 else
   echo "eject failed!"
 fi
+
+# todo
+# udisksd[5702]: Powered off /dev/sdd - successfully wrote to sysfs path /sys/devices/pci0000:00/0000:00:1c.0/0000:06:00.0/usb6/6-3/6-3.1/remove
