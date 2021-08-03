@@ -26,6 +26,6 @@ ACTION=="remove", ENV{ID_MODEL_FROM_DATABASE}=="sowbug.com WebLight", RUN+="/usr
 SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", SYMLINK+="disk/by-id/disk_%E{ID_SERIAL}"
 
 # ipods
-ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1303", ATTRS{serial}=="000A270023B60E07", MODE="0666", NAME="ipod_grey" SYMLINK="ipod_grey"
-ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1303", ATTRS{serial}=="000A27002542C1E2", MODE="0666", NAME="ipod_blue" SYMLINK="ipod_blue"
-ATTRS{idVendor}=="0781", ATTRS{idProduct}=="74f0", ATTRS{serial}=="B4D656EA4D096840", MODE="0666", NAME="clip" SYMLINK="clip"
+#ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1303", ATTRS{serial}=="000A270023B60E07", MODE="0666", NAME="ipod_grey" SYMLINK="ipod_grey"
+#ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="1303", ATTRS{serial}=="000A27002542C1E2", MODE="0666", NAME="ipod_blue" SYMLINK="ipod_blue"
+ATTRS{idVendor}=="0781", ATTRS{idProduct}=="74f0", ATTRS{serial}=="B4D656EA4D096840", MODE="0666", NAME="clip" SYMLINK+="clip"
