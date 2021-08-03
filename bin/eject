@@ -17,8 +17,11 @@ SYSDRIVE=$(readlink -f /sys/class/block/${DRIVE} | cut -d/ -f-9 )
 
 sudo blockdev --flushbufs ${1}
 
+# SCSI removable disk
 sudo /usr/bin/eject ${1}
-# todo - if /usr/bin/eject worked than bail out
+if ! [ -d ${1} ]; then
+  exit
+fi
 
 # -- SCSI layer
 
