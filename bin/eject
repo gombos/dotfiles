@@ -12,9 +12,6 @@ if [ -f /usr/bin/udisksctl ]; then
   exit
 fi
 
-DRIVE=$(echo ${1} | cut -d'/' -f3)
-SYSDRIVE=$(readlink -f /sys/class/block/${DRIVE} | cut -d/ -f-9 )
-
 sudo blockdev --flushbufs ${1}
 
 # SCSI removable disk
@@ -36,6 +33,10 @@ sudo sg_start --eject ${1}
 sleep 2
 
 # -- USB layer
+
+D=$(readlink -f ${1})
+DRIVE=$(echo ${D} | cut -d'/' -f3)
+SYSDRIVE=$(readlink -f /sys/class/block/${DRIVE} | cut -d/ -f-9 )
 
 # suspends the USB device (power)
 echo 'offline' | sudo tee /sys/block/${DRIVE}/device/state
