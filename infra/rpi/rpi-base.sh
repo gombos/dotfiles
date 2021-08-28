@@ -10,6 +10,8 @@ unzip *-lite.zip
 rm *-lite.zip*
 #docker run -it -v /home/user/$IMG:/sdcard/filesystem.img lukechilds/dockerpi:vm
 
+wget ftp://110.10.189.172/ComfilePi/Scripts/overlayRoot.sh
+
 sudo losetup -P /dev/loop2 $IMG
 
 sudo mount /dev/loop2p1 /mnt
@@ -22,6 +24,8 @@ echo "console=tty1 root=PARTUUID=9730496b-02 rootfstype=ext4 elevator=deadline f
 sudo umount /mnt
 
 sudo mount /dev/loop2p2 /mnt
+sudo cp overlayRoot.sh /mnt/sbin
+sudo chmod +x /mnt/sbin/overlayRoot.sh
 printf "\nallow-hotplug usb0\niface usb0 inet static\n  address 192.168.2.2\n  netmask 255.255.255.0\n  network 192.168.2.0\n  broadcast 192.168.2.255\n  gateway 192.168.2.1\n  dns-nameservers 8.8.8.8\n" | sudo tee -a /mnt/etc/network/interfaces
 sudo umount /mnt
 
@@ -32,10 +36,5 @@ sudo losetup -d /dev/loop2
 
 #install
 # nginx-light
-
-#wget ftp://110.10.189.172/ComfilePi/Scripts/overlayRoot.sh
-#sudo cp overlayRoot.sh /sbin/
-#sudo chmod +x /sbin/overlayRoot.sh
-
 
 #> nano

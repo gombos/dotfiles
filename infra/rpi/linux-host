@@ -1,0 +1,4 @@
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -A POSTROUTING -t nat -j MASQUERADE -s 192.168.2.0/24
+sudo ifconfig usb0 192.168.2.1
+ssh -p 22 pi@192.168.2.2
