@@ -1,11 +1,5 @@
 # Compute an rpi image that exposes bagoly via a wifi web interface
 
-#rm *-lite.zip*
-#wget http://debian.rutgers.edu/raspbian_images/raspberrypi/images/raspbian/2019-09-26-raspbian-buster/2019-09-26-raspbian-buster-lite.zip
-#unzip *-lite.zip
-#rm *-lite.zip*
-#docker run -it -v /home/user/2019-09-26-raspbian-buster-lite.img:/sdcard/filesystem.img lukechilds/dockerpi:vm
-
 RASPIOS=https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
 IMG=2021-05-07-raspios-buster-armhf-lite.img
 
@@ -29,9 +23,9 @@ sudo umount /mnt
 
 sudo mount /dev/loop2p2 /mnt
 printf "\nallow-hotplug usb0\niface usb0 inet static\n  address 192.168.2.2\n  netmask 255.255.255.0\n  network 192.168.2.0\n  broadcast 192.168.2.255\n  gateway 192.168.2.1\n  dns-nameservers 8.8.8.8\n" | sudo tee -a /mnt/etc/network/interfaces
-#sudo umount /mnt
+sudo umount /mnt
 
-#sudo losetup -d /dev/loop2
+sudo losetup -d /dev/loop2
 
 #apt purge
 #pigz
