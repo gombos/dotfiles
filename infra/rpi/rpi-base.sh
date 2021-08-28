@@ -20,15 +20,23 @@ echo "start_x=0" | sudo tee -a /mnt/config.txt
 echo "dtparam=audio=off" | sudo tee -a /mnt/config.txt
 echo "gpu_mem=16" | sudo tee -a /mnt/config.txt
 
-echo "console=tty1 root=PARTUUID=9730496b-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether systemd.wants=ssh systemd.mask=cron systemd.mask=bluetooth systemd.mask=rsyslog systemd.mask=triggerhappy systemd.mask=hciuart systemd.mask=dhcpcd systemd.mask=dphys-swapfile module_blacklist=i2c_dev,ipv6,bcm2835_codec,bcm2835_v4l2,bcm2835_isp init=/sbin/overlayRoot.sh" | sudo tee /mnt/cmdline.txt
+# module_blacklist=ipv6
+echo "console=tty1 root=PARTUUID=9730496b-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether systemd.wants=ssh systemd.mask=cron systemd.mask=bluetooth systemd.mask=rsyslog systemd.mask=triggerhappy systemd.mask=hciuart systemd.mask=dhcpcd systemd.mask=dphys-swapfile module_blacklist=i2c_dev,bcm2835_codec,bcm2835_v4l2,bcm2835_isp init=/sbin/overlayRoot.sh" | sudo tee /mnt/cmdline.txt
 sudo umount /mnt
 
 sudo mount /dev/loop2p2 /mnt
 sudo cp overlayRoot.sh /mnt/sbin
 sudo chmod +x /mnt/sbin/overlayRoot.sh
-printf "\nallow-hotplug usb0\niface usb0 inet static\n  address 192.168.2.2\n  netmask 255.255.255.0\n  network 192.168.2.0\n  broadcast 192.168.2.255\n  gateway 192.168.2.1\n  dns-nameservers 8.8.8.8\n" | sudo tee -a /mnt/etc/network/interfaces
 
-printf "\nallow-hotplug wlan0\niface wlan0 inet static\n  address 192.168.3.2\n  netmask 255.255.255.0\n  network 192.168.3.0\n  broadcast 192.168.3.255\n  gateway 192.168.3.1\n  dns-nameservers 8.8.8.8\n" | sudo tee -a /mnt/etc/network/interfaces
+# usb0
+printf "\nallow-hotplug usb0\niface usb0 inet static\n  address 192.168.2.2\n  netmask 255.255.255.0\n  network 192.168.2.0\n  broadcast 192.168.2.255\n" | sudo tee -a /mnt/etc/network/interfaces
+
+# wlan0
+printf "\nallow-hotplug wlan0\niface wlan0 inet static\n  address 192.168.3.2\n  netmask 255.255.255.0\n  network 192.168.3.0\n  broadcast 192.168.3.255\n" | sudo tee -a /mnt/etc/network/interfaces
+
+printf "\nauto lo\niface lo inet loopback\n" | sudo tee -a /mnt/etc/network/interfaces
+
+printf "\ngateway 192.168.2.1\n  dns-nameservers 8.8.8.8\n" | sudo tee -a /mnt/etc/network/interfaces
 
 #printf "\nauto br0\niface br0 inet dhcp\nbridge_ports usb0 wlan0\n"
 
@@ -62,7 +70,7 @@ cd /mnt
 
 key=DAEMON_CONF
 value="/etc/hostapd/hostapd.conf"
-sed "/^$key/ { s/^#//; s%=.*%=\"$value\"%; }" etc/default/hostapd
+sed "/^$key/ { s/^#//; s%=.*%=\"$value\"%; }" etc/default/hostapd > /dev/null
 
 cat <<EOF | sudo tee etc/dhcpcd.conf > /dev/null
 interface wlan0
@@ -103,6 +111,20 @@ sudo rm -rf etc/init.d/resize2fs_once
 
 sudo ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 sudo ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
+
+sudo rm -f "etc/passwd-"
+sudo rm -f "etc/group-"
+sudo rm -f "etc/shadow-"
+sudo rm -f "etc/gshadow-"
+sudo rm -f "etc/subuid-"
+sudo rm -f "etc/subgid-"
+
+sudo rm -f var/cache/debconf/*-old
+sudo rm -f var/lib/dpkg/*-old
+
+sudo bash -c "true > etc/machine-id"
+
+sudo find var/log/ -type f -exec cp /dev/null {} \;
 
 cd -
 sudo umount /mnt
