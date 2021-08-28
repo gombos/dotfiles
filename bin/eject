@@ -16,9 +16,9 @@ sudo blockdev --flushbufs ${1}
 
 # SCSI removable disk
 sudo /usr/bin/eject ${1}
-if ! [ -d ${1} ]; then
-  exit
-fi
+#if ! [ -d ${1} ]; then
+#  exit
+#fi
 
 # -- SCSI layer
 

@@ -26,6 +26,7 @@ my-luks-mount backup_archive_ice
 my-luks-mount backup_borg
 my-luks-mount backup_pancel
 my-luks-mount backup_large
+my-luks-mount backup_all
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
