@@ -58,15 +58,18 @@ sudo chroot /mnt qemu-arm-static /bin/bash -c "echo 'en_US.UTF-8 UTF-8' > /etc/l
 #sudo chroot /mnt qemu-arm-static /bin/bash -c "curl https://getmic.ro | bash"
 #sudo chroot /mnt qemu-arm-static /bin/bash -c "sudo mv micro /usr/local/bin/"
 
+cd /mnt
+
 # admin user to log in (instead of root)
-sudo chroot /mnt qemu-arm-static /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0
-sudo chroot /mnt qemu-arm-static/usr/sbin/usermod -aG sudo admin
-sudo rm -rf /mnt/home
-sudo mkdir /mnt/home
-sudo chown 99:0 /mnt/home
-sudo chmod g+w /mnt/home
+#sudo chroot /mnt qemu-arm-static /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0
+#sudo chroot /mnt qemu-arm-static/usr/sbin/usermod -aG sudo admin
+#sudo rm -rf /mnt/home
+#sudo mkdir /mnt/home
+#sudo chown 99:0 /mnt/home
+#sudo chmod g+w /mnt/home
 
 # make the salt deterministic, reproducible builds
+#sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
 # purge packages I do not need
 sudo chroot /mnt qemu-arm-static /bin/bash -c "apt-get update -y"
@@ -83,8 +86,6 @@ sudo chroot /mnt qemu-arm-static /bin/bash -c "apt-get install -y -qq -o Dpkg::U
 # wifi access point
 sudo chroot /mnt qemu-arm-static /bin/bash -c "apt-get install -y -qq -o Dpkg::Use-Pty=0 hostapd dnsmasq"
 # bridge-utils"
-
-cd /mnt
 
 key=DAEMON_CONF
 value="/etc/hostapd/hostapd.conf"
