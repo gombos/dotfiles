@@ -27,3 +27,6 @@ SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", SYMLINK+="disk/by-id/disk_%E{ID_SERIAL
 
 # clip
 ATTRS{idVendor}=="0781", ATTRS{idProduct}=="74f0", ATTRS{serial}=="B4D656EA4D096840", MODE="0666", SYMLINK+="clip"
+
+# Linux-USB Ethernet/RNDIS Gadget
+ACTION=="add", DRIVERS=="usb", ATTRS{idVendor}=="0525", ATTRS{idProduct}=="a4a2", RUN+="ifconfig usb0 192.168.2.1"
