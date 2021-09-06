@@ -3,7 +3,9 @@
 # $1 - efi directory if exists
 # $2 - rootfs directory if exists
 
-# $3 - target : all (default), vm, rootfs
+# $3 - targets
+# - all (default) - hybrid mbr
+# - vm - optimized for a small vm image, gpt boot only
 
 if [ -z "$3" ]; then
   TARGET="all"
@@ -64,61 +66,65 @@ sudo sgdisk -Z $DISK
 # https://github.com/pengutronix/genimage/pull/96
 
 # Add efi partition
-if [ "$TARGET" != "rootfs" ]; then
-  sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
-  sudo partprobe $DISK
-  sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
-  sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
+sudo partprobe $DISK
+sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
+sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 
-  if [ -z $1 ]; then
-    infra-get-efi.sh
-    sudo rsync -r --exclude modules /tmp/efi/efi/ $MNT_EFI
-  else
-    sudo rsync -r --exclude modules $1 $MNT_EFI
-  fi
-
-  # https://wiki.archlinux.org/title/Syslinux
-  sudo sgdisk $DISK --attributes=1:set:2
-  sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
-  sudo extlinux --install $MNT_EFI/syslinux/
-  cd /
-
-  # directories that are not needed for vm
-  if [ "$TARGET" == vm ]; then
-    sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
-  fi
-
-  sudo umount $MNT_EFI
-  sudo losetup -d $DISK
-
-  #Prepare the module file
-  sudo rm -rf /tmp/modules
-  sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
-  sudo losetup $DISK /tmp/modules
-  sudo partprobe $DISK
-  sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
-  sudo mount -o compress $DISK $MNT || fail "cannot mount"
-
-  # First rsync the directory structure only
-  sudo rsync -a -f"+ */" -f"- *" /tmp/efi/efi/modules/ $MNT
-
-  # Copy the large files first to help out the backing store compression
-  sudo rsync -a /tmp/efi/efi/modules/*/updates/ $MNT/*/updates/
-
-  # Copy all files
-  sudo rsync -a /tmp/efi/efi/modules/ $MNT
-  sudo umount $MNT
-  sudo losetup -d $DISK
-
-  sudo losetup $DISK $FILE
-  sudo partprobe $DISK
-
-  sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
-  sudo cp /tmp/modules $MNT_EFI/kernel/
-  sudo umount $MNT_EFI
+if [ -z $1 ]; then
+  infra-get-efi.sh
+  sudo rsync -r --exclude modules /tmp/efi/efi/ $MNT_EFI
+else
+  sudo rsync -r --exclude modules $1 $MNT_EFI
 fi
 
+# https://wiki.archlinux.org/title/Syslinux
+sudo sgdisk $DISK --attributes=1:set:2
+sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
+sudo extlinux --install $MNT_EFI/syslinux/
+cd /
+
+# directories that are not needed for vm
+if [ "$TARGET" == vm ]; then
+  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
+fi
+
+sudo umount $MNT_EFI
+sudo losetup -d $DISK
+
+#Prepare the module file
+sudo rm -rf /tmp/modules
+sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
+sudo losetup $DISK /tmp/modules
+sudo partprobe $DISK
+sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
+sudo mount -o compress $DISK $MNT || fail "cannot mount"
+
+# First rsync the directory structure only
+sudo rsync -a -f"+ */" -f"- *" /tmp/efi/efi/modules/ $MNT
+
+# Copy the large files first to help out the backing store compression
+sudo rsync -a /tmp/efi/efi/modules/*/updates/ $MNT/*/updates/
+
+# Copy all files
+sudo rsync -a /tmp/efi/efi/modules/ $MNT
+sudo umount $MNT
+sudo losetup -d $DISK
+
+sudo losetup $DISK $FILE
+sudo partprobe $DISK
+
+sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+sudo cp /tmp/modules $MNT_EFI/kernel/
+sudo umount $MNT_EFI
+
 sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
+
+if [ "$TARGET" != vm ]; then
+  # make the first 2 partitions visible from mbr as well for rpi
+  sudo sgdisk -h 1,2 $DISK
+fi
+
 sudo partprobe $DISK
 
 echo "Creating filesystems..."
