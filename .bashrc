@@ -156,7 +156,7 @@ fi
 
 # brew packages
 if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
-if [ -e .linuxbrew/bin/brew ]; then eval $(.linuxbrew/bin/brew shellenv); fi
+#if [ -e .linuxbrew/bin/brew ]; then eval $(.linuxbrew/bin/brew shellenv); fi
 
 # nix packages
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi

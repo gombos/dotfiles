@@ -1,0 +1,11 @@
+nextcloud
+shaarli/shaarli
+dovecot/dovecot
+amazon/aws-cli
+nginx
+vaultwarden/server:latest
+caddy/caddy:alpine
+lukechilds/dockerpi
+certbot/certbot
+amazonlinux2
+alpine
