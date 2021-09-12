@@ -76,3 +76,7 @@ sudo
 # virtualization
 qemu-system-x86
 qemu-system-gui
+
+# arm
+qemu-user-static
+binfmt-support
