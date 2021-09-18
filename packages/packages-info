@@ -117,7 +117,7 @@ vim-nox
 emacs-nox
 
 gimp - pixel
-inkscape - svg - https://launchpad.net/~inkscape.dev/+archive/ubuntu/stable?field.series_filter=focal
+inkscape - svg
 fslint
 offlineimap
 diffuse
