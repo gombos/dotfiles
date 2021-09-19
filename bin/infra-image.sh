@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# $1 - efi directory if exists
-# $2 - rootfs directory if exists
+# $2 - efi directory if exists
+# $3 - rootfs directory if exists
 
-# $3 - targets
+# $1 - targets
 # - all (default) - hybrid mbr
 # - vm - optimized for a small vm image, gpt boot only
 
-if [ -z "$3" ]; then
+if [ -z "$1" ]; then
   TARGET="all"
 else
-  TARGET="$3"
+  TARGET="$1"
 fi
 
 FILENAME=linux.img
@@ -71,11 +71,11 @@ sudo partprobe $DISK
 sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
 sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 
-if [ -z $1 ]; then
+if [ -z $2 ]; then
   infra-get-efi.sh
   sudo rsync -r --exclude modules /tmp/efi/efi/ $MNT_EFI
 else
-  sudo rsync -r --exclude modules $1 $MNT_EFI
+  sudo rsync -r --exclude modules $2 $MNT_EFI
 fi
 
 # https://wiki.archlinux.org/title/Syslinux
@@ -138,10 +138,10 @@ sudo chmod g+w  $MNT/linux
 cd $MNT/linux
 sudo btrfs subvolume set-default .
 
-if [ -z $2 ]; then
+if [ -z $3 ]; then
   infra-get-rootfs.sh $MNT/linux
 else
-  sudo rsync -av $2 $MNT/linux/
+  sudo rsync -av $3 $MNT/linux/
 fi
 
 # Make it read-only
