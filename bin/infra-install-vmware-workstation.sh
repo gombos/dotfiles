@@ -4,7 +4,6 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o
 cd /
 
 VMWARE_VERSION=15.5.7-17171714
-#VMWARE_VERSION=15.5.6-16341506
 VMWARE_FILE=VMware-Workstation-Full-${VMWARE_VERSION}.x86_64.bundle
 
 # https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-15.5.7-17171714.x86_64.bundle

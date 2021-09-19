@@ -63,17 +63,17 @@ install_my_packages() {
 packages_update_db() {
   if [ -f usr/local/bin/pacapt ]; then
     usr/local/bin/pacapt -Sy
-  else
-    apt-get update -y -qq -o Dpkg::Use-Pty=0
   fi
+
+  apt-get update -y -qq -o Dpkg::Use-Pty=0
 }
 
 packages_upgrade() {
   if [ -f usr/local/bin/pacapt ]; then
     usr/local/bin/pacapt -Suy
-  else
-    apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
   fi
+
+  apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 }
 
 echo "Building $RELEASE $TARGET"
@@ -135,7 +135,6 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> et
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
 packages_update_db
-
 install_my_package xserver-xorg-video-nvidia-460
 
 # Make sure that only restricted package installed is nvidia
@@ -200,6 +199,9 @@ install_my_packages packages-filesystems.l
 install_my_packages packages-packages.l
 
 $SCRIPTS/infra-install-vmware-workstation.sh
+
+packages_update_db
+packages_upgrade
 
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 [Unit]

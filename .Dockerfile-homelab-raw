@@ -2,17 +2,11 @@
 
 FROM 0gombi0/homelab:desktop
 
-
-
 COPY bin/*  /tmp/
 WORKDIR /tmp/
-RUN ./infra-vm-image.sh
+RUN ./infra-image.sh
 
 CMD ["/bin/bash"]
-
-
-
-
 
 
 #FROM 0gombi0/homelab:desktop as base

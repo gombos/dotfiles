@@ -3,6 +3,8 @@
 mnt linux_bestia
 
 DIR=$MNTDIR/linux_bestia/tmp
+
+rw $MNTDIR/linux_bestia
 sudo btrfs subvolume create $DIR
 sudo chmod g+w $DIR
 

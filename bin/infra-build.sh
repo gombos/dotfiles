@@ -21,7 +21,7 @@ docker push 0gombi0/homelab:desktop
 docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
 docker push 0gombi0/homelab:efi
 
-infra-vm-image.sh
+infra-image.sh
 
 sudo tar -c /tmp/linux.img | docker import - 0gombi0/homelab:raw
 docker push 0gombi0/homelab:raw

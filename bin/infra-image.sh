@@ -147,9 +147,8 @@ fi
 # Make it read-only
 sudo btrfs property set -ts $MNT/linux ro true
 cd /
+
 sudo umount $MNT
-
 sudo losetup -d $DISK
-
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
 sudo rm -rf /tmp/modules /tmp/efi
