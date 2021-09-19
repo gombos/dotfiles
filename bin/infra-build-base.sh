@@ -295,7 +295,7 @@ touch etc/fstab
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 # Cleanup packages only needed during building the rootfs
-apt-get purge -y -qq linux-*headers-* fuse 2>/dev/null >/dev/null
+apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
 apt-get clean
 
 # Only the following directories should be non-empty

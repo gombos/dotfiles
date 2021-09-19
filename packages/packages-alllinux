@@ -28,6 +28,7 @@ bind9-dnsutils
 bind9-host
 bind9-libs
 bindfs
+binfmt-support
 binutils
 binutils-common
 binutils-x86-64-linux-gnu
@@ -395,6 +396,7 @@ liblirc-client0
 liblist-moreutils-perl
 liblivemedia77
 libllvm11
+libllvm12
 liblmdb0
 liblocale-gettext-perl
 libltdl7
@@ -866,6 +868,7 @@ qemu-system-common
 qemu-system-data
 qemu-system-gui
 qemu-system-x86
+qemu-user-static
 qiv
 rclone
 readline-common
