@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# $2 - efi directory if exists
-# $3 - rootfs directory if exists
-
 # $1 - targets
 # - all (default) - hybrid mbr
 # - vm - optimized for a small vm image, gpt boot only
+
+# $2 - efi directory if exists
+# $3 - rootfs directory if exists
 
 if [ -z "$1" ]; then
   TARGET="all"
@@ -120,10 +120,10 @@ sudo umount $MNT_EFI
 
 sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
 
-if [ "$TARGET" != vm ]; then
-  # make the first 2 partitions visible from mbr as well for rpi
-  sudo sgdisk -h 1,2 $DISK
-fi
+#if [ "$TARGET" != vm ]; then
+#  # make the first 2 partitions visible from mbr as well for rpi
+#  sudo sgdisk -h 1,2 $DISK
+#fi
 
 sudo partprobe $DISK
 
