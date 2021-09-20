@@ -59,12 +59,6 @@ echo "Partitioning $DISK..."
 # https://wiki.archlinux.org/title/GPT_fdisk
 sudo sgdisk -Z $DISK
 
-# Todo make this hybrid instead of gpt so that the image can boot rpi as well
-# -h, --hybrid Create a hybrid MBR - three partition numbers max for mbr, boot, os, data
-# rpi automatically finds the "first MS-DOS partition on the SD Card" anmd loads bootcode.bin - https://raspberrypi.stackexchange.com/questions/39959/raspbian-boot-process-and-the-partition-table
-# firmware looks for the first available MBR fat32 partition.
-# https://github.com/pengutronix/genimage/pull/96
-
 # Add efi partition
 sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
 sudo partprobe $DISK
@@ -119,11 +113,6 @@ sudo cp /tmp/modules $MNT_EFI/kernel/
 sudo umount $MNT_EFI
 
 sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
-
-#if [ "$TARGET" != vm ]; then
-#  # make the first 2 partitions visible from mbr as well for rpi
-#  sudo sgdisk -h 1,2 $DISK
-#fi
 
 sudo partprobe $DISK
 
