@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 RELEASE=focal
 sudo rm -rf /tmp/minbase
-sudo LANG=C  debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
+sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
 
 sudo tar -c /tmp/minbase | docker import - 0gombi0/homelab:minbase
 docker push 0gombi0/homelab:minbase
