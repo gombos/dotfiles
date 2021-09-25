@@ -1,4 +1,4 @@
-# Purpose: HW-only packages
+# Purpose: baremetal only packages
 
 # debian system
 apt-file

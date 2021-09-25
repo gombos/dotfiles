@@ -6,7 +6,6 @@ fonts-freefont-ttf
 fonts-inconsolata
 fonts-wqy-zenhei
 lxdm
-lxpanel
 lxpolkit
 lxrandr
 openbox

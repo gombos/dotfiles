@@ -49,5 +49,6 @@
     <outline type="rss" text="What's NEXT" xmlUrl="http://feeds.backtracks.fm/feeds/samsungnext/whats-next/feed.xml?1528754398"/>
     <outline type="rss" text="Windows Weekly (Audio)" xmlUrl="https://feeds.twit.tv/ww.xml"/>
     <outline type="rss" text="WSJ Tech News Briefing" xmlUrl="https://video-api.wsj.com/podcast/rss/wsj/tech-news-briefing"/>
+    <outline type="rss" xmlUrl="https://feeds.pacific-content.com/compiler"/>
   </body>
 </opml>

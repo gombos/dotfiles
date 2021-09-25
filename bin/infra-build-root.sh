@@ -154,7 +154,7 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost\n" > etc/hosts
 
 # admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0 && usermod -aG sudo admin
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0 && usermod -aG sudo,netdev admin
 chown 99:0 /home
 chmod g+w /home
 
@@ -288,8 +288,6 @@ packages_update_db
 packages_upgrade
 
 install_my_packages packages-laptop.l
-
-echo "GOMBIDEBUG"
 fi
 
 # ---- Cleanup

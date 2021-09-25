@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# arg1 = dir, arg2 = container
+# arg1 = directory where rootfs will be exported
+# arg2 = container to export
 
 # todo - discover if podman is available and use podman instead of docker if available
 # todo - does this really needs sudo ?
@@ -9,8 +10,14 @@ DIR=$1
 
 [ -z "$DIR" ] && exit
 
-docker pull 0gombi0/homelab:desktop
-container_id=$(sudo docker create 0gombi0/homelab:desktop /)
+if [ -z "$2" ]; then
+  image="0gombi0/homelab:desktop"
+else
+  image="$2"
+fi
+
+docker pull $image
+container_id=$(sudo docker create $image /)
 
 cd $DIR
 docker export $container_id  | sudo tar xf -
