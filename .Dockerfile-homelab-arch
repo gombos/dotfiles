@@ -4,6 +4,6 @@ LABEL name=arch
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp/
-RUN ./infra-build-base.sh
+RUN ./infra-build-root.sh
 
 CMD ["/bin/bash"]

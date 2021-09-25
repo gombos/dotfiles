@@ -42,7 +42,7 @@ sudo mount --rbind /dev $DIR/dev/
 sudo mount -t sysfs sys $DIR/sys/
 
 # Enable package updates before installing rest of packages
-sudo chroot $DIR sh -c "./infra-build-base.sh"
+sudo chroot $DIR sh -c "./infra-build-root.sh"
 
 # Install vmware manually if needed by running infra-rootfs and executing infra-install-vmware-workstation.sh line-by-line
 
