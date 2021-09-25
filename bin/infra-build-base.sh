@@ -282,6 +282,15 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 rm -rf 'boot/{*,.*}'
 fi
 
+if [ "$TARGET" = "laptop" ]; then
+packages_update_db
+packages_upgrade
+
+install_my_packages packages-laptop.l
+
+echo "GOMBIDEBUG"
+fi
+
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty
 rm -rf etc/machine-id /var/lib/dbus/machine-id

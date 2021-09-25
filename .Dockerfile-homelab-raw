@@ -1,4 +1,4 @@
-#LABEL name=raw
+LABEL name=raw
 
 FROM 0gombi0/homelab:desktop
 
@@ -7,11 +7,3 @@ WORKDIR /tmp/
 RUN ./infra-image.sh
 
 CMD ["/bin/bash"]
-
-
-#FROM 0gombi0/homelab:desktop as base
-
-#FROM docker
-#COPY --from=base / /base/
-#COPY --from=efi /efi /efi/
-#COPY --from=efi /tmp /tmp/

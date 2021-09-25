@@ -15,7 +15,6 @@ aspell-en
 keyutils
 libatasmart-bin
 fuse-overlayfs
-linux-firmware # takes up a lot of space and not needed for my HW
 udisks2 # runs an extra service, mostly meant for graphical use
 rsyslog # journalctl is good enough
 ranger
@@ -32,8 +31,6 @@ grub2-common
 policykit-1-gnome
 postfix
 nvidia-settings
-network-manager
-network-manager-gnome
 grub-efi-amd64-bin
 grub-pc-bin
 grub-ipxe
