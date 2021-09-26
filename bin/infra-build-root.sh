@@ -154,7 +154,7 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost\n" > etc/hosts
 
 # admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0 && usermod -aG sudo,netdev admin
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0 && usermod -aG sudo,adm,plugdev,netdev admin
 chown 99:0 /home
 chmod g+w /home
 
@@ -263,16 +263,11 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/cron.service ] && rm etc/systemd/system/multi-user.target.wants/cron.service
 [ -f etc/systemd/system/multi-user.target.wants/containerd.service ] && rm etc/systemd/system/multi-user.target.wants/containerd.service
 [ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
-[ -f etc/systemd/system/multi-user.target.wants/wpa_supplicant.service ] && rm etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
 
 [ -f etc/systemd/system/remote-fs.target.wants/nfs-client.target ] && rm etc/systemd/system/remote-fs.target.wants/nfs-client.target
 [ -f etc/systemd/system/multi-user.target.wants/nfs-client.target ] && rm etc/systemd/system/multi-user.target.wants/nfs-client.target
 
 [ -f etc/systemd/system/multi-user.target.wants/nginx.service ] && rm etc/systemd/system/multi-user.target.wants/nginx.service
-
-[ -f etc/systemd/system/multi-user.target.wants/NetworkManager.service ] && rm etc/systemd/system/multi-user.target.wants/NetworkManager.service
-
-[ -f etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service ] && rm etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
 
 # disable dunst - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service

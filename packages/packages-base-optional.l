@@ -20,7 +20,6 @@ cloud-init # to make the image compatible with cloud providers
 dnsmasq-base
 ifupdown
 isc-dhcp-client
-network-manager
 ethtool
 wakeonlan
 
@@ -29,11 +28,6 @@ hdparm
 smartmontools
 scsitools
 eject
-
-# wireless
-rfkill
-wireless-tools
-bluez
 
 # devices
 uhubctl
@@ -45,7 +39,3 @@ cpufreq-info
 lm-sensors
 dmidecode
 
-# laptop
-thermald # monitors and controls temperature in laptops
-tlp # tweaking kernel settings that affect power consumption.
-tlp-rdw # disable radio (wifi, bluetooth) triggered by events to save power

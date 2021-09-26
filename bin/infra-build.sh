@@ -15,7 +15,7 @@ fi
 if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
   sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
-  sudo tar -c /tmp/minbase | docker import - 0gombi0/homelab:minbase
+  cd /tmp/minbase && sudo tar -c . | docker import - 0gombi0/homelab:minbase && cd -
   docker push 0gombi0/homelab:minbase
   sudo rm -rf /tmp/minbase
 else

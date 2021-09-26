@@ -32,7 +32,6 @@ binfmt-support
 binutils
 binutils-common
 binutils-x86-64-linux-gnu
-bluez
 borgbackup
 bsdmainutils
 bsdutils
@@ -194,7 +193,6 @@ libbasicusageenvironment1
 libbinutils
 libblas3
 libblkid1
-libbluetooth3
 libbluray2
 libboost-date-time1.71.0
 libboost-filesystem1.71.0
@@ -286,7 +284,6 @@ libfm-data
 libfm-extra4
 libfm-gtk4
 libfm-gtk-data
-libfm-modules
 libfontconfig1
 libfontenc1
 libfreetype6
@@ -362,10 +359,8 @@ libiperf0
 libisc-export1105
 libiscsi7
 libisl22
-libiw30
 libixml10
 libjack-jackd2-0
-libjansson4
 libjbig0
 libjpeg8
 libjpeg-turbo8
@@ -378,7 +373,6 @@ libjs-sphinxdoc
 libjs-underscore
 libk5crypto3
 libkate1
-libkeybinder0
 libkeyutils1
 libkmod2
 libkrb5-26-heimdal
@@ -412,7 +406,6 @@ libmaxminddb0
 libmenu-cache3
 libmenu-cache-bin
 libmhash2
-libmm-glib0
 libmnl0
 libmount1
 libmp3lame0
@@ -431,12 +424,10 @@ libmysofa1
 libmythes-1.2-0
 libncurses6
 libncursesw6
-libndp0
 libneon27-gnutls
 libnetfilter-conntrack3
 libnetplan0
 libnettle7
-libnewt0.52
 libnfnetlink0
 libnfs13
 libnfsidmap2
@@ -446,7 +437,6 @@ libnginx-mod-http-echo
 libnl-3-200
 libnl-genl-3-200
 libnl-route-3-200
-libnm0
 libnotify4
 libnotify-bin
 libnpth0
@@ -601,7 +591,6 @@ libtag1v5
 libtag1v5-vanilla
 libtasn1-6
 libtdb1
-libteamdctl0
 libtesseract4
 libthai0
 libthai-data
@@ -660,8 +649,6 @@ libwebp6
 libwebpmux3
 libwebrtc-audio-processing1
 libwind0-heimdal
-libwnck22
-libwnck-common
 libwpd-0.10-10
 libwpg-0.3-3
 libwps-0.4-4
@@ -722,7 +709,6 @@ libxmuu1
 libxpm4
 libxrandr2
 libxrender1
-libxres1
 libxshmfence1
 libxslt1.1
 libxss1
@@ -750,8 +736,6 @@ lsof
 lua-lpeg
 lxdm
 lxmenu-data
-lxpanel
-lxpanel-data
 lxpolkit
 lxrandr
 lxsession-data
@@ -769,7 +753,6 @@ netbase
 nethogs
 netplan.io
 net-tools
-network-manager
 nfs-common
 nfs-kernel-server
 nginx-common
@@ -872,7 +855,6 @@ qiv
 rclone
 readline-common
 rename
-rfkill
 ripgrep
 rmlint
 rofi
@@ -906,11 +888,8 @@ tcpdump
 tesseract-ocr
 tesseract-ocr-eng
 tesseract-ocr-osd
-thermald
 thunderbird
 time
-tlp
-tlp-rdw
 tree
 tzdata
 ubuntu-keyring
@@ -936,9 +915,7 @@ vlc-plugin-qt
 vlc-plugin-video-output
 wakeonlan
 wget
-wireless-tools
 wmctrl
-wpasupplicant
 x11-common
 x11-utils
 x11-xkb-utils
