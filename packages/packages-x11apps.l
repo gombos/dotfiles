@@ -1,6 +1,7 @@
 # Purpose: Basic desktop system
 # Non-goals: Full engineering setup
 
+udisks2
 google-chrome-stable
 gparted
 kitty

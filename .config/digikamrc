@@ -84,10 +84,10 @@ TreeView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
 Update Type=0
 
 [AlbumFolderView Sidebar]
-CurrentIndex=2439
-Expansion=0,1,7645,7647,7644,7646,7642,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2439,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6
+CurrentIndex=7645
+Expansion=0,1,7645,7647,7644,7646,7642,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6,-2
 RestoreChecked=false
-Selection=2439
+Selection=7645
 SortColumn=0
 SortOrder=1
 
@@ -115,7 +115,10 @@ DP-5 XPosition=0
 DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
 DP-5 YPosition 1920x1080=0
+HDMI-0 XPosition=0
+HDMI-0 YPosition=0
 Height 1080=615
+RestorePositionForNextInstance=false
 State=AAAA/wAAAAD9AAAAAAAAAoAAAAH0AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 ToolBarsMovable=Disabled
 Width 1920=640
@@ -144,15 +147,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile[$e]=/nix/store/5jcmwhp19g6arqlpzj2argd3w7m4fy5h-digikam-7.2.0/share/digikam/profiles/
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/nix/store/5jcmwhp19g6arqlpzj2argd3w7m4fy5h-digikam-7.2.0/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/nix/store/5jcmwhp19g6arqlpzj2argd3w7m4fy5h-digikam-7.2.0/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -837,7 +840,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwJra2s=
+Database Encrypted Password=AwIODg4=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -859,18 +862,18 @@ SortColumn=0
 SortOrder=0
 
 [Digikam Left Sidebar]
-ActiveTab=8
+ActiveTab=1
 Minimized=false
 RestoreSize=-1
 
 [Digikam Right Sidebar]
-ActiveTab=6
+ActiveTab=0
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
-Minimized=false
+Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=-1
+RestoreSize=208
 VideoProperties Expanded=true
 
 [Digikam Right Sidebar][Captions Tags Properties Tab]
@@ -1156,17 +1159,22 @@ FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
+HDMI-0 Height 2160=1664
+HDMI-0 Width 3840=2794
+HDMI-0 XPosition=535
+HDMI-0 YPosition=197
 Height 1080=1080
 Height 878=748
 Icon Theme=
 MenuBar=Disabled
+RestorePositionForNextInstance=false
 Scan At Start=true
 Scroll Current Item To Center=false
 Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAAB4AAAAPIAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAACuoAAAYnAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1236,6 +1244,8 @@ FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
+HDMI-0 XPosition=1
+HDMI-0 YPosition=1675
 HEIFCompression=75
 HEIFLossLess=true
 JPEG2000Compression=75
@@ -1254,6 +1264,7 @@ PGFLossLess=true
 PNGCompression=9
 PreviewMode=128
 RawImportToolIid=org.kde.digikam.plugin.rawimport.Native
+RestorePositionForNextInstance=false
 RestoreToolSettings=true
 Show Thumbbar=false
 ShowImageSettingsDialog=true
@@ -1458,8 +1469,11 @@ DP-5 YPosition 1920x1080=0
 FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ToolBars=false
+HDMI-0 XPosition=0
+HDMI-0 YPosition=0
 Horizontal Splitter State=AAAA/wAAAAEAAAADAAACJgAAAJwAAAImAf////8AAAAAAQE=
 Navigate By Pair=false
+RestorePositionForNextInstance=false
 Show Thumbbar=true
 default XPosition=0
 default YPosition=0
@@ -1619,9 +1633,9 @@ Version Properties Tab=versions
 Version Properties View Mode=2
 
 [MainWindow]
-InitialAlbumID=134217782
+InitialAlbumID=134217795
 SplitterState=AAAA/wAAAAEAAAADAAABawAABbAAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAOnAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAAA6cAAACcAP///wAAA6cAAAPIAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAhxAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACHEAAACcAP///wAACHEAAAYnAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [Metadata Settings]
 Clear Metadata If Rescan=false
@@ -1710,10 +1724,10 @@ TypeGeolocationFilter Expanded=true
 TypeMimeFilter Expanded=true
 
 [TagView Sidebar]
-CurrentIndex=54
-Expansion=0,4,55,54,70,59,57,62,49,51,34,46,37,44,39,32,36,38,65,42,50,41,35,47,45,33,48,61,60
+CurrentIndex=67
+Expansion=0,4,55,54,70,59,67,57,62,49,51,34,46,37,44,39,32,36,38,65,42,50,41,35,47,45,33,48,61,60
 RestoreChecked=false
-Selection=54
+Selection=67
 SortColumn=0
 SortOrder=0
 TagsSource=false
