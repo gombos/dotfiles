@@ -85,7 +85,7 @@ Update Type=0
 
 [AlbumFolderView Sidebar]
 CurrentIndex=7645
-Expansion=0,1,7645,7647,7644,7646,7642,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6,-2
+Expansion=0,1,7639,7645,7647,7644,7646,7642,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6,-2
 RestoreChecked=false
 Selection=7645
 SortColumn=0
@@ -116,9 +116,10 @@ DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
 DP-5 YPosition 1920x1080=0
 HDMI-0 XPosition=0
+HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=0
+HDMI-0 YPosition 3840x2160=0
 Height 1080=615
-RestorePositionForNextInstance=false
 State=AAAA/wAAAAD9AAAAAAAAAoAAAAH0AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 ToolBarsMovable=Disabled
 Width 1920=640
@@ -147,15 +148,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digiKaPVsQpv/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -840,7 +841,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwIODg4=
+Database Encrypted Password=AwIzMzM=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -850,6 +851,7 @@ Database Port=-1
 Database Type=QSQLITE
 Database Username=
 Internal Database Server=false
+Internal Database Server Mysql Admin Command=mysqladmin
 Internal Database Server Mysql Init Command=
 Internal Database Server Mysql Server Command=
 Internal Database Server Path=
@@ -911,7 +913,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
@@ -930,10 +932,12 @@ Zoom=marble:2100
 
 [Digikam Right Sidebar][Metadata Properties Tab]
 Current EXIF Item=
+Current ExifTool Item=
 Current IPTC Item=
 Current MAKERNOTE Item=
 Current XMP Item=
 EXIF Level=2
+EXIFTOOL Level=2
 IPTC Level=2
 ImagePropertiesMetaData Tab=3
 MAKERNOTE Level=2
@@ -1024,6 +1028,9 @@ org.kde.digikam.plugin.generic.Twitter=true
 org.kde.digikam.plugin.generic.VKontakte=true
 org.kde.digikam.plugin.generic.VideoSlideShow=true
 org.kde.digikam.plugin.generic.YandexFotki=true
+
+[ExifToolSearchBar Search Text Tool]
+CaseSensitive=0
 
 [Face Detection Settings]
 Detection Accuracy=0.7
@@ -1121,7 +1128,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
@@ -1160,21 +1167,24 @@ FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
 HDMI-0 Height 2160=1664
+HDMI-0 Height 3840x2160=1802
 HDMI-0 Width 3840=2794
+HDMI-0 Width 3840x2160=2963
 HDMI-0 XPosition=535
+HDMI-0 XPosition 3840x2160=97
 HDMI-0 YPosition=197
+HDMI-0 YPosition 3840x2160=90
 Height 1080=1080
 Height 878=748
 Icon Theme=
 MenuBar=Disabled
-RestorePositionForNextInstance=false
 Scan At Start=true
 Scroll Current Item To Center=false
 Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAACuoAAAYnAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAC5MAAAaxAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1245,7 +1255,9 @@ FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
 HDMI-0 XPosition=1
+HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=1675
+HDMI-0 YPosition 3840x2160=0
 HEIFCompression=75
 HEIFLossLess=true
 JPEG2000Compression=75
@@ -1264,7 +1276,6 @@ PGFLossLess=true
 PNGCompression=9
 PreviewMode=128
 RawImportToolIid=org.kde.digikam.plugin.rawimport.Native
-RestorePositionForNextInstance=false
 RestoreToolSettings=true
 Show Thumbbar=false
 ShowImageSettingsDialog=true
@@ -1334,7 +1345,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
@@ -1353,10 +1364,12 @@ Zoom=marble:900
 
 [ImageViewer Settings][Right Sidebar][Metadata Properties Tab]
 Current EXIF Item=
+Current ExifTool Item=
 Current IPTC Item=
 Current MAKERNOTE Item=
 Current XMP Item=
 EXIF Level=2
+EXIFTOOL Level=2
 IPTC Level=2
 ImagePropertiesMetaData Tab=0
 MAKERNOTE Level=2
@@ -1470,10 +1483,11 @@ FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ToolBars=false
 HDMI-0 XPosition=0
+HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=0
+HDMI-0 YPosition 3840x2160=0
 Horizontal Splitter State=AAAA/wAAAAEAAAADAAACJgAAAJwAAAImAf////8AAAAAAQE=
 Navigate By Pair=false
-RestorePositionForNextInstance=false
 Show Thumbbar=true
 default XPosition=0
 default YPosition=0
@@ -1523,7 +1537,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
@@ -1542,10 +1556,12 @@ Zoom=marble:900
 
 [LightTable Settings][Left Sidebar][Metadata Properties Tab]
 Current EXIF Item=
+Current ExifTool Item=
 Current IPTC Item=
 Current MAKERNOTE Item=
 Current XMP Item=
 EXIF Level=2
+EXIFTOOL Level=2
 IPTC Level=2
 ImagePropertiesMetaData Tab=0
 MAKERNOTE Level=2
@@ -1600,7 +1616,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
@@ -1619,10 +1635,12 @@ Zoom=marble:900
 
 [LightTable Settings][Right Sidebar][Metadata Properties Tab]
 Current EXIF Item=
+Current ExifTool Item=
 Current IPTC Item=
 Current MAKERNOTE Item=
 Current XMP Item=
 EXIF Level=2
+EXIFTOOL Level=2
 IPTC Level=2
 ImagePropertiesMetaData Tab=0
 MAKERNOTE Level=2
@@ -1635,7 +1653,7 @@ Version Properties View Mode=2
 [MainWindow]
 InitialAlbumID=134217795
 SplitterState=AAAA/wAAAAEAAAADAAABawAABbAAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAhxAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACHEAAACcAP///wAACHEAAAYnAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAj4AAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACPgAAACcAP///wAACPgAAAaxAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [Metadata Settings]
 Clear Metadata If Rescan=false
@@ -1769,7 +1787,7 @@ GoogleMaps Map Type=ROADMAP
 GoogleMaps Show Map Type Control=true
 GoogleMaps Show Navigation Control=true
 GoogleMaps Show Scale Control=true
-Marble Map Theme=atlas
+Marble Map Theme=earth/srtm/srtm.dgml
 Marble Projection=spherical
 Marble Show Compass=false
 Marble Show Navigation=false
