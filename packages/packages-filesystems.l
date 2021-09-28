@@ -7,7 +7,6 @@ gddrescue
 ntfs-3g
 btrfs-progs
 squashfs-tools
-exfat-fuse
 kpartx
 bindfs
 dosfstools

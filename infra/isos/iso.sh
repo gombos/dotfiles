@@ -7,3 +7,4 @@ wget https://releases.ubuntu.com/20.04/ubuntu-20.04.3-desktop-amd64.iso
 
 wget https://download.kde.org/unstable/digikam/digiKam-7.2.0-rc-x86-64.appimage
 #https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage
+wget http://mirrors.sonic.net/knoppix/knoppix-dvd/KNOPPIX_V9.1DVD-2021-01-25-EN.iso
