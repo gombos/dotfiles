@@ -133,6 +133,8 @@ else
   sudo rsync -av $3 $MNT/linux/
 fi
 
+sudo mksquashfs $MNT/linux/ /tmp/rootfs.sqsh
+
 # Make it read-only
 sudo btrfs property set -ts $MNT/linux ro true
 cd /

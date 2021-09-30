@@ -17,3 +17,4 @@ sshfs
 cryptsetup
 extlinux
 zerofree
+genisoimage
