@@ -9,7 +9,7 @@ RELEASE=focal
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base desktop efi laptop"
+  TARGET="efi"
 fi
 
 if echo $TARGET | grep -w -q minbase; then

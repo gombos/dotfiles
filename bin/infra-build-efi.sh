@@ -54,9 +54,13 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /et
 
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
+# workaround for dracut
+# todo - upstream patch
+apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
+
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin syslinux-common grub2-common unzip
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs busybox
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs ntfs-3g fuse
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
@@ -280,32 +284,34 @@ EOF
 
 chmod +x /tmp/rdexec
 
-cat > /tmp/20-wired.network << 'EOF'
-[Match]
-Name=eth0
+# Keep initramfs simple and do not require networking
 
-[Network]
-DHCP=ipv4
+# fedora
+# --nomdadmconf --nolvmconf --xz --add 'livenet dmsquash-live dmsquash-live-ntfs convertfs pollcdrom qemu qemu-net' --omit 'plymouth' --no-hostonly --debug --no-early-microcode --force
 
-[DHCP]
-CriticalConnection=true
-EOF
+# todo --no-kernel --omit 'plymouth'  --debug --no-early-microcode --nomdadmconf --nolvmconf
+# todo qemu qemu-net convertfs pollcdrom
+# livenet - seems useful
 
-# ifcfg aufs overlay-root
-# consider --omit ifcfg
-# --add-drivers "squashfs overlay iso9660 btrfs" --add "squash"
+# todo - instead of add to default, specify full list of modules with --modules
+# --modules 'bash systemd systemd-initrd btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib dmsquash-live dmsquash-live-ntfs dm img-lib' \
+# systemd-sysusers crypt usrmount
 
-# Keep initramfs simply and do not require networking
-# For netboot, use a dedicated project and boot option - like netboot.
-# This will save you a lot of headache and disk space
+# todo - it shoudl not be needed to excluce net explicitly
+# qemu-net
 
-# todo --no-kernel
 dracut --keep --verbose --force --no-hostonly --reproducible \
-  --modules "bash systemd systemd-initrd busybox btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib" \
-  --add-drivers "nls_iso8859_1" --omit-drivers "nvidia nvidia_drm nvidia_uvm nvidia_modeset" \
-  --include /tmp/20-wired.network /etc/systemd/network/20-wired.network \
+  --add 'dmsquash-live-ntfs' \
+  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask resume terminfo shutdown modsign' \
+  --add-drivers 'nls_iso8859_1' \
+  --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
+  --include /usr/bin/cut /usr/bin/cut \
+  --include /usr/bin/head /usr/bin/head \
+  --include /usr/bin/grep /usr/bin/grep \
+  --include /usr/bin/touch /usr/bin/touch \
+  --include /usr/bin/chmod /usr/bin/chmod \
   initrd.img $KERNEL
 
 rm -r /tmp/rdexec

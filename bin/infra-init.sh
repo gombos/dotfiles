@@ -42,6 +42,8 @@
 # rootfs version
 
 
+# Todo - remove busybox dependency, like chmod, chown
+
 me="${0##*/}"
 echo "$me"
 

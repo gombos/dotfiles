@@ -83,6 +83,9 @@ if [ "$TARGET" == vm ]; then
   sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
 fi
 
+mkdir /tmp/iso/
+sudo rsync -av $MNT_EFI/ /tmp/iso/
+
 sudo umount $MNT_EFI
 sudo losetup -d $DISK
 
@@ -133,11 +136,16 @@ else
   sudo rsync -av $3 $MNT/linux/
 fi
 
-sudo mksquashfs $MNT/linux/ /tmp/rootfs.sqsh
-
 # Make it read-only
 sudo btrfs property set -ts $MNT/linux ro true
 cd /
+
+# rootfs squashfs
+sudo mkdir -p /tmp/iso/LiveOS
+sudo mksquashfs $MNT/linux/ /tmp/iso/LiveOS/squashfs.img
+
+# iso
+genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 
 sudo umount $MNT
 sudo losetup -d $DISK
