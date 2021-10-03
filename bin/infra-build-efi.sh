@@ -293,16 +293,18 @@ chmod +x /tmp/rdexec
 # todo qemu qemu-net convertfs pollcdrom
 # livenet - seems useful
 
-# todo - instead of add to default, specify full list of modules with --modules
+# todo  - systemd-sysusers seems useful
 # --modules 'bash systemd systemd-initrd btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib dmsquash-live dmsquash-live-ntfs dm img-lib' \
-# systemd-sysusers crypt usrmount
+# systemd-sysusers seems useful
+
+# usrmount - seems useful
 
 # todo - it shoudl not be needed to excluce net explicitly
 # qemu-net
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
-  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask resume terminfo shutdown modsign' \
+  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask resume terminfo shutdown modsign systemd-sysusers crypt usrmount' \
   --add-drivers 'nls_iso8859_1' \
   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
