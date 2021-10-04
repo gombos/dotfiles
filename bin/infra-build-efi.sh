@@ -143,7 +143,7 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
-cp -r /usr/lib/modules /efi/
+mksquashfs /usr/lib/modules /efi/kernel/modules
 
 # TCE binary
 mkdir -p /efi/tce

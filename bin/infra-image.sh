@@ -67,9 +67,9 @@ sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 
 if [ -z $2 ]; then
   infra-get-efi.sh
-  sudo rsync -r --exclude modules /tmp/efi/efi/ $MNT_EFI
+  sudo rsync -r /tmp/efi/efi/ $MNT_EFI
 else
-  sudo rsync -r --exclude modules $2 $MNT_EFI
+  sudo rsync -r $2 $MNT_EFI
 fi
 
 # https://wiki.archlinux.org/title/Syslinux
@@ -89,33 +89,10 @@ sudo rsync -av $MNT_EFI/ /tmp/iso/
 sudo umount $MNT_EFI
 sudo losetup -d $DISK
 
-#Prepare the module file
-sudo rm -rf /tmp/modules
-#sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
-#sudo losetup $DISK /tmp/modules
-#sudo partprobe $DISK
-#sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
-#sudo mount -o compress $DISK $MNT || fail "cannot mount"
-
-# First rsync the directory structure only
-#sudo rsync -a -f"+ */" -f"- *" /tmp/efi/efi/modules/ $MNT
-
-# Copy the large files first to help out the backing store compression
-#sudo rsync -a /tmp/efi/efi/modules/*/updates/ $MNT/*/updates/
-
-# Copy all files
-#sudo rsync -a /tmp/efi/efi/modules/ $MNT
-#sudo umount $MNT
-#sudo losetup -d $DISK
-
-sudo mksquashfs  /tmp/efi/efi/modules/ /tmp/modules
-
 sudo losetup $DISK $FILE
 sudo partprobe $DISK
 
 sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
-sudo cp /tmp/modules $MNT_EFI/kernel/
-sudo cp /tmp/modules /tmp/iso/kernel/
 sudo umount $MNT_EFI
 
 sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
@@ -153,4 +130,4 @@ genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 sudo umount $MNT
 sudo losetup -d $DISK
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
-sudo rm -rf /tmp/modules /tmp/efi /tmp/iso/
+sudo rm -rf /tmp/efi /tmp/iso/
