@@ -18,3 +18,4 @@ cryptsetup
 extlinux
 zerofree
 genisoimage
+xorriso
