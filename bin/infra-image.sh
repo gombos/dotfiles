@@ -91,28 +91,31 @@ sudo losetup -d $DISK
 
 #Prepare the module file
 sudo rm -rf /tmp/modules
-sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
-sudo losetup $DISK /tmp/modules
-sudo partprobe $DISK
-sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
-sudo mount -o compress $DISK $MNT || fail "cannot mount"
+#sudo dd if=/dev/zero of=/tmp/modules bs=1024k seek=${MODSIZE} count=0
+#sudo losetup $DISK /tmp/modules
+#sudo partprobe $DISK
+#sudo mkfs.btrfs -L "modules" $DISK || fail "cannot create root"
+#sudo mount -o compress $DISK $MNT || fail "cannot mount"
 
 # First rsync the directory structure only
-sudo rsync -a -f"+ */" -f"- *" /tmp/efi/efi/modules/ $MNT
+#sudo rsync -a -f"+ */" -f"- *" /tmp/efi/efi/modules/ $MNT
 
 # Copy the large files first to help out the backing store compression
-sudo rsync -a /tmp/efi/efi/modules/*/updates/ $MNT/*/updates/
+#sudo rsync -a /tmp/efi/efi/modules/*/updates/ $MNT/*/updates/
 
 # Copy all files
-sudo rsync -a /tmp/efi/efi/modules/ $MNT
-sudo umount $MNT
-sudo losetup -d $DISK
+#sudo rsync -a /tmp/efi/efi/modules/ $MNT
+#sudo umount $MNT
+#sudo losetup -d $DISK
+
+sudo mksquashfs  /tmp/efi/efi/modules/ /tmp/modules
 
 sudo losetup $DISK $FILE
 sudo partprobe $DISK
 
 sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 sudo cp /tmp/modules $MNT_EFI/kernel/
+sudo cp /tmp/modules /tmp/iso/kernel/
 sudo umount $MNT_EFI
 
 sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
