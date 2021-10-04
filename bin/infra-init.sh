@@ -303,11 +303,14 @@ fi
 
 # install all service files
 if [ -d "$mp/config" ]; then
-  for f in *.service; do
-    cp $f $R/etc/systemd/system/
-    chmod 444 $R/etc/systemd/system/$f
-    ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
-  done
+  FILES="*.service"
+  if [ $FILES != '*.service' ]; then
+    for f in *.service; do
+      cp $f $R/etc/systemd/system/
+      chmod 444 $R/etc/systemd/system/$f
+      ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
+    done
+  fi
 fi
 
 if [ "$HOST" == "pincer" ]; then
