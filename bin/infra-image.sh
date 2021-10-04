@@ -150,4 +150,4 @@ genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 sudo umount $MNT
 sudo losetup -d $DISK
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
-sudo rm -rf /tmp/modules /tmp/efi
+sudo rm -rf /tmp/modules /tmp/efi /tmp/iso/
