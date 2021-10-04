@@ -304,7 +304,7 @@ chmod +x /tmp/rdexec
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
-  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask resume terminfo shutdown modsign systemd-sysusers crypt usrmount' \
+  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount' \
   --add-drivers 'nls_iso8859_1' \
   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \

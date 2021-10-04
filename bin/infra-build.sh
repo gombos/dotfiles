@@ -9,7 +9,7 @@ RELEASE=focal
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="efi"
+  TARGET="minbase base desktop efi laptop raw"
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -50,7 +50,10 @@ else
   docker pull 0gombi0/homelab:laptop
 fi
 
-#infra-image.sh
-
-#sudo tar -c /tmp/linux.img | docker import - 0gombi0/homelab:raw
-#docker push 0gombi0/homelab:raw
+if echo $TARGET | grep -w -q raw; then
+  infra-image.sh
+  sudo tar -c /tmp/linux.img /tmp/kucko.iso | docker import - 0gombi0/homelab:raw
+  docker push 0gombi0/homelab:raw
+else
+  docker pull 0gombi0/homelab:raw
+fi
