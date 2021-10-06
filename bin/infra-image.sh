@@ -124,8 +124,36 @@ cd /
 sudo mkdir -p /tmp/iso/LiveOS
 sudo mksquashfs $MNT/linux/ /tmp/iso/LiveOS/squashfs.img
 
+cd /tmp/iso
+sudo chown -R 1000:1000  .
+cp EFI/BOOT/bootx64.efi isolinux/
+
+mv isolinux/bios.img  /tmp/
+
+xorriso \
+   -as mkisofs \
+   -iso-level 3 \
+   -full-iso9660-filenames \
+   -volid "kucko" \
+   -eltorito-boot boot/grub/bios.img \
+   -no-emul-boot \
+   -boot-load-size 4 \
+   -boot-info-table \
+   --eltorito-catalog boot/grub/boot.cat \
+   --grub2-boot-info \
+   --grub2-mbr /tmp/iso/isolinux/boot_hybrid.img \
+   -eltorito-alt-boot \
+   -e EFI/efiboot.img \
+   -no-emul-boot \
+   -append_partition 2 0xef isolinux/efiboot.img \
+   -output "/tmp/kucko.iso" \
+   -graft-points \
+      "." \
+      /boot/grub/bios.img=/tmp/bios.img \
+      /EFI/efiboot.img=isolinux/efiboot.img
+
 # iso
-genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
+#genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 
 sudo umount $MNT
 sudo losetup -d $DISK

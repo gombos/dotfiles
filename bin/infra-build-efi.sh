@@ -59,7 +59,11 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin syslinux-common grub2-common unzip
+
+# bootloader
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin syslinux-common grub2-common unzip mtools
+
+# dracut/initrd
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs ntfs-3g fuse
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
@@ -75,8 +79,8 @@ mkdir -p /efi/kernel
 cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # grub efi binary
-mkdir -p /efi/efi/boot/
-cp /tmp/grub.cfg /efi/efi/boot/
+mkdir -p /efi/EFI/BOOT/
+cp /tmp/grub.cfg /efi/EFI/BOOT/
 
 # use regexp to remove path part to determine the root
 cat > /tmp/grub_efi.cfg << EOF
@@ -89,11 +93,13 @@ EOF
 cat > /tmp/grub_bios.cfg << EOF
 prefix=
 root=\$cmdpath
-configfile \$cmdpath/efi/boot/grub.cfg
+configfile \$cmdpath/EFI/BOOT/grub.cfg
 EOF
 
 LEGACYDIR="/efi/syslinux"
+ISODIR="/efi/isolinux"
 mkdir -p $LEGACYDIR
+mkdir -p $ISODIR
 
 # syslinux binary
 cp /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
@@ -134,7 +140,18 @@ GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus lin
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
 grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
-grub-mkstandalone --format x86_64-efi --output="/efi/efi/boot/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
+grub-mkstandalone --format x86_64-efi --output="/efi/EFI/BOOT/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
+
+cp /usr/lib/grub/i386-pc/boot_hybrid.img $ISODIR/
+
+# bios boot for booting from a CD-ROM drive
+cat /usr/lib/grub/i386-pc/cdboot.img $LEGACYDIR/core.img > $ISODIR/bios.img
+
+# EFI boot partition - FAT16 disk image
+dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=10 && \
+sudo mkfs.vfat $ISODIR/efiboot.img && \
+LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
+LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
