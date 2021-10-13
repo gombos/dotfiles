@@ -9,7 +9,7 @@ RELEASE=focal
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base desktop efi laptop raw"
+  TARGET="minbase base desktop efi laptop laptop_squash raw"
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -48,6 +48,16 @@ if echo $TARGET | grep -w -q laptop; then
   docker push 0gombi0/homelab:laptop
 else
   docker pull 0gombi0/homelab:laptop
+fi
+
+if echo $TARGET | grep -w -q squashfs; then
+  mkdir -p /tmp/laptop
+  infra-get-rootfs.sh /tmp/laptop 0gombi0/homelab:laptop
+  sudo mksquashfs /tmp/laptop /tmp/squashfs.img
+  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
+  docker push 0gombi0/homelab:squashfs
+else
+  docker pull 0gombi0/homelab:squashfs
 fi
 
 if echo $TARGET | grep -w -q raw; then

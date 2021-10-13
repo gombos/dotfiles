@@ -95,40 +95,46 @@ sudo partprobe $DISK
 sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 sudo umount $MNT_EFI
 
-sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
+#sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
 
-sudo partprobe $DISK
+#sudo partprobe $DISK
 
-echo "Creating filesystems..."
-sudo mkfs.btrfs -L "linux" -U 10000000-0000-0000-0000-000000000000 ${DISK}p2 || fail "cannot create root"
+#echo "Creating filesystems..."
+#sudo mkfs.btrfs -L "linux" -U 10000000-0000-0000-0000-000000000000 ${DISK}p2 || fail "cannot create root"
 
-sudo mount -o compress=zstd ${DISK}p2 $MNT || fail "cannot mount"
-sudo chmod g+w  $MNT
-sudo btrfs subvolume create $MNT/linux
-sudo chmod g+w  $MNT/linux
+#sudo mount -o compress=zstd ${DISK}p2 $MNT || fail "cannot mount"
+#sudo chmod g+w  $MNT
+#sudo btrfs subvolume create $MNT/linux
+#sudo chmod g+w  $MNT/linux
 
-cd $MNT/linux
-sudo btrfs subvolume set-default .
+#cd $MNT/linux
+#sudo btrfs subvolume set-default .
 
-if [ -z $3 ]; then
-  infra-get-rootfs.sh $MNT/linux
-else
-  sudo rsync -av $3 $MNT/linux/
-fi
+#if [ -z $3 ]; then
+#  infra-get-rootfs.sh $MNT/linux
+#else
+#  sudo rsync -av $3 $MNT/linux/
+#fi
 
 # Make it read-only
-sudo btrfs property set -ts $MNT/linux ro true
-cd /
+#sudo btrfs property set -ts $MNT/linux ro true
+#cd /
 
 # rootfs squashfs
 sudo mkdir -p /tmp/iso/LiveOS
-sudo mksquashfs $MNT/linux/ /tmp/iso/LiveOS/squashfs.img
+#sudo mksquashfs $MNT/linux/ /tmp/iso/LiveOS/squashfs.img
+
+infra-get-squash.sh
+sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
 cd /tmp/iso
 sudo chown -R 1000:1000  .
-cp EFI/BOOT/bootx64.efi isolinux/
+#cp EFI/BOOT/bootx64.efi isolinux/
+#cp ~/b/efiboot.img  isolinux/
+#mv isolinux/bios.img  /tmp/
 
-mv isolinux/bios.img  /tmp/
+touch isolinux/efiboot.img
+touch isolinux/bootx64.efi
 
 xorriso \
    -as mkisofs \
@@ -149,13 +155,13 @@ xorriso \
    -output "/tmp/kucko.iso" \
    -graft-points \
       "." \
-      /boot/grub/bios.img=/tmp/bios.img \
+      /boot/grub/bios.img=isolinux/bios.img \
       /EFI/efiboot.img=isolinux/efiboot.img
 
 # iso
 #genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 
-sudo umount $MNT
+#sudo umount $MNT
 sudo losetup -d $DISK
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
 sudo rm -rf /tmp/efi /tmp/iso/
