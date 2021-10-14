@@ -1,17 +1,27 @@
-#nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+rm -rf ~/.nix-defexpr ~/.nix-channels ~/.nix-profile
+sudo rm -rf /nix/store /nix/var
 
 curl -L https://nixos.org/nix/install | sh
 
-. /home/user/.nix-profile/etc/profile.d/nix.sh
+. ~/.nix-profile/etc/profile.d/nix.sh
+
+nix-channel --remove nixpkgs
+
+nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
+
+#nix-channel --add https://github.com/nix-community/home-manager/archive/release-21.05.tar.gz home-manager
+
+nix-channel --update
 
 export NIXPKGS_ALLOW_UNFREE=1
 
-nix-env --install ripgrep-all vscode rclone bitwarden-cli micro kubernetes
-nix-env -iA nixpkgs.apfs-fuse
-
-#nix-env -iA nixpkgs.torbrowser
-#nix-env -iA nixpkgs.google-chrome
+nix-env --install ripgrep-all vscode rclone node_bitwarden-cli micro kubernetes google-chrome apfs-fuse-unstable
 
 nix-env -u
 
 nix-collect-garbage -d
+
+wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage  -O /nix/digikam
+chmod +x /nix/digikam
+
+ln -sf /nix/digikam ~/.local/bin/digikam

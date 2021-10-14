@@ -13,14 +13,14 @@ python3 -m pip install --upgrade pip
 pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip3 install -U 2>/dev/null
 
 # brew
-if [ -n "$HOMEBREW_PREFIX" ]; then
-  brew update
-  brew upgrade
-  brew cleanup --prune=all
-  brew doctor
-fi
+#if [ -n "$HOMEBREW_PREFIX" ]; then
+#  brew update
+#  brew upgrade
+#  brew cleanup --prune=all
+#  brew doctor
+#fi
 
-brew install fio micro rclone ripgrep ripgrep-all
+#brew install fio micro rclone ripgrep ripgrep-all
 
 #nix
 # Nix is only for bestia

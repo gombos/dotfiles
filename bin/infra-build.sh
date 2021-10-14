@@ -50,6 +50,13 @@ else
   docker pull 0gombi0/homelab:laptop
 fi
 
+if echo $TARGET | grep -w -q nix; then
+  docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-nix
+  docker push 0gombi0/homelab:nix
+else
+  docker pull 0gombi0/homelab:nix
+fi
+
 if echo $TARGET | grep -w -q squashfs; then
   mkdir -p /tmp/laptop
   infra-get-rootfs.sh /tmp/laptop 0gombi0/homelab:laptop

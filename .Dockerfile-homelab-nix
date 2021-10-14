@@ -1,10 +1,12 @@
+# todo - do not run this inside docker
+
 FROM 0gombi0/homelab:desktop as base
 
 LABEL name=nix
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
-RUN ./packages/packages-nix
+RUN ./packages-nix
 
 FROM scratch
 COPY --from=base /nix /nix
