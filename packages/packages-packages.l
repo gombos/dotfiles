@@ -27,6 +27,7 @@ unzip
 xattr
 hashdeep
 libimage-exiftool-perl
+xz-utils
 
 # languages
 python3-distutils

@@ -23,7 +23,10 @@ fi
 brew install fio micro rclone ripgrep ripgrep-all
 
 #nix
-$DOTFILES/packages/packages-nix
+# Nix is only for bestia
+if [[ `hostname -s` == "bestia" ]]; then
+  $DOTFILES/packages/packages-nix
+fi
 
 # docker
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull

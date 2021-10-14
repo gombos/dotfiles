@@ -1,15 +1,13 @@
-# Nix is only for bestia
-if [[ `hostname -s` != "bestia" ]]; then
-  return
-fi
+#nix-channel --add https://nixos.org/channels/nixpkgs-unstable
 
-nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+curl -L https://nixos.org/nix/install | sh
+
+. /home/user/.nix-profile/etc/profile.d/nix.sh
 
 export NIXPKGS_ALLOW_UNFREE=1
 
+nix-env --install ripgrep-all vscode rclone bitwarden-cli micro kubernetes
 nix-env -iA nixpkgs.apfs-fuse
-nix-env -iA nixpkgs.kubernetes
-nix-env -iA nixpkgs.vscode
 
 #nix-env -iA nixpkgs.torbrowser
 #nix-env -iA nixpkgs.google-chrome
