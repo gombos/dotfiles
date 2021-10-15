@@ -1,5 +1,7 @@
 #need to run as root
 
+mount /home/local /usr/local -o bind
+
 cd /tmp
 wget https://nixos.org/nix/install
 chmod +x install
@@ -19,7 +21,25 @@ echo 'sandbox = false' | sudo tee -a /root/.config/nix/nix.conf
 rm /root/.nixpkgs/config.nix
 echo "{ allowUnfree = true; }" | sudo tee -a /root/.nixpkgs/config.nix
 
+
+groupadd -g 30000 --system nixbld
+
+for i in $(seq 1 32); do
+  useradd \
+    --home-dir /var/empty \
+    --gid 30000 \
+    --groups nixbld \
+    --no-user-group \
+    --system \
+    --shell /usr/sbin/nologin \
+    --uid $((30000 + i)) \
+    --password "!" \
+    nixbld$i
+done
+
+
 USER=root ./install --no-daemon
+rm install
 
 . ~/.nix-profile/etc/profile.d/nix.sh
 
@@ -33,25 +53,29 @@ nix-channel --list
 nix-env --install micro
 nix-env --query
 
-rsync -av /nix/var/nix/profiles/default/* /usr/local/
+nix-channel --remove nixpkgs
 
-#nix-channel --remove nixpkgs
-
-#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
+nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
 
 ##nix-channel --add https://github.com/nix-community/home-manager/archive/release-21.05.tar.gz home-manager
 
-#nix-channel --update
+nix-channel --update
 
-#export NIXPKGS_ALLOW_UNFREE=1
+export NIXPKGS_ALLOW_UNFREE=1
 
-#nix-env --install ripgrep-all vscode rclone node_bitwarden-cli micro kubernetes google-chrome apfs-fuse-unstable
+nix-env --install ripgrep-all vscode rclone node_bitwarden-cli micro kubernetes google-chrome apfs-fuse-unstable
 
-#nix-env -u
+nix-env -u
 
-#nix-collect-garbage -d
+nix-collect-garbage -d
 
-#wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage  -O /nix/digikam
-#chmod +x /nix/digikam
+rsync -av /nix/var/nix/profiles/default/* /usr/local/
+
+wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage  -O /usr/local/bin/digikam
+chmod +x /usr/local/bin/digikam
+
+
+
+
 
 #ln -sf /nix/digikam ~/.local/bin/digikam
