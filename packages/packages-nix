@@ -1,27 +1,57 @@
-rm -rf ~/.nix-defexpr ~/.nix-channels ~/.nix-profile
-sudo rm -rf /nix/store /nix/var
+#need to run as root
 
-curl -L https://nixos.org/nix/install | sh
+cd /tmp
+wget https://nixos.org/nix/install
+chmod +x install
+
+rm -rf /nix/*
+rm -rf /usr/local/*
+rm -rf ~/.nix-*
+
+mkdir -p /root/.config/nix /root/.nixpkgs
+
+rm /root/.config/nix/nix.conf
+echo 'build-users-group = nixbld' | sudo tee -a /root/.config/nix/nix.conf
+echo 'cores = 0' | sudo tee -a /root/.config/nix/nix.conf
+echo 'max-jobs = 32' | sudo tee -a /root/.config/nix/nix.conf
+echo 'sandbox = false' | sudo tee -a /root/.config/nix/nix.conf
+
+rm /root/.nixpkgs/config.nix
+echo "{ allowUnfree = true; }" | sudo tee -a /root/.nixpkgs/config.nix
+
+USER=root ./install --no-daemon
 
 . ~/.nix-profile/etc/profile.d/nix.sh
 
-nix-channel --remove nixpkgs
-
-nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
-
-#nix-channel --add https://github.com/nix-community/home-manager/archive/release-21.05.tar.gz home-manager
+export NIX_PATH=nixpkgs=/root/.nix-defexpr/channels/nixpkgs:/root/.nix-defexpr/channels
+export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+export PATH=/root/.nix-profile/bin:$PATH
 
 nix-channel --update
+nix-channel --list
 
-export NIXPKGS_ALLOW_UNFREE=1
+nix-env --install micro
+nix-env --query
 
-nix-env --install ripgrep-all vscode rclone node_bitwarden-cli micro kubernetes google-chrome apfs-fuse-unstable
+rsync -av /nix/var/nix/profiles/default/* /usr/local/
 
-nix-env -u
+#nix-channel --remove nixpkgs
 
-nix-collect-garbage -d
+#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
 
-wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage  -O /nix/digikam
-chmod +x /nix/digikam
+##nix-channel --add https://github.com/nix-community/home-manager/archive/release-21.05.tar.gz home-manager
 
-ln -sf /nix/digikam ~/.local/bin/digikam
+#nix-channel --update
+
+#export NIXPKGS_ALLOW_UNFREE=1
+
+#nix-env --install ripgrep-all vscode rclone node_bitwarden-cli micro kubernetes google-chrome apfs-fuse-unstable
+
+#nix-env -u
+
+#nix-collect-garbage -d
+
+#wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage  -O /nix/digikam
+#chmod +x /nix/digikam
+
+#ln -sf /nix/digikam ~/.local/bin/digikam
