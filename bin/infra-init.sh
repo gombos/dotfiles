@@ -341,7 +341,7 @@ if [ "$HOST" == "bestia" ]; then
 #  echo nvidia >> $R/etc/modules
 
   mkdir -p $R/nix
-#  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  echo '/home/nix /usr/local auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
