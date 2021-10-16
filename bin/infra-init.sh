@@ -342,7 +342,7 @@ if [ "$HOST" == "bestia" ]; then
 
   mkdir -p $R/nix
   rm -rf $R/usr/local
-  ln -sf /nix $R/usr/local
+  ln -sf /nix/var/nix/profiles/default $R/usr/local
   ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
 
   echo "nixbld:x:1003:1003::/home/nixbld:/bin/sh" >> $R/etc/passwd
