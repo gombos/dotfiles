@@ -148,15 +148,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digiKaf0d5VL/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -841,7 +841,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwIzMzM=
+Database Encrypted Password=AwKkpKQ=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
