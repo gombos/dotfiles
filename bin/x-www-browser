@@ -13,7 +13,7 @@ chrome_arguments="--disk-cache-dir=/tmp  $chrome_arguments"
 active_window_class=$(xprop -id $(xdotool getwindowfocus) | grep WM_CLASS | cut -d\" -f2)
 
 if [ "$active_window_class" = "google-chrome" ]; then
-    /bin/sh -c "google-chrome $chrome_arguments about:blank $@"
+    /bin/sh -c "google-chrome-stable $chrome_arguments about:blank $@"
 else
-  run-or-raise.sh google-chrome "google-chrome $chrome_arguments $@" &
+  run-or-raise.sh google-chrome-stable "google-chrome-stable $chrome_arguments $@" &
 fi
