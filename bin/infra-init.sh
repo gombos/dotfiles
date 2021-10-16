@@ -348,8 +348,7 @@ if [ "$HOST" == "bestia" ]; then
   echo "nixbld:x:1003:1003::/home/nixbld:/bin/sh" >> $R/etc/passwd
   echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
   echo "nixbld:!::nixbld" >> $R/etc/gshadow
-  echo "henrik:x:1001:" >> $R/etc/group
-  echo "nixbld:x:1003:nixbld" $R/etc/group
+  echo "nixbld:x:1003:nixbld" >> $R/etc/group
 
   #channels -> /nix/var/nix/profiles/per-user/root/channels
 
