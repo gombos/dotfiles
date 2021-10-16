@@ -21,7 +21,6 @@ echo 'sandbox = false' | sudo tee -a /root/.config/nix/nix.conf
 rm /root/.nixpkgs/config.nix
 echo "{ allowUnfree = true; }" | sudo tee -a /root/.nixpkgs/config.nix
 
-
 groupadd -g 30000 --system nixbld
 
 for i in $(seq 1 32); do

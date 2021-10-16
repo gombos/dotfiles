@@ -343,6 +343,15 @@ if [ "$HOST" == "bestia" ]; then
   mkdir -p $R/nix
   rm -rf $R/usr/local
   ln -sf /nix $R/usr/local
+  ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
+
+  echo "nixbld:x:1003:1003::/home/nixbld:/bin/sh" >> $R/etc/passwd
+  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
+  echo "nixbld:!::nixbld" >> $R/etc/gshadow
+  echo "henrik:x:1001:" >> $R/etc/group
+  echo "nixbld:x:1003:nixbld" $R/etc/group
+
+  #channels -> /nix/var/nix/profiles/per-user/root/channels
 
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /nix btrfs subvol=usr 0 2' >> $R/etc/fstab
