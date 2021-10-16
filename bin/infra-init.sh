@@ -341,6 +341,9 @@ if [ "$HOST" == "bestia" ]; then
 #  echo nvidia >> $R/etc/modules
 
   mkdir -p $R/nix
+  rm -rf $R/usr/local
+  ln -sf /nix $R/usr/local
+
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /nix btrfs subvol=usr 0 2' >> $R/etc/fstab
 #  echo '/home/nix /usr/local auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
