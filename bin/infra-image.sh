@@ -127,6 +127,8 @@ sudo mkdir -p /tmp/iso/LiveOS
 infra-get-squash.sh
 sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
+sudo mksquashfs /nix /tmp/iso/nixfile
+
 cd /tmp/iso
 sudo chown -R 1000:1000  .
 #cp EFI/BOOT/bootx64.efi isolinux/

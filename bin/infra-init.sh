@@ -299,8 +299,8 @@ if [ -n "$HOME_PART" ]; then
   ln -sf /home $R/Users
 fi
 
+# live boot from iso
 if [ -f "/run/initramfs/live/nixfile" ]; then
-  mkdir -p /nix
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
@@ -342,16 +342,6 @@ fi
 if [ "$HOST" == "bestia" ]; then
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
-  mkdir -p $R/nix
-  rm -rf $R/usr/local
-  ln -sf /nix/var/nix/profiles/default $R/usr/local
-  ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
-
-  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
-  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
-  echo "nixbld:!::nixbld" >> $R/etc/gshadow
-  echo "nixbld:x:503:nixbld" >> $R/etc/group
-
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /nix btrfs subvol=usr 0 2' >> $R/etc/fstab
 
@@ -377,6 +367,19 @@ if [ "$HOST" == "bestia" ]; then
     fi
   fi
 
+fi
+
+# nix
+if [ "$HOST" == "bestia" ] || [ -f "/run/initramfs/live/nixfile" ]; then
+  mkdir -p $R/nix
+  rm -rf $R/usr/local
+  ln -sf /nix/var/nix/profiles/default $R/usr/local
+  ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
+
+  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
+  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
+  echo "nixbld:!::nixbld" >> $R/etc/gshadow
+  echo "nixbld:x:503:nixbld" >> $R/etc/group
 fi
 
 # server profile
