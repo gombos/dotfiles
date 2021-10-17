@@ -342,7 +342,7 @@ if [ "$HOST" == "bestia" ]; then
   ln -sf /nix/var/nix/profiles/default $R/usr/local
   ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
 
-  echo "nixbld:x:503:503::/home/nixbld:/bin/sh" >> $R/etc/passwd
+  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
   echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
   echo "nixbld:!::nixbld" >> $R/etc/gshadow
   echo "nixbld:x:503:nixbld" >> $R/etc/group
