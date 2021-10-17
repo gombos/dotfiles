@@ -299,6 +299,11 @@ if [ -n "$HOME_PART" ]; then
   ln -sf /home $R/Users
 fi
 
+if [ -f "/run/initramfs/live/nixfile" ]; then
+  mkdir -p /nix
+  echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+fi
+
 # --- HOST specific logic
 
 # install all service files
