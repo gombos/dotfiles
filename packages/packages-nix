@@ -15,12 +15,13 @@ export NIX_PATH=nixpkgs=/root/.nix-defexpr/channels/nixpkgs:/root/.nix-defexpr/c
 export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 export PATH=/root/.nix-profile/bin:$PATH
 
-#nix-channel --remove nixpkgs
-#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
+# switch to stable channel
+nix-channel --remove nixpkgs
+nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
 
 nix-channel --update
 
-nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable python3.8-pip
+nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable
 
 NIXPKGS_ALLOW_UNFREE=1 nix-env --install  vscode google-chrome
 
@@ -31,12 +32,14 @@ nix-collect-garbage -d
 nix-store --verify --check-contents
 nix optimise-store
 
+# appimage
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
+# pip
 curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo python3
 
-sudo pip3 install awscli PyYAML
-sudo pip3 install pyusb temperusb
-sudo pip3 install castero
-sudo pip3 install networkx
+pip3 install awscli PyYAML
+pip3 install pyusb temperusb
+pip3 install castero
+pip3 install networkx
