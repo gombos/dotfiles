@@ -1,5 +1,1 @@
 pip freeze --user | grep -v "^-e" | xargs pip uninstall -y
-pip3 install awscli PyYAML
-pip3 install pyusb temperusb
-pip3 install castero
-pip3 install networkx

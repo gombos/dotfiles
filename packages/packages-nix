@@ -15,19 +15,12 @@ export NIX_PATH=nixpkgs=/root/.nix-defexpr/channels/nixpkgs:/root/.nix-defexpr/c
 export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 export PATH=/root/.nix-profile/bin:$PATH
 
-nix-channel --update
-nix-channel --list
-
-nix-env --install micro
-nix-env --query
-
-nix-channel --remove nixpkgs
-
-nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
+#nix-channel --remove nixpkgs
+#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
 
 nix-channel --update
 
-nix-env --install ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable
+nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable python3.8-pip
 
 NIXPKGS_ALLOW_UNFREE=1 nix-env --install  vscode google-chrome
 
@@ -40,3 +33,10 @@ nix optimise-store
 
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
+
+curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo python3
+
+sudo pip3 install awscli PyYAML
+sudo pip3 install pyusb temperusb
+sudo pip3 install castero
+sudo pip3 install networkx
