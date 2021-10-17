@@ -337,24 +337,18 @@ fi
 if [ "$HOST" == "bestia" ]; then
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
-  # nvidia driver
-#  echo nvidia >> $R/etc/modules
-
   mkdir -p $R/nix
   rm -rf $R/usr/local
   ln -sf /nix/var/nix/profiles/default $R/usr/local
   ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
 
-  echo "nixbld:x:1003:1003::/home/nixbld:/bin/sh" >> $R/etc/passwd
+  echo "nixbld:x:503:503::/home/nixbld:/bin/sh" >> $R/etc/passwd
   echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
   echo "nixbld:!::nixbld" >> $R/etc/gshadow
-  echo "nixbld:x:1003:nixbld" >> $R/etc/group
-
-  #channels -> /nix/var/nix/profiles/per-user/root/channels
+  echo "nixbld:x:503:nixbld" >> $R/etc/group
 
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /nix btrfs subvol=usr 0 2' >> $R/etc/fstab
-#  echo '/home/nix /usr/local auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
