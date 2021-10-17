@@ -35,5 +35,8 @@ nix-env -u
 
 nix-collect-garbage -d
 
+nix-store --verify --check-contents
+nix optimise-store
+
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
