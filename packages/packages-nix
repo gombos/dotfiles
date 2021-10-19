@@ -23,7 +23,8 @@ nix-channel --update
 
 nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable
 
-NIXPKGS_ALLOW_UNFREE=1 nix-env --install  vscode google-chrome
+NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
+# google-chrome
 
 nix-env -u
 
