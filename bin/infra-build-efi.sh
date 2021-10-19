@@ -231,6 +231,12 @@ configdrive=""
 if [ -L /dev/disk/by-label/EFI ]; then
   configdrive="/dev/disk/by-label/EFI"
 else
+
+
+
+if [ -L /dev/disk/by-label/EFI ]; then
+  configdrive="/dev/disk/by-label/EFI"
+else
   for f in /dev/disk/by-label/EFI_*; do
     if [ -z "$configdrive" ]; then
       configdrive="$f"
@@ -266,6 +272,8 @@ printf "[rd.exec] Mounted config\n"
 # Restrict only root process to load kernel modules. This is a reasonable system hardening
 # todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
 # todo - so build and test dracut with --no-kernel
+
+# todo - does not work for isoboot
 if [ -f /run/media/efi/kernel/modules ]; then
   mkdir -p /run/media/modules
   printf "[rd.exec] Mounting modules \n"

@@ -131,10 +131,11 @@ sudo mksquashfs /nix /tmp/iso/nixfile
 
 cd /tmp/iso
 sudo chown -R 1000:1000  .
+
+# Only needed for EUFI ISO boot - and not clear what is needed here
 #cp EFI/BOOT/bootx64.efi isolinux/
 #cp ~/b/efiboot.img  isolinux/
 #mv isolinux/bios.img  /tmp/
-
 touch isolinux/efiboot.img
 touch isolinux/bootx64.efi
 
