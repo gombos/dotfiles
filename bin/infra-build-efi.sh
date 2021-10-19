@@ -231,12 +231,6 @@ configdrive=""
 if [ -L /dev/disk/by-label/EFI ]; then
   configdrive="/dev/disk/by-label/EFI"
 else
-
-
-
-if [ -L /dev/disk/by-label/EFI ]; then
-  configdrive="/dev/disk/by-label/EFI"
-else
   for f in /dev/disk/by-label/EFI_*; do
     if [ -z "$configdrive" ]; then
       configdrive="$f"
