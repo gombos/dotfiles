@@ -1,6 +1,7 @@
 #need to run as root
 
 cd /tmp
+rm install
 wget https://nixos.org/nix/install
 chmod +x install
 
@@ -11,10 +12,6 @@ rm install
 
 . ~/.nix-profile/etc/profile.d/nix.sh
 
-export NIX_PATH=nixpkgs=/root/.nix-defexpr/channels/nixpkgs:/root/.nix-defexpr/channels
-export NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-export PATH=/root/.nix-profile/bin:$PATH
-
 # switch to stable channel
 nix-channel --remove nixpkgs
 nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
@@ -24,7 +21,6 @@ nix-channel --update
 nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable
 
 NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
-# google-chrome
 
 nix-env -u
 
