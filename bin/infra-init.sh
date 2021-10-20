@@ -246,21 +246,6 @@ then
   sed -i "s/^users:.*/&,henrik/" $R/etc/group
 fi
 
-# bagoly user
-if [ ! -z "$BAGOLYPWD" ]
-then
-  echo "bagoly:x:1002:1002:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
-  echo "bagoly:$BAGOLYPWD:1:0:99999:7:::" >> $R/etc/shadow
-  echo "bagoly:!::" >> $R/etc/gshadow
-  echo "bagoly:x:1002:" >> $R/etc/group
-  sed -i "s/^sudo:.*/&,bagoly/" $R/etc/group
-  sed -i "s/^users:.*/&,bagoly/" $R/etc/group
-
-  # remove the admin user
-  sed -i '/^admin:/d' $R/etc/passwd
-  sed -i '/^admin:/d' $R/etc/shadow
-fi
-
 # ssh jumphost user - Restricted user, no persistent home, login only via ssh key, disabled login password
 if [ ! -z "$SSHID" ]
 then
