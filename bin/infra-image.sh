@@ -121,23 +121,15 @@ sudo umount $MNT_EFI
 #cd /
 
 # rootfs squashfs
-sudo mkdir -p /tmp/iso/LiveOS
-#sudo mksquashfs $MNT/linux/ /tmp/iso/LiveOS/squashfs.img
-
 infra-get-squash.sh
+sudo mkdir -p /tmp/iso/LiveOS
 sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
-sudo mksquashfs /nix /tmp/iso/nixfile
+# nix
+sudo mksquashfs /nix /tmp/iso/nixfile -comp zstd
 
 cd /tmp/iso
 sudo chown -R 1000:1000  .
-
-# Only needed for EUFI ISO boot - and not clear what is needed here
-#cp EFI/BOOT/bootx64.efi isolinux/
-#cp ~/b/efiboot.img  isolinux/
-#mv isolinux/bios.img  /tmp/
-touch isolinux/efiboot.img
-touch isolinux/bootx64.efi
 
 xorriso \
    -as mkisofs \
@@ -160,9 +152,6 @@ xorriso \
       "." \
       /boot/grub/bios.img=isolinux/bios.img \
       /EFI/efiboot.img=isolinux/efiboot.img
-
-# iso
-#genisoimage -v -J -r -V kucko -o /tmp/kucko.iso /tmp/iso/
 
 #sudo umount $MNT
 sudo losetup -d $DISK

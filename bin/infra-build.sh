@@ -60,7 +60,7 @@ fi
 if echo $TARGET | grep -w -q squashfs; then
   mkdir -p /tmp/laptop
   infra-get-rootfs.sh /tmp/laptop 0gombi0/homelab:laptop
-  sudo mksquashfs /tmp/laptop /tmp/squashfs.img
+  sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
   sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
   docker push 0gombi0/homelab:squashfs
 else
