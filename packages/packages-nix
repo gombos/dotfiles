@@ -13,12 +13,12 @@ rm install
 . ~/.nix-profile/etc/profile.d/nix.sh
 
 # switch to stable channel
-nix-channel --remove nixpkgs
-nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
+#nix-channel --remove nixpkgs
+#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
 
 nix-channel --update
 
-nix-env --install micro ripgrep-all rclone node_bitwarden-cli micro kubernetes apfs-fuse-unstable
+nix-env --install micro ripgrep-all rclone bitwarden-cli micro kubernetes apfs-fuse-unstable
 
 NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
