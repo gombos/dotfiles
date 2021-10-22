@@ -10,19 +10,25 @@ brew update
 brew upgrade
 
 # cask
-brew install osxfuse teamviewer veracrypt visual-studio-code karabiner-elements tor-browser microsoft-edge google-cloud-sdk authy macs-fan-control db-browser-for-sqlite libreoffice
+brew install karabiner-elements	kitty skype	slack visual-studio-code
 
-brew install bash bash-completion pass pinentry-mac sshuttle rga rmlint lesspipe micro rclone lastpass-cli
+#brew install osxfuse teamviewer veracrypt microsoft-edge google-cloud-sdk authy
+
+brew install micro ripgrep-all rmlint qemu
+
+#    bash bash-completion pass pinentry-mac sshuttle lesspipe rclone lastpass-cli
 
 # basictex tesseract pandoc poppler wakeonlan
+
+# macs-fan-control db-browser-for-sqlite libreoffice sshuttle rga
 
 if [[ `hostname -s` != "taska" ]]; then
   brew install --cask slack
   brew upgrade --cask slack
 fi
 
-python3 -m pip install --upgrade pip
-pip3 install visidata
+#python3 -m pip install --upgrade pip
+#pip3 install visidata
 
 brew cleanup --prune=all
 brew doctor
