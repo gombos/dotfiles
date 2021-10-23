@@ -18,9 +18,12 @@ rm install
 
 nix-channel --update
 
-nix-env --install micro ripgrep-all rclone bitwarden-cli micro kubernetes apfs-fuse-unstable
+nix-env --install micro ripgrep-all rclone bitwarden-cli apfs-fuse-unstable
 
-NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
+# NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
+
+# packages of interest
+#go google-chrome thunderbird kubernetes
 
 nix-env -u
 

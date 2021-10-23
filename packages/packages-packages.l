@@ -31,14 +31,14 @@ xz-utils
 
 # languages
 python3-distutils
-golang-go
+#golang-go
 
 # devices
 adb
 
 # networking
 rclone
-lastpass-cli
+#lastpass-cli
 wget
 curl
 iperf3

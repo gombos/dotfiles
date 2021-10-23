@@ -12,7 +12,7 @@ pcmanfm
 qiv
 rofi
 sqlitebrowser
-thunderbird
+#thunderbird
 vlc
 xterm
 zathura
