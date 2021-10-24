@@ -38,7 +38,9 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-apt-get --reinstall install -y $NVIDIA
+if [ -z "${NVIDIA}" ]; then
+  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+fi
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh

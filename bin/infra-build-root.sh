@@ -136,7 +136,10 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> et
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 
 packages_update_db
-install_my_package xserver-xorg-video-nvidia-460
+
+if [ -z "${NVIDIA}" ]; then
+  install_my_package xserver-xorg-video-nvidia-${NVIDIA}
+fi
 
 # Make sure that only restricted package installed is nvidia
 rm etc/apt/sources.list.d/restricted.list

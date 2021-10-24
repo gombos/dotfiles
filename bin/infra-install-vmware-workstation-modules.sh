@@ -1,5 +1,7 @@
 # https://communities.vmware.com/thread/623768
 
+. ./infra-env.sh
+
 if [ -z "$KERNEL" ]; then
   export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 fi

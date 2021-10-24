@@ -63,10 +63,19 @@ apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
 # bootloader
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin syslinux-common grub2-common unzip mtools
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub2-common \
+  syslinux-common \
+  mtools # efi iso boot
 
 # dracut/initrd
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config wget btrfs-progs ntfs-3g fuse
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config btrfs-progs ntfs-3g fuse \
+  unzip wget ca-certificates git \ # get the release
+  cryptsetup dmsetup \
+  squashfs-tools \
+  udev \
+  systemd-sysv \ # dracut: dracut-systemd, reboot
+  coreutils \ # stat
+  mount # umount
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
@@ -74,7 +83,9 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-apt-get --reinstall install -y nvidia-driver-460
+if [ -z "${NVIDIA}" ]; then
+  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+fi
 
 # kernel binary
 mkdir -p /efi/kernel
