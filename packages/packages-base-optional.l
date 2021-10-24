@@ -35,7 +35,8 @@ usb-modeswitch
 usbrelay
 usbutils
 libu2f-udev
-cpufreq-info
+cpufrequtils
+laptop-detect
 lm-sensors
 dmidecode
 

@@ -17,5 +17,4 @@ sshfs
 cryptsetup
 extlinux
 zerofree
-genisoimage
 xorriso

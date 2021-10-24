@@ -26,6 +26,8 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
+. ./infra-env.sh
+
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi

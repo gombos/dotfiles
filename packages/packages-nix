@@ -18,19 +18,20 @@ rm install
 
 nix-channel --update
 
-nix-env --install micro ripgrep-all rclone bitwarden-cli apfs-fuse-unstable
+nix-env --install ripgrep-all
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
 # packages of interest
-#go google-chrome thunderbird kubernetes
+# go google-chrome thunderbird kubernetes micro rclone bitwarden-cli apfs-fuse-unstable
 
-nix-env -u
+# nix-env -u
 
 nix-collect-garbage -d
 
 nix-store --verify --check-contents
-nix optimise-store
+nix-store --gc
+nix-store --optimise
 
 # appimage
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
