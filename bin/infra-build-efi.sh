@@ -43,16 +43,16 @@ if [ -z "$KERNEL" ]; then
   export KERNEL="5.11.0-34-generic"
 fi
 
-echo $KERNEL
-
 mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
 
-# Install nvidea driver - this is the only package from restricted source
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
+if ! [ -z "${NVIDIA}" ]; then
+  # Install nvidea driver - this is the only package from restricted source
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
+fi
 
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
@@ -63,19 +63,26 @@ apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
 # bootloader
+# mtools - efi iso boot
+
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub2-common \
   syslinux-common \
-  mtools # efi iso boot
+  mtools
 
 # dracut/initrd
+# unzip wget ca-certificates git - get the release
+# systemd-sysv - dracut-systemd, reboot
+# coreutils - stat
+# mount - umount
+
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config btrfs-progs ntfs-3g fuse \
-  unzip wget ca-certificates git \ # get the release
+  unzip wget ca-certificates git \
   cryptsetup dmsetup \
   squashfs-tools \
   udev \
-  systemd-sysv \ # dracut: dracut-systemd, reboot
-  coreutils \ # stat
-  mount # umount
+  systemd-sysv \
+  coreutils \
+  mount
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
@@ -83,7 +90,7 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-if [ -z "${NVIDIA}" ]; then
+if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
 fi
 
@@ -216,7 +223,7 @@ wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/ar
 unzip -q 055.zip
 cd dracut-055
 ./configure
-make
+make 2>/dev/null
 make install
 cd ..
 

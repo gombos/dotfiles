@@ -38,7 +38,7 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-if [ -z "${NVIDIA}" ]; then
+if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
 fi
 

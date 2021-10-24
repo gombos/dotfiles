@@ -137,7 +137,7 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc
 
 packages_update_db
 
-if [ -z "${NVIDIA}" ]; then
+if ! [ -z "${NVIDIA}" ]; then
   install_my_package xserver-xorg-video-nvidia-${NVIDIA}
 fi
 
