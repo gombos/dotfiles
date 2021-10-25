@@ -328,13 +328,13 @@ chmod +x /tmp/rdexec
 # fedora
 # --nomdadmconf --nolvmconf --xz --add 'livenet dmsquash-live dmsquash-live-ntfs convertfs pollcdrom qemu qemu-net' --omit 'plymouth' --no-hostonly --debug --no-early-microcode --force
 
-# todo --no-kernel --debug --no-early-microcode --nomdadmconf --nolvmconf
-# livenet - seems useful
+# todo --debug --no-early-microcode --nomdadmconf --nolvmconf
 
-# todo  - interesting modules systemd-sysusers, usrmount
+# todo  - interesting modules systemd-sysusers, usrmount, livenet
 # --modules 'base bash btrfs dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib kernel-modules rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
 
 # todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
+# todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
