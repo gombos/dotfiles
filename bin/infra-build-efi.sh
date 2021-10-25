@@ -61,11 +61,13 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
 
 # bootloader
 # mtools - efi iso boot
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64-bin grub-pc-bin grub2-common \
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+  grub-efi-amd64-bin grub-pc-bin grub2-common \
   syslinux-common \
   mtools
 
@@ -74,21 +76,19 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 grub-efi-amd64
 # systemd-sysv - dracut-systemd, reboot
 # coreutils - stat
 # mount - umount
+# kexec shutdown module
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config btrfs-progs ntfs-3g fuse \
-  unzip wget ca-certificates git \
-  cryptsetup dmsetup \
-  squashfs-tools \
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+  cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config \
   udev \
   systemd-sysv \
   coreutils \
-  mount
-
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
-
-echo $RELEASE
-
-cat /etc/apt/sources.list.d/restricted.list
+  mount \
+  btrfs-progs ntfs-3g fuse \
+  unzip wget ca-certificates git \
+  cryptsetup dmsetup \
+  squashfs-tools \
+  kexec-tools
 
 if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
@@ -328,22 +328,17 @@ chmod +x /tmp/rdexec
 # fedora
 # --nomdadmconf --nolvmconf --xz --add 'livenet dmsquash-live dmsquash-live-ntfs convertfs pollcdrom qemu qemu-net' --omit 'plymouth' --no-hostonly --debug --no-early-microcode --force
 
-# todo --no-kernel --omit 'plymouth'  --debug --no-early-microcode --nomdadmconf --nolvmconf
-# todo qemu qemu-net convertfs pollcdrom
+# todo --no-kernel --debug --no-early-microcode --nomdadmconf --nolvmconf
 # livenet - seems useful
 
-# todo  - systemd-sysusers seems useful
-# --modules 'bash systemd systemd-initrd btrfs kernel-modules rootfs-block udev-rules dracut-systemd base fs-lib dmsquash-live dmsquash-live-ntfs dm img-lib' \
-# systemd-sysusers seems useful
+# todo  - interesting modules systemd-sysusers, usrmount
+# --modules 'base bash btrfs dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib kernel-modules rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
 
-# usrmount - seems useful
-
-# todo - it shoudl not be needed to excluce net explicitly
-# qemu-net
+# todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
 
 dracut --keep --verbose --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
-  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount' \
+  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount resume' \
   --add-drivers 'nls_iso8859_1' \
   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
@@ -365,9 +360,6 @@ rm -r /tmp/rdexec
 #rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 #rm -f usr/lib/dracut/build-parameter.txt
 #rm -rf usr/lib/modules/$KERNEL/kernel/drivers/net/ethernet/nvidia/*
-
-#rm usr/sbin/ifup
-#cp /usr/lib/dracut/modules.d/35network-legacy/ifup.sh usr/sbin/ifup
 
 # Recompress
 #find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
