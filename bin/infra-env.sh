@@ -1,7 +1,7 @@
 # stable
 export RELEASE="focal"
 export KERNEL="5.11.0-34-generic"
-#export NVIDIA="460"
+export NVIDIA="460"
 
 # staging
 #export RELEASE="impish"

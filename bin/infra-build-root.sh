@@ -11,6 +11,8 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
+. ./infra-env.sh
+
 cd /
 
 export DEBIAN_FRONTEND=noninteractive
@@ -130,10 +132,12 @@ install_my_packages packages-base-optional.l
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
 
-# Install nvidea driver - this is the only package from restricted source
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
+if ! [ -z "${NVIDIA}" ]; then
+  # Install nvidea driver - this is the only package from restricted source
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
+fi
 
 packages_update_db
 
