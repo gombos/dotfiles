@@ -2,6 +2,8 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
+. ./infra-env.sh
+
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
@@ -36,7 +38,9 @@ echo $RELEASE
 
 cat /etc/apt/sources.list.d/restricted.list
 
-apt-get --reinstall install -y nvidia-driver-460
+if ! [ -z "${NVIDIA}" ]; then
+  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+fi
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh

@@ -1,3 +1,4 @@
+genisoimage
 catdoc
 docx2txt
 pdfgrep
@@ -314,7 +315,6 @@ jmtpfs
 jq
 kbd
 kexec-tools
-laptop-detect
 leafpad
 libgtk-3-bin
 libmtp-runtime

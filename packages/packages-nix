@@ -18,16 +18,28 @@ rm install
 
 nix-channel --update
 
-nix-env --install micro ripgrep-all rclone bitwarden-cli micro kubernetes apfs-fuse-unstable
+# nix-env --install ripgrep-all
 
-NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
+# NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
-nix-env -u
+# packages of interest
+# go google-chrome thunderbird kubernetes micro rclone bitwarden-cli apfs-fuse-unstable
+
+# nix-env -u
 
 nix-collect-garbage -d
 
 nix-store --verify --check-contents
-nix optimise-store
+nix-store --gc
+nix-store --optimise
+
+wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
+gzip -d ripgrep_all-*
+tar -xvf ripgrep_all-*
+mv ripgrep_all-*/rga /usr/local/bin/
+
+curl https://getmic.ro | bash
+mv micro /usr/local/bin/
 
 # appimage
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam

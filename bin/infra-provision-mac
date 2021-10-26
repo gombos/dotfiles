@@ -18,6 +18,12 @@ brew install micro ripgrep-all rmlint qemu
 
 #    bash bash-completion pass pinentry-mac sshuttle lesspipe rclone lastpass-cli
 
+
+# vlc
+# xquartz
+# microsoft-edge
+# canon-eos-utility
+
 # basictex tesseract pandoc poppler wakeonlan
 
 # macs-fan-control db-browser-for-sqlite libreoffice sshuttle rga
