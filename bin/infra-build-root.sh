@@ -128,6 +128,9 @@ packages_upgrade
 install_my_packages packages-base.l
 install_my_packages packages-base-optional.l
 
+# todo - vmware fix
+rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
+
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
