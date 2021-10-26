@@ -13,7 +13,7 @@ echo $RELEASE
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base desktop efi laptop laptop_squash raw"
+  TARGET="minbase base desktop efi laptop squashfs raw"
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -73,7 +73,7 @@ fi
 
 if echo $TARGET | grep -w -q raw; then
   infra-image.sh
-  sudo tar -c /tmp/linux.img /tmp/kucko.iso | docker import - 0gombi0/homelab:raw
+  sudo tar -c /tmp/kucko.iso | docker import - 0gombi0/homelab:raw
   docker push 0gombi0/homelab:raw
 #else
 #  docker pull 0gombi0/homelab:raw

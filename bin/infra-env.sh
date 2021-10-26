@@ -7,7 +7,8 @@ export NVIDIA="460"
 export RELEASE="hirsute"
 export NVIDIA="470"
 
-#export RELEASE="impish"
+# testing
+export RELEASE="impish"
+
 #export KERNEL="5.13.0-19-generic"
 # todo - bgfiler - kernel bug
-# todo - systemd or some other rootfs update does not like the vmware service files, so vmware modules load but service does not start

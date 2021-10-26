@@ -1,8 +1,8 @@
 # Base image could be independent from rootfs
-#FROM ubuntu:impish as base
+FROM ubuntu:hirsute as base
 
 # Use my own docker images as a base for testing
-FROM 0gombi0/homelab:desktop as base
+#FROM 0gombi0/homelab:desktop as base
 
 LABEL name=efi
 
