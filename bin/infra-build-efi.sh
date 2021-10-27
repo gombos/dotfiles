@@ -32,12 +32,12 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-if [ -z "$RELEASE" ]; then
-  RELEASE=$VERSION_CODENAME
-  if [ -z "$RELEASE" ]; then
-    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
-  fi
-fi
+#if [ -z "$RELEASE" ]; then
+#  RELEASE=$VERSION_CODENAME
+#  if [ -z "$RELEASE" ]; then
+#    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
+#  fi
+#fi
 
 if [ -z "$KERNEL" ]; then
   export KERNEL="5.11.0-34-generic"
@@ -47,21 +47,22 @@ mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
 
-if ! [ -z "${NVIDIA}" ]; then
-  # Install nvidea driver - this is the only package from restricted source
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
-fi
+#if ! [ -z "${NVIDIA}" ]; then
+#  # Install nvidea driver - this is the only package from restricted source
+#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
+#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
+#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
+#fi
 
 apt-get update -y -qq -o Dpkg::Use-Pty=0
+apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # workaround for dracut
 # todo - upstream patch
 apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
 
 # bootloader
 # mtools - efi iso boot
@@ -69,7 +70,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   grub-efi-amd64-bin grub-pc-bin grub2-common \
   syslinux-common \
-  mtools
+  isolinux mtools dosfstools
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
@@ -148,18 +149,20 @@ EOF
 # smbios - detect motherboard ID
 # loopback - boot iso files
 # chain - chain boot
-# search - finfd partitions (by label or uuid, but no suport for part_label)
+# search - find partitions (by label or uuid, but no suport for part_label)
 
 # configfile - is this really needed
 
 # minicmd ls cat - interactive debug in grub shell
 
-GRUB_MODULES="normal part_msdos part_gpt fat btrfs ext2 ntfs iso9660 hfsplus linux linux16 loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
+GRUB_MODULES="normal part_msdos part_gpt fat ext2 iso9660 linux linux16 loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
+
+# btrfs ntfs hfsplus
 
 # for more control, consider just invoking grub-mkimage directly
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
-grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
+grub-mkstandalone --format=i386-pc    --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr"  --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
 grub-mkstandalone --format x86_64-efi --output="/efi/EFI/BOOT/bootx64.efi"  --install-modules="$GRUB_MODULES"          --modules="$GRUB_MODULES"          --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
 
 cp /usr/lib/grub/i386-pc/boot_hybrid.img $ISODIR/
@@ -169,7 +172,7 @@ cat /usr/lib/grub/i386-pc/cdboot.img $LEGACYDIR/core.img > $ISODIR/bios.img
 
 # EFI boot partition - FAT16 disk image
 dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=10 && \
-sudo mkfs.vfat $ISODIR/efiboot.img && \
+mkfs.vfat $ISODIR/efiboot.img && \
 LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
 LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
 
@@ -336,7 +339,9 @@ chmod +x /tmp/rdexec
 # todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
-dracut --keep --verbose --force --no-hostonly --reproducible \
+# --keep --verbose
+
+dracut --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
   --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount resume' \
   --add-drivers 'nls_iso8859_1' \

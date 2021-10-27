@@ -7,7 +7,7 @@ export NVIDIA="460"
 export RELEASE="hirsute"
 export NVIDIA="470"
 
-# testing
+# testing - for rootfs only
 export RELEASE="impish"
 
 #export KERNEL="5.13.0-19-generic"
