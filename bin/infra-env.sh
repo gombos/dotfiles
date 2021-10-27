@@ -1,14 +1,9 @@
 # stable
 export RELEASE="focal"
-export KERNEL="5.11.0-34-generic"
 export NVIDIA="460"
+export KERNEL="5.11.0-34-generic"
 
-# staging
-export RELEASE="hirsute"
-export NVIDIA="470"
-
-# testing - for rootfs only
+# latest
 export RELEASE="impish"
-
-#export KERNEL="5.13.0-19-generic"
-# todo - bgfiler - kernel bug
+export NVIDIA="470"
+export KERNEL="5.13.0-19-generic"
