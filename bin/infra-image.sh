@@ -127,32 +127,7 @@ sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
 cd /tmp/iso
 
-# todo - figure out how to grow iso beyond 2GB limit by splitting
-
-#sudo chown -R 1000:1000  .
-#xorriso \
-#   -as mkisofs \
-#   -iso-level 3 \
-#   -full-iso9660-filenames \
-#   -volid "kucko" \
-#   -eltorito-boot boot/grub/bios.img \
-#   -no-emul-boot \
-#   -boot-load-size 4 \
-#   -boot-info-table \
-#   --eltorito-catalog boot/grub/boot.cat \
-#   --grub2-boot-info \
-#   --grub2-mbr /tmp/iso/isolinux/boot_hybrid.img \
-#   -eltorito-alt-boot \
-#   -e EFI/efiboot.img \
-#   -no-emul-boot \
-#   -append_partition 2 0xef isolinux/efiboot.img \
-#   -output "/tmp/kucko_small.iso" \
-#   -graft-points \
-#     "." \
-#      /boot/grub/bios.img=isolinux/bios.img \
-#      /EFI/efiboot.img=isolinux/efiboot.img
-
-# keep kucko.iso under 2GB
+# keep iso under 2GB
 
 # nix
 sudo mksquashfs /nix /tmp/iso/nixfile -comp zstd
@@ -175,7 +150,7 @@ xorriso \
    -e EFI/efiboot.img \
    -no-emul-boot \
    -append_partition 2 0xef isolinux/efiboot.img \
-   -output "/tmp/kucko.iso" \
+   -output "/tmp/linux.iso" \
    -graft-points \
       "." \
       /boot/grub/bios.img=isolinux/bios.img \

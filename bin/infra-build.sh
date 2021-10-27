@@ -59,6 +59,6 @@ fi
 
 if echo $TARGET | grep -w -q iso; then
   infra-image.sh
-  sudo tar -c /tmp/kucko.iso | docker import - 0gombi0/homelab:iso
+  sudo tar -c /tmp/*.iso | docker import - 0gombi0/homelab:iso
   docker push 0gombi0/homelab:iso
 fi

@@ -353,6 +353,10 @@ dracut --force --no-hostonly --reproducible \
   --include /usr/bin/chmod /usr/bin/chmod \
   initrd.img $KERNEL
 
+# todo - upstream
+# https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
+# rm /etc/cmdline.d/00-btrfs.conf
+
 rm -r /tmp/rdexec
 
 # Uncompress
