@@ -14,7 +14,6 @@ gpg-agent
 # boot
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
-cloud-init # to make the image compatible with cloud providers
 
 # networking
 dnsmasq-base
@@ -31,7 +30,6 @@ eject
 
 # devices
 uhubctl
-usb-modeswitch
 usbrelay
 usbutils
 libu2f-udev
