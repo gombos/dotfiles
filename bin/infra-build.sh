@@ -13,7 +13,7 @@ echo $RELEASE
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base desktop efi laptop squashfs raw"
+  TARGET="minbase base desktop efi laptop squashfs iso"
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -22,43 +22,31 @@ if echo $TARGET | grep -w -q minbase; then
   cd /tmp/minbase && sudo tar -c . | docker import - 0gombi0/homelab:minbase && cd -
   docker push 0gombi0/homelab:minbase
   sudo rm -rf /tmp/minbase
-#else
-#  docker pull 0gombi0/homelab:minbase
 fi
 
 if echo $TARGET | grep -w -q base; then
   docker build -t 0gombi0/homelab:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
   docker push 0gombi0/homelab:base
-#else
-#  docker pull 0gombi0/homelab:base
 fi
 
 if echo $TARGET | grep -w -q desktop; then
   docker build -t 0gombi0/homelab:desktop ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-desktop
   docker push 0gombi0/homelab:desktop
-#else
-#  docker pull 0gombi0/homelab:desktop
 fi
 
 if echo $TARGET | grep -w -q efi; then
   docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
   docker push 0gombi0/homelab:efi
-#else
-#  docker pull 0gombi0/homelab:efi
 fi
 
 if echo $TARGET | grep -w -q laptop; then
   docker build -t 0gombi0/homelab:laptop     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
   docker push 0gombi0/homelab:laptop
-#else
-#  docker pull 0gombi0/homelab:laptop
 fi
 
 if echo $TARGET | grep -w -q nix; then
   docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-nix
   docker push 0gombi0/homelab:nix
-#else
-#  docker pull 0gombi0/homelab:nix
 fi
 
 if echo $TARGET | grep -w -q squashfs; then
@@ -67,14 +55,10 @@ if echo $TARGET | grep -w -q squashfs; then
   sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
   sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
   docker push 0gombi0/homelab:squashfs
-#else
-#  docker pull 0gombi0/homelab:squashfs
 fi
 
-if echo $TARGET | grep -w -q raw; then
+if echo $TARGET | grep -w -q iso; then
   infra-image.sh
-  sudo tar -c /tmp/kucko.iso | docker import - 0gombi0/homelab:raw
-  docker push 0gombi0/homelab:raw
-#else
-#  docker pull 0gombi0/homelab:raw
+  sudo tar -c /tmp/kucko.iso | docker import - 0gombi0/homelab:iso
+  docker push 0gombi0/homelab:iso
 fi
