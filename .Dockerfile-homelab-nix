@@ -1,6 +1,4 @@
-# todo - do not run this inside docker
-
-FROM 0gombi0/homelab:desktop as base
+FROM 0gombi0/homelab:rootfs as base
 
 LABEL name=nix
 
