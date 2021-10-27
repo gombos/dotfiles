@@ -13,7 +13,7 @@ echo $RELEASE
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base desktop efi laptop squashfs iso"
+  TARGET="minbase base efi laptop squashfs iso"
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -27,11 +27,6 @@ fi
 if echo $TARGET | grep -w -q base; then
   docker build -t 0gombi0/homelab:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
   docker push 0gombi0/homelab:base
-fi
-
-if echo $TARGET | grep -w -q desktop; then
-  docker build -t 0gombi0/homelab:desktop ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-desktop
-  docker push 0gombi0/homelab:desktop
 fi
 
 if echo $TARGET | grep -w -q efi; then

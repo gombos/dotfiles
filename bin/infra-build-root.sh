@@ -28,11 +28,12 @@ if [ -z "$RELEASE" ]; then
   fi
 fi
 
-# container, base, desktop, laptop
+# order of increased package lists
+# container, base, laptop
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="desktop"
+  TARGET="laptop"
 fi
 
 install_my_package() {
@@ -182,10 +183,10 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 
-if [ "$TARGET" = "desktop" ]; then
+if [ "$TARGET" = "laptop" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
-echo "building desktop"
+echo "building laptop"
 
 # Try both wget first
 if ! [ -f usr/local/bin/pacapt ]; then
