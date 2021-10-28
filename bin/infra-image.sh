@@ -151,18 +151,18 @@ xorriso \
    -iso-level 3 \
    -full-iso9660-filenames \
    -volid "LINUX" \
-   -eltorito-boot boot/grub/bios.img \
-   -no-emul-boot \
-   -boot-load-size 4 \
-   -boot-info-table \
-   --eltorito-catalog boot/grub/boot.cat \
-   --grub2-boot-info \
-   --grub2-mbr /tmp/iso/isolinux/boot_hybrid.img \
-   -eltorito-alt-boot \
-   -e EFI/efiboot.img \
-   -no-emul-boot \
-   -append_partition 2 0xef ../isotemp/efiboot.img \
    -output "/tmp/linux.iso" \
+   -eltorito-boot boot/grub/bios.img \
+     -no-emul-boot \
+     -boot-load-size 4 \
+     -boot-info-table \
+     --eltorito-catalog boot/grub/boot.cat \
+     --grub2-boot-info \
+     --grub2-mbr /tmp/iso/isolinux/boot_hybrid.img \
+   -eltorito-alt-boot \
+     -e EFI/efiboot.img \
+     -no-emul-boot \
+   -append_partition 2 0xef ../isotemp/efiboot.img \
    -graft-points \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
