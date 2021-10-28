@@ -13,9 +13,9 @@ else
   TARGET="$1"
 fi
 
-FILENAME=linux.img
+#FILENAME=linux.img
 OUT_DIR=${OUT_DIR:=/tmp}
-FILE=$OUT_DIR/${FILENAME}
+#FILE=$OUT_DIR/${FILENAME}
 MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}
 MNT=$MNT_DIR/root
 MNT_EFI=$MNT_DIR/efi
@@ -23,77 +23,78 @@ MNT_EFI=$MNT_DIR/efi
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
 
 mkdir -p $MNT $MNT_EFI
-echo "Installing $RELEASE into $FILE..."
+#echo "Installing $RELEASE into $FILE..."
 
 # 3GB image file to fit comfortable to 8 GB sticks or larger
-IMGSIZE=${IMGSIZE:=3072} # in megabytes
-EFISIZE=${EFISIZE:=300} # in megabytes
-MODSIZE=${MODSIZE:=180} # in megabytes
+#IMGSIZE=${IMGSIZE:=3072} # in megabytes
+#EFISIZE=${EFISIZE:=300} # in megabytes
+#MODSIZE=${MODSIZE:=180} # in megabytes
 
-if [ -f $FILE ]; then
-  sudo rm -rf $FILE
-fi
+#if [ -f $FILE ]; then
+#  sudo rm -rf $FILE
+#fi
 
-if [ ! -f $FILE ]; then
-  echo "Creating $FILE"
-  sudo dd if=/dev/zero of=$FILE bs=1024k seek=${IMGSIZE} count=0
-fi
+#if [ ! -f $FILE ]; then
+#  echo "Creating $FILE"
+#  sudo dd if=/dev/zero of=$FILE bs=1024k seek=${IMGSIZE} count=0
+#fi
 
 # Find an empty loopback device
-DISK=""
-for i in /dev/loop* # or /dev/nbd*
-do
-  if sudo losetup $i $FILE
-  then
-    DISK=$i
-    break
-  fi
-done
-[ "$DISK" == "" ] && fail "no loop device available"
+#DISK=""
+#for i in /dev/loop* # or /dev/nbd*
+#do
+#  if sudo losetup $i $FILE
+#  then
+#    DISK=$i
+#    break
+#  fi
+#done
+#[ "$DISK" == "" ] && fail "no loop device available"
 
 # Partition device
-echo "Partitioning $DISK..."
+#echo "Partitioning $DISK..."
 
 # format as GPT
 # See also https://systemd.io/DISCOVERABLE_PARTITIONS/
 # https://wiki.archlinux.org/title/GPT_fdisk
-sudo sgdisk -Z $DISK
+#sudo sgdisk -Z $DISK
 
 # Add efi partition
-sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
-sudo partprobe $DISK
-sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
-sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+#sudo sgdisk -n 0:0:+${EFISIZE}M  -t 0:ef00 -c 0:"efi_linux" $DISK
+#sudo partprobe $DISK
+#sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
+#sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+
+mkdir /tmp/iso/
 
 if [ -z $2 ]; then
   infra-get-efi.sh
-  sudo rsync -r /tmp/efi/efi/ $MNT_EFI
+  sudo rsync -r /tmp/efi/efi/ /tmp/iso
 else
-  sudo rsync -r $2 $MNT_EFI
+  sudo rsync -r $2 /tmp/iso
 fi
 
 # https://wiki.archlinux.org/title/Syslinux
-sudo sgdisk $DISK --attributes=1:set:2
-sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
-sudo extlinux --install $MNT_EFI/syslinux/
-cd /
+#sudo sgdisk $DISK --attributes=1:set:2
+#sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
+#sudo extlinux --install $MNT_EFI/syslinux/
+#cd /
 
 # directories that are not needed for vm
-if [ "$TARGET" == vm ]; then
-  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
-fi
+#if [ "$TARGET" == vm ]; then
+#  sudo rm -rf $MNT_EFI/syslinux $MNT_EFI/tce
+#fi
 
-mkdir /tmp/iso/
-sudo rsync -av $MNT_EFI/ /tmp/iso/
+#sudo rsync -av $MNT_EFI/ /tmp/iso/
 
-sudo umount $MNT_EFI
-sudo losetup -d $DISK
+#sudo umount $MNT_EFI
+#sudo losetup -d $DISK
 
-sudo losetup $DISK $FILE
-sudo partprobe $DISK
+#sudo losetup $DISK $FILE
+#sudo partprobe $DISK
 
-sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
-sudo umount $MNT_EFI
+#sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
+#sudo umount $MNT_EFI
 
 #sudo sgdisk -n 0:0: -t 0:8304 -c 0:"linux_linux" $DISK
 
@@ -132,7 +133,18 @@ cd /tmp/iso
 # nix
 sudo mksquashfs /nix /tmp/iso/nixfile -comp zstd
 
-sudo chown -R 1000:1000  .
+sudo chown -R 1000:1000 .
+
+# Only include files once in the iso
+mkdir /tmp/isotemp
+mv isolinux/bios.img /tmp/isotemp/
+mv isolinux/efiboot.img /tmp/isotemp/
+
+# todo combine boot and syslinux directories into biosboot directory
+# todo rename isolinux to isoboot
+# todo rename LiveOS to rootfs
+# todo rename BOOT to boot
+# todo - is this really needed - /EFI/efiboot.img=../isotemp/efiboot.img , maybe needed for dd
 
 xorriso \
    -as mkisofs \
@@ -149,12 +161,12 @@ xorriso \
    -eltorito-alt-boot \
    -e EFI/efiboot.img \
    -no-emul-boot \
-   -append_partition 2 0xef isolinux/efiboot.img \
+   -append_partition 2 0xef ../isotemp/efiboot.img \
    -output "/tmp/linux.iso" \
    -graft-points \
       "." \
-      /boot/grub/bios.img=isolinux/bios.img \
-      /EFI/efiboot.img=isolinux/efiboot.img
+      /boot/grub/bios.img=../isotemp/bios.img \
+      /EFI/efiboot.img=../isotemp/efiboot.img
 
 #sudo umount $MNT
 sudo losetup -d $DISK
