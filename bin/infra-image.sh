@@ -169,6 +169,6 @@ xorriso \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
 #sudo umount $MNT
-sudo losetup -d $DISK
+#sudo losetup -d $DISK
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
-sudo rm -rf /tmp/efi /tmp/iso/
+sudo rm -rf /tmp/efi /tmp/iso /tmp/isotemp
