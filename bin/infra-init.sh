@@ -393,17 +393,23 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 fi
 
 if [ "$HOST" == "linux" ]; then
-#  sed -i '/^admin:/d' $R/etc/passwd
-#  echo "admin:x:99:0:,,,:/home/bagoly:/bin/bash" >> $R/etc/passwd
-
-  # Mount home directories from the host at boot
-  mkdir -p /home/host
-  echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
   # Autologin
   sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
 
   # sudo permission for all terminal sessions instead of per terminal - this is a privilege esculation vulnability
-  echo 'Defaults  !tty_tickets' >> $R/etc/sudoers.d/sudoers
+  # echo 'Defaults  !tty_tickets' >> $R/etc/sudoers.d/sudoers
+fi
+
+if [ "$HOST" == "vm" ]; then
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
+
+  # Autologin
+  sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
+
+  # Mount home directories from the host at boot
+  mkdir -p /home/host
+  echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 fi
