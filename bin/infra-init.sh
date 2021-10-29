@@ -61,7 +61,9 @@ for x in $(cat /proc/cmdline); do
 done
 
 # storage
-EFI=$(cd /dev/disk/by-partlabel/ && ls efi_* 2>/dev/null)
+if [ -d /dev/disk/by-partlabel ]; then
+  EFI=$(cd /dev/disk/by-partlabel/ && ls efi_* 2>/dev/null )
+fi
 
 if [ -n "$EFI" ]; then
   HOST_DISK=$(echo $EFI | cut -d_ -f2)
