@@ -146,7 +146,7 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # todo rename BOOT to boot
 # todo - is this really needed - /EFI/efiboot.img=../isotemp/efiboot.img , maybe needed for dd
 
-cp /tmp/iso/LiveOS/squashfs.img /tmp/iso/LiveOS/home.img
+# cp /tmp/iso/LiveOS/squashfs.img /tmp/iso/LiveOS/home.img
 
 xorriso \
    -as mkisofs \
