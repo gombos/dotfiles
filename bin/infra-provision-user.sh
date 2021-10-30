@@ -2,81 +2,63 @@
 
 # Setup symbolic links to my .dotfiles
 
-HOST=$(hostname)
+cwd=$(pwd)
 
-export DOTFILES="$HOME/.dotfiles"
+cd $cwd
 
-cd
+ln -sf .dotfiles/.bashrc
+ln -sf .dotfiles/.profile
+ln -sf .dotfiles/.inputrc
+ln -sf .dotfiles/.hushlogin
 
-ln -sf ~/.dotfiles/.bashrc
-ln -sf ~/.dotfiles/.profile
-ln -sf ~/.dotfiles/.inputrc
-ln -sf ~/.dotfiles/.hushlogin
+ln -sf .dotfiles/.gtkrc-2.0
+ln -sf .dotfiles/.mailcap
+ln -sf .dotfiles/.Xresources
+ln -sf .dotfiles/.xsessionrc
+ln -sf .dotfiles/.Xmodmap
 
-if [ -f /usr/lib/xorg/Xorg ]; then
-  ln -sf ~/.dotfiles/.gtkrc-2.0
-  ln -sf ~/.dotfiles/.mailcap
-  ln -sf ~/.dotfiles/.Xresources
-  ln -sf ~/.dotfiles/.xsessionrc
-  ln -sf ~/.dotfiles/.Xmodmap
+ln -sf .dotfiles/.Xresources-HiDPI
 
-  if test "$HOST" = 'bagoly' || test "$HOST" = 'bestia'; then
-    ln -sf ~/.dotfiles/.Xresources-HiDPI
-  fi
+# mime
+mkdir -p .config
+cd $cwd/.config
+ln -sf .dotfiles/.config/mimeapps.list
 
-  mkdir -p ~/.local/share/applications/
-  cd ~/.local/share/applications/
+# openbox
+ln -sf .dotfiles/.config/openbox
 
-  ln -sf ~/.dotfiles/.local/share/applications/editor.desktop
-  ln -sf ~/.dotfiles/.local/share/applications/web.desktop
-  ln -sf ~/.dotfiles/.local/share/applications/web-incognito.desktop
+# libfm
+ln -sf .dotfiles/.config/libfm
 
-  # Code
-  mkdir -p ~/.config/Code/User
-  cd ~/.config/Code/User
-  ln -sf ~/.dotfiles/.config/Code/User/settings.json
-  ln -sf ~/.dotfiles/.config/Code/User/keybindings.json
+cd $cwd
+mkdir -p .local/share/applications/
+cd .local/share/applications/
 
-  # panel
-  mkdir -p ~/.config/lxpanel/default/panels
-  cd ~/.config/lxpanel/default/panels
-  ln -sf ~/.dotfiles/.config/lxpanel/default/panels/panel
+ln -sf .dotfiles/.local/share/applications/editor.desktop
+ln -sf .dotfiles/.local/share/applications/web.desktop
+ln -sf .dotfiles/.local/share/applications/web-incognito.desktop
 
-  # mime
-  cd ~/.config/
-  ln -sf ~/.dotfiles/.config/mimeapps.list
+mkdir -p .config/micro
+cd .config/micro
+ln -sf .dotfiles/.config/micro/bindings.json
+ln -sf .dotfiles/.config/micro/settings.json
 
-  # openbox
-  mkdir -p ~/.config
-  cd ~/.config
-  ln -sf ~/.dotfiles/.config/openbox
+# Code
+cd $cwd
+mkdir -p .config/Code/User
+cd .config/Code/User
+ln -sf .dotfiles/.config/Code/User/settings.json
+ln -sf .dotfiles/.config/Code/User/keybindings.json
 
-  # libfm
-  mkdir -p ~/.config
-  cd ~/.config
-  ln -sf ~/.dotfiles/.config/libfm
-
-  mkdir -p ~/.config/micro
-  cd ~/.config/micro
-  ln -sf ~/.dotfiles/.config/micro/bindings.json
-  ln -sf ~/.dotfiles/.config/micro/settings.json
-fi
-
-# cleanup
-rm ~/.bash_profile
-cd
+# panel
+cd $cwd
+mkdir -p .config/lxpanel/default/panels
+cd .config/lxpanel/default/panels
+ln -sf .dotfiles/.config/lxpanel/default/panels/panel
 
 echo "User provisioning is finished, please log out and log back in again."
 
 #if [ "$HOST" == pincer ]; then
-#  sudo apt-get update
-#  sudo apt-get install python-setuptools python-dev python-pip
-#  sudo apt-get install build-essential libffi-dev libusb-1.0-0 libusb-1.0-0-dev
-#  pip install wheel
-#  pip install ouimeaux
-#  pip install snmp-passpersist
-#  pip install temperusb
-#
 #  # log dir
 #  mkdir ~/temperature
 #  croncmd="/home/user/.dotfiles/.bin/temperature-control.sh"

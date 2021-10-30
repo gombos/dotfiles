@@ -1,3 +1,5 @@
+export DOTFILES="$HOME/.dotfiles"
+
 cd $DOTFILES/ && git pull
 
 # for pincer

@@ -126,6 +126,33 @@ infra-get-squash.sh
 sudo mkdir -p /tmp/iso/LiveOS
 sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
+# home
+dd if=/dev/zero of=/tmp/home.img bs=1M count=4
+mkfs.ext4 -L "home_iso" /tmp/home.img
+
+FILE=/tmp/home.img
+# Find an empty loopback device
+DISK=""
+for i in /dev/loop*
+do
+  if sudo losetup $i $FILE
+  then
+    DISK=$i
+    echo $DISK
+    break
+  fi
+done
+#[ "$DISK" == "" ] && fail "no loop device available"
+
+sudo mount ${DISK} $MNT_EFI || fail "cannot mount"
+
+cd $MNT_EFI
+sudo git clone https://github.com/gombos/dotfiles.git .dotfiles
+sudo .dotfiles/bin/infra-provision-user.sh
+sudo chown -R 99:0 .
+cd /
+sudo umount $MNT_EFI
+
 cd /tmp/iso
 
 # keep iso under 2GB
@@ -148,6 +175,9 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # cp /tmp/iso/LiveOS/squashfs.img /tmp/iso/LiveOS/home.img
 
+# 2nd partition -  0xef - ef EFI (FAT-12/16/
+# /tmp/home.img \
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \
@@ -164,7 +194,7 @@ xorriso \
    -eltorito-alt-boot \
      -e EFI/efiboot.img \
      -no-emul-boot \
-   -append_partition 2 0xef ../isotemp/efiboot.img \
+   -append_partition 2 0xef /tmp/home.img \
    -graft-points \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
