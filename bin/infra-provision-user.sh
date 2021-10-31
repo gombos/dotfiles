@@ -19,42 +19,38 @@ ln -sf .dotfiles/.Xmodmap
 
 ln -sf .dotfiles/.Xresources-HiDPI
 
-# mime
+cd $cwd
 mkdir -p .config
-cd $cwd/.config
-ln -sf .dotfiles/.config/mimeapps.list
-
-# openbox
-ln -sf .dotfiles/.config/openbox
-
-# libfm
-ln -sf .dotfiles/.config/libfm
+cd .config
+ln -sf ../.dotfiles/.config/mimeapps.list
+ln -sf ../.dotfiles/.config/openbox
+ln -sf ../.dotfiles/.config/libfm
 
 cd $cwd
 mkdir -p .local/share/applications/
 cd .local/share/applications/
+ln -sf ../../../.dotfiles/.local/share/applications/editor.desktop
+ln -sf ../../../.dotfiles/.local/share/applications/web.desktop
+ln -sf ../../../.dotfiles/.local/share/applications/web-incognito.desktop
 
-ln -sf .dotfiles/.local/share/applications/editor.desktop
-ln -sf .dotfiles/.local/share/applications/web.desktop
-ln -sf .dotfiles/.local/share/applications/web-incognito.desktop
-
+cd $cwd
 mkdir -p .config/micro
 cd .config/micro
-ln -sf .dotfiles/.config/micro/bindings.json
-ln -sf .dotfiles/.config/micro/settings.json
+ln -sf ../../.dotfiles/.config/micro/bindings.json
+ln -sf ../../.dotfiles/.config/micro/settings.json
 
 # Code
 cd $cwd
 mkdir -p .config/Code/User
 cd .config/Code/User
-ln -sf .dotfiles/.config/Code/User/settings.json
-ln -sf .dotfiles/.config/Code/User/keybindings.json
+ln -sf ../../../.dotfiles/.config/Code/User/settings.json
+ln -sf ../../../.dotfiles/.config/Code/User/keybindings.json
 
 # panel
 cd $cwd
 mkdir -p .config/lxpanel/default/panels
 cd .config/lxpanel/default/panels
-ln -sf .dotfiles/.config/lxpanel/default/panels/panel
+ln -sf ../../../../.dotfiles/.config/lxpanel/default/panels/panel
 
 echo "User provisioning is finished, please log out and log back in again."
 
