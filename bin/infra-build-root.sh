@@ -258,9 +258,6 @@ fi
 # disable starting some systemd timers by default
 ln -sf /dev/null etc/systemd/system/timers.target.wants/man-db.timer
 
-# This would blacklist noveou on nvidia HW - even if i want noveou"
-rm usr/lib/modprobe.d/nvidia-graphics-drivers.conf
-
 # Disable autoloading some modules
 rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 

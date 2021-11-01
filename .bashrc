@@ -89,7 +89,6 @@ alias search='rga'
 # Default arguments
 alias apt='sudo apt'
 alias iotop='sudo iotop'
-#alias docker='sudo docker'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
 alias vd='vd -f csv'
@@ -144,6 +143,7 @@ if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
+    alias less='less -R'
 fi
 
 # lesspipe

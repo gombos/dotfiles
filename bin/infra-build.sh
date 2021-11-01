@@ -13,7 +13,12 @@ echo $RELEASE
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="minbase base efi laptop squashfs iso"
+  TARGET="rootfs"
+fi
+
+if echo $TARGET | grep -w -q efi; then
+  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
+  docker push 0gombi0/homelab:efi
 fi
 
 if echo $TARGET | grep -w -q minbase; then
@@ -29,27 +34,21 @@ if echo $TARGET | grep -w -q base; then
   docker push 0gombi0/homelab:base
 fi
 
-if echo $TARGET | grep -w -q efi; then
-  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
-  docker push 0gombi0/homelab:efi
-fi
-
-if echo $TARGET | grep -w -q laptop; then
-  docker build -t 0gombi0/homelab:laptop     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
-  docker push 0gombi0/homelab:laptop
+if echo $TARGET | grep -w -q rootfs; then
+  docker build -t 0gombi0/homelab:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
+  docker push 0gombi0/homelab:rootfs
+  sudo rm -rf /tmp/laptop
+  mkdir -p /tmp/laptop
+  infra-get-rootfs.sh /tmp/laptop
+  sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
+  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
+  docker push 0gombi0/homelab:squashfs
+  sudo rm -rf /tmp/laptop
 fi
 
 if echo $TARGET | grep -w -q nix; then
   docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-nix
   docker push 0gombi0/homelab:nix
-fi
-
-if echo $TARGET | grep -w -q squashfs; then
-  mkdir -p /tmp/laptop
-  infra-get-rootfs.sh /tmp/laptop 0gombi0/homelab:laptop
-  sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
-  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
-  docker push 0gombi0/homelab:squashfs
 fi
 
 if echo $TARGET | grep -w -q iso; then

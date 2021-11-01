@@ -99,6 +99,9 @@ fi
 mkdir -p /efi/kernel
 cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
+# for grub root variable is set to memdisk initially
+# grub_cmdpath is the location from which core.img was loaded as an absolute directory name
+
 # grub efi binary
 mkdir -p /efi/EFI/BOOT/
 cp /tmp/grub.cfg /efi/EFI/BOOT/
