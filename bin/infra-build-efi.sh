@@ -354,6 +354,7 @@ dracut --force --no-hostonly --reproducible \
   --include /usr/bin/grep /usr/bin/grep \
   --include /usr/bin/touch /usr/bin/touch \
   --include /usr/bin/chmod /usr/bin/chmod \
+  --include /usr/bin/awk /usr/bin/awk \
   initrd.img $KERNEL
 
 # todo - upstream
