@@ -52,6 +52,9 @@ mkdir -p .config/lxpanel/default/panels
 cd .config/lxpanel/default/panels
 ln -sf ../../../../.dotfiles/.config/lxpanel/default/panels/panel
 
+cd $cwd
+rm .bash_profile
+
 echo "User provisioning is finished, please log out and log back in again."
 
 #if [ "$HOST" == pincer ]; then
