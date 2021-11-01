@@ -18,7 +18,7 @@ brew install micro ripgrep-all rmlint qemu
 
 #    bash bash-completion pass pinentry-mac sshuttle lesspipe rclone lastpass-cli
 
-
+# remoteviewer
 # vlc
 # xquartz
 # microsoft-edge
