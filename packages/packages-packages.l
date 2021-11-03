@@ -77,6 +77,7 @@ sudo
 # virtualization
 qemu-system-x86
 qemu-system-gui
+ovmf
 
 # arm
 qemu-user-static
