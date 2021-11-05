@@ -16,6 +16,7 @@ ln -sf .dotfiles/.mailcap
 ln -sf .dotfiles/.Xresources
 ln -sf .dotfiles/.xsessionrc
 ln -sf .dotfiles/.Xmodmap
+ln -sf .dotfiles/.gitconfig
 
 ln -sf .dotfiles/.Xresources-HiDPI
 
@@ -34,12 +35,17 @@ ln -sf ../../../.dotfiles/.local/share/applications/web.desktop
 ln -sf ../../../.dotfiles/.local/share/applications/web-incognito.desktop
 
 cd $cwd
+mkdir -p .config/kitty
+cd .config/kitty
+ln -sf ../../.dotfiles/.config/kitty/kitty.conf
+
+cd $cwd
 mkdir -p .config/micro
 cd .config/micro
 ln -sf ../../.dotfiles/.config/micro/bindings.json
 ln -sf ../../.dotfiles/.config/micro/settings.json
 
-# Code
+# VS code
 cd $cwd
 mkdir -p .config/Code/User
 cd .config/Code/User

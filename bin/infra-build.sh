@@ -10,6 +10,8 @@ RELEASE=${RELEASE:=focal}
 
 echo $RELEASE
 
+# "efi minbase base rootfs"
+
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
