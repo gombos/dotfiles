@@ -340,7 +340,7 @@ chmod +x /tmp/rdexec
 # todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
-# --keep --verbose
+# --keep --verbose --no-compress
 
 dracut --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
@@ -357,28 +357,28 @@ dracut --force --no-hostonly --reproducible \
   --include /usr/bin/awk /usr/bin/awk \
   initrd.img $KERNEL
 
-# todo - upstream
+# todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
-# rm /etc/cmdline.d/00-btrfs.conf
 
 rm -r /tmp/rdexec
 
+mkdir -p /tmp/cleanup/
+mv initrd.img /tmp/cleanup/
+cd /tmp/cleanup/
+
 # Uncompress
-#gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
+gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
 # Clean some files
-#rm initrd.img
-#rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
-#rm -f usr/lib/dracut/build-parameter.txt
-#rm -rf usr/lib/modules/$KERNEL/kernel/drivers/net/ethernet/nvidia/*
+rm initrd.img
+rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
+rm -f usr/lib/dracut/build-parameter.txt
+rm -f etc/cmdline.d/00-btrfs.conf
 
 # Recompress
-#find . -print0 | cpio --null --create --format=newc | gzip --best > /tmp/initrd.img
-#cd /tmp/
+find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 
-cp initrd.img /efi/kernel/
-
-rm -rf /tmp/initrd
+rm -rf /tmp/initrd /tmp/cleanup
 
 # Populate logs with the list of filenames
 #find /efi
