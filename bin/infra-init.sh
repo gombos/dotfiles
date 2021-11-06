@@ -286,7 +286,7 @@ if [ -n "$HOME_PART" ]; then
   ln -sf /home $R/Users
 fi
 
-# live boot from iso
+# used if live booting from iso
 if [ -f "/run/initramfs/live/nixfile" ]; then
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
@@ -370,7 +370,17 @@ if [ "$HOST" == "bestia" ] || [ -f "/run/initramfs/live/nixfile" ]; then
 fi
 
 # server profile
-if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
+
+# Persistent container storage for docker
+if [ "$HOST" == "bestia" ] ; then
+  echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
+fi
+
+if [ "$HOST" == "pincer" ]; then
+  ln -sf /home/containers $R/var/lib/docker
+fi
+
+if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
 #  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
@@ -379,8 +389,6 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ] ; then
 #  mkdir -p $R/var/lib/portables/lab
 #  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
 
-  # Persistent container storage for docker
-  ln -sf /home/containers $R/var/lib/docker
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
