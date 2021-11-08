@@ -178,6 +178,11 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # 2nd partition -  0xef - ef EFI (FAT-12/16/
 # /tmp/home.img \
 
+# todo - can not mount iso directly in MacOS, need to extract it with xorriso
+# hdiutil attach -verbose -noverify -nomount linux.iso
+# -isohybrid-apm-hfsplus
+#xorriso -indev linux.iso -osirrox on -extract / linux
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \
