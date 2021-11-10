@@ -291,15 +291,16 @@ printf "[rd.exec] Mounted config\n"
 # todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
 # todo - so build and test dracut with --no-kernel
 
-# todo - does not work for isoboot
 if [ -f /run/media/efi/kernel/modules ]; then
   mkdir -p /run/media/modules
   printf "[rd.exec] Mounting modules \n"
   mount /run/media/efi/kernel/modules /run/media/modules
   if [ -d $NEWROOT/lib/modules ]; then
-    mv $NEWROOT/lib/modules $NEWROOT/lib/modules.root
+    rm -rf $NEWROOT/lib/modules
   fi
   ln -sf /run/media/modules $NEWROOT/lib/
+  rm -rf /lib/modules
+  ln -sf /run/media/modules /lib/
   printf "[rd.exec] Mounted modules \n"
 fi
 

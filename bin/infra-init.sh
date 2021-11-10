@@ -44,7 +44,7 @@
 # Todo - remove awk, chmod, chown dependencies
 
 stage="${0##*/}"
-echo "$stage"
+echo "stage: $stage"
 
 if [ "$stage" != 'dracut-pre-pivot' ]; then
   exit 0
