@@ -148,7 +148,7 @@ if [ -f "dhcp.conf" ]; then
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
   echo "127.0.0.1 localhost" > $R/etc/hosts
-  cat dhcp.conf | grep ^dhcp-host | awk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
+  cat dhcp.conf | grep ^dhcp-host | mawk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
   chmod 444 $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service

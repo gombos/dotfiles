@@ -284,6 +284,7 @@ mkdir -p "$mp"
 drive=$(readlink -f $configdrive)
 
 printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
+modprobe isofs
 mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
@@ -342,13 +343,17 @@ chmod +x /tmp/rdexec
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
 # --keep --verbose --no-compress --no-kernel
-# omit kernel-modules btrfs
+# omit btrfs
+
+ #--omit 'nvdimm qemu kernel-modules kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount resume' \
+
+#   --add-drivers 'nls_iso8859_1 autofs4 btrfs isofs overlay' \
+#   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
+
+# todo - remove btrfs from initramrd and test on bestia - it is the largest kernel module
 
 dracut --force --no-hostonly --reproducible \
-  --add 'dmsquash-live-ntfs' \
-  --omit 'nvdimm qemu kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount resume' \
-  --add-drivers 'nls_iso8859_1' \
-  --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
+  --modules 'bash systemd systemd-initrd btrfs dm dmsquash-live dmsquash-live-ntfs rootfs-block terminfo udev-rules dracut-systemd base fs-lib img-lib shutdown' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
@@ -357,7 +362,6 @@ dracut --force --no-hostonly --reproducible \
   --include /usr/bin/grep /usr/bin/grep \
   --include /usr/bin/touch /usr/bin/touch \
   --include /usr/bin/chmod /usr/bin/chmod \
-  --include /usr/bin/awk /usr/bin/awk \
   initrd.img $KERNEL
 
 # todo - upstream - 00-btrfs.conf
@@ -378,13 +382,10 @@ rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
 
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/net
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/sound
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
-#rm -rf usr/lib/modules/5.13.0-19-generic
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img

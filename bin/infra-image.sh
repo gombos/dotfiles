@@ -180,7 +180,7 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # todo - can not mount iso directly in MacOS, need to extract it with xorriso
 # hdiutil attach -verbose -noverify -nomount linux.iso
-# -isohybrid-apm-hfsplus
+# -isohybrid-apm-hfsplus -isohybrid-gpt-basdat
 #xorriso -indev linux.iso -osirrox on -extract / linux
 
 xorriso \
