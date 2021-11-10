@@ -41,11 +41,14 @@
 # Network - DHCP
 # rootfs version
 
+# Todo - remove awk, chmod, chown dependencies
 
-# Todo - remove busybox dependency, like chmod, chown
+stage="${0##*/}"
+echo "$stage"
 
-me="${0##*/}"
-echo "$me"
+if [ "$stage" != 'dracut-pre-pivot' ]; then
+  exit 0
+fi
 
 R="$NEWROOT"
 
