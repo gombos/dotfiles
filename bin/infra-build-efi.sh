@@ -284,7 +284,7 @@ mkdir -p "$mp"
 drive=$(readlink -f $configdrive)
 
 printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
-mount -o ro,noexec,nosuid,nodev,umask=0077 "$drive" "$mp"
+mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
 # Restrict only root process to load kernel modules. This is a reasonable system hardening
@@ -340,7 +340,8 @@ chmod +x /tmp/rdexec
 # todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
-# --keep --verbose --no-compress
+# --keep --verbose --no-compress --no-kernel
+# omit kernel-modules btrfs
 
 dracut --force --no-hostonly --reproducible \
   --add 'dmsquash-live-ntfs' \
@@ -348,6 +349,7 @@ dracut --force --no-hostonly --reproducible \
   --add-drivers 'nls_iso8859_1' \
   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
+  --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
   --include /usr/bin/cut /usr/bin/cut \
   --include /usr/bin/head /usr/bin/head \
@@ -374,6 +376,14 @@ rm initrd.img
 rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
+
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/net
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/sound
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
+#rm -rf usr/lib/modules/5.13.0-19-generic
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
