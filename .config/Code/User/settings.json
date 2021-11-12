@@ -18,5 +18,6 @@
     "files.autoSave": "afterDelay",
     "editor.acceptSuggestionOnCommitCharacter": false,
     "update.mode": "none",
+    "editor.copyWithSyntaxHighlighting": false,
     "workbench.editor.untitled.hint": "hidden"
 }
