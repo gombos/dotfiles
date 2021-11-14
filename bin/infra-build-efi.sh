@@ -244,10 +244,10 @@ exec 1>>/run/initramfs/rd.exec.log 2>&1
 
 echo "stage ${0##*/} "
 
-modprobe isofs
-modprobe btrfs
-modprobe ahci
-modprobe nvme
+#modprobe isofs
+#modprobe btrfs
+#modprobe ahci
+#modprobe nvme
 
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
@@ -356,9 +356,15 @@ chmod +x /tmp/rdexec
 
 # todo - remove btrfs from initramrd and test on bestia - it is the largest kernel module
 
+# include modules that might be reqired to find and mount modules file
+# nls_iso8859_1 - mount vfat EFI partition if modules file is in EFI
+# isofs - mount iso file if modules file is inside the iso
+# ntfs, btrfs - iso file itself might be stored on the ntfs or btrfs filesystem
+# ahci, nvme, uas (USB Attached SCSI) - when booting on bare metal, to find the partition and filesystem
+
 dracut --force --no-hostonly --reproducible \
-  --modules 'bash systemd systemd-initrd btrfs dm dmsquash-live dmsquash-live-ntfs rootfs-block terminfo udev-rules dracut-systemd base fs-lib img-lib shutdown' \
-  --add-drivers 'nls_iso8859_1 autofs4 btrfs isofs overlay ahci nvme' \
+  --modules 'bash systemd systemd-initrd dm dmsquash-live dmsquash-live-ntfs rootfs-block terminfo udev-rules dracut-systemd base fs-lib img-lib shutdown' \
+  --add-drivers 'nls_iso8859_1 btrfs isofs ahci nvme uas' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
@@ -389,7 +395,9 @@ rm -f etc/cmdline.d/00-btrfs.conf
 
 #rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
 #rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
+
+# todo - ideally dm dracut module is not included instead of this hack
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
 #rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
 
 # Recompress
