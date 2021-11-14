@@ -178,10 +178,16 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # 2nd partition -  0xef - ef EFI (FAT-12/16/
 # /tmp/home.img \
 
-# todo - can not mount iso directly in MacOS, need to extract it with xorriso
-# hdiutil attach -verbose -noverify -nomount linux.iso
-# -isohybrid-apm-hfsplus -isohybrid-gpt-basdat
-#xorriso -indev linux.iso -osirrox on -extract / linux
+# hybrid - ISO can be written bit-for-bit to a USB device to make it a working Live USB
+
+# To mount on MacOS
+ # hdiutil attach -nobrowse -nomount linux.iso
+ # mount -t cd9660 /dev/disk4 /tmp/cd
+ # umount /tmp/cd
+ # hdiutil detach /dev/disk4
+
+# Using xorriso on MacOS
+  #xorriso -indev linux.iso -osirrox on -extract / linux
 
 xorriso \
    -as mkisofs \

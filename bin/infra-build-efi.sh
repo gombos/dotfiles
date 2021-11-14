@@ -244,6 +244,11 @@ exec 1>>/run/initramfs/rd.exec.log 2>&1
 
 echo "stage ${0##*/} "
 
+modprobe isofs
+modprobe btrfs
+modprobe ahci
+modprobe nvme
+
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
 
@@ -284,7 +289,6 @@ mkdir -p "$mp"
 drive=$(readlink -f $configdrive)
 
 printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
-modprobe isofs
 mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
@@ -354,6 +358,7 @@ chmod +x /tmp/rdexec
 
 dracut --force --no-hostonly --reproducible \
   --modules 'bash systemd systemd-initrd btrfs dm dmsquash-live dmsquash-live-ntfs rootfs-block terminfo udev-rules dracut-systemd base fs-lib img-lib shutdown' \
+  --add-drivers 'nls_iso8859_1 autofs4 btrfs isofs overlay ahci nvme' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
@@ -382,10 +387,10 @@ rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
 
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
 
 # Recompress
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
