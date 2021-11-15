@@ -336,11 +336,16 @@ chmod +x /tmp/rdexec
 # nls_iso8859_1 - mount vfat EFI partition if modules file is in EFI
 # isofs - mount iso file if modules file is inside the iso
 # ntfs, btrfs - iso file itself might be stored on the ntfs or btrfs filesystem
-# ahci, nvme, uas (USB Attached SCSI) - when booting on bare metal, to find the partition and filesystem
+# ahci, uas (USB Attached SCSI), nvme - when booting on bare metal, to find the partition and filesystem
+
+# Tests:
+# - ahci: boot from ata drive attached to a montherboard
+# - uas: boot from usb external drive
+# - nvme: boot from nvme drive
 
 dracut --force --no-hostonly --reproducible \
   --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \
-  --add-drivers 'nls_iso8859_1 ntfs btrfs isofs ahci nvme uas' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
