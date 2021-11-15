@@ -291,6 +291,10 @@ packages_update_db
 packages_upgrade
 
 install_my_packages packages-laptop.l
+
+rm -rf boot
+rm -rf usr/local
+
 fi
 
 # ---- Cleanup

@@ -79,6 +79,7 @@ image_clean_function() {
     rm_file .dockerenv
     rm_file 'root/{*,.*}'
     rm_file 'etc/ssh/ssh_host*'
+    rm_file 'core*'
 }
 
 find . -name *.pyc -delete

@@ -343,7 +343,9 @@ chmod +x /tmp/rdexec
 # - uas: boot from usb external drive
 # - nvme: boot from nvme drive
 
-# todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that shoudl be enough - test it after removing
+# todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that should be enough - test it after removing
+# todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
+# use archivemount to mount the modules intird file read only
 
 dracut --force --no-hostonly --reproducible \
   --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \

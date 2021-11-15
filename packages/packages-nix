@@ -18,7 +18,7 @@ rm install
 
 nix-channel --update
 
-# nix-env --install ripgrep-all
+# nix-env --install ripgrep-all swtpm
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
