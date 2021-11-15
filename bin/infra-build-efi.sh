@@ -242,13 +242,6 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
 exec 1>>/run/initramfs/rd.exec.log 2>&1
 
-echo "stage ${0##*/} "
-
-#modprobe isofs
-#modprobe btrfs
-#modprobe ahci
-#modprobe nvme
-
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
 
@@ -335,26 +328,9 @@ chmod +x /tmp/rdexec
 
 # Keep initramfs simple and do not require networking
 
-# fedora
-# --nomdadmconf --nolvmconf --xz --add 'livenet dmsquash-live dmsquash-live-ntfs convertfs pollcdrom qemu qemu-net' --omit 'plymouth' --no-hostonly --debug --no-early-microcode --force
-
-# todo --debug --no-early-microcode --nomdadmconf --nolvmconf
-
-# todo  - interesting modules systemd-sysusers, usrmount, livenet
-# --modules 'base bash btrfs dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib kernel-modules rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
-
-# todo - it shoudl not be needed to excluce qemu-net explicitly if qemu is already ommitted - upstream patch opportunity
+# todo --debug --no-early-microcode --xz --keep --verbose --no-compress --no-kernel
+# todo - interesting modules systemd-sysusers, usrmount, livenet, convertfs qemu qemu-net
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
-
-# --keep --verbose --no-compress --no-kernel
-# omit btrfs
-
- #--omit 'nvdimm qemu kernel-modules kernel-modules-extra kernel-network-modules systemd-networkd qemu-net lunmask modsign systemd-sysusers crypt usrmount resume' \
-
-#   --add-drivers 'nls_iso8859_1 autofs4 btrfs isofs overlay' \
-#   --omit-drivers 'nvidia nvidia_drm nvidia_uvm nvidia_modeset' \
-
-# todo - remove btrfs from initramrd and test on bestia - it is the largest kernel module
 
 # include modules that might be reqired to find and mount modules file
 # nls_iso8859_1 - mount vfat EFI partition if modules file is in EFI
@@ -363,8 +339,8 @@ chmod +x /tmp/rdexec
 # ahci, nvme, uas (USB Attached SCSI) - when booting on bare metal, to find the partition and filesystem
 
 dracut --force --no-hostonly --reproducible \
-  --modules 'bash systemd systemd-initrd dm dmsquash-live dmsquash-live-ntfs rootfs-block terminfo udev-rules dracut-systemd base fs-lib img-lib shutdown' \
-  --add-drivers 'nls_iso8859_1 btrfs isofs ahci nvme uas' \
+  --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \
+  --add-drivers 'nls_iso8859_1 ntfs btrfs isofs ahci nvme uas' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
