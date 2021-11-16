@@ -14,6 +14,7 @@ gpg-agent
 # boot
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
+archivemount
 
 # networking
 dnsmasq-base

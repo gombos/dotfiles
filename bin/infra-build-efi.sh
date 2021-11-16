@@ -99,6 +99,10 @@ fi
 mkdir -p /efi/kernel
 cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
+# --fast --best
+
+find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/allmodules.img
+
 # for grub root variable is set to memdisk initially
 # grub_cmdpath is the location from which core.img was loaded as an absolute directory name
 
@@ -285,23 +289,6 @@ printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
 mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
-# Restrict only root process to load kernel modules. This is a reasonable system hardening
-# todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
-# todo - so build and test dracut with --no-kernel
-
-if [ -f /run/media/efi/kernel/modules ]; then
-  mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules \n"
-  mount /run/media/efi/kernel/modules /run/media/modules
-  if [ -d $NEWROOT/lib/modules ]; then
-    rm -rf $NEWROOT/lib/modules
-  fi
-  ln -sf /run/media/modules $NEWROOT/lib/
-  rm -rf /lib/modules
-  ln -sf /run/media/modules /lib/
-  printf "[rd.exec] Mounted modules \n"
-fi
-
 # default init included in the initramfs
 if [ -z "$RDEXEC" ]; then
   RDEXEC="/sbin/infra-init.sh"
@@ -347,11 +334,12 @@ chmod +x /tmp/rdexec
 # todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
 # use archivemount to mount the modules intird file read only
 
+# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
+# --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
+
 dracut --force --no-hostonly --reproducible \
   --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
-  --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
   --include /usr/bin/cut /usr/bin/cut \
   --include /usr/bin/head /usr/bin/head \
@@ -378,14 +366,7 @@ rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
 
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/arch
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/crypto
-
-# todo - ideally dm dracut module is not included instead of this hack
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/lib
-
-# Recompress
+rm -rf usr/lib/modules
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 
 rm -rf /tmp/initrd /tmp/cleanup

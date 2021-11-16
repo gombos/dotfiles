@@ -294,6 +294,12 @@ if [ -f "/run/initramfs/live/nixfile" ]; then
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
+mkdir -p /run/media/modules
+# todo - readonly porbably does not make a difference
+echo '/run/media/efi/kernel/allmodules.img /run/media/modules fuse.archivemount ro,nofail,readonly 0 2' >> $R/etc/fstab
+
+ln -sf /run/media/modules/usr/lib/modules $R/usr/lib/
+
 # --- HOST specific logic
 
 # install all service files
