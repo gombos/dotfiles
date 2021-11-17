@@ -81,4 +81,3 @@ ovmf
 
 # arm
 qemu-user-static
-binfmt-support

@@ -295,8 +295,13 @@ if [ -f "/run/initramfs/live/nixfile" ]; then
 fi
 
 mkdir -p /run/media/modules
+
 # todo - readonly porbably does not make a difference
-echo '/run/media/efi/kernel/allmodules.img /run/media/modules fuse.archivemount ro,nofail,readonly 0 2' >> $R/etc/fstab
+# This will consume about an extra 10 M RAM
+# Maybe using an ext4 or squashfs with /dev/ram0 root would save that 10 MB
+
+#echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,nofail,readonly 0 2' >> $R/etc/fstab
+echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivefs nofail 0 2' >> $R/etc/fstab
 
 ln -sf /run/media/modules/usr/lib/modules $R/usr/lib/
 

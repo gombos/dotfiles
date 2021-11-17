@@ -99,10 +99,6 @@ fi
 mkdir -p /efi/kernel
 cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
-# --fast --best
-
-find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/allmodules.img
-
 # for grub root variable is set to memdisk initially
 # grub_cmdpath is the location from which core.img was loaded as an absolute directory name
 
@@ -188,7 +184,8 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
-mksquashfs /usr/lib/modules /efi/kernel/modules
+find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
+#mksquashfs /usr/lib/modules /efi/kernel/modules
 
 # TCE binary
 mkdir -p /efi/tce
@@ -367,7 +364,9 @@ rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
 
 rm -rf usr/lib/modules
+
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
+#mksquashfs . /efi/kernel/initrd.img
 
 rm -rf /tmp/initrd /tmp/cleanup
 
