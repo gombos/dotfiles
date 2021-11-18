@@ -89,6 +89,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   unzip wget ca-certificates git \
   cryptsetup dmsetup \
   squashfs-tools \
+  archivemount \
   kexec-tools
 
 if ! [ -z "${NVIDIA}" ]; then
@@ -184,8 +185,8 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
-find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
-#mksquashfs /usr/lib/modules /efi/kernel/modules
+#find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
+mksquashfs /usr/lib/modules /efi/kernel/modules
 
 # TCE binary
 mkdir -p /efi/tce
@@ -286,12 +287,42 @@ printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
 mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
 printf "[rd.exec] Mounted config\n"
 
+# Restrict only root process to load kernel modules. This is a reasonable system hardening
+# todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
+# todo - so build and test dracut with --no-kernel
+
+if [ -f /run/media/efi/kernel/modules ]; then
+  mkdir -p /run/media/modules
+  printf "[rd.exec] Mounting modules \n"
+  mount /run/media/efi/kernel/modules /run/media/modules
+  if [ -d $NEWROOT/lib/modules ]; then
+    rm -rf $NEWROOT/lib/modules
+  fi
+  ln -sf /run/media/modules $NEWROOT/lib/
+  rm -rf /lib/modules
+  ln -sf /run/media/modules /lib/
+  printf "[rd.exec] Mounted modules \n"
+fi
+
+if [ -f /run/media/efi/kernel/modules.img-fake ]; then
+  mkdir -p /run/media/modules
+  printf "[rd.exec] Mounting modules \n"
+  /usr/bin/archivemount /run/media/efi/kernel/modules.img /run/media/modules -o ro,readonly
+  if [ -d $NEWROOT/lib/modules ]; then
+    rm -rf $NEWROOT/lib/modules
+  fi
+  ln -sf /run/media/modules/usr/lib/modules $NEWROOT/usr/lib/
+  printf "[rd.exec] Mounted modules \n"
+fi
+
 # default init included in the initramfs
 if [ -z "$RDEXEC" ]; then
   RDEXEC="/sbin/infra-init.sh"
 else
   RDEXEC="$mp/$RDEXEC"
 fi
+
+find  /run/media/modules/
 
 printf "[rd.exec] About to run $RDEXEC \n"
 
@@ -332,9 +363,15 @@ chmod +x /tmp/rdexec
 # use archivemount to mount the modules intird file read only
 
 # --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
-# --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
+
+# --mount '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,x-systemd.requires-mounts-for=/run/media/modules 0 0' \
+#  --mount '/dev/sr0            /run/media/efi     auto              ro,noexec,nosuid,nodev 0 0' \
+
+# adds 10mb to initrd
+#  --include /usr/bin/archivemount /usr/bin/archivemount \
 
 dracut --force --no-hostonly --reproducible \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
@@ -363,9 +400,13 @@ rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
 rm -f etc/cmdline.d/00-btrfs.conf
 
-rm -rf usr/lib/modules
+# todo - ideally dm dracut module is not included instead of this hack
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
 
+rm -rf usr/lib/modules
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
+
 #mksquashfs . /efi/kernel/initrd.img
 
 rm -rf /tmp/initrd /tmp/cleanup
