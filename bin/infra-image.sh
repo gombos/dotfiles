@@ -144,7 +144,7 @@ do
 done
 #[ "$DISK" == "" ] && fail "no loop device available"
 
-sudo mount ${DISK} $MNT_EFI || fail "cannot mount"
+sudo mount ${DISK} $MNT_EFI
 
 cd $MNT_EFI
 sudo git clone https://github.com/gombos/dotfiles.git .dotfiles

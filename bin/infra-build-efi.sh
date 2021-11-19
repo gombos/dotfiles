@@ -228,6 +228,10 @@ rm -rf 055.zip dracut-055
 wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 unzip -q 055.zip
 cd dracut-055
+
+#git clone https://github.com/LaszloGombos/dracut.git
+#cd dracut
+
 ./configure
 make 2>/dev/null
 make install
@@ -370,9 +374,14 @@ chmod +x /tmp/rdexec
 # adds 10mb to initrd
 #  --include /usr/bin/archivemount /usr/bin/archivemount \
 
+# --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
+
+# shutdown - to help kexec
+# terminfo - to debug
+
 dracut --force --no-hostonly --reproducible \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
-  --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules' \
+  --modules 'base dracut-systemd dmsquash-live-ntfs shutdown terminfo' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
   --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
   --include /usr/bin/cut /usr/bin/cut \
