@@ -10,7 +10,7 @@ RELEASE=${RELEASE:=focal}
 
 echo $RELEASE
 
-# "efi minbase base rootfs"
+# "boot minbase base rootfs"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -18,8 +18,8 @@ else
   TARGET="rootfs"
 fi
 
-if echo $TARGET | grep -w -q efi; then
-  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
+if echo $TARGET | grep -w -q boot; then
+  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-boot
   docker push 0gombi0/homelab:efi
 fi
 

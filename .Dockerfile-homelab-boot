@@ -13,7 +13,7 @@ LABEL name=efi
 COPY bin/* /tmp/
 COPY boot/* /tmp/
 WORKDIR /tmp
-RUN ./infra-build-efi.sh
+RUN ./infra-build-boot.sh
 
 FROM scratch
 COPY --from=base /efi /efi
