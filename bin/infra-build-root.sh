@@ -136,6 +136,14 @@ rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
 
+# gh
+
+#curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+#echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+
+wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | apt-key add -
+echo 'deb https://cli.github.com/packages stable main' > etc/apt/sources.list.d/github-cli.list
+
 if ! [ -z "${NVIDIA}" ]; then
   # Install nvidea driver - this is the only package from restricted source
   echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
