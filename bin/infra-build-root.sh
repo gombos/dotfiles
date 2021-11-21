@@ -57,11 +57,9 @@ remove_my_package() {
 }
 
 install_my_packages() {
-  cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
-
-  do
-    install_my_package "$in"
-  done
+#  cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
+  P=`cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | tr '\n' ' \0'`
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 $P
 }
 
 packages_update_db() {
@@ -302,6 +300,7 @@ install_my_packages packages-laptop.l
 
 rm -rf boot
 rm -rf usr/local
+rm -rf etc/apt/sources.list.d/*
 
 fi
 
