@@ -61,6 +61,8 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 # todo - upstream patch
 apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 
+# TODO, uninstall bash, install dash
+
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
 
@@ -78,6 +80,8 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 # coreutils - stat
 # mount - umount
 # kexec shutdown module
+
+# TODO - remove systemd-sysv
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config \
@@ -241,7 +245,6 @@ cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
 
 # Script executed during ram disk phase (rd.exec = ram disk execute)
-
 . /lib/dracut-lib.sh
 
 exec 3>&1 4>&2
@@ -379,7 +382,12 @@ chmod +x /tmp/rdexec
 # shutdown - to help kexec
 # terminfo - to debug
 
-dracut --force --no-hostonly --reproducible \
+
+# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
+
+mkdir -p /tmp/dracut
+
+dracut --force --no-hostonly --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --modules 'base dracut-systemd dmsquash-live-ntfs shutdown terminfo' \
   --include /tmp/infra-init.sh /sbin/infra-init.sh \
@@ -390,6 +398,9 @@ dracut --force --no-hostonly --reproducible \
   --include /usr/bin/touch /usr/bin/touch \
   --include /usr/bin/chmod /usr/bin/chmod \
   initrd.img $KERNEL
+
+# Populate logs with the list of filenames
+find /tmp/dracut
 
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
