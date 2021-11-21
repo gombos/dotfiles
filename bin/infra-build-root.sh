@@ -141,8 +141,8 @@ echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.l
 #curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
 #echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
 
-wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | apt-key add -
-echo 'deb https://cli.github.com/packages stable main' > etc/apt/sources.list.d/github-cli.list
+wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > etc/apt/sources.list.d/github-cli.list
 
 if ! [ -z "${NVIDIA}" ]; then
   # Install nvidea driver - this is the only package from restricted source
