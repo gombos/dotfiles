@@ -1,5 +1,3 @@
-gh
-
 # avoid HW packages
 # avoid distro specific packages
 # The idea is that these pacages are always available
@@ -83,3 +81,5 @@ ovmf
 
 # arm
 qemu-user-static
+
+gh

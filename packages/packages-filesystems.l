@@ -15,6 +15,5 @@ partclone
 parted
 sshfs
 cryptsetup
-extlinux
 zerofree
 xorriso

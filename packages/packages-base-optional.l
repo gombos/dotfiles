@@ -4,6 +4,7 @@
 apt-file
 apt-transport-https
 apt-utils
+ca-certificates
 
 # tools - should be first
 fuse3
