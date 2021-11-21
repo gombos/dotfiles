@@ -165,4 +165,6 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 
 # host specific
 if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
-. "$HOME/.cargo/env"
+
+# TODO
+#. "$HOME/.cargo/env"
