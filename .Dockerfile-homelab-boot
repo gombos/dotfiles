@@ -3,9 +3,6 @@
 # Use my own docker images as a base for testing
 #FROM 0gombi0/homelab:rootfs as base
 
-#FROM ubuntu:focal as base
-#FROM ubuntu:hirsute as base
-
 FROM ubuntu:impish as base
 
 LABEL name=efi

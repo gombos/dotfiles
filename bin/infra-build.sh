@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-RELEASE=${RELEASE:=focal}
+RELEASE=${RELEASE:=impish}
 
 echo $RELEASE
 
