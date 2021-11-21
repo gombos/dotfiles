@@ -15,6 +15,7 @@ apt
 apt-file
 apt-transport-https
 apt-utils
+archivemount
 attr
 autocutsel
 autokey-common
@@ -29,7 +30,6 @@ bind9-dnsutils
 bind9-host
 bind9-libs
 bindfs
-binfmt-support
 bluez
 borgbackup
 bsdextrautils
@@ -73,7 +73,6 @@ e2fsprogs
 efibootmgr
 eject
 ethtool
-extlinux
 fdisk
 file
 findutils
@@ -92,6 +91,7 @@ gawk
 gcc-11-base
 gddrescue
 gdisk
+gh
 git
 git-man
 glib-networking
@@ -795,6 +795,7 @@ openssh-sftp-server
 openssl
 open-vm-tools
 open-vm-tools-desktop
+ovmf
 pandoc
 pandoc-data
 partclone
