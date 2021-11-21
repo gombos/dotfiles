@@ -37,14 +37,16 @@ else
 fi
 
 install_my_package() {
-  if [ -f usr/local/bin/pacapt ]; then
-    if [ "$ID" = "alpine" ]; then
-      usr/local/bin/pacapt -S "$1"
-    else
-      usr/local/bin/pacapt -S --noconfirm "$1"
-    fi
+  if [ -f /usr/bin/apt-get ]; then
+    apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@"
   else
-    apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$1"
+    if [ -f usr/local/bin/pacapt ]; then
+      if [ "$ID" = "alpine" ]; then
+        usr/local/bin/pacapt -S "$@"
+      else
+        usr/local/bin/pacapt -S --noconfirm "$@"
+      fi
+    fi
   fi
 }
 
@@ -59,7 +61,7 @@ remove_my_package() {
 install_my_packages() {
 #  cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
   P=`cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | tr '\n' ' \0'`
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 $P
+  install_my_package $P
 }
 
 packages_update_db() {
