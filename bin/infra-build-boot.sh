@@ -59,7 +59,6 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # workaround for dracut
 # todo - upstream patch
-apt-get purge -y -qq -o Dpkg::Use-Pty=0 fuse3
 
 # TODO, uninstall bash, install dash
 
@@ -81,15 +80,12 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 # mount - umount
 # kexec shutdown module
 
-# TODO - remove systemd-sysv
-
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config \
   udev \
-  systemd-sysv \
   coreutils \
   mount \
-  btrfs-progs ntfs-3g fuse \
+  btrfs-progs ntfs-3g fuse3 \
   unzip wget ca-certificates git \
   cryptsetup dmsetup \
   squashfs-tools \
@@ -228,13 +224,13 @@ mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
 # dracut
-rm -rf 055.zip dracut-055
-wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
-unzip -q 055.zip
-cd dracut-055
+#rm -rf 055.zip dracut-055
+#wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
+#unzip -q 055.zip
+#cd dracut-055
 
-#git clone https://github.com/LaszloGombos/dracut.git
-#cd dracut
+git clone https://github.com/dracutdevs/dracut.git
+cd dracut
 
 ./configure
 make 2>/dev/null
@@ -354,7 +350,7 @@ chmod +x /tmp/rdexec
 # Keep initramfs simple and do not require networking
 
 # todo --debug --no-early-microcode --xz --keep --verbose --no-compress --no-kernel
-# todo - interesting modules systemd-sysusers, usrmount, livenet, convertfs qemu qemu-net
+# todo - interesting modules , usrmount, livenet, convertfs qemu qemu-net
 # todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
 
 # include modules that might be reqired to find and mount modules file
@@ -385,7 +381,6 @@ chmod +x /tmp/rdexec
 # shutdown - to help kexec
 # terminfo - to debug
 
-
 # --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
 # --mount 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev 0 0' \
 #  --include /tmp/infra-init.sh /sbin/infra-init.sh \
@@ -398,29 +393,34 @@ chmod +x /tmp/rdexec
 
 mkdir -p /tmp/dracut
 
-dracut --force --no-hostonly --reproducible --tmpdir /tmp/dracut --keep \
+ls -la /bin/sh
+
+dracut --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
   --modules 'base dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
+mkdir -p /tmp/cleanup/
+mv initrd.img /tmp/cleanup/
+
 # Populate logs with the list of filenames
-find /tmp/dracut
+cd /tmp/dracut/dracut.*/initramfs
+
+find .
 
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-mkdir -p /tmp/cleanup/
-mv initrd.img /tmp/cleanup/
-cd /tmp/cleanup/
+#cd /tmp/cleanup/
 
 # Uncompress
-gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
+#gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
 # Clean some files
-rm initrd.img
-rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
+#rm initrd.img
+#rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
 rm -f usr/lib/dracut/build-parameter.txt
-rm -f etc/cmdline.d/00-btrfs.conf
+#rm -f etc/cmdline.d/00-btrfs.conf
 
 # todo - ideally dm dracut module is not included instead of this hack
 rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
