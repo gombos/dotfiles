@@ -251,6 +251,9 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
 exec 1>>/run/initramfs/rd.exec.log 2>&1
 
+#mkdir /run/media/efi
+#mount -o ro,noexec,nosuid,nodev /dev/sr0  /run/media/efi
+
 # Maybe make the argument more generic URL that curl understands - including file://
 # calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
 
@@ -384,19 +387,20 @@ chmod +x /tmp/rdexec
 
 
 # --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
+# --mount 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev 0 0' \
+#  --include /tmp/infra-init.sh /sbin/infra-init.sh \
+#  --include /tmp/infra-init.sh /sbin/infra-init.sh \
+#  --include /usr/bin/cut /usr/bin/cut \
+#  --include /usr/bin/head /usr/bin/head \
+#  --include /usr/bin/grep /usr/bin/grep \
+#  --include /usr/bin/touch /usr/bin/touch \
+#  --include /usr/bin/chmod /usr/bin/chmod \
 
 mkdir -p /tmp/dracut
 
 dracut --force --no-hostonly --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
-  --modules 'base dracut-systemd dmsquash-live-ntfs shutdown terminfo' \
-  --include /tmp/infra-init.sh /sbin/infra-init.sh \
-  --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
-  --include /usr/bin/cut /usr/bin/cut \
-  --include /usr/bin/head /usr/bin/head \
-  --include /usr/bin/grep /usr/bin/grep \
-  --include /usr/bin/touch /usr/bin/touch \
-  --include /usr/bin/chmod /usr/bin/chmod \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
+  --modules 'base dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
 # Populate logs with the list of filenames
@@ -404,8 +408,6 @@ find /tmp/dracut
 
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
-
-rm -r /tmp/rdexec
 
 mkdir -p /tmp/cleanup/
 mv initrd.img /tmp/cleanup/
@@ -429,7 +431,19 @@ find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/
 
 #mksquashfs . /efi/kernel/initrd.img
 
-rm -rf /tmp/initrd /tmp/cleanup
+mkdir /tmp/updates
+cd /tmp/updates
+
+mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+cp /tmp/infra-init.sh usr/bin/
+
+cp /tmp/*.service usr/lib/systemd/system/
+ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
+
+cd /tmp/
+find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
+
+rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/rdexec
 
 # Populate logs with the list of filenames
 #find /efi

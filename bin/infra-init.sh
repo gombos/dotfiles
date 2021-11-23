@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # first boot of a new instance, run all the “per-instance” configuration
 
 # Warning: error in this file will likely lead to failure to boot
@@ -46,9 +48,18 @@
 stage="${0##*/}"
 echo "stage: $stage"
 
-if [ "$stage" != 'dracut-pre-pivot' ]; then
-  exit 0
+#if [ "$stage" != 'dracut-pre-pivot' ]; then
+#  exit 0
+#fi
+
+if [ -z "$NEWROOT" ]; then
+NEWROOT="/"
+mp="/run/media/efi"
 fi
+
+rm -rf /usr/lib/modules
+mkdir /usr/lib/modules
+mount /run/initramfs/live/kernel/modules /usr/lib/modules
 
 R="$NEWROOT"
 
@@ -435,3 +446,5 @@ if [ "$HOST" == "vm" ]; then
   echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
 fi
+
+systemctl daemon-reload

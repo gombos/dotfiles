@@ -1,0 +1,25 @@
+[Unit]
+Description=Boot
+Documentation=Boot
+Before=sysinit.target
+Before=NetworkManager.service
+Before=network-pre.target
+Before=shutdown.target
+Before=sysinit.target
+Before=systemd-remount-fs.service
+Before=kmod-static-nodes.service
+Before=systemd-modules-load.service
+Before=systemd-udev-trigger.service
+Before=systemd-sysctl.service
+
+DefaultDependencies=no
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/infra-init.sh
+
+[Install]
+# Part of basic.target so this happens early on in firstboot
+WantedBy=basic.target
