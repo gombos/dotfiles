@@ -65,13 +65,9 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
 
-# bootloader
-# mtools - efi iso boot
-
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
-  grub-efi-amd64-bin grub-pc-bin grub2-common \
-  syslinux-common \
-  isolinux mtools dosfstools
+if ! [ -z "${NVIDIA}" ]; then
+  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+fi
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
@@ -89,12 +85,60 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   unzip wget ca-certificates git \
   cryptsetup dmsetup \
   squashfs-tools \
-  archivemount \
   kexec-tools
 
-if ! [ -z "${NVIDIA}" ]; then
-  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
-fi
+
+# dracut
+#rm -rf 055.zip dracut-055
+#wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
+#unzip -q 055.zip
+#cd dracut-055
+
+git clone https://github.com/dracutdevs/dracut.git
+cd dracut
+
+./configure
+make 2>/dev/null
+make install
+cd ..
+
+
+mkdir -p /tmp/dracut
+mkdir -p /efi/kernel
+
+dracut --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
+  --modules 'base dmsquash-live-ntfs shutdown terminfo' \
+  initrd.img $KERNEL
+
+mkdir -p /tmp/cleanup/
+mv initrd.img /tmp/cleanup/
+
+# Populate logs with the list of filenames
+cd /tmp/dracut/dracut.*/initramfs
+
+# Clean some files
+#rm initrd.img
+rm -f usr/lib/dracut/build-parameter.txt
+
+# todo - ideally dm dracut module is not included instead of this hack
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
+
+rm -rf usr/lib/modules
+find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
+
+#mksquashfs . /efi/kernel/initrd.img
+
+cd -
+
+# bootloader
+# mtools - efi iso boot
+
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+  grub-efi-amd64-bin grub-pc-bin grub2-common \
+  syslinux-common \
+  isolinux mtools dosfstools
 
 # kernel binary
 mkdir -p /efi/kernel
@@ -185,9 +229,6 @@ rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
 
-#find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
-mksquashfs /usr/lib/modules /efi/kernel/modules
-
 # TCE binary
 mkdir -p /efi/tce
 mkdir -p /efi/tce/optional
@@ -222,20 +263,6 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
-
-# dracut
-#rm -rf 055.zip dracut-055
-#wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
-#unzip -q 055.zip
-#cd dracut-055
-
-git clone https://github.com/dracutdevs/dracut.git
-cd dracut
-
-./configure
-make 2>/dev/null
-make install
-cd ..
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
@@ -391,45 +418,15 @@ chmod +x /tmp/rdexec
 #  --include /usr/bin/touch /usr/bin/touch \
 #  --include /usr/bin/chmod /usr/bin/chmod \
 
-mkdir -p /tmp/dracut
-
-ls -la /bin/sh
-
-dracut --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
-  --modules 'base dmsquash-live-ntfs shutdown terminfo' \
-  initrd.img $KERNEL
-
-mkdir -p /tmp/cleanup/
-mv initrd.img /tmp/cleanup/
-
-# Populate logs with the list of filenames
-cd /tmp/dracut/dracut.*/initramfs
-
-find .
+# ls -la /bin/sh
 
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-#cd /tmp/cleanup/
-
 # Uncompress
 #gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
-# Clean some files
 #rm initrd.img
-#rm -f usr/lib/modprobe.d/nvidia-graphics-drivers.conf
-rm -f usr/lib/dracut/build-parameter.txt
-#rm -f etc/cmdline.d/00-btrfs.conf
-
-# todo - ideally dm dracut module is not included instead of this hack
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
-find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
-
-rm -rf usr/lib/modules
-find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
-
-#mksquashfs . /efi/kernel/initrd.img
 
 mkdir /tmp/updates
 cd /tmp/updates
@@ -442,6 +439,14 @@ ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/bo
 
 cd /tmp/
 find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
+
+#find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
+
+# install busybox here now that dracut is computed
+
+#find /usr/lib/modules/ -name '*.ko' -print -exec gzip -9 {} \;
+#depmod --verbose --basedir / 5.13.0-19-generic
+mksquashfs /usr/lib/modules /efi/kernel/modules
 
 rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/rdexec
 
