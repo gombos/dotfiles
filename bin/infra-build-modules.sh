@@ -15,10 +15,6 @@ if [ -z "$RELEASE" ]; then
   fi
 fi
 
-if [ -z "$KERNEL" ]; then
-  export KERNEL="5.11.0-34-generic"
-fi
-
 echo $KERNEL
 
 export DEBIAN_FRONTEND=noninteractive

@@ -32,42 +32,16 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-#if [ -z "$RELEASE" ]; then
-#  RELEASE=$VERSION_CODENAME
-#  if [ -z "$RELEASE" ]; then
-#    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
-#  fi
-#fi
-
-if [ -z "$KERNEL" ]; then
-  export KERNEL="5.11.0-34-generic"
-fi
-
 mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
 
-#if ! [ -z "${NVIDIA}" ]; then
-#  # Install nvidea driver - this is the only package from restricted source
-#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > /etc/apt/sources.list.d/restricted.list
-#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> /etc/apt/sources.list.d/restricted.list
-#  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> /etc/apt/sources.list.d/restricted.list
-#fi
-
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-
-# workaround for dracut
-# todo - upstream patch
 
 # TODO, uninstall bash, install dash
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
-
-if ! [ -z "${NVIDIA}" ]; then
-  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
-fi
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
@@ -87,7 +61,6 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   squashfs-tools \
   kexec-tools
 
-
 # dracut
 #rm -rf 055.zip dracut-055
 #wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
@@ -101,7 +74,6 @@ cd dracut
 make 2>/dev/null
 make install
 cd ..
-
 
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
@@ -123,12 +95,22 @@ rm -f usr/lib/dracut/build-parameter.txt
 
 # todo - ideally dm dracut module is not included instead of this hack
 rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+
+# list files
+find .
+
 find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
 
 rm -rf usr/lib/modules
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 
 #mksquashfs . /efi/kernel/initrd.img
+
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
+
+if ! [ -z "${NVIDIA}" ]; then
+  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+fi
 
 cd -
 
