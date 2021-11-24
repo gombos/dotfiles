@@ -43,6 +43,8 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
+
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
 # systemd-sysv - dracut-systemd, reboot
@@ -50,14 +52,16 @@ apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 li
 # mount - umount
 # kexec shutdown module
 
+# asciidoc-base xsltproc docbook-xsl  \
+
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
-  cpio iputils-arping build-essential asciidoc-base xsltproc docbook-xsl libkmod-dev pkg-config \
+  cpio build-essential libkmod-dev pkg-config \
   udev \
   coreutils \
   mount \
   btrfs-progs ntfs-3g fuse3 \
   unzip wget ca-certificates git \
-  cryptsetup dmsetup \
+  dmsetup \
   squashfs-tools \
   kexec-tools
 
@@ -70,7 +74,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 git clone https://github.com/dracutdevs/dracut.git
 cd dracut
 
-./configure
+./configure --disable-documentation
 make 2>/dev/null
 make install
 cd ..
@@ -78,8 +82,11 @@ cd ..
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
-dracut --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
+which poweroff reboot halt
+kmod --version
+
+dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --modules 'base dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
@@ -106,7 +113,7 @@ find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/
 
 #mksquashfs . /efi/kernel/initrd.img
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL apt-utils
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils
 
 if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
@@ -424,10 +431,15 @@ find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/k
 
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
-# install busybox here now that dracut is computed
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd
 
-#find /usr/lib/modules/ -name '*.ko' -print -exec gzip -9 {} \;
-#depmod --verbose --basedir / 5.13.0-19-generic
+# try ot install busybox on rootfs or pick another compression algorithm that kmod supports
+#find /usr/lib/modules/ -name '*.ko' -exec zstd {} \;
+#find /usr/lib/modules/ -name '*.ko' -delete
+busybox depmod
+
+#find /usr/lib/modules
+
 mksquashfs /usr/lib/modules /efi/kernel/modules
 
 rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/rdexec
