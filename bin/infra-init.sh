@@ -370,6 +370,7 @@ if [ "$HOST" == "bestia" ]; then
 
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
+  mount -o subvol=usrlocal /dev/disk/by-label/linux /nix
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 

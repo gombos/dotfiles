@@ -94,7 +94,7 @@ kmod --version
 # hid ehci-hcd uhci-hcd ohci-hcd usbhid hid_generic' \
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme  hid ehci-hcd uhci-hcd ohci-hcd usbhid hid_generic' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
   --modules 'updates base overlay-root dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
