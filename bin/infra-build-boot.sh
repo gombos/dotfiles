@@ -54,10 +54,13 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 
 # asciidoc-base xsltproc docbook-xsl  \
 
+# todo - remove systemd-sysv dependency
+
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio build-essential libkmod-dev pkg-config \
-  udev \
+  udev rsync \
   coreutils \
+  systemd-sysv \
   mount \
   btrfs-progs ntfs-3g fuse3 \
   unzip wget ca-certificates git \
@@ -71,8 +74,9 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 #unzip -q 055.zip
 #cd dracut-055
 
-git clone https://github.com/dracutdevs/dracut.git
-cd dracut
+git clone https://github.com/dracutdevs/dracut.git dracutdir
+cp -av dracut/* dracutdir
+cd dracutdir
 
 ./configure --disable-documentation
 make 2>/dev/null
@@ -85,9 +89,16 @@ mkdir -p /efi/kernel
 which poweroff reboot halt
 kmod --version
 
+# todo - remove dracut-systemd dependency
+# dracut-systemd is now required for overlayroot
+# dracut-systemd adds about 4MB (compressed)
+# dracut-systemd kernel-modules
+
+# hid ehci-hcd uhci-hcd ohci-hcd usbhid hid_generic' \
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
-  --modules 'base dmsquash-live-ntfs shutdown terminfo' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme  hid ehci-hcd uhci-hcd ohci-hcd usbhid hid_generic' \
+  --modules 'updates base overlay-root dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
 mkdir -p /tmp/cleanup/
@@ -101,7 +112,7 @@ cd /tmp/dracut/dracut.*/initramfs
 rm -f usr/lib/dracut/build-parameter.txt
 
 # todo - ideally dm dracut module is not included instead of this hack
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
 
 # list files
 find .

@@ -8,7 +8,7 @@ FROM ubuntu:impish as base
 LABEL name=efi
 
 COPY bin/* /tmp/
-COPY boot/* /tmp/
+COPY boot/ /tmp/
 WORKDIR /tmp
 RUN ./infra-build-boot.sh
 

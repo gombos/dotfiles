@@ -53,13 +53,26 @@ echo "stage: $stage"
 #fi
 
 if [ -z "$NEWROOT" ]; then
-NEWROOT="/"
-mp="/run/media/efi"
+  NEWROOT="/"
+  mp="/run/media/efi"
 fi
 
 rm -rf /usr/lib/modules
 mkdir /usr/lib/modules
-mount /run/initramfs/live/kernel/modules /usr/lib/modules
+
+if [[ -e /dev/disk/by-label/EFI ]]; then
+  mkdir -p /run/media/efi
+  mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
+  mount /run/media/efi/kernel/modules /usr/lib/modules
+fi
+
+if [[ -e /dev/disk/by-label/home ]]; then
+  mount /dev/disk/by-label/home /home
+fi
+
+if [[ -e /run/initramfs/live ]]; then
+  mount /run/initramfs/live/kernel/modules /usr/lib/modules
+fi
 
 R="$NEWROOT"
 
@@ -303,6 +316,7 @@ fi
 # used if live booting from iso
 if [ -f "/run/initramfs/live/nixfile" ]; then
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  mount /run/initramfs/live/nixfile /nix
 fi
 
 mkdir -p /run/media/modules
@@ -399,6 +413,7 @@ fi
 # Persistent container storage for docker
 if [ "$HOST" == "bestia" ] ; then
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
+  mount /dev/disk/by-label/linux -o subvol=containers /var/lib/docker
 fi
 
 if [ "$HOST" == "pincer" ]; then

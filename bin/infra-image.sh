@@ -193,7 +193,7 @@ xorriso \
    -as mkisofs \
    -iso-level 3 \
    -full-iso9660-filenames \
-   -volid "EFI" \
+   -volid "ISO" \
    -output "/tmp/linux.iso" \
    -eltorito-boot boot/grub/bios.img \
      -no-emul-boot \
