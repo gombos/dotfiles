@@ -54,13 +54,10 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 
 # asciidoc-base xsltproc docbook-xsl  \
 
-# todo - remove systemd-sysv dependency
-
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio build-essential libkmod-dev pkg-config \
-  udev rsync \
+  udev \
   coreutils \
-  systemd-sysv \
   mount \
   btrfs-progs ntfs-3g fuse3 \
   unzip wget ca-certificates git \

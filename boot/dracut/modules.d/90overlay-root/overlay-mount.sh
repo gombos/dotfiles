@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# make a read-only nfsroot writeable by using overlayfs
-# the nfsroot is already mounted to $NEWROOT
-# add the parameter rootovl to the kernel, to activate this feature
+# make a read-only root writeable by using overlayfs
+# the root is already mounted to $NEWROOT
+# add the parameter rd.root.overlay to the kernel, to activate this feature
 
 . /lib/dracut-lib.sh
 
