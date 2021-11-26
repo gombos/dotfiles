@@ -12,11 +12,6 @@ depends() {
 }
 
 # called by dracut
-installkernel() {
-    hostonly='' instmods overlay
-}
-
-# called by dracut
 install() {
     inst_hook pre-pivot 20 "$moddir/apply-updates.sh"
 }
