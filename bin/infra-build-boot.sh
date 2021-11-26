@@ -56,6 +56,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio build-essential libkmod-dev pkg-config \
+  dash \
   udev \
   coreutils \
   mount \
@@ -86,12 +87,9 @@ mkdir -p /efi/kernel
 which poweroff reboot halt
 kmod --version
 
-# todo - remove dracut-systemd dependency
-# dracut-systemd is now required for overlayroot
 # dracut-systemd adds about 4MB (compressed)
+# bare minimium modules "base rootfs-block"
 # dracut-systemd kernel-modules
-
-# hid ehci-hcd uhci-hcd ohci-hcd usbhid hid_generic' \
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
@@ -121,13 +119,14 @@ find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/
 
 #mksquashfs . /efi/kernel/initrd.img
 
+cd -
+rm -rf /tmp/dracut
+
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils
 
 if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
 fi
-
-cd -
 
 # bootloader
 # mtools - efi iso boot
