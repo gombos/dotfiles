@@ -461,6 +461,8 @@ if [ "$HOST" == "vm" ]; then
   mkdir -p /home/host
   echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
+  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/bagoly /home
+  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home/host
 fi
 
 systemctl daemon-reload

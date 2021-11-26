@@ -26,6 +26,8 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
+cd /tmp
+
 . ./infra-env.sh
 
 if [ -z "$SCRIPTS" ]; then
@@ -96,30 +98,39 @@ dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --repr
   --modules 'updates base overlay-root dmsquash-live-ntfs shutdown terminfo' \
   initrd.img $KERNEL
 
-mkdir -p /tmp/cleanup/
-mv initrd.img /tmp/cleanup/
+rm initrd.img
 
 # Populate logs with the list of filenames
 cd /tmp/dracut/dracut.*/initramfs
 
 # Clean some files
-#rm initrd.img
 rm -f usr/lib/dracut/build-parameter.txt
 
 # todo - ideally dm dracut module is not included instead of this hack
-#rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+
+# kexec can only handle one initrd file
+#find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
+#rm -rf usr/lib/modules
+
+mkdir updates
+cd updates
+mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+cp /tmp/infra-init.sh usr/bin/
+cp /tmp/*.service usr/lib/systemd/system/
+ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
+cd ..
 
 # list files
 find .
 
-find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
-
-rm -rf usr/lib/modules
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
+
+ls -lha /efi/kernel/initrd.img
 
 #mksquashfs . /efi/kernel/initrd.img
 
-cd -
+cd /tmp
 rm -rf /tmp/dracut
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils
@@ -424,17 +435,17 @@ chmod +x /tmp/rdexec
 
 #rm initrd.img
 
-mkdir /tmp/updates
-cd /tmp/updates
+#mkdir /tmp/updates
+#cd /tmp/updates
 
-mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
-cp /tmp/infra-init.sh usr/bin/
+#mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+#cp /tmp/infra-init.sh usr/bin/
 
-cp /tmp/*.service usr/lib/systemd/system/
-ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
+#cp /tmp/*.service usr/lib/systemd/system/
+#ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
-cd /tmp/
-find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
+#cd /tmp/
+#find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
 
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
