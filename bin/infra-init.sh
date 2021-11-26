@@ -72,6 +72,8 @@ fi
 
 if [[ -e /run/initramfs/live ]]; then
   mount /run/initramfs/live/kernel/modules /usr/lib/modules
+  mount --bind /run/media/efi/kernel /boot
+  mount /run/media/efi/kernel/modules /usr/lib/modules
 fi
 
 R="$NEWROOT"
