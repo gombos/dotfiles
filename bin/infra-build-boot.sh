@@ -95,7 +95,7 @@ kmod --version
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
-  --modules 'updates base overlay-root dmsquash-live-ntfs shutdown terminfo' \
+  --modules 'updates base overlay-root dmsquash-live shutdown terminfo' \
   initrd.img $KERNEL
 
 rm initrd.img

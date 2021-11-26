@@ -315,6 +315,7 @@ fi
 
 # used if live booting from iso
 if [ -f "/run/initramfs/live/nixfile" ]; then
+  mkdir -p /nix
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   mount /run/initramfs/live/nixfile /nix
 fi
@@ -369,6 +370,7 @@ if [ "$HOST" == "bestia" ]; then
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
   mount -o subvol=usrlocal /dev/disk/by-label/linux /nix
 
@@ -413,6 +415,7 @@ fi
 
 # Persistent container storage for docker
 if [ "$HOST" == "bestia" ] ; then
+  mkdir -p /var/lib/docker
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
   mount /dev/disk/by-label/linux -o subvol=containers /var/lib/docker
 fi
