@@ -61,7 +61,7 @@ rm -rf /usr/lib/modules
 mkdir /usr/lib/modules
 
 if [[ -e /dev/disk/by-label/EFI ]]; then
-  mkdir -p /run/media/efi
+  mkdir -p /run/media/efi /boot
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
   mount --bind /run/media/efi /boot
   mount /run/media/efi/kernel/modules /usr/lib/modules
@@ -73,6 +73,7 @@ fi
 
 if [[ -e /run/initramfs/live ]]; then
   mount /run/initramfs/live/kernel/modules /usr/lib/modules
+  mkdir -p /boot
   mount --bind /run/initramfs/live /boot
   mount /run/media/efi/kernel/modules /usr/lib/modules
 fi

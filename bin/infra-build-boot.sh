@@ -89,13 +89,16 @@ mkdir -p /efi/kernel
 which poweroff reboot halt
 kmod --version
 
+# debug
 # dracut-systemd adds about 4MB (compressed)
+# kernel-modules
+# shutdown terminfo
+
 # bare minimium modules "base rootfs-block"
-# dracut-systemd kernel-modules
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
-  --modules 'updates base overlay-root dmsquash-live shutdown terminfo' \
+  --modules 'updates base overlay-root dmsquash-live' \
   initrd.img $KERNEL
 
 rm initrd.img
