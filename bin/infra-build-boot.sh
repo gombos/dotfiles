@@ -97,7 +97,7 @@ kmod --version
 # bare minimium modules "base rootfs-block"
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
   --modules 'updates base overlay-root dmsquash-live' \
   initrd.img $KERNEL
 
