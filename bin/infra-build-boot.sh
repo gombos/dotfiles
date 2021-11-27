@@ -89,16 +89,18 @@ mkdir -p /efi/kernel
 which poweroff reboot halt
 kmod --version
 
-# debug
+# to debug, add the following dracut modules
+# kernel-modules shutdown terminfo debug
+
 # dracut-systemd adds about 4MB (compressed)
-# kernel-modules
-# shutdown terminfo
 
 # bare minimium modules "base rootfs-block"
+#--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
+# overlay-root updates
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
-  --modules 'updates base overlay-root dmsquash-live' \
+  --modules 'exec base dmsquash-live' \
   initrd.img $KERNEL
 
 rm initrd.img
@@ -118,10 +120,12 @@ rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
 
 mkdir updates
 cd updates
-mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+mkdir -p usr/bin/
 cp /tmp/infra-init.sh usr/bin/
-cp /tmp/*.service usr/lib/systemd/system/
-ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
+
+#mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+#cp /tmp/*.service usr/lib/systemd/system/
+#ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 cd ..
 
 # list files

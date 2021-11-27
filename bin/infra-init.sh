@@ -54,31 +54,53 @@ echo "stage: $stage"
 
 if [ -z "$NEWROOT" ]; then
   NEWROOT="/"
-  mp="/run/media/efi"
 fi
 
-rm -rf /usr/lib/modules
-mkdir /usr/lib/modules
+R="$NEWROOT"
+
+mkdir -p $NEWROOT/boot
+
+if ! [[ -e /run/initramfs/live ]]; then
+ mkdir -p /run/initramfs/live
+ mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/initramfs/live
+fi
+
+#mount --bind /run/initramfs/live $NEWROOT/boot
+
+#rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
+#mkdir -p $NEWROOT/usr/lib/modules
+#mount /run/initramfs/live/kernel/modules $NEWROOT/usr/lib/modules
+#ln -sf $NEWROOT/usr/lib/modules /usr/lib/
+
+#modprobe autofs4
 
 if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi /boot
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
   mount --bind /run/media/efi /boot
-  mount /run/media/efi/kernel/modules /usr/lib/modules
+#  mount /run/media/efi/kernel/modules /usr/lib/modules
+  mp="/run/media/efi"
+
+rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
+mkdir -p $NEWROOT/usr/lib/modules
+mount /run/media/efi/kernel/modules $NEWROOT/usr/lib/modules
+ln -sf $NEWROOT/usr/lib/modules /usr/lib/
+
+ modprobe autofs4
 fi
 
-if [[ -e /dev/disk/by-label/home ]]; then
-  mount /dev/disk/by-label/home /home
-fi
+#if [[ -e /dev/disk/by-label/home ]]; then
+  mkdir -p /home
+  echo "LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  ln -sf /home $R/Users
+#  mount /dev/disk/by-label/home /home
+#fi
 
-if [[ -e /run/initramfs/live ]]; then
-  mount /run/initramfs/live/kernel/modules /usr/lib/modules
-  mkdir -p /boot
-  mount --bind /run/initramfs/live /boot
-  mount /run/media/efi/kernel/modules /usr/lib/modules
-fi
-
-R="$NEWROOT"
+#if [[ -e /run/initramfs/live ]]; then
+#  mount /run/initramfs/live/kernel/modules /usr/lib/modules
+#  mkdir -p /boot
+#  mount --bind /run/initramfs/live /boot
+#fi
 
 # --- detect the environment
 
@@ -96,34 +118,33 @@ if [ -d /dev/disk/by-partlabel ]; then
   EFI=$(cd /dev/disk/by-partlabel/ && ls efi_* 2>/dev/null )
 fi
 
-if [ -n "$EFI" ]; then
-  HOST_DISK=$(echo $EFI | cut -d_ -f2)
-fi
+#if [ -n "$EFI" ]; then
+#  HOST_DISK=$(echo $EFI | cut -d_ -f2)
+#fi
 
 #rm $R/lib/systemd/system/nfs-blkmap.service
 
 # Find the partition labels (first match)
-HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* 2>/dev/null | head -n1)
-LINUX_PART=$(cd /dev/disk/by-label/ && ls --color=never linux* 2>/dev/null| head -n1)
+#HOME_PART=$(cd /dev/disk/by-label/ && ls --color=never home* 2>/dev/null | head -n1)
 
 # cpu
-grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
+#grep -q ^flags.*\ hypervisor /proc/cpuinfo && HOST_CPU="vm"
 
-cpu=$(grep "model name" -m1 /proc/cpuinfo)
+#cpu=$(grep "model name" -m1 /proc/cpuinfo)
 
-if [ -z "$HOST_CPU" ]; then
-  case "$cpu" in
-    *E5-2670*)
-      HOST_CPU="bestia"
-    ;;
-    *i7-3630QM*)
-      HOST_CPU="np700g"
-    ;;
-    *i7-4870HQ*)
-      HOST_CPU="taska"
-    ;;
-  esac
-fi
+#if [ -z "$HOST_CPU" ]; then
+#  case "$cpu" in
+#    *E5-2670*)
+#      HOST_CPU="bestia"
+#    ;;
+#    *i7-3630QM*)
+#      HOST_CPU="np700g"
+#    ;;
+#    *i7-4870HQ*)
+#      HOST_CPU="taska"
+#    ;;
+#  esac
+#fi
 
 # Set host based on priorities
 if [ -n "$HOST_CMDLINE" ]; then
@@ -241,8 +262,8 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
-touch $R/etc/sudoers.d/sudoers
-chmod 0440 $R/etc/sudoers.d/sudoers
+#touch $R/etc/sudoers.d/sudoers
+#chmod 0440 $R/etc/sudoers.d/sudoers
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
@@ -321,7 +342,7 @@ fi
 if [ -f "/run/initramfs/live/nixfile" ]; then
   mkdir -p /nix
   echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-  mount /run/initramfs/live/nixfile /nix
+#  mount /run/initramfs/live/nixfile /nix
 fi
 
 mkdir -p /run/media/modules
@@ -376,7 +397,7 @@ if [ "$HOST" == "bestia" ]; then
 #  echo '/home/nix /nix auto bind,noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
-  mount -o subvol=usrlocal /dev/disk/by-label/linux /nix
+#  mount -o subvol=usrlocal /dev/disk/by-label/linux /nix
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -421,7 +442,7 @@ fi
 if [ "$HOST" == "bestia" ] ; then
   mkdir -p /var/lib/docker
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
-  mount /dev/disk/by-label/linux -o subvol=containers /var/lib/docker
+#  mount /dev/disk/by-label/linux -o subvol=containers /var/lib/docker
 fi
 
 if [ "$HOST" == "pincer" ]; then
@@ -468,8 +489,8 @@ if [ "$HOST" == "vm" ]; then
   mkdir -p /home/host
   echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
   echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/bagoly /home
-  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home/host
+#  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/bagoly /home
+#  mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home/host
 fi
 
-systemctl daemon-reload
+#systemctl daemon-reload
