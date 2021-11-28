@@ -41,7 +41,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-# TODO, uninstall bash, install dash
+# TODO - remove bash dependency
 
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
@@ -49,24 +49,17 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
-# systemd-sysv - dracut-systemd, reboot
 # coreutils - stat
 # mount - umount
-# kexec shutdown module
-
-# asciidoc-base xsltproc docbook-xsl  \
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio build-essential libkmod-dev pkg-config \
-  dash \
-  udev \
-  coreutils \
-  mount \
+  dash udev coreutils mount \
   btrfs-progs ntfs-3g fuse3 \
-  unzip wget ca-certificates git \
-  dmsetup \
-  squashfs-tools \
-  kexec-tools
+  unzip wget ca-certificates git
+
+# fake to satisfy mandatory dependencies
+touch /usr/sbin/dmsetup
 
 # dracut
 #rm -rf 055.zip dracut-055
@@ -95,12 +88,13 @@ kmod --version
 # dracut-systemd adds about 4MB (compressed)
 
 # bare minimium modules "base rootfs-block"
+
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
-# overlay-root updates
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
   --modules 'exec base dmsquash-live' \
+  --include /tmp/infra-init.sh /usr/bin/infra-init.sh \
   initrd.img $KERNEL
 
 rm initrd.img
@@ -118,15 +112,15 @@ rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
 #rm -rf usr/lib/modules
 
-mkdir updates
-cd updates
-mkdir -p usr/bin/
-cp /tmp/infra-init.sh usr/bin/
+#mkdir updates
+#cd updates
+#mkdir -p usr/bin/
+#cp /tmp/infra-init.sh usr/bin/
 
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 #cp /tmp/*.service usr/lib/systemd/system/
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
-cd ..
+#cd ..
 
 # list files
 find .
@@ -456,7 +450,7 @@ chmod +x /tmp/rdexec
 
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd squashfs-tools
 
 # try ot install busybox on rootfs or pick another compression algorithm that kmod supports
 #find /usr/lib/modules/ -name '*.ko' -exec zstd {} \;
