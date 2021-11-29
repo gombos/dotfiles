@@ -103,7 +103,7 @@ kmod --version
 # btrfs - for bestia - by far the largest module
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs ahci uas nvme autofs4 btrfs' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs ahci uas nvme btrfs' \
   --modules 'base dmsquash-live' \
   --include /tmp/infra-init.sh           /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL

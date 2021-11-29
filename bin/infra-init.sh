@@ -79,8 +79,6 @@ else
   mount --bind /run/initramfs/live $NEWROOT/boot
 fi
 
-modprobe autofs4
-
 if [[ -e /dev/disk/by-label/home ]]; then
   mkdir -p /home
   echo "LABEL=home /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
