@@ -58,6 +58,8 @@ fi
 
 R="$NEWROOT"
 
+# todo - implement command line argument to disable running this script in initrd
+
 mkdir -p $NEWROOT/boot
 
 if [[ -e /dev/disk/by-label/EFI ]]; then
@@ -81,7 +83,7 @@ modprobe autofs4
 
 if [[ -e /dev/disk/by-label/home ]]; then
   mkdir -p /home
-  echo "LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  echo "LABEL=home /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
   ln -sf /home $R/Users
 fi
 
@@ -315,16 +317,16 @@ then
 fi
 
 # fstab
-if [ -n "$HOME_PART" ]; then
-  mkdir -p /home
-  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
-  ln -sf /home $R/Users
-fi
+#if [ -n "$HOME_PART" ]; then
+#  mkdir -p /home
+#  echo "LABEL=$HOME_PART /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+#  ln -sf /home $R/Users
+#fi
 
 # used if live booting from iso
 if [ -f "/run/initramfs/live/nixfile" ]; then
   mkdir -p /nix
-  echo '/run/initramfs/live/nixfile /nix auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
+  echo '/run/initramfs/live/nixfile /nix squashfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 #  mount /run/initramfs/live/nixfile /nix
 fi
 

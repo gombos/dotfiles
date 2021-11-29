@@ -55,7 +55,6 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
   cpio build-essential libkmod-dev pkg-config \
   dash udev coreutils mount \
-  btrfs-progs ntfs-3g fuse3 \
   unzip wget ca-certificates git
 
 # fake to satisfy mandatory dependencies
@@ -82,6 +81,11 @@ mkdir -p /efi/kernel
 which poweroff reboot halt
 kmod --version
 
+# todo - remove btrfs module fomr initrd and instead mount the modules file earlier
+# this probably need to be done on udev stage (pre-mount is too late)
+
+# todo - remove base dependency after
+
 # to debug, add the following dracut modules
 # kernel-modules shutdown terminfo debug
 
@@ -90,6 +94,13 @@ kmod --version
 # bare minimium modules "base rootfs-block"
 
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
+
+# nls_XX - to mount vfat
+# isofs - to find root within iso file
+# ntfs - to find iso on ntfs
+# ahci uas nvme - low level HW access
+# autofs4 - systemd will try to load this (maybe because of fstab)
+# btrfs - for bestia - by far the largest module
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs ahci uas nvme autofs4 btrfs' \
