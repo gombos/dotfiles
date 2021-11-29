@@ -60,11 +60,6 @@ R="$NEWROOT"
 
 mkdir -p $NEWROOT/boot
 
-if ! [[ -e /run/initramfs/live ]]; then
-  mkdir -p /run/initramfs/live
-  mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/initramfs/live
-fi
-
 if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
@@ -76,8 +71,6 @@ if [[ -e /dev/disk/by-label/EFI ]]; then
   mount /run/media/efi/kernel/modules $NEWROOT/usr/lib/modules
   ln -sf $NEWROOT/usr/lib/modules /usr/lib/
 else
-#fi
-#if [[ -e /run/initramfs/live ]]; then
   rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
   mkdir -p $NEWROOT/usr/lib/modules
   mount /run/initramfs/live/kernel/modules $NEWROOT/usr/lib/modules

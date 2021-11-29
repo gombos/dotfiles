@@ -103,7 +103,13 @@ rm initrd.img
 cd /tmp/dracut/dracut.*/initramfs
 
 # Clean some files
-rm -f usr/lib/dracut/build-parameter.txt
+rm -rf usr/lib/dracut/build-parameter.txt
+rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+rm -rf usr/lib/dracut/hooks/pre-pivot/20-apply-live-updates.sh
+rm -rf usr/lib/dracut/dracut-*
+rm -rf usr/lib/dracut/modules.txt
 
 # todo - ideally dm dracut module is not included instead of this hack
 rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
