@@ -92,9 +92,9 @@ kmod --version
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci uas nvme autofs4' \
-  --modules 'exec base dmsquash-live' \
-  --include /tmp/infra-init.sh /usr/bin/infra-init.sh \
+  --add-drivers 'nls_iso8859_1 isofs ntfs ahci uas nvme autofs4 btrfs' \
+  --modules 'base dmsquash-live' \
+  --include /tmp/infra-init.sh           /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
 
 rm initrd.img
