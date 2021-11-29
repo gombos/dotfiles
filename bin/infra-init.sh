@@ -65,25 +65,16 @@ if ! [[ -e /run/initramfs/live ]]; then
  mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/initramfs/live
 fi
 
-#mount --bind /run/initramfs/live $NEWROOT/boot
-
-#rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
-#mkdir -p $NEWROOT/usr/lib/modules
-#mount /run/initramfs/live/kernel/modules $NEWROOT/usr/lib/modules
-#ln -sf $NEWROOT/usr/lib/modules /usr/lib/
-
-#modprobe autofs4
-
 if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
   mount --bind /run/media/efi $NEWROOT/boot
   mp="/run/media/efi"
 
-rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
-mkdir -p $NEWROOT/usr/lib/modules
-mount /run/media/efi/kernel/modules $NEWROOT/usr/lib/modules
-ln -sf $NEWROOT/usr/lib/modules /usr/lib/
+#  rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
+  mkdir -p $NEWROOT/usr/lib/modules
+  mount /run/media/efi/kernel/modules $NEWROOT/usr/lib/modules
+  ln -sf $NEWROOT/usr/lib/modules /usr/lib/
 
  modprobe autofs4
 fi
@@ -92,17 +83,22 @@ if [[ -e /dev/disk/by-label/home ]]; then
   mkdir -p /home
   echo "LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
   ln -sf /home $R/Users
-#  mount /dev/disk/by-label/home /home
 fi
 
 if [[ -e /run/initramfs/live ]]; then
-rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
-mkdir -p $NEWROOT/usr/lib/modules
+#  rm -rf $NEWROOT/usr/lib/modules /usr/lib/modules
+  mkdir -p $NEWROOT/usr/lib/modules
   mount /run/initramfs/live/kernel/modules $NEWROOT/usr/lib/modules
   mkdir -p $NEWROOT/boot
   mount --bind /run/initramfs/live $NEWROOT/boot
 
   modprobe autofs4
+fi
+
+if [[ -e /dev/disk/by-label/home ]]; then
+  mkdir -p /home
+  echo "LABEL=home /home auto noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  ln -sf /home $R/Users
 fi
 
 # --- detect the environment
