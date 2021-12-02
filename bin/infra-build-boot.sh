@@ -38,6 +38,8 @@ mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
 
+#sed -i -- 's/# deb-src/deb-src/g' /etc/apt/sources.list
+
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
@@ -46,6 +48,18 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
+
+# Build custom kernel that has isofs built in
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 build-essential libncurses5-dev gcc libssl-dev bc libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf fakeroot
+
+#apt-get build-dep -y linux-image-$KERNEL
+#apt-get build-dep -y linux-image-unsigned-$KERNEL
+#apt-get source linux-image-unsigned-$KERNEL
+
+#cd linux-5.13.0
+#make oldconfig
+#scripts/diffconfig .config{.old,}
+#make deb-pkg
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
