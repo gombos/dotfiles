@@ -59,6 +59,7 @@ fi
 R="$NEWROOT"
 
 # todo - implement command line argument to disable running this script in initrd
+# todo - split this into etc/fstab generator and into a an init systemd rc.local script that can be executed without reexecuting initrd
 
 mkdir -p $NEWROOT/boot
 

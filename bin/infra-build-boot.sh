@@ -97,13 +97,12 @@ kmod --version
 
 # nls_XX - to mount vfat
 # isofs - to find root within iso file
-# ntfs - to find iso on ntfs
-# ahci uas nvme - low level HW access
+# ahci mmc_block uas nvme - low level HW access
 # autofs4 - systemd will try to load this (maybe because of fstab)
 # btrfs - for bestia - by far the largest module
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs ahci uas nvme btrfs' \
+  --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas nvme ntfs btrfs' \
   --modules 'base dmsquash-live' \
   --include /tmp/infra-init.sh           /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
@@ -123,7 +122,7 @@ rm -rf usr/lib/dracut/dracut-*
 rm -rf usr/lib/dracut/modules.txt
 
 # todo - ideally dm dracut module is not included instead of this hack
-rm -rf usr/lib/modules/5.13.0-19-generic/kernel/drivers/md
+rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
 # kexec can only handle one initrd file
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
@@ -467,12 +466,14 @@ chmod +x /tmp/rdexec
 
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd squashfs-tools
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd
+
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
 
 # try ot install busybox on rootfs or pick another compression algorithm that kmod supports
 #find /usr/lib/modules/ -name '*.ko' -exec zstd {} \;
 #find /usr/lib/modules/ -name '*.ko' -delete
-busybox depmod
+# busybox depmod
 
 #find /usr/lib/modules
 
