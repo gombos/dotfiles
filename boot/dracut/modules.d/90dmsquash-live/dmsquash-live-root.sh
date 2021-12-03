@@ -367,10 +367,10 @@ ROOTFLAGS="$(getarg rootflags)"
 
 if [ -n "$overlayfs" ]; then
     if [ -n "$FSIMG" ]; then
-      mkdir -m 0755 -p /run/rootfsbase
-      mount -r $FSIMG /run/rootfsbase
+        mkdir -m 0755 -p /run/rootfsbase
+        mount -r $FSIMG /run/rootfsbase
     else
-      ln -sf /run/initramfs/live /run/rootfsbase
+        ln -sf /run/initramfs/live /run/rootfsbase
     fi
     mkdir -m 0755 -p /run/overlayfs
     mkdir -m 0755 -p /run/ovlwork
