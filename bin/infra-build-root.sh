@@ -112,7 +112,6 @@ ln -sf usr/opt
 mkdir -p nix
 ln -sf /run/media go
 
-
 if [ "$TARGET" = "base" ]; then
 # Disable installing recommended and suggested packages by default
 mkdir -p etc/apt/apt.conf.d/
@@ -132,34 +131,10 @@ install_my_packages packages-base-optional.l
 # todo - vmware fix
 rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
-# chrome
-wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
-
-# gh
-
-#curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-#echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > etc/apt/sources.list.d/github-cli.list
-
-if ! [ -z "${NVIDIA}" ]; then
-  # Install nvidea driver - this is the only package from restricted source
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 fi
+# end of base packages
 
-packages_update_db
-
-if ! [ -z "${NVIDIA}" ]; then
-  install_my_package xserver-xorg-video-nvidia-${NVIDIA}
-fi
-
-# Make sure that only restricted package installed is nvidia
-rm etc/apt/sources.list.d/restricted.list
-fi
+# rootfs customizations - both for base and full
 
 install_my_package locales
 locale-gen --purge en_US.UTF-8
@@ -195,6 +170,29 @@ if [ "$TARGET" = "laptop" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
 echo "building laptop"
+
+# chrome
+wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+echo 'deb http://dl.google.com/linux/chrome/deb stable main' > etc/apt/sources.list.d/google-chrome.list
+
+wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > etc/apt/sources.list.d/github-cli.list
+
+if ! [ -z "${NVIDIA}" ]; then
+  # Install nvidea driver - this is the only package from restricted source
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
+fi
+
+packages_update_db
+
+if ! [ -z "${NVIDIA}" ]; then
+  install_my_package xserver-xorg-video-nvidia-${NVIDIA}
+fi
+
+# Make sure that only restricted package installed is nvidia
+rm etc/apt/sources.list.d/restricted.list
 
 # Try both wget first
 if ! [ -f usr/local/bin/pacapt ]; then

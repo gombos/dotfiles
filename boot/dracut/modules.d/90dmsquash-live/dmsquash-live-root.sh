@@ -210,8 +210,6 @@ do_live_overlay() {
             fi
         fi
         if [ -n "$overlayfs" ]; then
-            mkdir -m 0755 -p /run/overlayfs
-            mkdir -m 0755 -p /run/ovlwork
             if [ -n "$readonly_overlay" ] && ! [ -h /run/overlayfs-r ]; then
                 info "No persistent overlay found."
                 unset -v readonly_overlay
@@ -368,7 +366,14 @@ fi
 ROOTFLAGS="$(getarg rootflags)"
 
 if [ -n "$overlayfs" ]; then
-    mkdir -m 0755 -p /run/rootfsbase
+    if [ -n "$FSIMG" ]; then
+      mkdir -m 0755 -p /run/rootfsbase
+      mount -r $FSIMG /run/rootfsbase
+    else
+      ln -sf /run/initramfs/live /run/rootfsbase
+    fi
+    mkdir -m 0755 -p /run/overlayfs
+    mkdir -m 0755 -p /run/ovlwork
     if [ -n "$reset_overlay" ] && [ -h /run/overlayfs ]; then
         ovlfs=$(readlink /run/overlayfs)
         info "Resetting the OverlayFS overlay directory."
@@ -378,12 +383,6 @@ if [ -n "$overlayfs" ]; then
         ovlfs=lowerdir=/run/overlayfs-r:/run/rootfsbase
     else
         ovlfs=lowerdir=/run/rootfsbase
-    fi
-    if [ -n "$FSIMG" ]; then
-      mount -r $FSIMG /run/rootfsbase
-    else
-      mount --bind /run/initramfs/live /run/rootfsbase
-      mkdir -p /run/ovlwork /run/overlayfs
     fi
     if [ -z "$DRACUT_SYSTEMD" ]; then
         printf 'mount -t overlay LiveOS_rootfs -o%s,%s %s\n' "$ROOTFLAGS" \

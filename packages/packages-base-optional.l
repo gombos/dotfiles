@@ -15,7 +15,6 @@ gpg-agent
 # boot
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
-archivemount
 
 # networking
 dnsmasq-base
@@ -23,6 +22,7 @@ ifupdown
 isc-dhcp-client
 ethtool
 wakeonlan
+openssh-server
 
 # storage
 hdparm
