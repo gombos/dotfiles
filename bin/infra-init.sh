@@ -91,8 +91,8 @@ fi
 # command line
 for x in $(cat /proc/cmdline); do
   case $x in
-  systemd.hostname=*)
-    HOST_CMDLINE=${x#systemd.hostname=}
+  hostname=*)
+    HOST_CMDLINE=${x#hostname=}
   ;;
   esac
 done
