@@ -304,7 +304,9 @@ cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
 
 mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 
-#find  $SCRIPTS/
+
+# Disable all the preinstaled cron jobs (except cron.d/ jobs)
+#> $R/etc/crontab
 
 cp /tmp/boot.service usr/lib/systemd/system/
 
