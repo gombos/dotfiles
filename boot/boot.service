@@ -1,6 +1,4 @@
 [Unit]
-Description=Boot
-Documentation=Boot
 Before=sysinit.target
 Before=NetworkManager.service
 Before=network-pre.target

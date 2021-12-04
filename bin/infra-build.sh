@@ -36,10 +36,15 @@ if echo $TARGET | grep -w -q base; then
   docker push 0gombi0/homelab:base
 fi
 
+if echo $TARGET | grep -w -q preconfig; then
+  docker build -t 0gombi0/homelab:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
+  docker push 0gombi0/homelab:rootfs-preconfig
+fi
+
 if echo $TARGET | grep -w -q rootfs; then
-  docker build -t 0gombi0/homelab:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
+  docker build -t 0gombi0/homelab:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop-config
   docker push 0gombi0/homelab:rootfs
-  sudo rm -rf /tmp/laptop
+  sudo rm -rf /tmp/laptop /tmp/squashfs.img
   mkdir -p /tmp/laptop
   infra-get-rootfs.sh /tmp/laptop
   sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
@@ -55,6 +60,6 @@ fi
 
 if echo $TARGET | grep -w -q iso; then
   infra-image.sh
-  sudo tar -c /tmp/*.iso | docker import - 0gombi0/homelab:iso
+#  sudo tar -c /tmp/*.iso | docker import - 0gombi0/homelab:iso
 #  docker push 0gombi0/homelab:iso
 fi

@@ -297,12 +297,24 @@ packages_update_db
 packages_upgrade
 
 install_my_packages packages-laptop.l
+fi
+
+mkdir -p usr/bin/
+cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
+
+mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+
+#find  $SCRIPTS/
+
+cp /tmp/boot.service usr/lib/systemd/system/
+
+ls -la /tmp/boot.service usr/lib/systemd/system/
+
+ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
 rm -rf boot
 rm -rf usr/local
 rm -rf etc/apt/sources.list.d/*
-
-fi
 
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty

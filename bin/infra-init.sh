@@ -61,6 +61,10 @@ R="$NEWROOT"
 # todo - implement command line argument to disable running this script in initrd
 # todo - split this into etc/fstab generator and into a an init systemd rc.local script that can be executed without reexecuting initrd
 
+# initramfs
+# mount modules from ESP
+# populate /etc/fstab
+
 mkdir -p $NEWROOT/boot
 
 if [[ -e /dev/disk/by-label/EFI ]]; then
@@ -78,6 +82,7 @@ else
   mkdir -p $NEWROOT/usr/lib/modules
   mount /run/initramfs/live/kernel/modules $NEWROOT/usr/lib/modules
   mount --bind /run/initramfs/live $NEWROOT/boot
+#  mp="/run/initramfs/live"
 fi
 
 if [[ -e /dev/disk/by-label/home ]]; then

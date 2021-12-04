@@ -52,3 +52,9 @@ pip3 install awscli PyYAML
 pip3 install pyusb temperusb
 pip3 install castero
 pip3 install networkx
+
+# Try both wget first
+if ! [ -f usr/local/bin/pacapt ]; then
+  wget --no-check-certificate https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
+  chmod 755 /usr/local/bin/pacapt
+fi
