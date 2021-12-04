@@ -1,0 +1,15 @@
+FROM 0gombi0/homelab:rootfs-preconfig
+
+LABEL name=laptop
+
+# Setup tmp
+COPY bin/* packages/* /tmp/
+COPY boot/ /tmp/
+
+# Change the workdir to tmp
+WORKDIR /tmp
+
+# Run
+RUN ./infra-build-root.sh config
+
+CMD ["/bin/bash"]
