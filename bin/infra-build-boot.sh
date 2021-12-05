@@ -131,7 +131,6 @@ rm -rf usr/lib/dracut/build-parameter.txt
 rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
 rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
-rm -rf usr/lib/dracut/hooks/pre-pivot/20-apply-live-updates.sh
 rm -rf usr/lib/dracut/dracut-*
 rm -rf usr/lib/dracut/modules.txt
 
@@ -144,12 +143,12 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
 #mkdir updates
 #cd updates
-#mkdir -p usr/bin/
-#cp /tmp/infra-init.sh usr/bin/
 
+#mkdir -p usr/bin/
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 #cp /tmp/*.service usr/lib/systemd/system/
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
+
 #cd ..
 
 # list files
@@ -188,6 +187,9 @@ cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # grub efi binary
 mkdir -p /efi/EFI/BOOT/
 cp /tmp/grub.cfg /efi/EFI/BOOT/
+
+mkdir -p /efi/config/
+touch /efi/config/gombi
 
 # use regexp to remove path part to determine the root
 cat > /tmp/grub_efi.cfg << EOF

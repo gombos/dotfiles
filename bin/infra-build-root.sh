@@ -242,9 +242,6 @@ EOF
 # Enable ssh-keygen.service by default
 ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
-# Workaround for a ripgrep bug - https://bugs.launchpad.net/ubuntu/+source/rust-bat/+bug/1868517
-rm usr/.crates2.json
-
 if [ -f /etc/arch-version ]; then
   git clone https://aur.archlinux.org/google-chrome.git
   cd google-chrome/
@@ -299,20 +296,19 @@ packages_upgrade
 install_my_packages packages-laptop.l
 fi
 
-mkdir -p usr/bin/
-cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
+#mkdir -p usr/bin/
+#cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
+#cp /tmp/boot.service usr/lib/systemd/system/
 
-mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
+#mkdir -p etc/systemd/system/path.target.wants/ usr/lib/systemd/system/
+#ln -sf /lib/systemd/system/boot.service etc/systemd/system/path.target.wants/boot.service
 
+#mkdir -p etc/systemd/system/first-boot-complete.target.wants/ usr/lib/systemd/system/
+#ln -sf /lib/systemd/system/boot.service etc/systemd/system/first-boot-complete.target.wants/boot.service
 
+rm etc/systemd/system/basic.target.wants/boot.service
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 #> $R/etc/crontab
-
-cp /tmp/boot.service usr/lib/systemd/system/
-
-ls -la /tmp/boot.service usr/lib/systemd/system/
-
-ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
 rm -rf boot
 rm -rf usr/local

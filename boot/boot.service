@@ -1,15 +1,12 @@
 [Unit]
 Before=sysinit.target
-Before=NetworkManager.service
 Before=network-pre.target
-Before=shutdown.target
-Before=sysinit.target
 Before=systemd-remount-fs.service
 Before=kmod-static-nodes.service
 Before=systemd-modules-load.service
 Before=systemd-udev-trigger.service
 Before=systemd-sysctl.service
-
+Before=local-fs-pre.target local-fs.target shutdown.target first-boot-complete.target
 DefaultDependencies=no
 Conflicts=shutdown.target
 
@@ -19,5 +16,5 @@ RemainAfterExit=yes
 ExecStart=/usr/bin/infra-init.sh
 
 [Install]
-# Part of basic.target so this happens early on in firstboot
-WantedBy=basic.target
+#WantedBy=paths.target
+WantedBy=first-boot-complete.target

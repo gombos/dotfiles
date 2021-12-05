@@ -123,12 +123,12 @@ else
 fi
 
 # machine-id
-if [ ! -z "$MID" ]; then
-  rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
-  echo $MID > $R/etc/machine-id
-  mkdir -p $R/var/lib/dbus
-  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
-fi
+#if [ ! -z "$MID" ]; then
+#  rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
+#  echo $MID > $R/etc/machine-id
+#  mkdir -p $R/var/lib/dbus
+#  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
+#fi
 
 # sshd host keys
 if [ ! -z "$SSHD_KEY" ]; then
