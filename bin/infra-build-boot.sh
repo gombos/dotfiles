@@ -188,9 +188,6 @@ cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 mkdir -p /efi/EFI/BOOT/
 cp /tmp/grub.cfg /efi/EFI/BOOT/
 
-mkdir -p /efi/config/
-touch /efi/config/gombi
-
 # use regexp to remove path part to determine the root
 cat > /tmp/grub_efi.cfg << EOF
 regexp --set base "(.*)/" \$cmdpath
@@ -303,6 +300,9 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
+
+cp /tmp/infra-boots.sh /efi/infra-boots.sh
+chmod +x /tmp/rdexec
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh

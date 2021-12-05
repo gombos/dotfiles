@@ -16,5 +16,4 @@ RemainAfterExit=yes
 ExecStart=/usr/bin/infra-init.sh
 
 [Install]
-#WantedBy=paths.target
-WantedBy=first-boot-complete.target
+WantedBy=paths.target

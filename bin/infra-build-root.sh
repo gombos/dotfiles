@@ -306,7 +306,7 @@ fi
 #mkdir -p etc/systemd/system/first-boot-complete.target.wants/ usr/lib/systemd/system/
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/first-boot-complete.target.wants/boot.service
 
-rm etc/systemd/system/basic.target.wants/boot.service
+#rm etc/systemd/system/basic.target.wants/boot.service
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 #> $R/etc/crontab
 
