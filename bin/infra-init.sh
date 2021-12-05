@@ -24,5 +24,5 @@ mount --bind $mp $NEWROOT/boot
 mkdir -p $NEWROOT/usr/lib/modules
 mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
-cd $mp
+cd $mp/config
 ( . ./infra-boots.sh )

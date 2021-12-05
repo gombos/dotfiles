@@ -296,6 +296,11 @@ packages_upgrade
 install_my_packages packages-laptop.l
 fi
 
+echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
+
+# Autologin
+sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
+
 #mkdir -p usr/bin/
 #cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
 #cp /tmp/boot.service usr/lib/systemd/system/

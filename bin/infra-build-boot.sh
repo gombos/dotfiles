@@ -301,8 +301,9 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
-cp /tmp/infra-boots.sh /efi/infra-boots.sh
-chmod +x /tmp/rdexec
+mkdir -p /efi/config/
+cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
+chmod +x /efi/config/infra-boots.sh
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh

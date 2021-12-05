@@ -23,6 +23,7 @@ brew install micro ripgrep-all rmlint qemu
 # xquartz
 # microsoft-edge
 # canon-eos-utility
+# gimp
 
 # basictex tesseract pandoc poppler wakeonlan
 

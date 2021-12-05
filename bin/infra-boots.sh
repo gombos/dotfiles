@@ -69,10 +69,10 @@ done
 #rm $R/lib/systemd/system/nfs-blkmap.service
 
 # Per-host configuration is optional
-if [ -d "$mp/config" ]; then
-  cd $mp/config
+if [ -f "rootfs-kulcs.cfg" ]; then
+#  cd $mp/config
   # Per instance configuration file
-  . ./rootfs-*.cfg
+  . ./rootfs-kulcs.cfg
 fi
 
 # --- HOST is known, determine networking
@@ -85,9 +85,6 @@ fi
 if [ "$HOST" == "bestia" ]; then
   IP=3
 fi
-
-echo gombi
-echo $HOST
 
 # --- static IP is known
 
@@ -260,7 +257,7 @@ fi
 # --- HOST specific logic
 
 # install all service files
-if [ -d "$mp/config" ]; then
+#if [ -d "$mp/config" ]; then
   FILES="*.service"
   if [ $FILES != '*.service' ]; then
     for f in *.service; do
@@ -269,7 +266,7 @@ if [ -d "$mp/config" ]; then
       ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
     done
   fi
-fi
+#fi
 
 #if [ "$HOST" == "pincer" ]; then
 #  # make it easy to deploy new rootfs
@@ -362,27 +359,14 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   mkdir -p /run/media/letsencrypt
   cp -r /run/media/efi/config/letsencrypt /run/media/
 
+  rm -rf $R/etc/sudoers.d/sudoers
+
  if [ -f "nginx.conf" ]; then
    cp nginx.conf $R/etc/nginx/
  fi
 fi
 
-if [ "$HOST" == "linux" ]; then
-  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
-
-  # Autologin
-  sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
-
-  # sudo permission for all terminal sessions instead of per terminal - this is a privilege esculation vulnability
-  # echo 'Defaults  !tty_tickets' >> $R/etc/sudoers.d/sudoers
-fi
-
 if [ "$HOST" == "vm" ]; then
-  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
-
-  # Autologin
-  sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
-
   # Mount home directories from the host at boot
   mkdir -p /home/host
   echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
