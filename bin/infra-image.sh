@@ -135,16 +135,16 @@ FILE=/tmp/home.img
 DISK=""
 for i in /dev/loop*
 do
-  if sudo losetup $i $FILE
+  if sudo losetup $i $FILE 2>/dev/null
   then
     DISK=$i
     echo $DISK
     break
   fi
 done
-#[ "$DISK" == "" ] && fail "no loop device available"
+[ "$DISK" == "" ] && fail "no loop device available"
 
-sudo mount ${DISK} $MNT_EFI
+sudo mount $DISK $MNT_EFI
 
 cd $MNT_EFI
 sudo git clone https://github.com/gombos/dotfiles.git .dotfiles
