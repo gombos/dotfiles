@@ -127,10 +127,10 @@ sudo mkdir -p /tmp/iso/LiveOS
 sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
 
 # home
-dd if=/dev/zero of=/tmp/home.img bs=1M count=4
-mkfs.ext4 -L "home_iso" /tmp/home.img
+FILE=/tmp/iso/home.img
+dd if=/dev/zero of=$FILE bs=1M count=4
+mkfs.ext4 -L "home_iso" $FILE
 
-FILE=/tmp/home.img
 # Find an empty loopback device
 DISK=""
 for i in /dev/loop*
@@ -205,7 +205,6 @@ xorriso \
    -eltorito-alt-boot \
      -e EFI/efiboot.img \
      -no-emul-boot \
-   -append_partition 2 0xef /tmp/home.img \
    -graft-points \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
