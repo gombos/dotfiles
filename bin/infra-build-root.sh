@@ -221,31 +221,16 @@ $SCRIPTS/infra-install-vmware-workstation.sh
 packages_update_db
 packages_upgrade
 
-cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
-[Unit]
-Description=Regenerate SSH host keys
-Before=ssh.service
-ConditionFileIsExecutable=/usr/bin/ssh-keygen
-ConditionFileNotEmpty=!/etc/ssh/ssh_host_ed25519_key
-
-[Service]
-Type=oneshot
-ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
-ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
-ExecStart=/usr/bin/ssh-keygen -A -v
-ExecStartPost=/bin/systemctl --no-reload disable %n
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Enable ssh-keygen.service by default
-ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
-
 if [ -f /etc/arch-version ]; then
   git clone https://aur.archlinux.org/google-chrome.git
   cd google-chrome/
   makepkg -si
+fi
+
+packages_update_db
+packages_upgrade
+
+install_my_packages packages-laptop.l
 fi
 
 # ---- Configure etc
@@ -286,15 +271,68 @@ rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
 # disable pulseaudio - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/pulseaudio.service ] && rm etc/systemd/user/default.target.wants/pulseaudio.service
 
-rm -rf 'boot/{*,.*}'
-fi
+# ssh-keygen.service
+cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
+[Unit]
+Description=Regenerate SSH host keys
+Before=ssh.service
+ConditionFileIsExecutable=/usr/bin/ssh-keygen
+ConditionFileNotEmpty=!/etc/ssh/ssh_host_ed25519_key
 
-if [ "$TARGET" = "laptop" ]; then
-packages_update_db
-packages_upgrade
+[Service]
+Type=oneshot
+ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
+ExecStartPre=-/bin/sh -c "/bin/rm -f -v /etc/ssh/ssh_host_*_key*"
+ExecStart=/usr/bin/ssh-keygen -A -v
+ExecStartPost=/bin/systemctl --no-reload disable %n
 
-install_my_packages packages-laptop.l
-fi
+[Install]
+WantedBy=multi-user.target
+EOF
+
+mkdir -p $R/etc/systemd/system/multi-user.target.wants
+ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
+
+# home.service
+cat > /lib/systemd/system/home.service << 'EOF'
+[Unit]
+Description=Load VMware shared folders
+After=sys-fs-fuse-connections.mount
+ConditionVirtualization=vmware
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home
+
+[Install]
+WantedBy=local-fs.target
+EOF
+
+mkdir -p $R/etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home.service $R/etc/systemd/system/local-fs.target.wants/
+
+# home-host.service
+cat > /lib/systemd/system/home-host.service << 'EOF'
+[Unit]
+Description=Load VMware shared folders
+After=sys-fs-fuse-connections.mount
+After=home.service
+ConditionVirtualization=vmware
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/host /home/host
+
+[Install]
+WantedBy=local-fs.target
+EOF
+
+mkdir -p $R/etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home-host.service $R/etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 

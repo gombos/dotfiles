@@ -365,10 +365,3 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
    cp nginx.conf $R/etc/nginx/
  fi
 fi
-
-if [ "$HOST" == "vm" ]; then
-  # Mount home directories from the host at boot
-  mkdir -p /home/host
-  echo '.host:/bagoly /home fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-  echo '.host:/home /home/host fuse.vmhgfs-fuse defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty 0 0' >> $R/etc/fstab
-fi
