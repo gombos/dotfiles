@@ -5,6 +5,7 @@ hardware/rainloop
 fedora
 ubuntu
 debian
+debian:unstable-slim
 archlinux
 amazonlinux
 clearlinux
