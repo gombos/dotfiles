@@ -1,12 +1,26 @@
-nextcloud
-shaarli/shaarli
-dovecot/dovecot
-amazon/aws-cli
-nginx
-vaultwarden/server:latest
-caddy/caddy:alpine
-lukechilds/dockerpi
-certbot/certbot
+# distros
 amazonlinux2
 alpine
 hardware/rainloop
+fedora
+ubuntu
+debian
+archlinux
+amazonlinux
+clearlinux
+lukechilds/dockerpi
+
+# apps
+python
+busybox
+amazon/aws-cli
+
+# services
+nginx
+caddy
+nextcloud
+shaarli/shaarli
+dovecot/dovecot
+vaultwarden/server
+lukechilds/dockerpi
+certbot/certbot
