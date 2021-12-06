@@ -1,1 +1,1 @@
-sudo docker run --tty --interactive --rm $1 /bin/sh
+sudo docker run --tty --interactive --rm --volume /home/:/home  $1 /bin/sh
