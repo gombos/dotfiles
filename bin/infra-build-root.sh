@@ -293,8 +293,8 @@ EOF
 mkdir -p $R/etc/systemd/system/multi-user.target.wants
 ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
-# home.service
-cat > /lib/systemd/system/home.service << 'EOF'
+# home-vmware.service
+cat > /lib/systemd/system/home-vmware.service << 'EOF'
 [Unit]
 Description=Load VMware shared folders
 After=sys-fs-fuse-connections.mount
@@ -311,10 +311,10 @@ WantedBy=local-fs.target
 EOF
 
 mkdir -p $R/etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home.service $R/etc/systemd/system/local-fs.target.wants/
+ln -sf /lib/systemd/system/home-vmware.service $R/etc/systemd/system/local-fs.target.wants/
 
-# home-host.service
-cat > /lib/systemd/system/home-host.service << 'EOF'
+# home-host-vmware.service
+cat > /lib/systemd/system/home-host-vmware.service << 'EOF'
 [Unit]
 Description=Load VMware shared folders
 After=sys-fs-fuse-connections.mount
@@ -332,7 +332,7 @@ WantedBy=local-fs.target
 EOF
 
 mkdir -p $R/etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-host.service $R/etc/systemd/system/local-fs.target.wants/
+ln -sf /lib/systemd/system/home-host-vmware.service $R/etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
