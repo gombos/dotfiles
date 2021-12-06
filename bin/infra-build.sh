@@ -39,24 +39,24 @@ if echo $TARGET | grep -w -q container; then
 fi
 
 if echo $TARGET | grep -w -q base; then
-  docker build -t 0gombi0/homelab:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
-  docker push 0gombi0/homelab:base
+  docker build -t 0gombi0/homelab-vm:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
+  docker push 0gombi0/homelab-vm:base
 fi
 
 if echo $TARGET | grep -w -q preconfig; then
-  docker build -t 0gombi0/homelab:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
-  docker push 0gombi0/homelab:rootfs-preconfig
+  docker build -t 0gombi0/homelab-baremetal:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
+  docker push 0gombi0/homelab-baremetal:rootfs-preconfig
 fi
 
 if echo $TARGET | grep -w -q rootfs; then
-  docker build -t 0gombi0/homelab:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop-config
-  docker push 0gombi0/homelab:rootfs
+  docker build -t 0gombi0/homelab-baremetal:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop-config
+  docker push 0gombi0/homelab-baremetal:rootfs
   sudo rm -rf /tmp/laptop /tmp/squashfs.img
   mkdir -p /tmp/laptop
   infra-get-rootfs.sh /tmp/laptop
   sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
-  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab:squashfs
-  docker push 0gombi0/homelab:squashfs
+  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab-baremetal:squashfs
+  docker push 0gombi0/homelab-baremetal:squashfs
   sudo rm -rf /tmp/laptop
 fi
 

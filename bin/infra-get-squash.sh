@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  image="0gombi0/homelab:squashfs"
+  image="0gombi0/homelab-baremetal:squashfs"
   sudo docker pull $image
 else
   image="$1"

@@ -342,6 +342,7 @@ fi
 
 if [ "$HOST" == "pincer" ]; then
   ln -sf /home/containers $R/var/lib/docker
+  rm -rf $R/etc/sudoers.d/sudoers
 fi
 
 if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
@@ -358,8 +359,6 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   # Make a rw copy
   mkdir -p /run/media/letsencrypt
   cp -r /run/media/efi/config/letsencrypt /run/media/
-
-  rm -rf $R/etc/sudoers.d/sudoers
 
  if [ -f "nginx.conf" ]; then
    cp nginx.conf $R/etc/nginx/
