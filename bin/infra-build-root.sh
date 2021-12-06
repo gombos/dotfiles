@@ -296,10 +296,9 @@ ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.t
 # home-vmware.service
 cat > /lib/systemd/system/home-vmware.service << 'EOF'
 [Unit]
-Description=Load VMware shared folders
+Description=Mount VMware shared folders - home
 After=sys-fs-fuse-connections.mount
 ConditionVirtualization=vmware
-DefaultDependencies=no
 
 [Service]
 Type=oneshot
@@ -316,11 +315,10 @@ ln -sf /lib/systemd/system/home-vmware.service $R/etc/systemd/system/local-fs.ta
 # home-host-vmware.service
 cat > /lib/systemd/system/home-host-vmware.service << 'EOF'
 [Unit]
-Description=Load VMware shared folders
+Description=Mount VMware shared folders - host
 After=sys-fs-fuse-connections.mount
-After=home.service
+After=home-vmware.service
 ConditionVirtualization=vmware
-DefaultDependencies=no
 
 [Service]
 Type=oneshot
