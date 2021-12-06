@@ -81,5 +81,3 @@ ovmf
 
 # arm
 qemu-user-static
-
-gh

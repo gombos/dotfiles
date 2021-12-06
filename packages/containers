@@ -14,6 +14,8 @@ lukechilds/dockerpi
 python
 busybox
 amazon/aws-cli
+java
+
 
 # services
 nginx
@@ -24,3 +26,6 @@ dovecot/dovecot
 vaultwarden/server
 lukechilds/dockerpi
 certbot/certbot
+
+# mine
+0gombi0/homelab

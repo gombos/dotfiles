@@ -17,3 +17,6 @@ network-manager
 
 # x11
 lxpanel
+
+# needs extra config
+gh

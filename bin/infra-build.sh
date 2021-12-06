@@ -26,9 +26,16 @@ fi
 if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
   sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
+  sudo rm -rf /tmp/minbase/var/cache/apt /tmp/minbase/var/log /tmp/minbase/var/lib/apt/
   cd /tmp/minbase && sudo tar -c . | docker import - 0gombi0/homelab:minbase && cd -
   docker push 0gombi0/homelab:minbase
   sudo rm -rf /tmp/minbase
+fi
+
+# not needed for iso
+if echo $TARGET | grep -w -q container; then
+  docker build -t 0gombi0/homelab:latest    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-container
+  docker push 0gombi0/homelab:latest
 fi
 
 if echo $TARGET | grep -w -q base; then
