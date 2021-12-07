@@ -338,6 +338,7 @@ fi
 if [ "$HOST" == "bestia" ] ; then
   mkdir -p /var/lib/docker
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
 if [ "$HOST" == "pincer" ]; then
