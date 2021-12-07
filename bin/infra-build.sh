@@ -39,8 +39,8 @@ if echo $TARGET | grep -w -q container; then
 fi
 
 if echo $TARGET | grep -w -q base; then
-  docker build -t 0gombi0/homelab-vm:base    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
-  docker push 0gombi0/homelab-vm:base
+  docker build -t 0gombi0/homelab-baremetal:vm    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
+  docker push 0gombi0/homelab-baremetal:vm
 fi
 
 if echo $TARGET | grep -w -q preconfig; then

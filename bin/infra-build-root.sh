@@ -332,6 +332,29 @@ EOF
 mkdir -p $R/etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home-host-vmware.service $R/etc/systemd/system/local-fs.target.wants/
 
+# home-img.service
+cat > /lib/systemd/system/home-img.service << 'EOF'
+
+[Unit]
+Description=Mount home.img file as /home if exists
+ConditionPathExists=/run/initramfs/live/home.img
+
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work
+ExecStart=mount /run/initramfs/live/home.img /run/initramfs/home/lower
+ExecStart=mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home
+ExecStart=chown -R 99:0 /home
+
+[Install]
+WantedBy=local-fs.target
+EOF
+
+mkdir -p $R/etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home-img.service $R/etc/systemd/system/local-fs.target.wants/
+
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
 
 # Autologin

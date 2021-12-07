@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-vm:base
+FROM 0gombi0/homelab-baremetal:vm
 
 LABEL name=laptop
 

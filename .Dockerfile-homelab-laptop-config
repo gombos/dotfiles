@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab:rootfs-preconfig
+FROM 0gombi0/homelab-baremetal:rootfs-preconfig
 
 LABEL name=laptop
 
