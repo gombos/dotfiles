@@ -7,7 +7,7 @@
     "telemetry.enableTelemetry": false,
     "telemetry.enableCrashReporter": false,
     "workbench.colorTheme": "Solarized Dark",
-    "window.zoomLevel": 0,
+    "window.zoomLevel": 1,
     "workbench.activityBar.visible": false,
     "workbench.statusBar.visible": false,
     "workbench.welcome.enabled": false,

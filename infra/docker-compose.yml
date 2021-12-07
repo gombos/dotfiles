@@ -1,13 +1,24 @@
 version: '3.8'
 
 services:
-#  watchtower:
-#    container_name: watchtower
-#    image: containrrr/watchtower
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    command: --interval "3600" --cleanup
-#    restart: always
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval "3600" --cleanup
+    restart: always
+
+  caddy:
+    container_name: caddy
+    image: caddy
+    restart: always
+    ports:
+      -  80:80
+      - 443:443
+
+    volumes:
+      - /home/www:/usr/share/caddy/html
 
 #  nginx:
 #    container_name: nginx
