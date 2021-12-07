@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -f /sbin/kexec ]; then
-  sudo /sbin/kexec -l /boot/kernel/vmlinuz --initrd=/boot/kernel/initrd.img --reuse-cmdline
+  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
   sudo systemctl kexec
 else
   sudo /sbin/reboot

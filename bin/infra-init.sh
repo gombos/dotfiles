@@ -20,7 +20,7 @@ else
 fi
 
 mkdir -p $NEWROOT/boot
-mount --bind $mp $NEWROOT/boot
+mount --bind $mp/kernel $NEWROOT/boot
 mkdir -p $NEWROOT/usr/lib/modules
 mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
