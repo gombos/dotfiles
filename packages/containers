@@ -5,18 +5,25 @@ hardware/rainloop
 fedora
 ubuntu
 debian
-debian:unstable-slim
+debian:unstable-slim - test latest deb packages
 archlinux
 amazonlinux
 clearlinux
+centos
+oraclelinux
+photon
+opensuse/leap
+opensuse/tumbleweed
 lukechilds/dockerpi
 
-# apps
+# base
 python
 busybox
 amazon/aws-cli
-java
-
+openjdk
+golang
+rust
+bash
 
 # services
 nginx
@@ -27,6 +34,8 @@ dovecot/dovecot
 vaultwarden/server
 lukechilds/dockerpi
 certbot/certbot
+redis
+node
 
 # mine
 0gombi0/homelab
