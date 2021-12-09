@@ -1,14 +1,6 @@
 version: '3'
 
 services:
-  watchtower:
-    container_name: watchtower
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval "3600" --cleanup
-    restart: always
-
   caddy:
     container_name: caddy
     image: caddy:alpine
@@ -21,6 +13,14 @@ services:
       - /home/www:/usr/share/caddy
       - /home/caddy:/config
       - /home/caddy:/data
+
+#  watchtower:
+#    container_name: watchtower
+#    image: containrrr/watchtower
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    command: --interval "3600" --cleanup
+#    restart: always
 
 #  nginx:
 #    container_name: nginx
