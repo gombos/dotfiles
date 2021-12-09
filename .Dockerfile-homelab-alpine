@@ -1,9 +1,0 @@
-FROM alpine
-
-LABEL name=alpine
-
-COPY bin/* packages/* /tmp/
-WORKDIR /tmp/
-RUN ./infra-build-root.sh
-
-CMD ["/bin/bash"]

@@ -1,41 +1,44 @@
-# distros
-amazonlinux2
-alpine
-hardware/rainloop
-fedora
+# distros - deb
 ubuntu
 debian
-debian:unstable-slim - test latest deb packages
-archlinux
-amazonlinux
-clearlinux
-centos
-oraclelinux
-photon
+debian:unstable-slim - test packages
+
+# distors - rpm
+amazonlinux2 - by Amazon
+fedora - latest packages
+opensuse/tumbleweed - latest packages
 opensuse/leap
-opensuse/tumbleweed
-lukechilds/dockerpi
+centos - free RedHat Enterprise compatbile, obsolete
+tgagor/centos - free RedHat Enterprise compatbile
+photon - minimal OS for docker by VMWare
+
+# distros - other
+archlinux
+manjarolinux/base
+alpine - smallest image
+clearlinux - by Intel
+lukechilds/dockerpi - Raspberry Pi
 
 # base
+bash
 python
 busybox
 amazon/aws-cli
 openjdk
 golang
 rust
-bash
 
 # services
 nginx
 caddy
+redis
+node
 nextcloud
 shaarli/shaarli
 dovecot/dovecot
 vaultwarden/server
-lukechilds/dockerpi
 certbot/certbot
-redis
-node
+hardware/rainloop - web based email client
 
 # mine
 0gombi0/homelab

@@ -1,9 +1,0 @@
-FROM ubuntu:groovy
-
-LABEL name=ubuntu
-
-COPY bin/* packages/* /tmp/
-WORKDIR /tmp/
-RUN ./infra-build-root.sh
-
-CMD ["/bin/bash"]
