@@ -29,11 +29,11 @@ if [ -z "$RELEASE" ]; then
 fi
 
 # order of increased package lists
-# container, base, laptop
+# container, base, extra
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="laptop"
+  TARGET="extra"
 fi
 
 install_my_package() {
@@ -166,10 +166,10 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 
-if [ "$TARGET" = "laptop" ]; then
+if [ "$TARGET" = "extra" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
-echo "building laptop"
+echo "building extra"
 
 # chrome
 wget --no-check-certificate -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -230,7 +230,7 @@ fi
 packages_update_db
 packages_upgrade
 
-install_my_packages packages-laptop.l
+install_my_packages packages-extra.l
 fi
 
 # ---- Configure etc

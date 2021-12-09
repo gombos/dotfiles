@@ -1,3 +1,6 @@
+# Full HW support
+# All productivity tools
+
 # devices
 linux-firmware
 

@@ -1,6 +1,6 @@
 FROM 0gombi0/homelab-baremetal:vm
 
-LABEL name=laptop
+LABEL name=extra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
@@ -9,6 +9,6 @@ COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 
 # Run
-RUN ./infra-build-root.sh laptop
+RUN ./infra-build-root.sh extra
 
 CMD ["/bin/bash"]
