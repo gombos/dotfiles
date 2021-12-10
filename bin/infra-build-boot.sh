@@ -92,9 +92,6 @@ cd ..
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
-which poweroff reboot halt
-kmod --version
-
 # todo - remove btrfs module fomr initrd and instead mount the modules file earlier
 # this probably need to be done on udev stage (pre-mount is too late)
 
@@ -117,8 +114,8 @@ kmod --version
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas nvme ntfs btrfs' \
-  --modules 'base dmsquash-live' \
-  --include /tmp/infra-init.sh           /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
+  --modules dmsquash-live \
+  --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
 
 rm initrd.img
@@ -272,12 +269,10 @@ mkdir -p /efi/tce/optional
 wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
 wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
 wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
-
 mv Core-current.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
 echo "openssl-1.1.1.tcz " >> /efi/tce/onboot.lst
 echo "openssh.tcz" >> /efi/tce/onboot.lst
-
 mkdir -p tce/opt
 cd tce
 echo "opt" > opt/.filetool.lst
