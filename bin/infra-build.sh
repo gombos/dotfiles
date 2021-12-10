@@ -14,8 +14,8 @@ else
   TARGET="rootfs"
 fi
 
-if echo $TARGET | grep -w -q boot; then
-  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-boot
+if echo $TARGET | grep -w -q efi; then
+  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
   docker push 0gombi0/homelab:efi
 fi
 
