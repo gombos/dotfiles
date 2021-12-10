@@ -306,10 +306,10 @@ if [ "$HOST" == "bestia" ] || [ -f "/run/initramfs/live/nixfile" ]; then
   ln -sf /nix/var/nix/profiles/default $R/usr/local
   ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
 
-  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
-  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
-  echo "nixbld:!::nixbld" >> $R/etc/gshadow
-  echo "nixbld:x:503:nixbld" >> $R/etc/group
+#  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
+#  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
+#  echo "nixbld:!::nixbld" >> $R/etc/gshadow
+  echo "nixbld:x:503:nobody" >> $R/etc/group
 fi
 
 # server profile
