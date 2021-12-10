@@ -66,8 +66,6 @@ for x in $(cat /proc/cmdline); do
   esac
 done
 
-#rm $R/lib/systemd/system/nfs-blkmap.service
-
 # Per-host configuration is optional
 if [ -f "rootfs-kulcs.cfg" ]; then
 #  cd $mp/config
@@ -241,13 +239,6 @@ if [ -f "/run/initramfs/live/nixfile" ]; then
   echo '/run/initramfs/live/nixfile /nix squashfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
 fi
 
-# todo - readonly porbably does not make a difference
-# This will consume about an extra 10 M RAM
-# Maybe using an ext4 or squashfs with /dev/ram0 root would save that 10 MB
-
-#echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,nofail,readonly 0 2' >> $R/etc/fstab
-#echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivefs nofail,x-systemd.wanted-by=systemd-udevd.service,x-systemd.before=sysinit.target 0 0' >> $R/etc/fstab
-
 # --- HOST specific logic
 
 # install all service files
@@ -263,9 +254,6 @@ fi
 #fi
 
 #if [ "$HOST" == "pincer" ]; then
-#  # make it easy to deploy new rootfs
-#  echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> $R/etc/sudoers.d/sudoers
-
 #  # Patch apcupsd config to connect it via usb
 #  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
 #  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -284,8 +272,6 @@ fi
 #fi
 
 if [ "$HOST" == "bestia" ]; then
-  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
-
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
 
