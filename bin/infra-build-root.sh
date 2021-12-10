@@ -247,7 +247,7 @@ fi
 ln -sf /dev/null etc/systemd/system/timers.target.wants/man-db.timer
 
 # Disable autoloading some modules
-rm usr/lib/modules-load.d/open-vm-tools-desktop.conf
+rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 
 # Disable some services by default
 [ -f etc/systemd/system/multi-user.target.wants/dnsmasq.service ] && rm etc/systemd/system/multi-user.target.wants/dnsmasq.service

@@ -2,7 +2,7 @@
 
 mnt linux_bestia
 
-DIR=$MNTDIR/linux_bestia/tmp
+DIR=$MNTDIR/linux_bestia/tmproot
 
 rw $MNTDIR/linux_bestia
 sudo btrfs subvolume create $DIR
@@ -13,7 +13,7 @@ infra-get-rootfs.sh $DIR
 cd $DIR
 version=$(cat var/integrity/id)
 cd ..
-sudo mv tmp linux-$version
+sudo mv tmproot linux-$version
 
 # Todo - Dedup
 #sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR

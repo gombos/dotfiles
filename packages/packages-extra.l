@@ -23,3 +23,4 @@ lxpanel
 
 # needs extra config
 gh
+jq

@@ -27,6 +27,7 @@ amazon/aws-cli
 openjdk
 golang
 rust
+replco/polygott # replit - all runtimes
 
 # services
 nginx

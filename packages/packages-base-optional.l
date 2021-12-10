@@ -40,3 +40,5 @@ laptop-detect
 lm-sensors
 dmidecode
 
+# memory
+procps

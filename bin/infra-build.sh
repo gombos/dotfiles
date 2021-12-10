@@ -6,11 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-RELEASE=${RELEASE:=impish}
-
-echo $RELEASE
-
-# "boot minbase base rootfs"
+# "boot minbase container base preconfig rootfs"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -25,8 +21,9 @@ fi
 
 if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
-  sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
-  sudo rm -rf /tmp/minbase/var/cache/apt /tmp/minbase/var/log /tmp/minbase/var/lib/apt/
+  sudo LANG=C debootstrap --variant=minbase --components=main,universe --exclude=procps,libprocps8,usrmerge,sensible-utils $RELEASE /tmp/minbase
+  sudo rm -rf /tmp/minbase/var/cache /tmp/minbase/var/log/* /tmp/minbase/var/lib/apt/ /tmp/minbase/var/lib/systemd
+  sudo mkdir -p /tmp/minbase//var/cache/apt/archives/partial
   cd /tmp/minbase && sudo tar -c . | docker import - 0gombi0/homelab:minbase && cd -
   docker push 0gombi0/homelab:minbase
   sudo rm -rf /tmp/minbase
