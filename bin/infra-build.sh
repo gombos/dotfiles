@@ -15,7 +15,7 @@ else
 fi
 
 if echo $TARGET | grep -w -q efi; then
-  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-efi
+  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-efi
   docker push 0gombi0/homelab:efi
 fi
 
@@ -31,22 +31,22 @@ fi
 
 # not needed for iso
 if echo $TARGET | grep -w -q container; then
-  docker build -t 0gombi0/homelab:latest    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-container
+  docker build -t 0gombi0/homelab:latest    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-container
   docker push 0gombi0/homelab:latest
 fi
 
 if echo $TARGET | grep -w -q base; then
-  docker build -t 0gombi0/homelab-baremetal:vm    ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-base
+  docker build -t 0gombi0/homelab-baremetal:vm    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-base
   docker push 0gombi0/homelab-baremetal:vm
 fi
 
 if echo $TARGET | grep -w -q preconfig; then
-  docker build -t 0gombi0/homelab-baremetal:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop
+  docker build -t 0gombi0/homelab-baremetal:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-laptop
   docker push 0gombi0/homelab-baremetal:rootfs-preconfig
 fi
 
 if echo $TARGET | grep -w -q rootfs; then
-  docker build -t 0gombi0/homelab-baremetal:rootfs     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-laptop-config
+  docker build -t 0gombi0/homelab-baremetal:rootfs     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-laptop-config
   docker push 0gombi0/homelab-baremetal:rootfs
   sudo rm -rf /tmp/laptop /tmp/squashfs.img
   mkdir -p /tmp/laptop
@@ -58,7 +58,7 @@ if echo $TARGET | grep -w -q rootfs; then
 fi
 
 if echo $TARGET | grep -w -q nix; then
-  docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/.Dockerfile-homelab-nix
+  docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-nix
   docker push 0gombi0/homelab:nix
 fi
 
