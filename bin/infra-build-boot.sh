@@ -378,17 +378,6 @@ if [ -f /run/media/efi/kernel/modules ]; then
   printf "[rd.exec] Mounted modules \n"
 fi
 
-if [ -f /run/media/efi/kernel/modules.img-fake ]; then
-  mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules \n"
-  /usr/bin/archivemount /run/media/efi/kernel/modules.img /run/media/modules -o ro,readonly
-  if [ -d $NEWROOT/lib/modules ]; then
-    rm -rf $NEWROOT/lib/modules
-  fi
-  ln -sf /run/media/modules/usr/lib/modules $NEWROOT/usr/lib/
-  printf "[rd.exec] Mounted modules \n"
-fi
-
 # default init included in the initramfs
 if [ -z "$RDEXEC" ]; then
   RDEXEC="/sbin/infra-init.sh"
@@ -434,15 +423,8 @@ chmod +x /tmp/rdexec
 
 # todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that should be enough - test it after removing
 # todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
-# use archivemount to mount the modules intird file read only
 
 # --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
-
-# --mount '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,x-systemd.requires-mounts-for=/run/media/modules 0 0' \
-#  --mount '/dev/sr0            /run/media/efi     auto              ro,noexec,nosuid,nodev 0 0' \
-
-# adds 10mb to initrd
-#  --include /usr/bin/archivemount /usr/bin/archivemount \
 
 # --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
 
