@@ -166,6 +166,8 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 
+########## EXTRA
+
 if [ "$TARGET" = "extra" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable

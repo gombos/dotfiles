@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "boot minbase container base preconfig rootfs"
+# "boot minbase container base extra rootfs"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -40,7 +40,7 @@ if echo $TARGET | grep -w -q base; then
   docker push 0gombi0/homelab-baremetal:vm
 fi
 
-if echo $TARGET | grep -w -q preconfig; then
+if echo $TARGET | grep -w -q extra; then
   docker build -t 0gombi0/homelab-baremetal:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-laptop
   docker push 0gombi0/homelab-baremetal:rootfs-preconfig
 fi
