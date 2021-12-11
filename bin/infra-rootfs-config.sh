@@ -16,6 +16,19 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
+# Directory tree
+# Allow per-machine/per-instance /boot /etc /usr /home /var
+
+# Symlink some directories normally on / to /var to allow more per-machine/per-instance configuration
+
+# /var/tmp points to /tmp
+rm -rf var/tmp
+ln -sf /tmp var/tmp
+
+# Symlink some directories normally on / to /usr to allow to share between machines/instances
+mv opt usr
+ln -sf usr/opt
+
 # For convinience
 mkdir -p nix
 ln -sf /run/media go
@@ -199,6 +212,7 @@ rm -rf boot
 rm -rf usr/local
 rm -rf etc/apt/sources.list.d/*
 rm -rf var/www
+find var/lib -empty -delete
 
 rm -rf var/cache var/lib/apt var/lib/systemd
 mkdir -p var/cache/apt/archives/partial

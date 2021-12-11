@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-baremetal:vm
+FROM 0gombi0/homelab-baremetal:base
 
 LABEL name=extra
 

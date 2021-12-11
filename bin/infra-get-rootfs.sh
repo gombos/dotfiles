@@ -11,7 +11,7 @@ DIR=$1
 [ -z "$DIR" ] && exit
 
 if [ -z "$2" ]; then
-  image="0gombi0/homelab-baremetal:rootfs"
+  image="0gombi0/homelab-baremetal"
 else
   image="$2"
 fi

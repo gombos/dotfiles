@@ -6,12 +6,13 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "boot minbase container base extra rootfs"
+
+# "efi minbase container base extra config squash-rootfs"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="rootfs"
+  TARGET="config"
 fi
 
 if echo $TARGET | grep -w -q efi; then
@@ -36,18 +37,21 @@ if echo $TARGET | grep -w -q container; then
 fi
 
 if echo $TARGET | grep -w -q base; then
-  docker build -t 0gombi0/homelab-baremetal:vm    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-base
-  docker push 0gombi0/homelab-baremetal:vm
+  docker build -t 0gombi0/homelab-baremetal:base    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-base
+  docker push 0gombi0/homelab-baremetal:base
 fi
 
 if echo $TARGET | grep -w -q extra; then
-  docker build -t 0gombi0/homelab-baremetal:rootfs-preconfig     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-laptop
-  docker push 0gombi0/homelab-baremetal:rootfs-preconfig
+  docker build -t 0gombi0/homelab-baremetal:extra     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-extra
+  docker push 0gombi0/homelab-baremetal:extra
 fi
 
-if echo $TARGET | grep -w -q rootfs; then
-  docker build -t 0gombi0/homelab-baremetal:rootfs     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-laptop-config
-  docker push 0gombi0/homelab-baremetal:rootfs
+if echo $TARGET | grep -w -q config; then
+  docker build -t 0gombi0/homelab-baremetal:latest     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-config
+  docker push 0gombi0/homelab-baremetal:latest
+fi
+
+if echo $TARGET | grep -w -q squash-rootfs; then
   sudo rm -rf /tmp/laptop /tmp/squashfs.img
   mkdir -p /tmp/laptop
   infra-get-rootfs.sh /tmp/laptop

@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-baremetal:rootfs-preconfig
+FROM 0gombi0/homelab-baremetal:extra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
