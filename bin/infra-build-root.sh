@@ -178,4 +178,3 @@ install_my_packages packages-extra.l
 $SCRIPTS/infra-install-vmware-workstation.sh
 
 fi
-

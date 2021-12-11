@@ -6,6 +6,10 @@ fi
 
 . ./infra-env.sh
 
+if [ -z "$SCRIPTS" ]; then
+  export SCRIPTS="/tmp"
+fi
+
 cd /
 
 # For convinience
@@ -44,7 +48,6 @@ ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
-
 
 # Defaults are optimized for vm/container use
 
@@ -217,4 +220,4 @@ $SCRIPTS/infra-clean-linux.sh /
 # ---- Integrity
 $SCRIPTS/infra-integrity.sh /var/integrity/
 
-rm -rf /tmp/*
+rm -rf tmp/*
