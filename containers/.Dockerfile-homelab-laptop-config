@@ -8,6 +8,6 @@ COPY boot/ /tmp/
 WORKDIR /tmp
 
 # Run
-RUN ./infra-build-root.sh config
+RUN ./infra-rootfs-config.sh
 
 CMD ["/bin/bash"]

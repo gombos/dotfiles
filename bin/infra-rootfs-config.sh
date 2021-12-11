@@ -1,8 +1,50 @@
 #!/bin/sh
 
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
+fi
+
 . ./infra-env.sh
 
+cd /
+
+# For convinience
+mkdir -p nix
+ln -sf /run/media go
+
 # ---- Configure etc
+
+# Make etc/default/locale deterministic between runs
+sort -o etc/default/locale etc/default/locale
+
+# todo - vmware fix
+rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
+
+# rootfs customizations - both for base and full
+
+mkdir -p etc/network/interfaces.d
+printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
+printf "127.0.0.1 localhost\n" > etc/hosts
+
+# default admin user to log in (instead of root)
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm && usermod -aG sudo,netdev admin
+chown admin:adm /home
+chmod g+w /home
+
+# make the salt deterministic, reproducible builds
+sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
+
+# set timezone
+ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
+
+# disable motd
+[ -f etc/default/motd-news ] && sed -i 's|^ENABLED=.*|ENABLED=0|g' etc/default/motd-news
+
+# disable starting some systemd timers by default
+ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
+ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
+ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
+
 
 # Defaults are optimized for vm/container use
 

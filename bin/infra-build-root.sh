@@ -108,10 +108,6 @@ ln -sf /tmp var/tmp
 mv opt usr
 ln -sf usr/opt
 
-# For convinience
-mkdir -p nix
-ln -sf /run/media go
-
 if [ "$TARGET" = "base" ]; then
 # Disable installing recommended and suggested packages by default
 mkdir -p etc/apt/apt.conf.d/
@@ -128,9 +124,6 @@ packages_upgrade
 install_my_packages packages-base.l
 install_my_packages packages-base-optional.l
 
-# todo - vmware fix
-rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
-
 fi
 # end of base packages
 
@@ -139,32 +132,6 @@ fi
 install_my_package locales
 locale-gen --purge en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
-
-# Make etc/default/locale deterministic between runs
-sort etc/default/locale -o etc/default/locale
-
-mkdir -p etc/network/interfaces.d
-printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
-printf "127.0.0.1 localhost\n" > etc/hosts
-
-# default admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm && usermod -aG sudo,netdev admin
-chown admin:adm /home
-chmod g+w /home
-
-# make the salt deterministic, reproducible builds
-sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
-
-# set timezone
-ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
-
-# disable motd
-[ -f etc/default/motd-news ] && sed -i 's|^ENABLED=.*|ENABLED=0|g' etc/default/motd-news
-
-# disable starting some systemd timers by default
-ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
-ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
-ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
 
 ########## EXTRA
 
@@ -211,6 +178,4 @@ install_my_packages packages-extra.l
 $SCRIPTS/infra-install-vmware-workstation.sh
 
 fi
-
-. infra-rootfs-config.sh
 
