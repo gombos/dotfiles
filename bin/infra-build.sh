@@ -56,5 +56,5 @@ if echo $TARGET | grep -w -q iso; then
 fi
 
 if echo $TARGET | grep -w -q iso-upload; then
-  gh release upload --clobber -R gombos/dotfiles test /tmp/linux.iso
+  gh release upload --clobber -R gombos/dotfiles iso /tmp/linux.iso
 fi
