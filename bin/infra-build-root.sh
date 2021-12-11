@@ -21,6 +21,8 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
+PATH=$SCRIPTS:$PATH
+
 if [ -z "$RELEASE" ]; then
   RELEASE=$VERSION_CODENAME
   if [ -z "$RELEASE" ]; then
@@ -35,50 +37,6 @@ if ! [ -z "$1" ]; then
 else
   TARGET="extra"
 fi
-
-install_my_package() {
-  if [ -f /usr/bin/apt-get ]; then
-    apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@"
-  else
-    if [ -f usr/local/bin/pacapt ]; then
-      if [ "$ID" = "alpine" ]; then
-        usr/local/bin/pacapt -S "$@"
-      else
-        usr/local/bin/pacapt -S --noconfirm "$@"
-      fi
-    fi
-  fi
-}
-
-remove_my_package() {
-  if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -R --noconfirm "$1"
-  else
-    apt-get purge -y -qq -o Dpkg::Use-Pty=0 "$1"
-  fi
-}
-
-install_my_packages() {
-#  cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
-  P=`cat $SCRIPTS/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | tr '\n' ' \0'`
-  install_my_package $P
-}
-
-packages_update_db() {
-  if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -Sy
-  fi
-
-  apt-get update -y -qq -o Dpkg::Use-Pty=0
-}
-
-packages_upgrade() {
-  if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -Suy
-  fi
-
-  apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-}
 
 echo "Building $RELEASE $TARGET"
 
@@ -95,9 +53,9 @@ echo "Building $RELEASE $TARGET"
 # adduser apt apt-utils fdisk gcc-10-base gpg gpg-agent gpgconf gpgv locales pinentry-curses readline-common systemd systemd-sysv systemd-timesyncd ubuntu-keyring wget
 
 if [ "$TARGET" = "container" ]; then
-  packages_update_db
-  packages_upgrade
-  install_my_packages packages-packages.l
+  packages_update_db.sh
+  packages_upgrade.sh
+  install_my_packages.sh packages-packages.l
 fi
 
 # /var/tmp points to /tmp
@@ -118,20 +76,20 @@ echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/s
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
 
-packages_update_db
-packages_upgrade
+packages_update_db.sh
+packages_upgrade.sh
 
-install_my_packages packages-base.l
-install_my_packages packages-base-optional.l
+install_my_packages.sh packages-base.l
+install_my_packages.sh packages-base-optional.l
 
 fi
 # end of base packages
 
 # rootfs customizations - both for base and full
 
-install_my_package locales
-locale-gen --purge en_US.UTF-8
-update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+#install_my_package.sh locales
+#locale-gen --purge en_US.UTF-8
+#update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 
 ########## EXTRA
 
@@ -154,26 +112,26 @@ if ! [ -z "${NVIDIA}" ]; then
   echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
 fi
 
-packages_update_db
+packages_update_db.sh
 
 if ! [ -z "${NVIDIA}" ]; then
-  install_my_package xserver-xorg-video-nvidia-${NVIDIA}
+  install_my_package.sh xserver-xorg-video-nvidia-${NVIDIA}
 fi
 
 # Make sure that only restricted package installed is nvidia
 rm etc/apt/sources.list.d/restricted.list
 
-packages_update_db
-packages_upgrade
+packages_update_db.sh
+packages_upgrade.sh
 
-install_my_packages packages-services.l
-install_my_packages packages-x11.l
-install_my_packages packages-x11apps.l
+install_my_packages.sh packages-services.l
+install_my_packages.sh packages-x11.l
+install_my_packages.sh packages-x11apps.l
 
-install_my_packages packages-filesystems.l
-install_my_packages packages-packages.l
+install_my_packages.sh packages-filesystems.l
+install_my_packages.sh packages-packages.l
 
-install_my_packages packages-extra.l
+install_my_packages.sh packages-extra.l
 
 $SCRIPTS/infra-install-vmware-workstation.sh
 

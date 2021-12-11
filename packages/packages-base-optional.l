@@ -7,6 +7,7 @@ apt-utils
 ca-certificates
 
 # tools - should be first
+locales
 fuse3
 wget
 gpg

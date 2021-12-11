@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# rootfs customizations - both for base and full
+
 if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
@@ -10,6 +12,8 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
+PATH=$SCRIPTS:$PATH
+
 cd /
 
 # For convinience
@@ -19,6 +23,8 @@ ln -sf /run/media go
 # ---- Configure etc
 
 # Make etc/default/locale deterministic between runs
+locale-gen --purge en_US.UTF-8
+update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 sort -o etc/default/locale etc/default/locale
 
 # todo - vmware fix
@@ -192,6 +198,10 @@ sed -i "s|\#\ autologin=.*|autologin=admin|g" etc/lxdm/lxdm.conf
 rm -rf boot
 rm -rf usr/local
 rm -rf etc/apt/sources.list.d/*
+rm -rf var/www
+
+rm -rf var/cache var/lib/apt var/lib/systemd
+mkdir -p var/cache/apt/archives/partial
 
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty
@@ -215,9 +225,9 @@ apt-get clean
 # Following directories should exists but should be empty
 # boot, home, media, run
 
-$SCRIPTS/infra-clean-linux.sh /
+infra-clean-linux.sh /
 
 # ---- Integrity
-$SCRIPTS/infra-integrity.sh /var/integrity/
+infra-integrity.sh /var/integrity/
 
 rm -rf tmp/*
