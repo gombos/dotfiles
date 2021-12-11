@@ -24,5 +24,8 @@ mount --bind $mp/kernel $NEWROOT/boot
 mkdir -p $NEWROOT/usr/lib/modules
 mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
-cd $mp/config
-( . ./infra-boots.sh )
+# todo - execute all sceipt, remove the srip name from here
+if [[ -e $mp/config/infra-boots.sh ]]; then
+  cd $mp/config
+  ( . ./infra-boots.sh )
+fi

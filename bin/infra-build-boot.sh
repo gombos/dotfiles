@@ -130,6 +130,7 @@ rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/lib/dracut/dracut-*
 rm -rf usr/lib/dracut/modules.txt
+rm -rf usr/sbin/dmsetup
 
 # todo - ideally dm dracut module is not included instead of this hack
 rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md

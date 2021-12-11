@@ -292,8 +292,8 @@ ExecStartPost=/bin/systemctl --no-reload disable %n
 WantedBy=multi-user.target
 EOF
 
-mkdir -p $R/etc/systemd/system/multi-user.target.wants
-ln -sf /lib/systemd/system/ssh-keygen.service $R/etc/systemd/system/multi-user.target.wants/ssh-keygen.service
+mkdir -p etc/systemd/system/multi-user.target.wants
+ln -sf /lib/systemd/system/ssh-keygen.service /etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
 # home-vmware.service
 cat > /lib/systemd/system/home-vmware.service << 'EOF'
@@ -311,8 +311,8 @@ ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid
 WantedBy=local-fs.target
 EOF
 
-mkdir -p $R/etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-vmware.service $R/etc/systemd/system/local-fs.target.wants/
+mkdir -p etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home-vmware.service /etc/systemd/system/local-fs.target.wants/
 
 # home-host-vmware.service
 cat > /lib/systemd/system/home-host-vmware.service << 'EOF'
@@ -331,8 +331,8 @@ ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid
 WantedBy=local-fs.target
 EOF
 
-mkdir -p $R/etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-host-vmware.service $R/etc/systemd/system/local-fs.target.wants/
+mkdir -p etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home-host-vmware.service /etc/systemd/system/local-fs.target.wants/
 
 # home-img.service
 cat > /lib/systemd/system/home-img.service << 'EOF'
@@ -340,7 +340,6 @@ cat > /lib/systemd/system/home-img.service << 'EOF'
 [Unit]
 Description=Mount home.img file as /home if exists
 ConditionPathExists=/run/initramfs/live/home.img
-
 
 [Service]
 Type=oneshot
@@ -354,13 +353,15 @@ ExecStart=chown -R 99:0 /home
 WantedBy=local-fs.target
 EOF
 
-mkdir -p $R/etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-img.service $R/etc/systemd/system/local-fs.target.wants/
+mkdir -p etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/home-img.service /etc/systemd/system/local-fs.target.wants/
 
-echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
+echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
+
+printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
 
 # Autologin
-sed -i "s|\#\ autologin=.*|autologin=admin|g" $R/etc/lxdm/lxdm.conf
+sed -i "s|\#\ autologin=.*|autologin=admin|g" etc/lxdm/lxdm.conf
 
 #mkdir -p usr/bin/
 #cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
