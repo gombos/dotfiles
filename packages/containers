@@ -1,6 +1,7 @@
 # distros - deb
 ubuntu
 debian
+debian:unstable
 debian:unstable-slim - test packages
 
 # distors - rpm

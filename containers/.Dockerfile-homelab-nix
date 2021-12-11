@@ -1,7 +1,5 @@
 FROM 0gombi0/homelab:rootfs as base
 
-LABEL name=nix
-
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./packages-nix

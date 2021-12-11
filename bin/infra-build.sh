@@ -7,7 +7,7 @@ exec 1>/tmp/build-infra.log 2>&1
 . infra-env.sh
 
 
-# "efi minbase container base extra config squash-rootfs"
+# "efi minbase container base extra config squash-rootfs iso"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -59,11 +59,6 @@ if echo $TARGET | grep -w -q squash-rootfs; then
   sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab-baremetal:squashfs
   docker push 0gombi0/homelab-baremetal:squashfs
   sudo rm -rf /tmp/laptop
-fi
-
-if echo $TARGET | grep -w -q nix; then
-  docker build -t 0gombi0/homelab:nix     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-nix
-  docker push 0gombi0/homelab:nix
 fi
 
 if echo $TARGET | grep -w -q iso; then

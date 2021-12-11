@@ -2,8 +2,6 @@
 
 FROM ubuntu:impish as base
 
-LABEL name=efi
-
 COPY bin/* /tmp/
 COPY boot/ /tmp/
 WORKDIR /tmp

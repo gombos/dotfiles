@@ -1,7 +1,5 @@
 FROM 0gombi0/homelab-baremetal:base
 
-LABEL name=extra
-
 # Setup tmp
 COPY bin/* packages/* /tmp/
 

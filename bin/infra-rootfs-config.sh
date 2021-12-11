@@ -22,8 +22,8 @@ cd /
 # Symlink some directories normally on / to /var to allow more per-machine/per-instance configuration
 
 # /var/tmp points to /tmp
-rm -rf var/tmp
-ln -sf /tmp var/tmp
+#rm -rf var/tmp
+#ln -sf /tmp var/tmp
 
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
@@ -47,7 +47,10 @@ rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
 mkdir -p etc/network/interfaces.d
 printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
-printf "127.0.0.1 localhost\n" > etc/hosts
+printf "127.0.0.1 localhost linux\n" > etc/hosts
+
+pwd
+cat etc/hosts
 
 # default admin user to log in (instead of root)
 adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm && usermod -aG sudo,netdev admin
