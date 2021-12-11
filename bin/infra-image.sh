@@ -122,9 +122,13 @@ fi
 #cd /
 
 # rootfs squashfs
-infra-get-squash.sh
+#infra-get-squash.sh
 sudo mkdir -p /tmp/iso/LiveOS
-sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
+
+sudo rm -rf /tmp/laptop
+mkdir -p /tmp/laptop
+infra-get-rootfs.sh /tmp/laptop
+sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
 
 # home
 FILE=/tmp/iso/home.img

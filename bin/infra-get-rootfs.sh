@@ -33,7 +33,7 @@ sudo mkdir run
 sudo rm -rf etc/hostname
 sudo rm -rf .dockerenv
 
-printf "127.0.0.1 localhost linux\n" | sudo tee etc/hosts
+printf "127.0.0.1 localhost\n" | sudo tee etc/hosts
 
 # Check before doing it readlink -- "/etc/resolv.conf"
 cd $DIR/etc

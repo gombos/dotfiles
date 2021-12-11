@@ -7,7 +7,7 @@ exec 1>/tmp/build-infra.log 2>&1
 . infra-env.sh
 
 
-# "efi minbase container base extra config squash-rootfs iso"
+# "efi minbase container base extra config squash-rootfs iso iso-upload"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -51,18 +51,10 @@ if echo $TARGET | grep -w -q config; then
   docker push 0gombi0/homelab-baremetal:latest
 fi
 
-if echo $TARGET | grep -w -q squash-rootfs; then
-  sudo rm -rf /tmp/laptop /tmp/squashfs.img
-  mkdir -p /tmp/laptop
-  infra-get-rootfs.sh /tmp/laptop
-  sudo mksquashfs /tmp/laptop /tmp/squashfs.img -comp zstd
-  sudo tar -c /tmp/squashfs.img | docker import - 0gombi0/homelab-baremetal:squashfs
-  docker push 0gombi0/homelab-baremetal:squashfs
-  sudo rm -rf /tmp/laptop
-fi
-
 if echo $TARGET | grep -w -q iso; then
   infra-image.sh
-#  sudo tar -c /tmp/*.iso | docker import - 0gombi0/homelab:iso
-#  docker push 0gombi0/homelab:iso
+fi
+
+if echo $TARGET | grep -w -q iso-upload; then
+  gh release upload --clobber -R gombos/dotfiles test /tmp/linux.iso
 fi
