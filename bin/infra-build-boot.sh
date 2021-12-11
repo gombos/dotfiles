@@ -81,9 +81,12 @@ touch /usr/sbin/dmsetup
 #cd dracut-055
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
-cp -av dracut/* dracutdir
-cd dracutdir
 
+# patch dracut
+#cp -av dracut/* dracutdir
+
+# build dracut
+cd dracutdir
 ./configure --disable-documentation
 make 2>/dev/null
 make install
@@ -297,9 +300,9 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
-mkdir -p /efi/config/
-cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
-chmod +x /efi/config/infra-boots.sh
+#mkdir -p /efi/config/
+#cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
+#chmod +x /efi/config/infra-boots.sh
 
 cat > /tmp/rdexec << 'EOF'
 #!/bin/sh
