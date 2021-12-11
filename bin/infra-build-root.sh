@@ -196,18 +196,6 @@ fi
 # Make sure that only restricted package installed is nvidia
 rm etc/apt/sources.list.d/restricted.list
 
-# Try both wget first
-if ! [ -f usr/local/bin/pacapt ]; then
-  wget --no-check-certificate https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
-  chmod 755 /usr/local/bin/pacapt
-fi
-
-# Try curl next (arch has curl but not wget for example)
-if ! [ -f usr/local/bin/pacapt ]; then
-  curl https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -o /usr/local/bin/pacapt
-  chmod 755 /usr/local/bin/pacapt
-fi
-
 packages_update_db
 packages_upgrade
 
@@ -218,22 +206,11 @@ install_my_packages packages-x11apps.l
 install_my_packages packages-filesystems.l
 install_my_packages packages-packages.l
 
+install_my_packages packages-extra.l
+
 $SCRIPTS/infra-install-vmware-workstation.sh
 
-packages_update_db
-packages_upgrade
-
-if [ -f /etc/arch-version ]; then
-  git clone https://aur.archlinux.org/google-chrome.git
-  cd google-chrome/
-  makepkg -si
 fi
 
-packages_update_db
-packages_upgrade
-
-install_my_packages packages-extra.l
-fi
-
-. infra-build-root-2.sh
+. infra-rootfs-config.sh
 
