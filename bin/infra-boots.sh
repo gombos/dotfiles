@@ -110,6 +110,7 @@ if [ -f "dhcp.conf" ]; then
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  mkdir -p $R/var/lib/misc
   rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
 
   rm -rf $R/var/log/journal
