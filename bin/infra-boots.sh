@@ -99,35 +99,35 @@ fi
 #[ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
 # DHCP
-#if [ -f "dhcp.conf" ]; then
+if [ -f "dhcp.conf" ]; then
 # todo - rewrite, no cut, no mawk
-#  cp dhcp.conf $R/etc/dnsmasq.d/
-#  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+  cp dhcp.conf $R/etc/dnsmasq.d/
+  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
 #  echo "127.0.0.1 localhost" > $R/etc/hosts
 #  cat dhcp.conf | grep ^dhcp-host | mawk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
 #  chmod 444 $R/etc/hosts
 
-#  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
-#  rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
+  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
 
-#  rm -rf $R/var/log/journal
-#  ln -sf /home/log/journal $R/var/log/journal
+  rm -rf $R/var/log/journal
+  ln -sf /home/log/journal $R/var/log/journal
 
-#  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
-#  chmod 444 $R/etc/resolv.conf
-#else
+  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
+  chmod 444 $R/etc/resolv.conf
+else
   printf "DNS=192.168.1.2\n" >> $R/etc/systemd/resolved.conf
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
-#fi
+fi
 
 # machine-id
 if [ ! -z "$MID" ]; then
   rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
   echo $MID > $R/etc/machine-id
-  mkdir -p $R/var/lib/dbus
-  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
+#  mkdir -p $R/var/lib/dbus
+#  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
 fi
 
 # sshd host keys
@@ -253,10 +253,10 @@ fi
   fi
 #fi
 
-#if [ "$HOST" == "pincer" ]; then
-#  # Patch apcupsd config to connect it via usb
-#  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
-#  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
+if [ "$HOST" == "pincer" ]; then
+  # Patch apcupsd config to connect it via usb
+  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
 
 #  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
 #  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
@@ -269,7 +269,9 @@ fi
   #echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
   #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-#fi
+
+  echo "LABEL=home_pincer /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+fi
 
 if [ "$HOST" == "bestia" ]; then
   mkdir -p /nix

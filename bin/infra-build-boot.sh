@@ -116,8 +116,8 @@ mkdir -p /efi/kernel
 # btrfs - for bestia - by far the largest module
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas nvme ntfs btrfs' \
-  --modules dmsquash-live \
+  --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas usb_storage nvme ntfs btrfs xhci_pci intel_xhci_usb_role_switch sdhci_acpi' \
+  --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
 
