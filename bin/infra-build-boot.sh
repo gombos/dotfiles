@@ -281,10 +281,10 @@ cd /tmp/initrd
 # TCE binary
 mkdir -p /efi/tce
 mkdir -p /efi/tce/optional
-wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
-wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
-wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
-mv Core-current.iso /efi/tce
+wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86_64/release/CorePure64-current.iso -O tce.iso
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssl-1.1.1.tcz
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssh.tcz
+mv tce.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
 echo "openssl-1.1.1.tcz " >> /efi/tce/onboot.lst
 echo "openssh.tcz" >> /efi/tce/onboot.lst
