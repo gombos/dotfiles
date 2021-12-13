@@ -4,7 +4,7 @@
 
 cwd=$(pwd)
 
-cd $cwd
+cd $HOME
 
 ln -sf .dotfiles/.bashrc
 ln -sf .dotfiles/.profile
@@ -20,45 +20,45 @@ ln -sf .dotfiles/.gitconfig
 
 ln -sf .dotfiles/.Xresources-HiDPI
 
-cd $cwd
+cd $HOME
 mkdir -p .config
 cd .config
 ln -sf ../.dotfiles/.config/mimeapps.list
 ln -sf ../.dotfiles/.config/openbox
 ln -sf ../.dotfiles/.config/libfm
 
-cd $cwd
+cd $HOME
 mkdir -p .local/share/applications/
 cd .local/share/applications/
 ln -sf ../../../.dotfiles/.local/share/applications/editor.desktop
 ln -sf ../../../.dotfiles/.local/share/applications/web.desktop
 ln -sf ../../../.dotfiles/.local/share/applications/web-incognito.desktop
 
-cd $cwd
+cd $HOME
 mkdir -p .config/kitty
 cd .config/kitty
 ln -sf ../../.dotfiles/.config/kitty/kitty.conf
 
-cd $cwd
+cd $HOME
 mkdir -p .config/micro
 cd .config/micro
 ln -sf ../../.dotfiles/.config/micro/bindings.json
 ln -sf ../../.dotfiles/.config/micro/settings.json
 
 # VS code
-cd $cwd
+cd $HOME
 mkdir -p .config/Code/User
 cd .config/Code/User
 ln -sf ../../../.dotfiles/.config/Code/User/settings.json
 ln -sf ../../../.dotfiles/.config/Code/User/keybindings.json
 
 # panel
-cd $cwd
+cd $HOME
 mkdir -p .config/lxpanel/default/panels
 cd .config/lxpanel/default/panels
 ln -sf ../../../../.dotfiles/.config/lxpanel/default/panels/panel
 
-cd $cwd
+cd $HOME
 rm .bash_profile
 
 echo "User provisioning is finished, please log out and log back in again."
