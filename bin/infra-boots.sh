@@ -344,6 +344,7 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   cp -r /run/media/efi/config/letsencrypt /run/media/
 
  if [ -f "nginx.conf" ]; then
+   mkdir -p $R/var/lib/nginx
    cp nginx.conf $R/etc/nginx/
  fi
 fi
