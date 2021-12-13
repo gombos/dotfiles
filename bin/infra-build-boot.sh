@@ -109,14 +109,25 @@ mkdir -p /efi/kernel
 
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
 
+# filesystem kernel modules
 # nls_XX - to mount vfat
 # isofs - to find root within iso file
-# ahci mmc_block uas nvme - low level HW access
 # autofs4 - systemd will try to load this (maybe because of fstab)
 # btrfs - for bestia - by far the largest module
 
+# storage kernel modules
+# ahci - for SATA devices on modern AHCI controllers
+# nvme - for NVME (M.2, PCI-E) devices
+# xhci_pci, uas - usb
+# sdhci_acpi, mmc_block - mmc
+
+#sd_mod for all SCSI, SATA, and PATA (IDE) devices
+#ehci_pci and usb_storage for USB storage devices
+#virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
+# ehci_pci - USB 2.0 storage devices
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas usb_storage nvme ntfs btrfs xhci_pci intel_xhci_usb_role_switch sdhci_acpi' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci nvme xhci_pci uas sdhci_acpi mmc_block' \
   --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
