@@ -15,7 +15,9 @@ if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
   mp=/run/media/efi
-else
+fi
+
+if [[ -e /dev/disk/by-label/ISO ]]; then
   mp=/run/initramfs/live
 fi
 
@@ -25,7 +27,7 @@ mkdir -p $NEWROOT/usr/lib/modules
 mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
 # todo - execute all sceipt, remove the srip name from here
-if [[ -e $mp/config/infra-boots.sh ]]; then
-  cd $mp/config
+if [[ -e /run/media/efi/config/infra-boots.sh ]]; then
+  cd /run/media/efi/config
   ( . ./infra-boots.sh )
 fi
