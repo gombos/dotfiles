@@ -203,18 +203,18 @@ then
 fi
 
 # ssh jumphost user - Restricted user, no persistent home, login only via ssh key, disabled login password
-#if [ ! -z "$SSHID" ]
-#then
-#  mkdir -p $R/user/.ssh/
-#  cat authorized_keys-user >> $R/user/.ssh/authorized_keys
-#  echo "$SSHID:x:1000:1000:,,,:/user:/bin/bash" >> $R/etc/passwd
-#  echo "$SSHID:*:1:0:99999:7:::" >> $R/etc/shadow
-#  echo "user:!::" >> $R/etc/gshadow
-#  echo "user:x:1000:" >> $R/etc/group
-#  ln -sf /home/dotfiles $R/user/.dotfiles
-#  ln -sf /user/.dotfiles/bin/infra-provision-user.sh $R/user/.bash_profile
-#  chown -R 1000:1000 $R/user/
-#fi
+if [ ! -z "$SSHID" ]
+then
+  mkdir -p $R/user/.ssh/
+  cat authorized_keys-user >> $R/user/.ssh/authorized_keys
+  echo "$SSHID:x:1000:1000:,,,:/user:/bin/bash" >> $R/etc/passwd
+  echo "$SSHID:*:1:0:99999:7:::" >> $R/etc/shadow
+  echo "user:!::" >> $R/etc/gshadow
+  echo "user:x:1000:" >> $R/etc/group
+  ln -sf /home/dotfiles $R/user/.dotfiles
+  ln -sf /user/.dotfiles/bin/infra-provision-user.sh $R/user/.bash_profile
+  chown -R 1000:1000 $R/user/
+fi
 
 # restricted admin, no persistent home, login only via ssh key, disabled login password
 if [ ! -z "$ADMINID" ]
@@ -225,7 +225,7 @@ then
   echo "$ADMINID:$ADMINPWD:1:0:99999:7:::" >> $R/etc/shadow
   sed -i "s/^docker:.*/&,$ADMINID/" $R/etc/group
   ln -sf /home/dotfiles-admin $R/admin/.dotfiles
-  #ln -sf /admin/.dotfiles/bin/infra-provision-user.sh $R/admin/.bash_profile
+  ln -sf /admin/.dotfiles/bin/infra-provision-user.sh $R/admin/.bash_profile
   chown -R 501:27 $R/admin/
 
   # remove the admin user
