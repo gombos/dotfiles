@@ -93,13 +93,12 @@ else
   printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
 
-#[ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
-
-#[ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
-#[ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
-
 # DHCP
 if [ -f "dhcp.conf" ]; then
+ [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
+ [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+ [ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
+
 # todo - rewrite, no cut, no mawk
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
