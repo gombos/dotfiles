@@ -1,1 +1,1 @@
-qemu-system-x86_64 -nodefaults -snapshot -cpu host -boot d -cdrom  ~/linux.iso -m 4G -machine type=q35,accel=hvf -smp 2 -display default,show-cursor=on -device VGA -net user -net nic
+qemu-system-x86_64 -nodefaults -snapshot -cpu host -boot d -cdrom  ~/linux.iso -m 4G -machine type=q35,accel=hvf -smp 2 -net user -net nic -vga virtio -usb -device usb-tablet  -display default,show-cursor=on -device ich9-intel-hda,addr=1f.1 -audiodev pa,id=snd0  -device hda-output,audiodev=snd0
