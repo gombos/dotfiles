@@ -21,13 +21,30 @@ if [[ -e /dev/disk/by-label/ISO ]]; then
   mp=/run/initramfs/live
 fi
 
-mkdir -p $NEWROOT/boot
-mount --bind $mp/kernel $NEWROOT/boot
+# Make the modules available to boot
 mkdir -p $NEWROOT/usr/lib/modules
 mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
-# todo - execute all sceipt, remove the srip name from here
-if [[ -e /run/media/efi/config/infra-boots.sh ]]; then
-  cd /run/media/efi/config
-  ( . ./infra-boots.sh )
+# Make the kernel available for kexec
+mkdir -p $NEWROOT/boot
+mount --bind $mp/kernel $NEWROOT/boot
+
+# Allow for config to be on different drive than the rest of the boot files
+RDEXEC=/run/media/efi/config/infra-boots.sh
+for x in $(cat /proc/cmdline); do
+ case $x in
+  rd.exec=*)
+    RDEXEC=${x#rd.exec=}
+  ;;
+  esac
+done
+
+if [ -f "$RDEXEC" ]; then
+  # Execute the rd.exec script in a sub-shell
+  printf "[rd.exec] start executing $RDEXEC \n"
+  scriptname="${RDEXEC##*/}"
+  scriptpath=${RDEXEC%/*}
+  configdir="$scriptpath"
+  ( cd $configdir && . "./$scriptname" )
+  printf "[rd.exec] stop executing $RDEXEC \n"
 fi

@@ -219,6 +219,7 @@ find var/lib -empty -delete
 
 rm -rf var/cache var/lib/apt var/lib/systemd
 mkdir -p var/cache/apt/archives/partial
+mkdir -p var/lib/dhcp
 
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty

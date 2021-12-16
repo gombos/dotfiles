@@ -95,7 +95,7 @@ cd ..
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
-# todo - remove btrfs module fomr initrd and instead mount the modules file earlier
+# todo - remove btrfs module from initrd and instead mount the modules file earlier
 # this probably need to be done on udev stage (pre-mount is too late)
 
 # todo - remove base dependency after
@@ -315,105 +315,6 @@ mv netboot.xyz* /efi/netboot/
 #cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
 #chmod +x /efi/config/infra-boots.sh
 
-cat > /tmp/rdexec << 'EOF'
-#!/bin/sh
-
-# Script executed during ram disk phase (rd.exec = ram disk execute)
-. /lib/dracut-lib.sh
-
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>>/run/initramfs/rd.exec.log 2>&1
-
-#mkdir /run/media/efi
-#mount -o ro,noexec,nosuid,nodev /dev/sr0  /run/media/efi
-
-# Maybe make the argument more generic URL that curl understands - including file://
-# calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
-
-# todo - add support loopback mount a file
-
-# EFI label has priority over EFI_* labels
-configdrive=""
-
-if [ -L /dev/disk/by-label/EFI ]; then
-  configdrive="/dev/disk/by-label/EFI"
-else
-  for f in /dev/disk/by-label/EFI_*; do
-    if [ -z "$configdrive" ]; then
-      configdrive="$f"
-    fi
-  done
-fi
-
-for x in $(cat /proc/cmdline); do
-  case $x in
-  rd.dev=*)
-    printf "[rd.dev] $x \n"
-    RDDEV=${x#rd.dev=}
-    configdrive="/dev/disk/$RDDEV"
-    printf "[rd.dev] mount target set to $configdrive\n"
-  ;;
-  rd.exec=*)
-    printf "[rd.exec] $x \n"
-    RDEXEC=${x#rd.exec=}
-  ;;
-  esac
-done
-
-# EFI needs to be mounted as early as possible and needs to stay mounted for modules to load properly
-mp="/run/media/efi"
-mkdir -p "$mp"
-
-drive=$(readlink -f $configdrive)
-
-printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
-mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
-printf "[rd.exec] Mounted config\n"
-
-# Restrict only root process to load kernel modules. This is a reasonable system hardening
-# todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
-# todo - so build and test dracut with --no-kernel
-
-if [ -f /run/media/efi/kernel/modules ]; then
-  mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules \n"
-  mount /run/media/efi/kernel/modules /run/media/modules
-  if [ -d $NEWROOT/lib/modules ]; then
-    rm -rf $NEWROOT/lib/modules
-  fi
-  ln -sf /run/media/modules $NEWROOT/lib/
-  rm -rf /lib/modules
-  ln -sf /run/media/modules /lib/
-  printf "[rd.exec] Mounted modules \n"
-fi
-
-# default init included in the initramfs
-if [ -z "$RDEXEC" ]; then
-  RDEXEC="/sbin/infra-init.sh"
-else
-  RDEXEC="$mp/$RDEXEC"
-fi
-
-find  /run/media/modules/
-
-printf "[rd.exec] About to run $RDEXEC \n"
-
-if [ -f "$RDEXEC" ]; then
-  # Execute the rd.exec script in a sub-shell
-  printf "[rd.exec] start executing $RDEXEC \n"
-  scriptname="${RDEXEC##*/}"
-  scriptpath=${RDEXEC%/*}
-  configdir="$scriptpath"
-  ( cd $configdir && . "./$scriptname" )
-  printf "[rd.exec] stop executing $RDEXEC \n"
-fi
-
-exit 0
-EOF
-
-chmod +x /tmp/rdexec
-
 # Keep initramfs simple and do not require networking
 
 # todo --debug --no-early-microcode --xz --keep --verbose --no-compress --no-kernel
@@ -434,14 +335,11 @@ chmod +x /tmp/rdexec
 # todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that should be enough - test it after removing
 # todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
 
-# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
-
 # --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
 
 # shutdown - to help kexec
 # terminfo - to debug
 
-# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
 # --mount 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev 0 0' \
 #  --include /tmp/infra-init.sh /sbin/infra-init.sh \
 #  --include /tmp/infra-init.sh /sbin/infra-init.sh \
@@ -488,7 +386,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
 
-rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/rdexec
+rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
 
 # Populate logs with the list of filenames
 #find /efi
