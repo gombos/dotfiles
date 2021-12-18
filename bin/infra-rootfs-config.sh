@@ -129,66 +129,37 @@ EOF
 mkdir -p etc/systemd/system/multi-user.target.wants
 ln -sf /lib/systemd/system/ssh-keygen.service /etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
-# home-vmware.service
-cat > /lib/systemd/system/home-vmware.service << 'EOF'
+# home.service
+cat > /lib/systemd/system/home.service << 'EOF'
 [Unit]
-Description=Mount VMware shared folders - home
+Description=Mount /home
 After=sys-fs-fuse-connections.mount
-ConditionVirtualization=vmware
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home
+ExecStart=/bin/bash -c \
+  'virt=$(systemd-detect-virt); \
+  if [[ -e /dev/disk/by-label/home ]]; then \
+    mount /dev/disk/by-label/home /home; \
+  else \
+    if [[ "$virt" == "vmware" ]]; then \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home && \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/host /home/host; \
+    else \
+      mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
+      mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
+      mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home && \
+      chown -R 99:0 /home; \
+    fi; \
+  fi'
 
 [Install]
 WantedBy=local-fs.target
 EOF
 
 mkdir -p etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-vmware.service /etc/systemd/system/local-fs.target.wants/
-
-# home-host-vmware.service
-cat > /lib/systemd/system/home-host-vmware.service << 'EOF'
-[Unit]
-Description=Mount VMware shared folders - host
-After=sys-fs-fuse-connections.mount
-After=home-vmware.service
-ConditionVirtualization=vmware
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/host /home/host
-
-[Install]
-WantedBy=local-fs.target
-EOF
-
-mkdir -p etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-host-vmware.service /etc/systemd/system/local-fs.target.wants/
-
-# home-img.service
-cat > /lib/systemd/system/home-img.service << 'EOF'
-
-[Unit]
-Description=Mount home.img file as /home if exists
-ConditionPathExists=/run/initramfs/live/home.img
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work
-ExecStart=mount /run/initramfs/live/home.img /run/initramfs/home/lower
-ExecStart=mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home
-ExecStart=chown -R 99:0 /home
-
-[Install]
-WantedBy=local-fs.target
-EOF
-
-mkdir -p etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/home-img.service /etc/systemd/system/local-fs.target.wants/
+ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
 
 # nix.service
 cat > /lib/systemd/system/nix.service << 'EOF'
