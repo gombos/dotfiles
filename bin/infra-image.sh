@@ -162,7 +162,7 @@ cd /tmp/iso
 # keep iso under 2GB
 
 # nix
-sudo mksquashfs /nix /tmp/iso/nixfile -comp zstd
+sudo mksquashfs /nix /tmp/iso/nix.img -comp zstd
 
 sudo chown -R 1000:1000 .
 

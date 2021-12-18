@@ -190,6 +190,30 @@ EOF
 mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home-img.service /etc/systemd/system/local-fs.target.wants/
 
+# nix.service
+cat > /lib/systemd/system/nix.service << 'EOF'
+
+[Unit]
+Description=Mount nix.img file as /nix if exists
+ConditionPathExists=/run/initramfs/live/nix.img
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c \
+  'mkdir -p /nix && \
+  ln -sf /nix/var/nix/profiles/default /usr/local && \
+  ln -sf /nix/var/nix/profiles/default /root/.nix-profile && \
+  echo "nixbld:x:503:nobody" >> /etc/group && \
+  mount /run/initramfs/live/nix.img /nix'
+
+[Install]
+WantedBy=local-fs.target
+EOF
+
+mkdir -p etc/systemd/system/local-fs.target.wants
+ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
+
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
 printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > etc/network/interfaces.d/eth0
