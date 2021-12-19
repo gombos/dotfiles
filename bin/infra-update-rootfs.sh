@@ -1,10 +1,8 @@
 #!/bin/bash
 
-mnt linux_bestia
+DIR=$MNTDIR/linux/tmproot
 
-DIR=$MNTDIR/linux_bestia/tmproot
-
-rw $MNTDIR/linux_bestia
+rw $MNTDIR/linux
 sudo btrfs subvolume create $DIR
 sudo chmod g+w $DIR
 

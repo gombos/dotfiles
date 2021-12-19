@@ -263,7 +263,7 @@ fi
 if [ "$HOST" == "bestia" ]; then
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /run/media/linux_bestia btrfs subvol=/ 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/linux btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -322,11 +322,13 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
-  mkdir -p /run/media/letsencrypt
-  cp -r /run/media/efi/config/letsencrypt /run/media/
+  if [[ -e /run/media/efi/config/letsencrypt ]]; then
+    mkdir -p /run/media/letsencrypt
+    cp -r /run/media/efi/config/letsencrypt /run/media/
+  fi
 
- if [ -f "nginx.conf" ]; then
-   mkdir -p $R/var/lib/nginx
-   cp nginx.conf $R/etc/nginx/
- fi
+  if [ -f "nginx.conf" ]; then
+    mkdir -p $R/var/lib/nginx
+    cp nginx.conf $R/etc/nginx/
+  fi
 fi
