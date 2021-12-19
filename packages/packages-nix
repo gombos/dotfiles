@@ -6,32 +6,28 @@ wget https://nixos.org/nix/install
 chmod +x install
 
 rm -rf /nix/*
+rm -rf /usr/local
+mkdir -p /nix/var/nix/profiles/default
+ln -sf /nix/var/nix/profiles/default /usr/local
+mkdir -p /usr/local/bin/
 
-USER=root ./install --no-daemon
+#fixme USER=root ./install --no-daemon
 rm install
 
-. ~/.nix-profile/etc/profile.d/nix.sh
+#fixme. ~/.nix-profile/etc/profile.d/nix.sh
 
-# switch to stable channel
-#nix-channel --remove nixpkgs
-#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
-
-nix-channel --update
-
-# nix-env --install ripgrep-all swtpm
+#fixme nix-channel --update
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
 # packages of interest
 # go google-chrome thunderbird kubernetes micro rclone bitwarden-cli apfs-fuse-unstable
 
-# nix-env -u
-
-nix-collect-garbage -d
-
-nix-store --verify --check-contents
-nix-store --gc
-nix-store --optimise
+#fixme nix-collect-garbage -d
+#fixme nix-store --verify --check-contents
+#fixme nix-store --gc
+#fixme nix-store --optimise
+#fixme sudo chown root:root /nix/store
 
 wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
@@ -67,4 +63,3 @@ if ! [ -f usr/local/bin/pacapt ]; then
 fi
 
 sudo chown -R root:root /usr/local/bin/
-sudo chown root:root /nix/store

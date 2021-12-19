@@ -1,9 +1,9 @@
-if [ -z "$1" ]; then
-  BOOTMENU="linux_dev"
-else
-  BOOTMENU="$1"
-fi
+#if [ -z "$1" ]; then
+#  BOOTMENU="linux_dev"
+#else
+#  BOOTMENU="$1"
+#fi
 
-mnt-efi
-grub-editenv  /go/efi/grubenv set saved_entry=$BOOTMENU
+rw /go/efi
+echo "set default=systemrescue" | sudo tee -a /go/efi/config/grub.cfg
 sudo /usr/sbin/reboot

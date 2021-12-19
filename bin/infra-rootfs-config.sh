@@ -40,6 +40,8 @@ locale-gen --purge en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 sort -o etc/default/locale etc/default/locale
 
+echo "nixbld:x:503:nobody" >> etc/group
+
 # todo - vmware fix
 rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
@@ -175,7 +177,6 @@ ExecStart=/bin/sh -c \
   'mkdir -p /nix && \
   ln -sf /nix/var/nix/profiles/default /usr/local && \
   ln -sf /nix/var/nix/profiles/default /root/.nix-profile && \
-  echo "nixbld:x:503:nobody" >> /etc/group && \
   mount /run/initramfs/live/nix.img /nix'
 
 [Install]

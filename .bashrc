@@ -90,7 +90,6 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias mount='sudo mnt'
 alias iotop='sudo iotop'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
