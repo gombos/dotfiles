@@ -48,9 +48,3 @@ if [ -f "$RDEXEC" ]; then
   ( cd $configdir && . "./$scriptname" )
   printf "[rd.exec] stop executing $RDEXEC \n"
 fi
-
-if [ -f /run/media/efi/config/grub.cfg ]; then
-  mount -o remount,rw /run/media/efi
-  rm /run/media/efi/config/grub.cfg
-  mount -o remount,ro /run/media/efi
-fi
