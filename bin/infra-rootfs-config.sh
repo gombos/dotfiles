@@ -144,8 +144,8 @@ ExecStart=/bin/bash -c \
     mount /dev/disk/by-label/home /home; \
   else \
     if [[ "$virt" == "vmware" ]]; then \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/home /home && \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=27,nosuid,nodev,nonempty .host:/host /home/host; \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=4,nosuid,nodev,nonempty .host:/home /home && \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=4,nosuid,nodev,nonempty .host:/host /home/host; \
     else \
       mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
       mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
@@ -215,6 +215,7 @@ find var/lib -empty -delete
 rm -rf var/cache var/lib/apt var/lib/systemd
 mkdir -p var/cache/apt/archives/partial
 mkdir -p var/lib/dhcp
+mkdir -p var/lib/nfs/sm
 
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty

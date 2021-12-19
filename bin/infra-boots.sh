@@ -227,12 +227,6 @@ then
   sed -i '/^admin:/d' $R/etc/shadow
 fi
 
-# used if live booting from iso
-if [ -f "/run/initramfs/live/nixfile" ]; then
-  mkdir -p /nix
-  echo '/run/initramfs/live/nixfile /nix squashfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-fi
-
 # --- HOST specific logic
 
 # install all service files
@@ -260,9 +254,8 @@ if [ "$HOST" == "pincer" ]; then
 #  ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
-  #echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
-  #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
+#  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+#  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
   echo "LABEL=home_pincer /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
 fi
@@ -270,6 +263,7 @@ fi
 if [ "$HOST" == "bestia" ]; then
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/linux_bestia btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -283,6 +277,13 @@ if [ "$HOST" == "bestia" ]; then
   #echo "$HOST" > $R/etc/mailname
   #sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
+
+  # NFS
+  mkdir -p $R/var/lib/nfs/sm
+  cp exports $R/etc/exports
+  cp exports $R/var/lib/nfs/etab
+  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
 
   # autosuspend
   if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then

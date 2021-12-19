@@ -9,13 +9,14 @@ if [[ $1 == 'start' ]]; then
   echo "*** Repopulate NFS exports ..."
   sudo rm -rf /etc/exports
 
-  echo "/home/upload/ 192.168.1.0/28(rw,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
-  echo "/home/        192.168.1.0/28(ro,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
-  echo "/home/        127.0.0.1(ro,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
+#  echo '/home/upload/ 192.168.1.0/28(rw,sync,insecure,no_subtree_check)' | sudo tee -a /etc/exports > /dev/null
+#  echo '/home/        192.168.1.0/28(ro,sync,insecure,no_subtree_check)' | sudo tee -a /etc/exports > /dev/null
+#  echo '/run/media/linux_bestia/windows-11 192.168.1.0/28(ro,sync,insecure,no_subtree_check)' | sudo tee -a /etc/exports > /dev/null
 
-  [ "$(ls -A $MNTDIR/archive_media 2>/dev/null)" ] && echo "/run/media/archive_media/archive_media/ 192.168.1.0/24(ro,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
+#  [ "$(ls -A $MNTDIR/archive_media 2>/dev/null)" ] && echo "/run/media/archive_media/archive_media/ 192.168.1.0/24(ro,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
 
   echo "*** starting nfs services..."
+  sudo exportfs -r -v
   sudo systemctl restart nfs-server | grep failed
   sudo systemctl restart rpc-statd | grep failed
 
