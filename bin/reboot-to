@@ -5,5 +5,5 @@
 #fi
 
 rw /go/efi
-echo "set default=systemrescue" | sudo tee -a /go/efi/config/grub.cfg
+sudo grub-editenv /go/efi/grubenv set once=systemrescue
 sudo /usr/sbin/reboot

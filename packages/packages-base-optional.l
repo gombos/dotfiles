@@ -14,6 +14,7 @@ gpg
 gpg-agent
 
 # boot
+grub-common
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
 
