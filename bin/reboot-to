@@ -1,9 +1,9 @@
-#if [ -z "$1" ]; then
-#  BOOTMENU="linux_dev"
-#else
-#  BOOTMENU="$1"
-#fi
+if [ -z "$1" ]; then
+  BOOTMENU="systemrescue"
+else
+  BOOTMENU="$1"
+fi
 
 rw /go/efi
-sudo grub-editenv /go/efi/grubenv set once=systemrescue
+sudo grub-editenv /go/efi/grubenv set once=$BOOTMENU
 sudo /usr/sbin/reboot
