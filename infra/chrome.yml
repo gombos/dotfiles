@@ -12,6 +12,7 @@ ingredients:
     - openssl
     - wget
     - xkb-data
+    - xdg-utils
     - zlib1g
     - libatk-bridge
     - libatk-bridge2.0-0
@@ -70,7 +71,8 @@ script:
   - mv ./opt/google/chrome/product_logo_48.png usr/share/icons/hicolor/48x48/apps/google-chrome.png
   - cp usr/share/icons/hicolor/256x256/apps/google-chrome.png .
   - sed -i -e 's|/usr/bin/google-chrome-stable %U|AppRun|g' google-chrome.desktop
-  - sed -i -e 's|3.26|3.00|g' opt/google/chrome/chrome
+  - rm -rf ./etc ./opt/google/chrome/cron
+  - find ./opt/google/chrome/locales -type f -not -name 'en-US.pak' -delete
   - cat > ./AppRun <<\EOF
   - #!/bin/sh
   - HERE=$(dirname $(readlink -f "${0}"))
