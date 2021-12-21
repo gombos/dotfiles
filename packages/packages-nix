@@ -29,17 +29,15 @@ rm install
 #fixme nix-store --optimise
 #fixme sudo chown root:root /nix/store
 
-wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
-rm -rf chrome.yml
-wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
-bash -ex pkg2appimage chrome.yml
-mv out/*.AppImage /usr/local/bin/google-chrome-stable
-
+# rga
+rm -rf ripgrep_all-*
 wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
 mv ripgrep_all-*/rga /usr/local/bin/
+rm -rf ripgrep_all-*
 
+# micro
 curl https://getmic.ro | bash
 mv micro /usr/local/bin/
 
@@ -50,9 +48,17 @@ rm bw.zip
 chmod +x bw
 mv bw /usr/local/bin/
 
-# appimage
+# appimage - digikam
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
+
+# appimage - chrome
+rm -rf out google-chrome chrome.yml
+wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
+bash -ex pkg2appimage chrome.yml
+mv out/*.AppImage /usr/local/bin/google-chrome-stable
+rm -rf out google-chrome chrome.yml
 
 # pip
 curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo python3
@@ -61,11 +67,5 @@ pip3 install awscli PyYAML
 pip3 install pyusb temperusb
 pip3 install castero
 pip3 install networkx
-
-# Try both wget first
-if ! [ -f usr/local/bin/pacapt ]; then
-  wget --no-check-certificate https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
-  chmod 755 /usr/local/bin/pacapt
-fi
 
 sudo chown -R root:root /usr/local/bin/

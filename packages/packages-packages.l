@@ -83,3 +83,4 @@ ovmf
 qemu-user-static
 
 binutils
+graphicsmagick-imagemagick-compat
