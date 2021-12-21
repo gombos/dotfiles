@@ -22,8 +22,16 @@ if [[ -e /dev/disk/by-label/ISO ]]; then
 fi
 
 # Make the modules available to boot
-mkdir -p $NEWROOT/usr/lib/modules
-mount $mp/kernel/modules $NEWROOT/usr/lib/modules
+if [ -f "$mp/kernel/modules"  ]; then
+  mkdir -p $NEWROOT/usr/lib/modules
+  mount $mp/kernel/modules $NEWROOT/usr/lib/modules
+fi
+
+# Make the firmware available to boot
+if [ -f "$mp/kernel/firmware"  ]; then
+  mkdir -p $NEWROOT/usr/lib/firmware
+  mount $mp/kernel/firmware $NEWROOT/usr/lib/firmware
+fi
 
 # Make the kernel available for kexec
 mkdir -p $NEWROOT/boot

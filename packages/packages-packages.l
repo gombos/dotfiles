@@ -81,3 +81,5 @@ ovmf
 
 # arm
 qemu-user-static
+
+binutils

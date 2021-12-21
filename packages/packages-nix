@@ -29,6 +29,11 @@ rm install
 #fixme nix-store --optimise
 #fixme sudo chown root:root /nix/store
 
+wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+wget
+bash -ex pkg2appimage chrome.yml
+mv out/*.AppImage /usr/local/bin/google-chrome-stable
+
 wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
