@@ -141,8 +141,8 @@ fi
 # configure vmware service
 if [ -d "vmware" ]; then
   mkdir -p /home/vm
+  mkdir -p $R/var/lib/vmware
   ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
-  mkdir -p $R/var/lib/vmware/
   cp license-* $R/etc/vmware/
   chmod 444 $R/etc/vmware/license-*
   cp vmware/* $R/etc/vmware/hostd/
