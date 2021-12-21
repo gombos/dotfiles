@@ -195,6 +195,9 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # Using xorriso on MacOS
   #xorriso -indev linux.iso -osirrox on -extract / linux
 
+# minimal isu config
+#sudo rm -rf /tmp/iso/nix.img /tmp/iso/kernel/firmware /tmp/iso/kernel/modules /tmp/iso/home.img
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \
