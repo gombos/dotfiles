@@ -30,7 +30,8 @@ rm install
 #fixme sudo chown root:root /nix/store
 
 wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
-wget
+rm -rf chrome.yml
+wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
 bash -ex pkg2appimage chrome.yml
 mv out/*.AppImage /usr/local/bin/google-chrome-stable
 
