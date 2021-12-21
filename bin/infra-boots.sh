@@ -142,7 +142,7 @@ fi
 if [ -d "vmware" ]; then
   mkdir -p /home/vm
   mkdir -p $R/var/lib/vmware
-  ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
+  ln -sf /go/linux/vm/ "$R/var/lib/vmware/Shared VMs"
   cp license-* $R/etc/vmware/
   chmod 444 $R/etc/vmware/license-*
   cp vmware/* $R/etc/vmware/hostd/
