@@ -140,9 +140,8 @@ fi
 
 # configure vmware service
 if [ -d "vmware" ]; then
-  mkdir -p /home/vm
   mkdir -p $R/var/lib/vmware
-  ln -sf /go/linux/vm/ "$R/var/lib/vmware/Shared VMs"
+  ln -sf /run/media/shared/vm/ "$R/var/lib/vmware/Shared VMs"
   cp license-* $R/etc/vmware/
   chmod 444 $R/etc/vmware/license-*
   cp vmware/* $R/etc/vmware/hostd/
@@ -263,7 +262,7 @@ fi
 if [ "$HOST" == "bestia" ]; then
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /run/media/linux btrfs subvol=/ 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   ln -sf /nix/var/nix/profiles/default $R/usr/local
 

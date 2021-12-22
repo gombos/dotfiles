@@ -32,6 +32,8 @@ ln -sf usr/opt
 # For convinience
 mkdir -p nix
 ln -sf /run/media go
+ln -sf /run/media Volumes
+ln -sf /home Users
 
 # ---- Configure etc
 
