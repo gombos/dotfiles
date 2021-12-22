@@ -9,7 +9,7 @@ virtualHW.version = "16"
 uuid.bios = "56 4d 92 bc 65 3b ae 44-6a 32 8e 82 fe 54 0c c2"
 
 # This uuid can change as the directory of the vm changes
-uuid.location = "56 4d 3d 5f 8f 58 c9 8e-5f 5d 3e a9 b5 6a 86 48"
+uuid.location = "56 4d 07 73 eb 6f 04 ad-54 07 26 1f 9b 98 74 e2"
 
 # Drives - /
 sata0:0.fileName = "/Volumes/shared/isos/linux.iso"
@@ -29,7 +29,7 @@ sharedFolder1.present = "TRUE"
 sharedFolder1.enabled = "TRUE"
 sharedFolder1.readAccess = "TRUE"
 sharedFolder1.writeAccess = "TRUE"
-sharedFolder1.hostPath = "/Users"
+sharedFolder1.hostPath = "/Volumes/shared"
 sharedFolder1.guestName = "host"
 sharedFolder1.expiration = "never"
 
@@ -122,8 +122,8 @@ gui.lastPoweredViewMode = "fullscreen"
 gui.viewModeAtPowerOn = "fullscreen"
 sound.fileName = "-1"
 sound.present = "TRUE"
+sound.startConnected = "FALSE"
 usb:0.present = "TRUE"
 usb:0.deviceType = "hid"
 usb:0.port = "0"
 usb:0.parent = "-1"
-sound.startConnected = "FALSE"
