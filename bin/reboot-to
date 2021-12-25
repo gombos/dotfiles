@@ -6,4 +6,4 @@ fi
 
 rw /go/efi
 sudo grub-editenv /go/efi/grubenv set once=$BOOTMENU
-sudo /usr/sbin/reboot
+cd / && sudo systemctl reboot
