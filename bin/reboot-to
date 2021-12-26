@@ -1,5 +1,5 @@
 if [ -z "$1" ]; then
-  BOOTMENU="systemrescue"
+  BOOTMENU="linux_iso_fallback"
 else
   BOOTMENU="$1"
 fi
