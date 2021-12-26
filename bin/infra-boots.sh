@@ -265,7 +265,7 @@ if [ "$HOST" == "bestia" ]; then
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   ln -sf /nix/var/nix/profiles/default $R/usr/local
-  ln -sf /run/media/archive_media/archive_media/p/o /Volumes/media
+  #ln -sf /run/media/archive_media/archive_media/p/o /Volumes/media
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
