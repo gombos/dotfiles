@@ -254,6 +254,7 @@ if [ "$HOST" == "pincer" ]; then
 
   # NFS
   mkdir -p $R/var/lib/nfs/sm
+  > $R/var/lib/nfs/rmtab
   cp exports $R/etc/exports
   cp exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
@@ -268,7 +269,6 @@ if [ "$HOST" == "bestia" ]; then
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   ln -sf /nix/var/nix/profiles/default $R/usr/local
-  #ln -sf /run/media/archive_media/archive_media/p/o /Volumes/media
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -285,6 +285,7 @@ if [ "$HOST" == "bestia" ]; then
 
   # NFS
   mkdir -p $R/var/lib/nfs/sm
+  > $R/var/lib/nfs/rmtab
   cp exports $R/etc/exports
   cp exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
