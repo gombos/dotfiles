@@ -101,7 +101,7 @@ if [ -f "dhcp.conf" ]; then
 #  chmod 444 $R/etc/hosts
 
 # temporary workaround for bestia
-  echo "192.168.1.2 bestia" >> $R/etc/hosts
+  echo "192.168.1.3 bestia" >> $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
