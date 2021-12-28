@@ -93,13 +93,15 @@ if [ -f "dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
  [ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
-# todo - rewrite, no cut, no mawk
   cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
-#  echo "127.0.0.1 localhost" > $R/etc/hosts
+# todo - rewrite, no cut, no mawk
 #  cat dhcp.conf | grep ^dhcp-host | mawk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
 #  chmod 444 $R/etc/hosts
+
+# temporary workaround for bestia
+  echo "192.168.1.2 bestia" >> $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
