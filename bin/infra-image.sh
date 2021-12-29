@@ -122,9 +122,15 @@ fi
 #cd /
 
 # rootfs squashfs
-infra-get-squash.sh
+#infra-get-squash.sh
 sudo mkdir -p /tmp/iso/LiveOS
-sudo mv /tmp/squashfs/tmp/squashfs.img /tmp/iso/LiveOS/squashfs.img
+
+sudo rm -rf /tmp/laptop
+mkdir -p /tmp/laptop
+infra-get-rootfs.sh /tmp/laptop
+sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
+sudo rm -rf /tmp/laptop/lib/firmware
+sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
 
 # home
 FILE=/tmp/iso/home.img
@@ -149,7 +155,7 @@ sudo mount $DISK $MNT_EFI
 cd $MNT_EFI
 sudo git clone https://github.com/gombos/dotfiles.git .dotfiles
 sudo .dotfiles/bin/infra-provision-user.sh
-sudo chown -R 99:0 .
+sudo chown -R 99:4 .
 cd /
 sudo umount $MNT_EFI
 
@@ -158,7 +164,7 @@ cd /tmp/iso
 # keep iso under 2GB
 
 # nix
-sudo mksquashfs /nix /tmp/iso/nixfile -comp zstd
+sudo mksquashfs /nix /tmp/iso/nix.img -comp zstd
 
 sudo chown -R 1000:1000 .
 
@@ -188,6 +194,9 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # Using xorriso on MacOS
   #xorriso -indev linux.iso -osirrox on -extract / linux
+
+# minimal isu config
+#sudo rm -rf /tmp/iso/nix.img /tmp/iso/kernel/firmware /tmp/iso/kernel/modules /tmp/iso/home.img
 
 xorriso \
    -as mkisofs \

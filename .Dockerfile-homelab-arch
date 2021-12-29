@@ -1,9 +1,0 @@
-FROM archlinux/archlinux:base-devel-20210205.0.15146
-
-LABEL name=arch
-
-COPY bin/* packages/* /tmp/
-WORKDIR /tmp/
-RUN ./infra-build-root.sh
-
-CMD ["/bin/bash"]

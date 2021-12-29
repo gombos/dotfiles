@@ -7,12 +7,14 @@ apt-utils
 ca-certificates
 
 # tools - should be first
+locales
 fuse3
 wget
 gpg
 gpg-agent
 
 # boot
+grub-common
 efibootmgr
 kexec-tools #soft reboot (without bootloader)
 
@@ -40,3 +42,5 @@ laptop-detect
 lm-sensors
 dmidecode
 
+# memory
+procps

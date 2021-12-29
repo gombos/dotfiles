@@ -90,7 +90,6 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias mount='sudo mnt'
 alias iotop='sudo iotop'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
@@ -108,7 +107,7 @@ alias Testclean='git clean -xfdn; find . -type f -name "*~" -exec ls {} \;'
 
 alias mnt-1="sshfs bestia:$MNTDIR/data ~/1"
 alias umnt-1="sudo umount ~/1"
-alias lsb="lsblk -o name,mountpoint,partlabel,label,fstype,size,fsavail,fsuse%,uuid"
+alias lsb="lsblk -o name,mountpoint,partlabel,label,fstype,size,fsavail,fsuse% | grep -v swap"
 
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
 
@@ -158,7 +157,7 @@ if [ -f "/google/devshell/bashrc.google" ]; then
 fi
 
 # brew packages
-#if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
+if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 #if [ -e .linuxbrew/bin/brew ]; then eval $(.linuxbrew/bin/brew shellenv); fi
 
 # nix packages

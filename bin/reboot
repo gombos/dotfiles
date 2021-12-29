@@ -3,5 +3,5 @@ if [ -f /sbin/kexec ]; then
   sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
   sudo systemctl kexec
 else
-  sudo /sbin/reboot
+  cd / && sudo systemctl reboot
 fi

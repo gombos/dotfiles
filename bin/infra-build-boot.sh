@@ -81,9 +81,12 @@ touch /usr/sbin/dmsetup
 #cd dracut-055
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
-cp -av dracut/* dracutdir
-cd dracutdir
 
+# patch dracut
+#cp -av dracut/* dracutdir
+
+# build dracut
+cd dracutdir
 ./configure --disable-documentation
 make 2>/dev/null
 make install
@@ -92,10 +95,7 @@ cd ..
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
-which poweroff reboot halt
-kmod --version
-
-# todo - remove btrfs module fomr initrd and instead mount the modules file earlier
+# todo - remove btrfs module from initrd and instead mount the modules file earlier
 # this probably need to be done on udev stage (pre-mount is too late)
 
 # todo - remove base dependency after
@@ -109,16 +109,27 @@ kmod --version
 
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
 
+# filesystem kernel modules
 # nls_XX - to mount vfat
 # isofs - to find root within iso file
-# ahci mmc_block uas nvme - low level HW access
 # autofs4 - systemd will try to load this (maybe because of fstab)
 # btrfs - for bestia - by far the largest module
 
+# storage kernel modules
+# ahci - for SATA devices on modern AHCI controllers
+# nvme - for NVME (M.2, PCI-E) devices
+# xhci_pci, uas - usb
+# sdhci_acpi, mmc_block - mmc
+
+#sd_mod for all SCSI, SATA, and PATA (IDE) devices
+#ehci_pci and usb_storage for USB storage devices
+#virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
+# ehci_pci - USB 2.0 storage devices
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ahci mmc_block uas nvme ntfs btrfs' \
-  --modules 'base dmsquash-live' \
-  --include /tmp/infra-init.sh           /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
+  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci nvme xhci_pci uas sdhci_acpi mmc_block' \
+  --modules 'dmsquash-live' \
+  --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
 
 rm initrd.img
@@ -133,6 +144,7 @@ rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/lib/dracut/dracut-*
 rm -rf usr/lib/dracut/modules.txt
+rm -rf usr/sbin/dmsetup
 
 # todo - ideally dm dracut module is not included instead of this hack
 rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
@@ -269,15 +281,13 @@ cd /tmp/initrd
 # TCE binary
 mkdir -p /efi/tce
 mkdir -p /efi/tce/optional
-wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86/release/Core-current.iso
-wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssl-1.1.1.tcz
-wget --no-verbose http://www.tinycorelinux.net/12.x/x86/tcz/openssh.tcz
-
-mv Core-current.iso /efi/tce
+wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86_64/release/CorePure64-current.iso -O tce.iso
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssl-1.1.1.tcz
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssh.tcz
+mv tce.iso /efi/tce
 mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
 echo "openssl-1.1.1.tcz " >> /efi/tce/onboot.lst
 echo "openssh.tcz" >> /efi/tce/onboot.lst
-
 mkdir -p tce/opt
 cd tce
 echo "opt" > opt/.filetool.lst
@@ -301,119 +311,9 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
-mkdir -p /efi/config/
-cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
-chmod +x /efi/config/infra-boots.sh
-
-cat > /tmp/rdexec << 'EOF'
-#!/bin/sh
-
-# Script executed during ram disk phase (rd.exec = ram disk execute)
-. /lib/dracut-lib.sh
-
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>>/run/initramfs/rd.exec.log 2>&1
-
-#mkdir /run/media/efi
-#mount -o ro,noexec,nosuid,nodev /dev/sr0  /run/media/efi
-
-# Maybe make the argument more generic URL that curl understands - including file://
-# calling curl is easy.. making sure networking is up is the hard part and also do you really want to make boot dependent on network
-
-# todo - add support loopback mount a file
-
-# EFI label has priority over EFI_* labels
-configdrive=""
-
-if [ -L /dev/disk/by-label/EFI ]; then
-  configdrive="/dev/disk/by-label/EFI"
-else
-  for f in /dev/disk/by-label/EFI_*; do
-    if [ -z "$configdrive" ]; then
-      configdrive="$f"
-    fi
-  done
-fi
-
-for x in $(cat /proc/cmdline); do
-  case $x in
-  rd.dev=*)
-    printf "[rd.dev] $x \n"
-    RDDEV=${x#rd.dev=}
-    configdrive="/dev/disk/$RDDEV"
-    printf "[rd.dev] mount target set to $configdrive\n"
-  ;;
-  rd.exec=*)
-    printf "[rd.exec] $x \n"
-    RDEXEC=${x#rd.exec=}
-  ;;
-  esac
-done
-
-# EFI needs to be mounted as early as possible and needs to stay mounted for modules to load properly
-mp="/run/media/efi"
-mkdir -p "$mp"
-
-drive=$(readlink -f $configdrive)
-
-printf "[rd.exec] Mounting $configdrive = $drive to $mp\n"
-mount -o ro,noexec,nosuid,nodev "$drive" "$mp"
-printf "[rd.exec] Mounted config\n"
-
-# Restrict only root process to load kernel modules. This is a reasonable system hardening
-# todo - mount modules earlier in the dracut lifecycle so that initramfs does not need to include any modules at all
-# todo - so build and test dracut with --no-kernel
-
-if [ -f /run/media/efi/kernel/modules ]; then
-  mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules \n"
-  mount /run/media/efi/kernel/modules /run/media/modules
-  if [ -d $NEWROOT/lib/modules ]; then
-    rm -rf $NEWROOT/lib/modules
-  fi
-  ln -sf /run/media/modules $NEWROOT/lib/
-  rm -rf /lib/modules
-  ln -sf /run/media/modules /lib/
-  printf "[rd.exec] Mounted modules \n"
-fi
-
-if [ -f /run/media/efi/kernel/modules.img-fake ]; then
-  mkdir -p /run/media/modules
-  printf "[rd.exec] Mounting modules \n"
-  /usr/bin/archivemount /run/media/efi/kernel/modules.img /run/media/modules -o ro,readonly
-  if [ -d $NEWROOT/lib/modules ]; then
-    rm -rf $NEWROOT/lib/modules
-  fi
-  ln -sf /run/media/modules/usr/lib/modules $NEWROOT/usr/lib/
-  printf "[rd.exec] Mounted modules \n"
-fi
-
-# default init included in the initramfs
-if [ -z "$RDEXEC" ]; then
-  RDEXEC="/sbin/infra-init.sh"
-else
-  RDEXEC="$mp/$RDEXEC"
-fi
-
-find  /run/media/modules/
-
-printf "[rd.exec] About to run $RDEXEC \n"
-
-if [ -f "$RDEXEC" ]; then
-  # Execute the rd.exec script in a sub-shell
-  printf "[rd.exec] start executing $RDEXEC \n"
-  scriptname="${RDEXEC##*/}"
-  scriptpath=${RDEXEC%/*}
-  configdir="$scriptpath"
-  ( cd $configdir && . "./$scriptname" )
-  printf "[rd.exec] stop executing $RDEXEC \n"
-fi
-
-exit 0
-EOF
-
-chmod +x /tmp/rdexec
+#mkdir -p /efi/config/
+#cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
+#chmod +x /efi/config/infra-boots.sh
 
 # Keep initramfs simple and do not require networking
 
@@ -434,22 +334,12 @@ chmod +x /tmp/rdexec
 
 # todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that should be enough - test it after removing
 # todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
-# use archivemount to mount the modules intird file read only
-
-# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-mount/99-exec.sh \
-
-# --mount '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,x-systemd.requires-mounts-for=/run/media/modules 0 0' \
-#  --mount '/dev/sr0            /run/media/efi     auto              ro,noexec,nosuid,nodev 0 0' \
-
-# adds 10mb to initrd
-#  --include /usr/bin/archivemount /usr/bin/archivemount \
 
 # --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
 
 # shutdown - to help kexec
 # terminfo - to debug
 
-# --include /tmp/rdexec /usr/lib/dracut/hooks/pre-pivot/99-exec.sh \
 # --mount 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev 0 0' \
 #  --include /tmp/infra-init.sh /sbin/infra-init.sh \
 #  --include /tmp/infra-init.sh /sbin/infra-init.sh \
@@ -496,7 +386,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
 
-rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/rdexec
+rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
 
 # Populate logs with the list of filenames
 #find /efi

@@ -1,6 +1,4 @@
-FROM 0gombi0/homelab:minbase
-
-LABEL name=container
+FROM 0gombi0/homelab-baremetal:base
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
@@ -9,6 +7,6 @@ COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 
 # Run
-RUN ./infra-build-root.sh container
+RUN ./infra-build-root.sh extra
 
 CMD ["/bin/bash"]

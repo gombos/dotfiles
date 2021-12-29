@@ -6,17 +6,23 @@ cd /
 VMWARE_VERSION=15.5.7-17171714
 VMWARE_FILE=VMware-Workstation-Full-${VMWARE_VERSION}.x86_64.bundle
 
-# https://download3.vmware.com/software/wkst/file/VMware-Workstation-Full-15.5.7-17171714.x86_64.bundle
-
 wget -q --no-verbose https://download3.vmware.com/software/wkst/file/${VMWARE_FILE}
 chmod +x ./${VMWARE_FILE}
-./${VMWARE_FILE}
+./${VMWARE_FILE} --eulas-agreed
+./${VMWARE_FILE} --uninstall-component=vmware-tools-linuxPreGlibc25
+./${VMWARE_FILE} --uninstall-component=vmware-tools-linux
+./${VMWARE_FILE} --uninstall-component=vmware-tools-netware
+./${VMWARE_FILE} --uninstall-component=vmware-tools-solaris
+./${VMWARE_FILE} --uninstall-component=vmware-tools-winPre2k
+./${VMWARE_FILE} --uninstall-component=vmware-tools-winPreVista
+./${VMWARE_FILE} --uninstall-component=vmware-tools-windows
+
 rm -rf /${VMWARE_FILE}
 
 # Workaround to support 5.8 kernel
 rm /usr/bin/vmware-modconfig
 ln -s /usr/bin/true /usr/bin/vmware-modconfig
-rm -rf /core
+rm -rf /core*
 rm -rf /usr/lib/vmware/isoimages
 
 # Add systemd service files for vmware to make it easier to enable/disable from kernel command line

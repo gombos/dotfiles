@@ -49,12 +49,6 @@ fi
 
 R="$NEWROOT"
 
-if [[ -e /dev/disk/by-label/home ]]; then
-  mkdir -p /home
-  echo "LABEL=home /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
-  ln -sf /home $R/Users
-fi
-
 mp=.
 
 # command line
@@ -65,8 +59,6 @@ for x in $(cat /proc/cmdline); do
   ;;
   esac
 done
-
-#rm $R/lib/systemd/system/nfs-blkmap.service
 
 # Per-host configuration is optional
 if [ -f "rootfs-kulcs.cfg" ]; then
@@ -95,41 +87,43 @@ else
   printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
 
-[ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
-
-[ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
-[ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
-
 # DHCP
-#if [ -f "dhcp.conf" ]; then
-# todo - rewrite, no cut, no mawk
-#  cp dhcp.conf $R/etc/dnsmasq.d/
-#  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+if [ -f "dhcp.conf" ]; then
+ [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
+ [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+ [ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
-#  echo "127.0.0.1 localhost" > $R/etc/hosts
+  cp dhcp.conf $R/etc/dnsmasq.d/
+  chmod 444 $R/etc/dnsmasq.d/dhcp.conf
+
+# todo - rewrite, no cut, no mawk
 #  cat dhcp.conf | grep ^dhcp-host | mawk 'BEGIN { FS = "," } ; { print $3 " " $2}' >> $R/etc/hosts
 #  chmod 444 $R/etc/hosts
 
-#  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-#  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
-#  rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
+# temporary workaround for bestia
+  echo "192.168.1.3 bestia" >> $R/etc/hosts
 
-#  rm -rf $R/var/log/journal
-#  ln -sf /home/log/journal $R/var/log/journal
+  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
+  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  mkdir -p $R/var/lib/misc
+  rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
 
-#  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
-#  chmod 444 $R/etc/resolv.conf
-#else
+  rm -rf $R/var/log/journal
+  ln -sf /home/log/journal $R/var/log/journal
+
+  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
+  chmod 444 $R/etc/resolv.conf
+else
   printf "DNS=192.168.1.2\n" >> $R/etc/systemd/resolved.conf
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
-#fi
+fi
 
 # machine-id
 if [ ! -z "$MID" ]; then
   rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
   echo $MID > $R/etc/machine-id
-  mkdir -p $R/var/lib/dbus
-  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
+#  mkdir -p $R/var/lib/dbus
+#  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
 fi
 
 # sshd host keys
@@ -148,9 +142,8 @@ fi
 
 # configure vmware service
 if [ -d "vmware" ]; then
-  mkdir -p /home/vm
-  ln -sf /home/vm/ "$R/var/lib/vmware/Shared VMs"
-  mkdir -p $R/var/lib/vmware/
+  mkdir -p $R/var/lib/vmware
+  ln -sf /run/media/shared/vm/ "$R/var/lib/vmware/Shared VMs"
   cp license-* $R/etc/vmware/
   chmod 444 $R/etc/vmware/license-*
   cp vmware/* $R/etc/vmware/hostd/
@@ -163,8 +156,8 @@ fi
 
 # /etc/udev/rules.d
 # support my devices
-if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
-  cp "$mp/dotfiles/boot/99-kucko.rules" /run/99-kucko.rules
+if [ -f "99-kucko.rules" ]; then
+  cp "99-kucko.rules" /run/99-kucko.rules
   chmod 0440 /run/99-kucko.rules
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
@@ -235,19 +228,6 @@ then
   sed -i '/^admin:/d' $R/etc/shadow
 fi
 
-# used if live booting from iso
-if [ -f "/run/initramfs/live/nixfile" ]; then
-  mkdir -p /nix
-  echo '/run/initramfs/live/nixfile /nix squashfs noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2' >> $R/etc/fstab
-fi
-
-# todo - readonly porbably does not make a difference
-# This will consume about an extra 10 M RAM
-# Maybe using an ext4 or squashfs with /dev/ram0 root would save that 10 MB
-
-#echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivemount ro,nofail,readonly 0 2' >> $R/etc/fstab
-#echo '/run/media/efi/kernel/modules.img /run/media/modules fuse.archivefs nofail,x-systemd.wanted-by=systemd-udevd.service,x-systemd.before=sysinit.target 0 0' >> $R/etc/fstab
-
 # --- HOST specific logic
 
 # install all service files
@@ -262,13 +242,10 @@ fi
   fi
 #fi
 
-#if [ "$HOST" == "pincer" ]; then
-#  # make it easy to deploy new rootfs
-#  echo '%sudo ALL=NOPASSWD:/bin/btrfs' >> $R/etc/sudoers.d/sudoers
-
-#  # Patch apcupsd config to connect it via usb
-#  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
-#  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
+if [ "$HOST" == "pincer" ]; then
+  # Patch apcupsd config to connect it via usb
+  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
 
 #  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
 #  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
@@ -278,16 +255,22 @@ fi
 #  ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
 
   # NFS
-  #echo 'run/media/linux/linux *(no_subtree_check,no_root_squash) ' >> $R/etc/exports
-  #ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  #ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-#fi
+  mkdir -p $R/var/lib/nfs/sm
+  > $R/var/lib/nfs/rmtab
+  cp exports $R/etc/exports
+  cp exports $R/var/lib/nfs/etab
+  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
+
+  echo "LABEL=home_pincer /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+fi
 
 if [ "$HOST" == "bestia" ]; then
-  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> $R/etc/sudoers.d/sudoers
-
   mkdir -p /nix
   echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
+
+  ln -sf /nix/var/nix/profiles/default $R/usr/local
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -302,6 +285,14 @@ if [ "$HOST" == "bestia" ]; then
   #sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
+  # NFS
+  mkdir -p $R/var/lib/nfs/sm
+  > $R/var/lib/nfs/rmtab
+  cp exports $R/etc/exports
+  cp exports $R/var/lib/nfs/etab
+  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
+  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
+
   # autosuspend
   if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
     cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
@@ -311,19 +302,6 @@ if [ "$HOST" == "bestia" ]; then
     fi
   fi
 
-fi
-
-# nix
-if [ "$HOST" == "bestia" ] || [ -f "/run/initramfs/live/nixfile" ]; then
-  mkdir -p $R/nix
-  rm -rf $R/usr/local
-  ln -sf /nix/var/nix/profiles/default $R/usr/local
-  ln -sf /nix/var/nix/profiles/default $R/root/.nix-profile
-
-  echo "nixbld:x:503:503::/nonexistent:/bin/sh" >> $R/etc/passwd
-  echo "nixbld:!:18916:0:99999:7:::" >> $R/etc/shadow
-  echo "nixbld:!::nixbld" >> $R/etc/gshadow
-  echo "nixbld:x:503:nixbld" >> $R/etc/group
 fi
 
 # server profile
@@ -352,10 +330,13 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
-  mkdir -p /run/media/letsencrypt
-  cp -r /run/media/efi/config/letsencrypt /run/media/
+  if [[ -e /run/media/efi/config/letsencrypt ]]; then
+    mkdir -p /run/media/letsencrypt
+    cp -r /run/media/efi/config/letsencrypt /run/media/
+  fi
 
- if [ -f "nginx.conf" ]; then
-   cp nginx.conf $R/etc/nginx/
- fi
+  if [ -f "nginx.conf" ]; then
+    mkdir -p $R/var/lib/nginx
+    cp nginx.conf $R/etc/nginx/
+  fi
 fi

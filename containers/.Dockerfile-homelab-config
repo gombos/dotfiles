@@ -1,6 +1,4 @@
-FROM 0gombi0/homelab-baremetal:rootfs-preconfig
-
-LABEL name=laptop
+FROM 0gombi0/homelab-baremetal:extra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
@@ -10,6 +8,6 @@ COPY boot/ /tmp/
 WORKDIR /tmp
 
 # Run
-RUN ./infra-build-root.sh config
+RUN ./infra-rootfs-config.sh
 
 CMD ["/bin/bash"]

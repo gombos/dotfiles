@@ -1,0 +1,83 @@
+app: google-chrome
+
+ingredients:
+  package: google-chrome-stable
+  dist: impish
+  sources:
+    - deb http://us.archive.ubuntu.com/ubuntu/ impish main universe
+  script:
+    - wget -c "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+  exclude:
+    - ca-certificates
+    - openssl
+    - wget
+    - xkb-data
+    - xdg-utils
+    - zlib1g
+    - libatk-bridge
+    - libatk-bridge2.0-0
+    - libatspi2.0-0
+    - libblkid1
+    - libbrotli1
+    - libcom-err2
+    - libcurl3-gnutls
+    - libdb5.3
+    - libexpat1
+    - libffi8
+    - libglib2.0-0
+    - libgmp10
+    - libgnutls30
+    - libgssapi-krb5-2
+    - libhogweed6
+    - libidn2-0
+    - libk5crypto3
+    - libkeyutils1
+    - libkrb5-3
+    - libkrb5support0
+    - libldap-2.5-0
+    - libmount1
+    - libnettle8
+    - libnghttp2-14
+    - libnspr4
+    - libp11-kit0
+    - libpcre2-8-0
+    - libpcre3
+    - libpsl5
+    - librtmp1
+    - libsasl2-2
+    - libsasl2-modules-db
+    - libselinux1
+    - libssh-4
+    - libssl1.1
+    - libunistring2
+    - libuuid1
+    - libx11-6
+    - libx11-data
+    - libxcomposite1
+    - libxdamage1
+    - libxext6
+    - libxfixes3
+    - libxi6
+    - libxkbcommon0
+    - libxrandr2
+    - libxrender1
+
+script:
+  - mv ./opt/google/chrome/product_logo_64.png usr/share/icons/hicolor/64x64/apps/google-chrome.png
+  - mv ./opt/google/chrome/product_logo_32.png usr/share/icons/hicolor/32x32/apps/google-chrome.png
+  - mv ./opt/google/chrome/product_logo_256.png usr/share/icons/hicolor/256x256/apps/google-chrome.png
+  - mv ./opt/google/chrome/product_logo_24.png usr/share/icons/hicolor/24x24/apps/google-chrome.png
+  - mv ./opt/google/chrome/product_logo_128.png usr/share/icons/hicolor/128x128/apps/google-chrome.png
+  - mv ./opt/google/chrome/product_logo_48.png usr/share/icons/hicolor/48x48/apps/google-chrome.png
+  - cp usr/share/icons/hicolor/256x256/apps/google-chrome.png .
+  - sed -i -e 's|/usr/bin/google-chrome-stable %U|AppRun|g' google-chrome.desktop
+  - rm -rf ./etc ./opt/google/chrome/cron
+  - find ./opt/google/chrome/locales -type f -not -name 'en-US.pak' -delete
+  - cat > ./AppRun <<\EOF
+  - #!/bin/sh
+  - HERE=$(dirname $(readlink -f "${0}"))
+  - export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
+  - "${HERE}"/opt/google/chrome/google-chrome --password-store=basic --disable-default-apps $@
+  - EOF
+  - chmod a+x ./AppRun
+  - ./opt/google/chrome/chrome --version | grep -Eo "[0-9.]+" | head -n 1 > ../VERSION

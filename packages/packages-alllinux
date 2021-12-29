@@ -15,7 +15,6 @@ apt
 apt-file
 apt-transport-https
 apt-utils
-archivemount
 attr
 autocutsel
 autokey-common
@@ -136,6 +135,7 @@ ipxe-qemu-256k-compat-efi-roms
 isc-dhcp-client
 iso-codes
 jmtpfs
+jq
 kexec-tools
 keyboard-configuration
 keyutils
@@ -368,6 +368,7 @@ libjansson4
 libjbig0
 libjpeg8
 libjpeg-turbo8
+libjq1
 libjs-jquery
 libjson-c5
 libjson-glib-1.0-0
@@ -462,6 +463,7 @@ libobrender32v5
 libobt2v5
 libodfgen-0.1-1
 libogg0
+libonig5
 libopenjp2-7
 libopenmpt0
 libopenmpt-modplug1
@@ -925,7 +927,6 @@ upower
 ure
 usbrelay
 usbutils
-usrmerge
 util-linux
 vlc
 vlc-bin

@@ -15,14 +15,44 @@ if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
   mp=/run/media/efi
-else
+fi
+
+if [[ -e /dev/disk/by-label/ISO ]]; then
   mp=/run/initramfs/live
 fi
 
+# Make the modules available to boot
+if [ -f "$mp/kernel/modules"  ]; then
+  mkdir -p $NEWROOT/usr/lib/modules
+  mount $mp/kernel/modules $NEWROOT/usr/lib/modules
+fi
+
+# Make the firmware available to boot
+if [ -f "$mp/kernel/firmware"  ]; then
+  mkdir -p $NEWROOT/usr/lib/firmware
+  mount $mp/kernel/firmware $NEWROOT/usr/lib/firmware
+fi
+
+# Make the kernel available for kexec
 mkdir -p $NEWROOT/boot
 mount --bind $mp/kernel $NEWROOT/boot
-mkdir -p $NEWROOT/usr/lib/modules
-mount $mp/kernel/modules $NEWROOT/usr/lib/modules
 
-cd $mp/config
-( . ./infra-boots.sh )
+# Allow for config to be on different drive than the rest of the boot files
+RDEXEC=/run/media/efi/config/infra-boots.sh
+for x in $(cat /proc/cmdline); do
+ case $x in
+  rd.exec=*)
+    RDEXEC=${x#rd.exec=}
+  ;;
+  esac
+done
+
+if [ -f "$RDEXEC" ]; then
+  # Execute the rd.exec script in a sub-shell
+  printf "[rd.exec] start executing $RDEXEC \n"
+  scriptname="${RDEXEC##*/}"
+  scriptpath=${RDEXEC%/*}
+  configdir="$scriptpath"
+  ( cd $configdir && . "./$scriptname" )
+  printf "[rd.exec] stop executing $RDEXEC \n"
+fi

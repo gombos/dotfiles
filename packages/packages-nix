@@ -6,44 +6,59 @@ wget https://nixos.org/nix/install
 chmod +x install
 
 rm -rf /nix/*
+rm -rf /usr/local
+mkdir -p /nix/var/nix/profiles/default
+ln -sf /nix/var/nix/profiles/default /usr/local
+mkdir -p /usr/local/bin/
 
-USER=root ./install --no-daemon
+#fixme USER=root ./install --no-daemon
 rm install
 
-. ~/.nix-profile/etc/profile.d/nix.sh
+#fixme. ~/.nix-profile/etc/profile.d/nix.sh
 
-# switch to stable channel
-#nix-channel --remove nixpkgs
-#nix-channel --add https://nixos.org/channels/nixos-21.05 nixpkgs
-
-nix-channel --update
-
-# nix-env --install ripgrep-all swtpm
+#fixme nix-channel --update
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
 # packages of interest
 # go google-chrome thunderbird kubernetes micro rclone bitwarden-cli apfs-fuse-unstable
 
-# nix-env -u
+#fixme nix-collect-garbage -d
+#fixme nix-store --verify --check-contents
+#fixme nix-store --gc
+#fixme nix-store --optimise
+#fixme sudo chown root:root /nix/store
 
-nix-collect-garbage -d
-
-nix-store --verify --check-contents
-nix-store --gc
-nix-store --optimise
-
+# rga
+rm -rf ripgrep_all-*
 wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
-mv ripgrep_all-*/rga /usr/local/bin/
+mv ripgrep_all-*/rga* /usr/local/bin/
+rm -rf ripgrep_all-*
 
+# micro
 curl https://getmic.ro | bash
 mv micro /usr/local/bin/
 
-# appimage
+# bitwarden
+curl -L 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
+unzip bw.zip
+rm bw.zip
+chmod +x bw
+mv bw /usr/local/bin/
+
+# appimage - digikam
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
+
+# appimage - chrome
+rm -rf out google-chrome chrome.yml
+wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
+bash -ex pkg2appimage chrome.yml
+mv out/*.AppImage /usr/local/bin/google-chrome-stable
+rm -rf out google-chrome chrome.yml
 
 # pip
 curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo python3
@@ -53,8 +68,4 @@ pip3 install pyusb temperusb
 pip3 install castero
 pip3 install networkx
 
-# Try both wget first
-if ! [ -f usr/local/bin/pacapt ]; then
-  wget --no-check-certificate https://raw.githubusercontent.com/icy/pacapt/ng/pacapt -O /usr/local/bin/pacapt
-  chmod 755 /usr/local/bin/pacapt
-fi
+sudo chown -R root:root /usr/local/bin/

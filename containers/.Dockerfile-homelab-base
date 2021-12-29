@@ -1,6 +1,4 @@
-FROM 0gombi0/homelab-baremetal:vm
-
-LABEL name=laptop
+FROM 0gombi0/homelab:minbase
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
@@ -9,6 +7,6 @@ COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 
 # Run
-RUN ./infra-build-root.sh laptop
+RUN ./infra-build-root.sh base
 
 CMD ["/bin/bash"]

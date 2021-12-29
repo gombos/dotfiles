@@ -41,8 +41,8 @@ image_clean_function() {
     rm_file etc/apt/apt.conf.d/01autoremove-kernels
 
     rm_file 'root/{*,.*}'
-    rm_file 'var/cache/apt'
-    rm_file 'var/cache/debconf/*-old'
+    rm_file 'var/cache/*'
+    mkdir -p var/cache/apt/archives/partial
     rm_file 'var/lib/dhcp/*'
     rm_file 'var/lib/apt/lists/*'
     rm_file var/lib/command-not-found/commands.db.metadata

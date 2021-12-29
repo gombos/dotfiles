@@ -11,7 +11,7 @@ DIR=$1
 [ -z "$DIR" ] && exit
 
 if [ -z "$2" ]; then
-  image="0gombi0/homelab-baremetal:rootfs"
+  image="0gombi0/homelab-baremetal"
 else
   image="$2"
 fi
@@ -32,6 +32,8 @@ sudo mkdir run
 
 sudo rm -rf etc/hostname
 sudo rm -rf .dockerenv
+
+printf "127.0.0.1 localhost\n" | sudo tee etc/hosts
 
 # Check before doing it readlink -- "/etc/resolv.conf"
 cd $DIR/etc

@@ -1,9 +1,9 @@
 if [ -z "$1" ]; then
-  BOOTMENU="linux_dev"
+  BOOTMENU="linux_iso_fallback"
 else
   BOOTMENU="$1"
 fi
 
-mnt-efi
-grub-editenv  /go/efi/grubenv set saved_entry=$BOOTMENU
-sudo /usr/sbin/reboot
+rw /go/efi
+sudo grub-editenv /go/efi/grubenv set once=$BOOTMENU
+cd / && sudo systemctl reboot

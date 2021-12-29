@@ -1,3 +1,6 @@
+# Full HW support
+# All productivity tools
+
 # devices
 linux-firmware
 
@@ -20,3 +23,4 @@ lxpanel
 
 # needs extra config
 gh
+jq

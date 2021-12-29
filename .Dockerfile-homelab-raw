@@ -1,9 +1,0 @@
-LABEL name=iso
-
-FROM 0gombi0/homelab:rootfs
-
-COPY bin/*  /tmp/
-WORKDIR /tmp/
-RUN ./infra-image.sh
-
-CMD ["/bin/bash"]
