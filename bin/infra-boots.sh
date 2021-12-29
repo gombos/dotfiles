@@ -161,9 +161,6 @@ if [ -d "vmware" ]; then
   sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
 fi
 
-# Closing the lid on power should not suspend this laptop
-#  sed -i 's|\#HandleLidSwitchExternalPower=.*|HandleLidSwitchExternalPower=ignore|g' $R/etc/systemd/logind.conf
-
 # /etc/udev/rules.d
 # support my devices
 if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
@@ -171,9 +168,6 @@ if [ -f "$mp/dotfiles/boot/99-kucko.rules" ]; then
   chmod 0440 /run/99-kucko.rules
 fi
 ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
-
-#touch $R/etc/sudoers.d/sudoers
-#chmod 0440 $R/etc/sudoers.d/sudoers
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
@@ -338,6 +332,7 @@ fi
 if [ "$HOST" == "bestia" ] ; then
   mkdir -p /var/lib/docker
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
 if [ "$HOST" == "pincer" ]; then
