@@ -3,7 +3,7 @@
 export DOTFILES="$HOME/.dotfiles"
 
 if [ -d "$DOTFILES/bin" ] ; then
-  exportPATH="$DOTFILES/bin:$PATH"
+  export PATH="$DOTFILES/bin:$PATH"
 fi
 
 # If not running interactively, don't do anything
