@@ -292,6 +292,9 @@ if [ "$HOST" == "bestia" ]; then
   cp exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
+  ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
+
+  # todo - maybe also rpc-statd-notify.service
 
   # autosuspend
   if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
