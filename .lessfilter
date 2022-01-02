@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$1" in
+*.docx)
+  pandoc --from docx --to plain --wrap=none  "$1";;
+*)
+  exit 1
+  ;;
+esac
+
+exit 0
