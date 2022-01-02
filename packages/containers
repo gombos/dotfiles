@@ -42,5 +42,8 @@ vaultwarden/server
 certbot/certbot
 hardware/rainloop - web based email client
 
+# command line tools
+gcr.io/google.com/cloudsdktool/cloud-sdk # gcloud
+
 # mine
 0gombi0/homelab
