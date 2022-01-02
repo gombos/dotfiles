@@ -4,6 +4,11 @@
 #git -C /run/media/backup_bestia/gitlab/dotfiles.clone pull
 #git -C /run/media/backup_bestia/gitlab/dotfiles.clone gc
 
-rclone sync --exclude Henrik_MeadowBrook/** gombidrive: ~/gombidrive
-rclone sync --exclude Henrik_MeadowBrook/** henrikdrive: ~/henrikdrive
+#todo - instead of commenting out things, better take a comamnd line argument
+
 rclone sync cadrive: ~/cadrive
+
+rclone sync --exclude Henrik_MeadowBrook/** gombidrive: ~/gombidrive
+
+#rclone sync --exclude Henrik_MeadowBrook/** henrikdrive: ~/henrikdrive
+
