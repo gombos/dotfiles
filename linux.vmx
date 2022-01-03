@@ -11,7 +11,7 @@ uuid.bios = "56 4d 92 bc 65 3b ae 44-6a 32 8e 82 fe 54 0c c2"
 # This uuid can change as the directory of the vm changes
 uuid.location = "56 4d 07 73 eb 6f 04 ad-54 07 26 1f 9b 98 74 e2"
 
-vmci0.id = "1"
+vmci0.id = "100"
 
 # Drives - /
 sata0:0.fileName = "/Volumes/shared/isos/linux.iso"
