@@ -85,7 +85,7 @@ Update Type=0
 
 [AlbumFolderView Sidebar]
 CurrentIndex=7645
-Expansion=0,1,7639,7645,7647,7644,7646,7642,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6,-2
+Expansion=0,1,7639,7645,7647,7644,7641,7599,7596,7597,7593,7595,7594,7587,7569,2847,2848,2885,2886,2887,2835,2803,2801,2800,2609,2607,2608,2602,2603,2604,2605,2606,2611,2612,2566,2567,2600,2601,2585,2586,2598,2591,2593,2592,2587,2574,2571,2572,2570,2568,2569,2565,2554,2562,2563,2564,2557,2552,2553,2549,2551,2518,1296,17,3,4,5,7,6,-2
 RestoreChecked=false
 Selection=7645
 SortColumn=0
@@ -116,8 +116,10 @@ DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
 DP-5 YPosition 1920x1080=0
 HDMI-0 XPosition=0
+HDMI-0 XPosition 1920x1080=0
 HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=0
+HDMI-0 YPosition 1920x1080=0
 HDMI-0 YPosition 3840x2160=0
 Height 1080=615
 State=AAAA/wAAAAD9AAAAAAAAAoAAAAH0AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
@@ -148,15 +150,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikaw0VX44/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digikaw0VX44/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digikaMdaE5o/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digikaw0VX44/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -841,7 +843,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwKkpKQ=
+Database Encrypted Password=AwLCwsI=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -875,7 +877,7 @@ FileProperties Expanded=true
 ItemProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=208
+RestoreSize=211
 VideoProperties Expanded=true
 
 [Digikam Right Sidebar][Captions Tags Properties Tab]
@@ -1166,13 +1168,21 @@ FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
+HDMI-0 Height 1440x900=797
+HDMI-0 Height 1920x1080=1080
 HDMI-0 Height 2160=1664
 HDMI-0 Height 3840x2160=1802
+HDMI-0 Width 1440x900=1361
+HDMI-0 Width 1920x1080=1920
 HDMI-0 Width 3840=2794
 HDMI-0 Width 3840x2160=2963
 HDMI-0 XPosition=535
+HDMI-0 XPosition 1440x900=1
+HDMI-0 XPosition 1920x1080=1
 HDMI-0 XPosition 3840x2160=97
 HDMI-0 YPosition=197
+HDMI-0 YPosition 1440x900=16
+HDMI-0 YPosition 1920x1080=16
 HDMI-0 YPosition 3840x2160=90
 Height 1080=1080
 Height 878=748
@@ -1184,7 +1194,7 @@ Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAAC5MAAAaxAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB4AAAAP5AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1255,8 +1265,10 @@ FullScreen Hide StatusBar=false
 FullScreen Hide ThumbBar=true
 FullScreen Hide ToolBars=false
 HDMI-0 XPosition=1
+HDMI-0 XPosition 1920x1080=0
 HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=1675
+HDMI-0 YPosition 1920x1080=0
 HDMI-0 YPosition 3840x2160=0
 HEIFCompression=75
 HEIFLossLess=true
@@ -1483,8 +1495,10 @@ FullScreen Hide SideBars=false
 FullScreen Hide StatusBar=false
 FullScreen Hide ToolBars=false
 HDMI-0 XPosition=0
+HDMI-0 XPosition 1920x1080=0
 HDMI-0 XPosition 3840x2160=0
 HDMI-0 YPosition=0
+HDMI-0 YPosition 1920x1080=0
 HDMI-0 YPosition 3840x2160=0
 Horizontal Splitter State=AAAA/wAAAAEAAAADAAACJgAAAJwAAAImAf////8AAAAAAQE=
 Navigate By Pair=false
@@ -1499,7 +1513,7 @@ FileProperties Expanded=true
 ItemProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=29
+RestoreSize=31
 VideoProperties Expanded=true
 
 [LightTable Settings][Left Sidebar][Captions Tags Properties Tab]
@@ -1578,7 +1592,7 @@ FileProperties Expanded=true
 ItemProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=28
+RestoreSize=31
 VideoProperties Expanded=true
 
 [LightTable Settings][Right Sidebar][Captions Tags Properties Tab]
@@ -1653,7 +1667,7 @@ Version Properties View Mode=2
 [MainWindow]
 InitialAlbumID=134217795
 SplitterState=AAAA/wAAAAEAAAADAAABawAABbAAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAj4AAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACPgAAACcAP///wAACPgAAAaxAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAXaAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAABdoAAABDAP///wAABdoAAALYAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [Metadata Settings]
 Clear Metadata If Rescan=false
@@ -1808,7 +1822,7 @@ Grouping mode=2
 
 [mainwindow_tableview][Current Profile]
 Column Count=6
-Header State=\x00\x00\x00\xff\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04b\x00\x00\x00\x06\x01\x01\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xbb\xff\xff\xff\xff\x00\x00\x00\x81\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x00\x00\xbb
+Header State=\x00\x00\x00\xff\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x06\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04b\x00\x00\x00\x06\x01\x01\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00R\xff\xff\xff\xff\x00\x00\x00\x81\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\xbb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x00\x00\xbb
 Profile Name=
 
 [mainwindow_tableview][Current Profile][Column 0]

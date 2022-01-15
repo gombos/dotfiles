@@ -229,6 +229,8 @@ touch etc/machine-id
 rm -rf etc/fstab
 touch etc/fstab
 
+find  etc/rc*.d/ -name "S*nxserver*" -delete
+
 # change the date of last time password was set back to 1970 to have reproducible builds
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 

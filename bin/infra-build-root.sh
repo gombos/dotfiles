@@ -99,8 +99,9 @@ install_my_packages.sh packages-extra.l
 
 infra-install-vmware-workstation.sh
 
-# todo
-# install nxmachine
-# wget https://download.nomachine.com/download/7.7/Linux/nomachine_7.7.4_1_amd64.deb
+# nxmachine
+wget https://download.nomachine.com/download/7.7/Linux/nomachine_7.7.4_1_amd64.deb
+dpkg -i *.deb
+rm -rf *.deb
 
 fi

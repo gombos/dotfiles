@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DIR=$MNTDIR/linux/tmproot
+DIR=$MNTDIR/shared/tmproot
 
-rw $MNTDIR/linux
+#rw $MNTDIR/shared
 sudo btrfs subvolume create $DIR
 sudo chmod g+w $DIR
 
@@ -10,8 +10,9 @@ infra-get-rootfs.sh $DIR
 
 cd $DIR
 version=$(cat var/integrity/id)
+echo $version
 cd ..
-sudo mv tmproot linux-$version
+sudo mv $DIR $MNTDIR/shared/linux-$version
 
 # Todo - Dedup
 #sudo rmlint --types="duplicates" --config=sh:handler=clone $DIR
