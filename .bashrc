@@ -147,8 +147,9 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # lesspipe
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-[ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
+# todo - figure out how to make lesspipe and bash-completition work together
+#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+#[ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
 
 if [ -f "/google/devshell/bashrc.google" ]; then
   source "/google/devshell/bashrc.google"
