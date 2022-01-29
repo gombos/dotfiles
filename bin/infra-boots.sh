@@ -286,6 +286,10 @@ if [ "$HOST" == "bestia" ]; then
   #sed -i 's|\#port.*993|port=993\n    ssl=yes|g' $R/etc/dovecot/conf.d/10-master.conf
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
+  #nx
+  mkdir -p $R/usr/NX/etc
+  cp -a nx/* $R/usr/NX/etc/
+
   # NFS
   mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
