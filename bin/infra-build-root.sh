@@ -100,7 +100,11 @@ install_my_packages.sh packages-extra.l
 infra-install-vmware-workstation.sh
 
 # nxmachine
+echo "nx:x:550:nobody" >> /etc/group
+adduser --disabled-password --uid 550 --gid 550 --shell "/etc/NX/nxserver" --home "/var/NX/nx" --gecos "" nx
+
 wget https://download.nomachine.com/download/7.7/Linux/nomachine_7.7.4_1_amd64.deb
+
 dpkg -i *.deb
 rm -rf *.deb
 

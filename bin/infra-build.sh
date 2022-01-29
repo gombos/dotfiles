@@ -6,7 +6,6 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-
 # "efi minbase container base extra config squash-rootfs iso iso-upload"
 
 if ! [ -z "$1" ]; then
