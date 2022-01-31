@@ -108,4 +108,9 @@ wget --no-verbose --no-check-certificate https://download.nomachine.com/download
 dpkg -i *.deb
 rm -rf *.deb /usr/NX/etc/keys /usr/NX/etc/sshstatus /usr/NX/etc/usb.db* /usr/NX/etc/*.lic /usr/NX/etc/nxdb /usr/NX/etc/uuid /usr/NX/etc/node.cfg /usr/NX/etc/server.cfg /var/NX/nx/.ssh
 
+# caddy
+wget --no-verbose --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v2.4.6/caddy_2.4.6_linux_amd64.deb
+dpkg -i *.deb
+rm -rf *.deb /etc/systemd/system/multi-user.target.wants/caddy.service
+
 fi
