@@ -5,6 +5,9 @@ rm install
 wget https://nixos.org/nix/install
 chmod +x install
 
+rw /nix
+rw /go/shared
+
 rm -rf /nix/*
 rm -rf /usr/local
 mkdir -p /nix/var/nix/profiles/default
@@ -73,5 +76,9 @@ pip3 install awscli PyYAML
 pip3 install pyusb temperusb
 pip3 install castero
 pip3 install networkx
+pip3 install linode-cli
 
 sudo chown -R root:root /usr/local/bin/
+
+ro /nix
+ro /go/shared

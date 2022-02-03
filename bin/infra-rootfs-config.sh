@@ -42,7 +42,7 @@ locale-gen --purge en_US.UTF-8
 update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 sort -o etc/default/locale etc/default/locale
 
-echo "nixbld:x:503:nobody" >> etc/group
+echo "nixbld:x:402:nobody" >> etc/group
 
 # todo - vmware fix
 rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved

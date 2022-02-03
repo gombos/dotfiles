@@ -9,8 +9,12 @@ softwareupdate --all --install --force
 brew update
 brew upgrade
 
+# brave - incognito browser
+# cd Library/Preferences
+# defaults write com.brave.Browser IncognitoModeAvailability -integer 2
+
 # cask
-brew install karabiner-elements	kitty skype	slack visual-studio-code
+brew install karabiner-elements	kitty skype	slack visual-studio-code brave-browser
 
 #brew install osxfuse teamviewer veracrypt microsoft-edge google-cloud-sdk authy
 

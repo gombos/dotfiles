@@ -2,7 +2,7 @@
 
 DIR=$MNTDIR/shared/tmproot
 
-#rw $MNTDIR/shared
+rw $MNTDIR/shared
 sudo btrfs subvolume create $DIR
 sudo chmod g+w $DIR
 
@@ -21,3 +21,5 @@ sudo mv $DIR $MNTDIR/shared/linux-$version
 # Make it read-only
 sudo btrfs property set -ts linux-$version ro true
 sudo btrfs subvolume set-default linux-$version
+
+ro $MNTDIR/shared
