@@ -25,6 +25,7 @@ brew install micro ripgrep-all rmlint qemu
 # canon-eos-utility
 # gimp
 # syncthing
+# nomachine
 
 # basictex tesseract pandoc poppler wakeonlan
 
