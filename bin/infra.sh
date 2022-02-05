@@ -30,21 +30,21 @@ apt-mark hold linux-image-generic linux-image-amd64
 #apt-get purge -y -q secureboot-db
 #apt-get purge -y -q libpackagekit*
 #apt-get purge -y -q libplist*
-apt-get purge -y -q rsyslog
-apt-get purge -y -q telnet
-apt-get purge -y -q traceroute
-apt-get purge -y -q wamerican
-apt-get purge -y -q os-prober
-apt-get purge -y -q dictionaries-common
-apt-get purge -y -q ispell
-apt-get purge -y -q emacsen-common
+#apt-get purge -y -q rsyslog
+#apt-get purge -y -q telnet
+#apt-get purge -y -q traceroute
+#apt-get purge -y -q wamerican
+#apt-get purge -y -q os-prober
+#apt-get purge -y -q dictionaries-common
+#apt-get purge -y -q ispell
+#apt-get purge -y -q emacsen-common
 
 #apt-get purge -y -q cryptsetup-initramfs
 #apt-get purge -y -q libplymouth*
 #apt-get purge -y -q libntfs-*
 
 apt-get update
-apt-get -y -qq upgrade
+#apt-get -y -qq upgrade
 
 apt-get install -y -qq --no-install-recommends git
 
