@@ -4,7 +4,10 @@ echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
-adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev usr
+adduser --disabled-password --gecos "" usr
+usermod -aG sudo usr
+usermod -aG adm usr
+
 rm -rf /home/usr/.*
 mkdir -p /home/usr/.ssh/
 
