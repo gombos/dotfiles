@@ -5,10 +5,10 @@ echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
 adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev usr
-mkdir -p /home/usr/.ssh
+mkdir -p /home/usr/.ssh/
 mv /root/.ssh/authorized_keys /home/usr/.ssh/
 chmod 400 /home/usr/.ssh/authorized_keys
-chown -R usr:usr /home/usr/
+chown -R usr:usr /home/usr/.ssh/
 
 #apt-get purge -y -q byobu pastebinit linux-headers-generic snapd secureboot-db libpackagekit* libplist* rsyslog
 
