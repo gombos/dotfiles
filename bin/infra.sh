@@ -7,6 +7,12 @@ echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev usr
 rm -rf /home/usr/.*
 mkdir -p /home/usr/.ssh/
+
+# Take password from root
+sed -i '/^usr:/d' /etc/shadow
+head -1 /etc/shadow | sed -e 's/^root/usr/' >> /etc/shadow
+
+# Take key from root
 mv /root/.ssh/authorized_keys /home/usr/.ssh/
 chmod 400 /home/usr/.ssh/authorized_keys
 chown -R usr:usr /home/usr/.ssh/
