@@ -23,10 +23,11 @@ rm -rf /root/.ssh
 
 apt-mark hold linux-image-generic linux-image-amd64
 
-#apt-get purge -y -q byobu pastebinit linux-headers-generic snapd secureboot-db libpackagekit* libplist* rsyslog
-#apt-get purge -y -q cryptsetup-initramfs libplymouth* libntfs-*
+apt-get purge -y -q byobu pastebinit linux-headers-generic snapd secureboot-db libpackagekit* libplist* rsyslog
+apt-get purge -y -q cryptsetup-initramfs libplymouth* libntfs-*
 
 apt-get update
+apt-get upgrade
 
 apt-get install -y -qq --no-install-recommends git
 
