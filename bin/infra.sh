@@ -12,4 +12,6 @@ echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
 
 #apt-get install -y -qq --no-install-recommends joe
 
-apt-get purge -y -q secureboot-db libpackagekit* libplist*
+#apt-get purge -y -q secureboot-db libpackagekit* libplist*
+
+echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
