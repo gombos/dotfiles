@@ -2,7 +2,7 @@
 
 # Setup symbolic links to my .dotfiles
 
-cwd=$(pwd)
+cwd=$HOME
 
 cd $cwd
 
