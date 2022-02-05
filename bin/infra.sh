@@ -5,6 +5,7 @@ echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
 adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev usr
+rm -rf /home/usr/.*
 mkdir -p /home/usr/.ssh/
 mv /root/.ssh/authorized_keys /home/usr/.ssh/
 chmod 400 /home/usr/.ssh/authorized_keys
@@ -19,8 +20,6 @@ chown -R usr:usr /home/usr/.ssh/
 apt-get update
 
 apt-get install -y -qq --no-install-recommends micro git
-
-rm -rf /home/usr/.*
 
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 
