@@ -29,4 +29,5 @@ apt-get install -y -qq --no-install-recommends micro git
 
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 
-#todo - disable root user as much as possible
+#Disable root login
+usermod -p '*' root
