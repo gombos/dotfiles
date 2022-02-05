@@ -3,7 +3,7 @@
 echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 
-adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev admin
+adduser --disabled-password --gecos "" usr && usermod -aG adm,sudo,netdev usr
 
 #apt-get purge -y -q byobu pastebinit linux-headers-generic snapd secureboot-db libpackagekit* libplist* rsyslog
 
@@ -15,4 +15,6 @@ apt-get update
 
 apt-get install -y -qq --no-install-recommends micro git
 
-runuser -u usr -- git clone https://github.com/gombos/dotfiles.git ~/.dotfiles
+rm -rf /home/usr/.*
+
+runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
