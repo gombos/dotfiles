@@ -44,7 +44,7 @@ apt-get install -y -qq --no-install-recommends python3-pip micro
 # Takes time, do it last
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano dmidecode hdparm iso-codes mtr-tiny pciutils reportbug whois gcc-9-base libnewt0.52 libgpm2 libldap-common liblockfile-bin libsasl2-modules curl dnsutils apt-listchanges libslang2 liblognorm5
+apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano dmidecode hdparm iso-codes mtr-tiny pciutils reportbug whois gcc-9-base libnewt0.52 libgpm2 libldap-common liblockfile-bin libsasl2-modules curl dnsutils apt-listchanges libslang2 liblognorm5 debconf-i18n
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
