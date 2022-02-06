@@ -5,8 +5,8 @@ rm install
 wget https://nixos.org/nix/install
 chmod +x install
 
-rw /nix
-rw /go/shared
+/home/user/.dotfiles/bin/rw /go/shared
+/home/user/.dotfiles/bin/rw /nix
 
 rm -rf /nix/*
 rm -rf /usr/local
@@ -41,7 +41,7 @@ mv ripgrep_all-*/rga* /usr/local/bin/
 rm -rf ripgrep_all-*
 
 # micro
-wget -O - https://getmic.ro | bash
+wget -O - https://getmic.ro | GETMICRO_REGISTER=y sh
 mv micro /usr/local/bin/
 
 # rclone
@@ -80,5 +80,5 @@ pip3 install linode-cli
 
 sudo chown -R root:root /usr/local/bin/
 
-ro /nix
-ro /go/shared
+/home/user/.dotfiles/bin/ro /nix
+/home/user/.dotfiles/bin/ro /go/shared
