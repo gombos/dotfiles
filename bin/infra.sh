@@ -8,6 +8,8 @@ echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 echo "AllowUsers usr" >> /etc/ssh/sshd_config
 
+echo "${SSHDPORT}" > /tmp/testme
+
 systemctl restart sshd
 
 adduser --disabled-password --gecos "" usr
@@ -53,8 +55,8 @@ apt-get purge -y -q rsyslog
 apt-get purge -y -q telnet
 apt-get purge -y -q traceroute
 apt-get purge -y -q os-prober
-apt-get purge -y -q ispell
-apt-get purge -y -q emacsen-common
+#apt-get purge -y -q ispell
+#apt-get purge -y -q emacsen-common
 
 #apt-get purge -y -q wamerican
 
@@ -62,4 +64,5 @@ apt-get purge -y -q emacsen-common
 #apt-get purge -y -q libplymouth*
 #apt-get purge -y -q libntfs-*
 
+apt-get -y -qq autoremove
 apt-get -y -qq upgrade
