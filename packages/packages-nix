@@ -41,7 +41,7 @@ mv ripgrep_all-*/rga* /usr/local/bin/
 rm -rf ripgrep_all-*
 
 # micro
-curl https://getmic.ro | bash
+wget -O - https://getmic.ro | bash
 mv micro /usr/local/bin/
 
 # rclone
@@ -51,7 +51,7 @@ mv rclone-*/rclone /usr/local/bin/
 rm -rf rclone-*
 
 # bitwarden
-curl -L 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
+wget -O - 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
 unzip bw.zip
 rm bw.zip
 chmod +x bw
@@ -70,7 +70,7 @@ mv out/*.AppImage /usr/local/bin/google-chrome-stable
 rm -rf out google-chrome chrome.yml
 
 # pip
-curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo python3
+wget -O - https://bootstrap.pypa.io/get-pip.py | python3
 
 pip3 install awscli PyYAML
 pip3 install pyusb temperusb
