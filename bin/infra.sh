@@ -40,8 +40,21 @@ runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.do
 runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
 
 # Takes time, do it last
-apt-mark hold linux-image-generic linux-image-amd64
+apt-mark hold linux-image-amd64
 
+apt-get purge -y -q rsyslog
+apt-get purge -y -q telnet
+apt-get purge -y -q traceroute
+apt-get purge -y -q os-prober
+apt-get purge -y -q tasksel
+
+#apt-get purge -y -q ispell
+#apt-get purge -y -q emacsen-common
+
+#apt-get purge -y -q wamerican
+
+# Ubuntu things
+# apt-mark hold linux-image-generic
 #apt-get purge -y -q byobu
 #apt-get purge -y -q pastebinit
 #apt-get purge -y -q linux-headers-generic
@@ -49,19 +62,11 @@ apt-mark hold linux-image-generic linux-image-amd64
 #apt-get purge -y -q secureboot-db
 #apt-get purge -y -q libpackagekit*
 #apt-get purge -y -q libplist*
-
-apt-get purge -y -q rsyslog
-apt-get purge -y -q telnet
-apt-get purge -y -q traceroute
-apt-get purge -y -q os-prober
-#apt-get purge -y -q ispell
-#apt-get purge -y -q emacsen-common
-
-#apt-get purge -y -q wamerican
-
 #apt-get purge -y -q cryptsetup-initramfs
 #apt-get purge -y -q libplymouth*
 #apt-get purge -y -q libntfs-*
 
 apt-get -y -qq autoremove
+dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
+
 apt-get -y -qq upgrade
