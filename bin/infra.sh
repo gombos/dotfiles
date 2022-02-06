@@ -39,19 +39,12 @@ apt-get install -y -qq --no-install-recommends git
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
 
+apt-get install -y -qq --no-install-recommends python3-pip micro
+
 # Takes time, do it last
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q rsyslog
-apt-get purge -y -q telnet
-apt-get purge -y -q traceroute
-apt-get purge -y -q os-prober
-apt-get purge -y -q tasksel
-
-#apt-get purge -y -q ispell
-#apt-get purge -y -q emacsen-common
-
-#apt-get purge -y -q wamerican
+apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-common vim-runtime whiptail publicsuffix nano
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
