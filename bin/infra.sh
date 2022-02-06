@@ -6,6 +6,7 @@ echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
 echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+echo "AllowUsers usr" >> /etc/ssh/sshd_config
 
 systemctl restart sshd
 
@@ -52,11 +53,10 @@ apt-get purge -y -q rsyslog
 apt-get purge -y -q telnet
 apt-get purge -y -q traceroute
 apt-get purge -y -q os-prober
+apt-get purge -y -q ispell
+apt-get purge -y -q emacsen-common
 
 #apt-get purge -y -q wamerican
-#apt-get purge -y -q dictionaries-common
-#apt-get purge -y -q ispell
-#apt-get purge -y -q emacsen-common
 
 #apt-get purge -y -q cryptsetup-initramfs
 #apt-get purge -y -q libplymouth*
