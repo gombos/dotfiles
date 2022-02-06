@@ -1,9 +1,13 @@
 #!/bin/bash
 
-echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
+# Might run at first boot, services might be already running
+
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
+echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
+echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-echo "AllowUsers user" >> /etc/ssh/sshd_config
+
+systemctl restart sshd
 
 adduser --disabled-password --gecos "" usr
 usermod -aG sudo usr
@@ -22,14 +26,16 @@ chmod 400 /home/usr/.ssh/authorized_keys
 chown -R usr:usr /home/usr/.ssh/
 rm -rf /root/.ssh
 
+# Disable root login
+usermod -p '*' root
+
+echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
+
 apt-get update
 apt-get install -y -qq --no-install-recommends git
 
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
-
-# Disable root login
-usermod -p '*' root
 
 # Takes time, do it last
 apt-mark hold linux-image-generic linux-image-amd64
@@ -41,12 +47,13 @@ apt-mark hold linux-image-generic linux-image-amd64
 #apt-get purge -y -q secureboot-db
 #apt-get purge -y -q libpackagekit*
 #apt-get purge -y -q libplist*
-apt-get purge -y -q rsyslog
 
-#apt-get purge -y -q telnet
-#apt-get purge -y -q traceroute
+apt-get purge -y -q rsyslog
+apt-get purge -y -q telnet
+apt-get purge -y -q traceroute
+apt-get purge -y -q os-prober
+
 #apt-get purge -y -q wamerican
-#apt-get purge -y -q os-prober
 #apt-get purge -y -q dictionaries-common
 #apt-get purge -y -q ispell
 #apt-get purge -y -q emacsen-common
@@ -54,4 +61,5 @@ apt-get purge -y -q rsyslog
 #apt-get purge -y -q cryptsetup-initramfs
 #apt-get purge -y -q libplymouth*
 #apt-get purge -y -q libntfs-*
+
 apt-get -y -qq upgrade
