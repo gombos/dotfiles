@@ -7,8 +7,7 @@ echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
 echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 echo "AllowUsers usr" >> /etc/ssh/sshd_config
-
-echo "${SSHDPORT}" > /tmp/testme
+echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
 
 systemctl restart sshd
 
