@@ -250,3 +250,7 @@ infra-clean-linux.sh /
 infra-integrity.sh /var/integrity/
 
 rm -rf tmp/*
+
+
+# todo - call infra.sh from here and remove duplicates
+
