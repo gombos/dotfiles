@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# todo - remove path
 Key=$( cat /Volumes/bagoly/k.git/k_public )
 MY_SERVER_AUTORIZED_KEY="$Key"
 
