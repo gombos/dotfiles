@@ -71,6 +71,9 @@ apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-commo
 #apt-get purge -y -q libplymouth*
 #apt-get purge -y -q libntfs-*
 
+# Cleanup packages only needed during building the rootfs
+apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
+
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
 apt-get clean
@@ -79,8 +82,9 @@ apt-get -y -qq upgrade
 
 #infra-clean-linux.sh
 
-hostnamectl set-hostname ${LABEL}
+if [ -z "$LABEL" ]; then
+  hostnamectl set-hostname ${LABEL}
+fi
 
 rm -rf tmp/*
 rm -rf usr/local
-

@@ -234,13 +234,6 @@ find  etc/rc*.d/ -name "S*nxserver*" -delete
 # change the date of last time password was set back to 1970 to have reproducible builds
 sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
-# Cleanup packages only needed during building the rootfs
-apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
-
-apt-get -y -qq autoremove
-dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
-apt-get clean
-
 # Only the following directories should be non-empty
 # etc (usually attached to root volume), usr (could be separate subvolume), var (could be separate subvolume)
 
@@ -250,6 +243,4 @@ apt-get clean
 infra-clean-linux.sh /
 rm -rf /etc/ssh/ssh_host*
 
-rm -rf tmp/*
-
-# todo - call infra.sh from here and remove duplicates
+infra.sh
