@@ -53,11 +53,11 @@ mkdir -p etc/network/interfaces.d
 printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost linux\n" > etc/hosts
 
-pwd
-cat etc/hosts
-
 # default admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm && usermod -aG sudo,netdev admin
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm
+usermod -aG sudo admin
+usermod -aG netdev admin
+
 chown admin:adm /home
 chmod g+w /home
 

@@ -48,7 +48,7 @@ if [ -d /home/usr/.dotfiles/bin ]; then
 fi
 
 # maybe call usrlocal script
-apt-get install -y -qq --no-install-recommends micro
+apt-get install -y -qq --no-install-recommends unzip micro
 
 # todo - find a way to do /go/efi/config
 # todo - papertrail
