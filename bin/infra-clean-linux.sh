@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Remove files or directories or touch files - no ther logic should be here
-# Todo - Update integrity
 
 # Idenpotent
 
