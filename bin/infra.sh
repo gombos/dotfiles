@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /
+
 # Might run at first boot, services might be already running
 
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
@@ -41,6 +43,10 @@ apt-get install -y -qq --no-install-recommends git
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
 
+if [ -d /home/usr/.dotfiles/bin ]; then
+  PATH=/home/usr/.dotfiles/bin:$PATH
+fi
+
 # maybe call usrlocal script
 apt-get install -y -qq --no-install-recommends micro
 
@@ -71,6 +77,6 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-/home/usr/.dotfiles/bin/infra-clean-linux.sh /
-rm -rf /tmp/*
-rm -rf /usr/local
+infra-clean-linux.sh /
+rm -rf tmp/*
+rm -rf usr/local

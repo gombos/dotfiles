@@ -236,6 +236,9 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 # Cleanup packages only needed during building the rootfs
 apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
+
+apt-get -y -qq autoremove
+dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
 apt-get clean
 
 # Only the following directories should be non-empty
@@ -251,6 +254,4 @@ infra-integrity.sh /var/integrity/
 
 rm -rf tmp/*
 
-
 # todo - call infra.sh from here and remove duplicates
-
