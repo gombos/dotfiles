@@ -77,6 +77,5 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local
