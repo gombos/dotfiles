@@ -9,7 +9,8 @@ sudo chmod g+w $DIR
 infra-get-rootfs.sh $DIR
 
 cd $DIR
-version=$(cat var/integrity/id)
+#version=$(cat var/integrity/id)
+version=$(date | md5sum | head -c 4)
 echo $version
 cd ..
 sudo mv $DIR $MNTDIR/shared/linux-$version

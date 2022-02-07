@@ -43,8 +43,5 @@ if [ "$ID" != "aws" ]; then
 
 ./$SCRIPTS/infra-clean-linux.sh /
 
- ---- Integrity
-./$SCRIPTS/infra-integrity.sh /var/integrity/
-
 rm -rf /tmp/*
 fi
