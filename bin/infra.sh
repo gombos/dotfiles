@@ -67,5 +67,10 @@ apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-commo
 
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs sudo dpkg --purge
+apt-get clean
 
 apt-get -y -qq upgrade
+
+/home/usr/.dotfiles/bin/infra-clean-linux.sh /
+rm -rf /tmp/*
+rm -rf /usr/local
