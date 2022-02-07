@@ -248,6 +248,7 @@ apt-get clean
 # boot, home, media, run
 
 infra-clean-linux.sh /
+rm -rf /etc/ssh/ssh_host*
 
 # ---- Integrity
 infra-integrity.sh /var/integrity/

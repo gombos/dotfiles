@@ -2,6 +2,8 @@
 
 cd /
 
+USR="usr"
+
 # Might run at first boot, services might be already running
 
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
@@ -13,23 +15,21 @@ echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
 
 systemctl restart sshd
 
-hostnamectl set-hostname ${LABEL}
+adduser --disabled-password --gecos "" $USR
+usermod -aG sudo $USR
+usermod -aG adm $USR
 
-adduser --disabled-password --gecos "" usr
-usermod -aG sudo usr
-usermod -aG adm usr
-
-rm -rf /home/usr/.*
-mkdir -p /home/usr/.ssh/
+rm -rf /home/$USR/.*
+mkdir -p /home/$USR/.ssh/
 
 # Take password from root
-sed -i '/^usr:/d' /etc/shadow
-head -1 /etc/shadow | sed -e 's/^root/usr/' >> /etc/shadow
+sed -i "/^usr:/d" /etc/shadow
+head -1 /etc/shadow | sed -e "s/^root/usr/" >> /etc/shadow
 
 # Take key from root
-mv /root/.ssh/authorized_keys /home/usr/.ssh/
-chmod 400 /home/usr/.ssh/authorized_keys
-chown -R usr:usr /home/usr/.ssh/
+mv /root/.ssh/authorized_keys /home/$USR/.ssh/
+chmod 400 /home/$USR/.ssh/authorized_keys
+chown -R $USR:$USR /home/$USR/.ssh/
 rm -rf /root/.ssh
 
 # Disable root login
@@ -40,12 +40,16 @@ echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
 apt-get update
 apt-get install -y -qq --no-install-recommends git
 
-runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
-runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
+runuser -u $USR -- git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
+runuser -u $USR -- /home/$USR/.dotfiles/bin/infra-provision-user.sh
 
-if [ -d /home/usr/.dotfiles/bin ]; then
-  PATH=/home/usr/.dotfiles/bin:$PATH
+if [ -d /home/$USR/.dotfiles/bin ]; then
+  PATH=/home/$USR/.dotfiles/bin:$PATH
 fi
+
+infra-clean-linux.sh
+
+hostnamectl set-hostname ${LABEL}
 
 # maybe call usrlocal script
 apt-get install -y -qq --no-install-recommends unzip micro

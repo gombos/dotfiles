@@ -68,6 +68,7 @@ image_clean_function() {
     rm_file 'var/lib/ucf/registry.*'
     rm_file 'var/spool/postfix/maildrop/*'
     rm_file 'var/log/nginx/*'
+    rm_file 'var/log/cloud-init*'
     rm_file var/lib/systemd/catalog/database
     rm_file var/cache/ldconfig/aux-cache
 
@@ -79,7 +80,8 @@ image_clean_function() {
 
     rm_file .dockerenv
     rm_file 'root/{*,.*}'
-    rm_file 'etc/ssh/ssh_host*'
+
+#    rm_file 'etc/ssh/ssh_host*'
     rm_file 'core*'
 }
 
