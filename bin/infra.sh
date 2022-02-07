@@ -47,10 +47,6 @@ if [ -d /home/$USR/.dotfiles/bin ]; then
   PATH=/home/$USR/.dotfiles/bin:$PATH
 fi
 
-infra-clean-linux.sh
-
-hostnamectl set-hostname ${LABEL}
-
 # maybe call usrlocal script
 apt-get install -y -qq --no-install-recommends unzip micro
 
@@ -81,5 +77,10 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
+#infra-clean-linux.sh
+
+hostnamectl set-hostname ${LABEL}
+
 rm -rf tmp/*
 rm -rf usr/local
+
