@@ -11,6 +11,8 @@ echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
 
 systemctl restart sshd
 
+hostnamectl set-hostname ${LABEL}
+
 adduser --disabled-password --gecos "" usr
 usermod -aG sudo usr
 usermod -aG adm usr
@@ -39,7 +41,11 @@ apt-get install -y -qq --no-install-recommends git
 runuser -u usr -- git clone https://github.com/gombos/dotfiles.git /home/usr/.dotfiles
 runuser -u usr -- /home/usr/.dotfiles/bin/infra-provision-user.sh
 
-apt-get install -y -qq --no-install-recommends python3-pip micro
+# maybe call usrlocal script
+apt-get install -y -qq --no-install-recommends micro
+
+# todo - find a way to do /go/efi/config
+# todo - papertrail
 
 # Takes time, do it last
 apt-mark hold linux-image-amd64
