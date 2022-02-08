@@ -61,7 +61,7 @@ apt-get install -y -qq --no-install-recommends unzip micro ncat
 
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q sysstat rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
+apt-get purge -y -q cloud-init sysstat rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
@@ -85,12 +85,8 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-infra-clean-linux.sh /
-
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
-
-rm -rf tmp/*
 
 # populate /usr/local
 packages-nix
@@ -114,6 +110,10 @@ EOF
 
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
+
+# cleanup
+infra-clean-linux.sh /
+rm -rf tmp/*
 
 # Avoid suprises later
 reboot
