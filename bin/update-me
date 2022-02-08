@@ -25,7 +25,7 @@ pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | x
 #nix
 # Nix is only for bestia
 if [[ `hostname -s` == "bestia" ]]; then
-  $DOTFILES/packages/packages-nix
+  $DOTFILES/bin/packages-nix
 fi
 
 # docker
