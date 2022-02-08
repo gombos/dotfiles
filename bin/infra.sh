@@ -17,8 +17,6 @@ if [ -d /etc/initramfs-tools ]; then
   echo "RESUME=none" > /etc/initramfs-tools/conf.d/noresume.conf
 fi
 
-USR=usr
-
 apt-get update
 
 if ! [ -z "$USR" ]; then
