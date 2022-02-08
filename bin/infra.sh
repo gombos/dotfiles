@@ -57,7 +57,7 @@ if ! [ -z "$USR" ]; then
 fi
 
 # maybe call usrlocal script
-apt-get install -y -qq --no-install-recommends unzip micro
+apt-get install -y -qq --no-install-recommends unzip micro ncat
 
 # todo - find a way to do /go/efi/config
 # todo - papertrail
