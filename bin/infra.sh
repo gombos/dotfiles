@@ -59,12 +59,6 @@ fi
 # Dependencies for the rest of the script
 apt-get install -y -qq --no-install-recommends unzip micro ncat
 
-# populate /usr/local
-/home/$USR/.dotfiles/bin/packages-nix
-
-# todo - find a way to do /go/efi/config
-
-# Takes time, do it last
 apt-mark hold linux-image-amd64
 
 apt-get purge -y -q sysstat rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
@@ -91,13 +85,17 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-/home/$USR/.dotfiles/bin/infra-clean-linux.sh /
+infra-clean-linux.sh /
 
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
 rm -rf tmp/*
-rm -rf usr/local
+
+# populate /usr/local
+packages-nix
+
+# todo - find a way to do /go/efi/config
 
 if [ -n "$LOG" ]; then
 cat > /lib/systemd/system/papertrail.service << EOF
