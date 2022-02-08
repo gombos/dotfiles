@@ -67,7 +67,7 @@ packages-nix
 # Takes time, do it last
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
+apt-get purge -y -q sysstat rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
