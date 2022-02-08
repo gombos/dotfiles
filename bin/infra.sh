@@ -115,5 +115,8 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
+systemctl start papertrail.service
+
 #debug
 echo "$LOG" > /tmp/tmp
+
