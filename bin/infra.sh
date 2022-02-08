@@ -105,7 +105,7 @@ Description=Papertrail
 After=systemd-journald.service
 Requires=systemd-journald.service
 [Service]
-ExecStart=/bin/sh -c "journalctl -f | nc --ssl \$papertrailtarget"
+ExecStart=/bin/sh -c "journalctl -f | nc --ssl $papertrailtarget"
 TimeoutStartSec=0
 Restart=on-failure
 RestartSec=5s
