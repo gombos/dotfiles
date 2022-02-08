@@ -13,7 +13,9 @@ if ! [ -z "$USR" ]; then
   echo "AllowUsers $USR" >> /etc/ssh/sshd_config
 fi
 
-echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
+if ! [ -z "$SSHDPORT" ]; then
+  echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
+fi
 
 systemctl restart sshd
 
