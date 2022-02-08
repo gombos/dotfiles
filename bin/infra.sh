@@ -85,9 +85,8 @@ apt-get -y -qq upgrade
 
 #infra-clean-linux.sh
 
-if ! [ -z "$LABEL" ]; then
-  hostnamectl set-hostname ${LABEL}
-fi
+[ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
+[ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
 rm -rf tmp/*
 rm -rf usr/local
