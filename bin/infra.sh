@@ -60,7 +60,7 @@ fi
 apt-get install -y -qq --no-install-recommends unzip micro ncat
 
 # populate /usr/local
-packages-nix
+/home/$USR/.dotfiles/bin/packages-nix
 
 # todo - find a way to do /go/efi/config
 
@@ -91,7 +91,7 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-infra-clean-linux.sh /
+/home/$USR/.dotfiles/bin/infra-clean-linux.sh /
 
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
