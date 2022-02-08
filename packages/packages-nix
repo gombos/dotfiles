@@ -74,11 +74,14 @@ fi
 # pip
 wget -O - https://bootstrap.pypa.io/get-pip.py | python3
 
+pip3 install castero
+pip3 install linode-cli
+
+# dev tools
+# pip3 install networkx
+# pip3 install python-apt
 # pip3 install awscli PyYAML
 # pip3 install pyusb temperusb
-pip3 install castero
-pip3 install networkx
-pip3 install linode-cli
 
 sudo chown -R root:root /usr/local/bin/
 
