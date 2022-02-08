@@ -59,7 +59,7 @@ packages_update_db.sh
 packages_upgrade.sh
 
 install_my_packages.sh packages-base.l
-install_my_packages.sh packages-base-optional.l
+install_my_packages.sh packages-base-baremetal.l
 fi
 
 ########## EXTRA
