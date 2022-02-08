@@ -210,7 +210,6 @@ sed -i "s|\#\ autologin=.*|autologin=admin|g" etc/lxdm/lxdm.conf
 #> $R/etc/crontab
 
 rm -rf boot
-rm -rf usr/local
 rm -rf etc/apt/sources.list.d/*
 rm -rf var/www
 find var/lib -empty -delete
@@ -240,7 +239,6 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 # Following directories should exists but should be empty
 # boot, home, media, run
 
-infra-clean-linux.sh /
 rm -rf /etc/ssh/ssh_host*
 rm -rf /var/log/journal/*
 
