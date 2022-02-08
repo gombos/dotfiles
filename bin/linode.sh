@@ -15,7 +15,7 @@ port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format 
 stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers --format id)
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
-linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id --stackscript_data "{\"SSHDPORT\":$port, \"LABEL\":\"$LABEL\", \"USR\":\"usr\", \"LOG\":\"test me\"}" --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11  $linodeId
+linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id --stackscript_data "{\"SSHDPORT\":$port, \"LABEL\":\"$LABEL\", \"USR\":\"usr\"}" --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11  $linodeId
 
 # Initial provisioning, will loose IP address
 #linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --stackscript_id 969974 --authorized_keys  "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11
