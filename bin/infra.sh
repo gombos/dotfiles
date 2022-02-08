@@ -8,7 +8,11 @@ echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
 echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
 echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-echo "AllowUsers usr" >> /etc/ssh/sshd_config
+
+if ! [ -z "$USR" ]; then
+  echo "AllowUsers $USR" >> /etc/ssh/sshd_config
+fi
+
 echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
 
 systemctl restart sshd
@@ -83,7 +87,7 @@ apt-get clean
 
 apt-get -y -qq upgrade
 
-#infra-clean-linux.sh
+infra-clean-linux.sh /
 
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
