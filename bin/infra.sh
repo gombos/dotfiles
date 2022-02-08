@@ -97,15 +97,14 @@ infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local
 
-papertrailtarget="test me"
-
+if [ -n "$LOG" ]; then
 cat > /lib/systemd/system/papertrail.service << EOF
 [Unit]
 Description=Papertrail
 After=systemd-journald.service
 Requires=systemd-journald.service
 [Service]
-ExecStart=/bin/sh -c "journalctl -f | nc --ssl $papertrailtarget"
+ExecStart=/bin/sh -c "journalctl -f | nc --ssl $LOG"
 TimeoutStartSec=0
 Restart=on-failure
 RestartSec=5s
@@ -114,3 +113,4 @@ WantedBy=multi-user.target
 EOF
 
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
+fi
