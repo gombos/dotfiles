@@ -47,7 +47,6 @@ image_clean_function() {
     rm_file var/lib/command-not-found/commands.db.metadata
     rm_file 'var/lib/dpkg/*-old'
     rm_file 'var/log/apt/*'
-    rm_file 'var/log/journal/*'
     rm_file var/log/fontconfig.log
     rm_file var/log/alternatives.log
     rm_file var/log/dpkg.log
@@ -80,7 +79,6 @@ image_clean_function() {
     rm_file .dockerenv
     rm_file 'root/{*,.*}'
 
-#    rm_file 'etc/ssh/ssh_host*'
     rm_file 'core*'
 }
 

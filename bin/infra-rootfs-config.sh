@@ -242,5 +242,6 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 infra-clean-linux.sh /
 rm -rf /etc/ssh/ssh_host*
+rm -rf /var/log/journal/*
 
 infra.sh
