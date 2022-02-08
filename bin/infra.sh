@@ -56,8 +56,11 @@ if ! [ -z "$USR" ]; then
   fi
 fi
 
-# maybe call usrlocal script
+# Dependencies for the rest of the script
 apt-get install -y -qq --no-install-recommends unzip micro ncat
+
+# populate /usr/local
+packages-nix
 
 # todo - find a way to do /go/efi/config
 
