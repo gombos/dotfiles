@@ -57,6 +57,7 @@ rm bw.zip
 chmod +x bw
 mv bw /usr/local/bin/
 
+if [ -f /usr/bin/Xorg ]; then
 # appimage - digikam
 wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
@@ -68,6 +69,7 @@ wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
 bash -ex pkg2appimage chrome.yml
 mv out/*.AppImage /usr/local/bin/google-chrome-stable
 rm -rf out google-chrome chrome.yml
+fi
 
 # pip
 wget -O - https://bootstrap.pypa.io/get-pip.py | python3
