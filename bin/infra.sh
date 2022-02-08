@@ -90,7 +90,6 @@ apt-get -y -qq upgrade
 
 infra-clean-linux.sh /
 
-# [ -n "$LABEL" ] && hostnamectl set-hostname $LABEL
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
@@ -115,6 +114,5 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
-systemctl start papertrail.service
-
+# Avoid suprises later
 reboot
