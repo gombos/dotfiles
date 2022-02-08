@@ -134,10 +134,7 @@ if [ ! -z "$SSHD_KEY" ]; then
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
 
   #harden sshd
-  echo "Port $SSHD_PORT=" >> /run/sshd_kucko.conf
-  echo "PasswordAuthentication no" >> /run/sshd_kucko.conf
-  chmod 0440 /run/sshd_kucko.conf
-  ln -sf ../../../run/sshd_kucko.conf $R/etc/ssh/sshd_config.d
+  echo "Port $SSHD_PORT=" >> $R/etc/ssh/sshd_config
 fi
 
 # configure vmware service
