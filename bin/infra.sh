@@ -60,7 +60,6 @@ fi
 apt-get install -y -qq --no-install-recommends unzip micro ncat
 
 # todo - find a way to do /go/efi/config
-# todo - papertrail
 
 # Takes time, do it last
 apt-mark hold linux-image-amd64
@@ -91,6 +90,7 @@ apt-get -y -qq upgrade
 
 infra-clean-linux.sh /
 
+# [ -n "$LABEL" ] && hostnamectl set-hostname $LABEL
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
@@ -117,6 +117,4 @@ fi
 
 systemctl start papertrail.service
 
-#debug
-echo "$LOG" > /tmp/tmp
-
+reboot
