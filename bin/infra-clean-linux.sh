@@ -85,6 +85,4 @@ image_clean_function() {
 find . -name *.pyc -delete
 find . -name __pycache__ -delete
 
-[ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
-
 image_clean_function
