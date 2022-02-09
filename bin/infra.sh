@@ -46,7 +46,7 @@ if ! [ -z "$USR" ]; then
   # Disable root login
   usermod -p '*' root
 
-  install_my_package.sh git
+  apt-get install -y -qq --no-install-recommends git
 
   runuser -u $USR -- git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   runuser -u $USR -- /home/$USR/.dotfiles/bin/infra-provision-user.sh
@@ -100,7 +100,7 @@ Description=Papertrail
 After=systemd-journald.service
 Requires=systemd-journald.service
 [Service]
-ExecStart=/bin/sh -c "journalctl -f | nc --ssl $LOG"
+ExecStart=/bin/sh -c "journalctl -f | ncat --ssl $LOG"
 TimeoutStartSec=0
 Restart=on-failure
 RestartSec=5s
