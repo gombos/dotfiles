@@ -57,6 +57,8 @@ if ! [ -z "$USR" ]; then
 fi
 
 # Dependencies for the rest of the script
+# todo - improve install script
+cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
 install_my_packages.sh packages-core.l
 
 apt-mark hold linux-image-amd64

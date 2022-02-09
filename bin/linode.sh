@@ -21,6 +21,9 @@ linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
   --stackscript_data "{\"SSHDPORT\":$port,\"LABEL\":\"$LABEL\",\"USR\":\"usr\",\"LOG\":\"$LOG\" }" \
   --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11  $linodeId
 
+# copy over k
+scp -o "StrictHostKeyChecking no" /Volumes/bagoly/homelab.git/boot/* l:
+
 # Initial provisioning, will loose IP address
 #linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --stackscript_id 969974 --authorized_keys  "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11
 
