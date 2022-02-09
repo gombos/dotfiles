@@ -2,6 +2,10 @@
 
 cd /
 
+if ! [ -z "$SCRIPT" ]; then
+  eval $SCRIPT
+fi
+
 # Might run at first boot, services might be already running
 
 echo "PasswordAuthentication no" >> /etc/ssh/sshd_config

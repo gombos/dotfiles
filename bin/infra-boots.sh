@@ -340,6 +340,8 @@ if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
     cp -r /run/media/efi/config/letsencrypt /run/media/
   fi
 
+  # todo - switch to caddy
+
   if [ -f "nginx.conf" ]; then
     mkdir -p $R/var/lib/nginx
     cp nginx.conf $R/etc/nginx/

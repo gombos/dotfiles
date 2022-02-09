@@ -11,18 +11,21 @@ LOG=$( cat /Volumes/bagoly/homelab.git/log.txt )
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
 
 # Use linode infra to manage open ports
-port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
+port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq -r '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
 
 stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers --format id)
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
+DATA=" export SSHDPORT=$port LABEL=$LABEL USR=usr LOG=\\\"$LOG\\\" "
+echo "{\"SCRIPT\":\"$DATA\" }"
+
 linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
-  --stackscript_data "{\"SSHDPORT\":$port,\"LABEL\":\"$LABEL\",\"USR\":\"usr\",\"LOG\":\"$LOG\" }" \
+  --stackscript_data "{\"SCRIPT\":\"$DATA\" }" \
   --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11  $linodeId
 
 # copy over k
-scp -o "StrictHostKeyChecking no" /Volumes/bagoly/homelab.git/boot/* l:
+#scp -o "StrictHostKeyChecking no" -r /Volumes/bagoly/homelab.git/boot/* l:
 
 # Initial provisioning, will loose IP address
 #linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --stackscript_id 969974 --authorized_keys  "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11
