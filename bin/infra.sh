@@ -46,7 +46,7 @@ if ! [ -z "$USR" ]; then
   # Disable root login
   usermod -p '*' root
 
-  apt-get install -y -qq --no-install-recommends git
+  install_my_package.sh git
 
   runuser -u $USR -- git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   runuser -u $USR -- /home/$USR/.dotfiles/bin/infra-provision-user.sh
@@ -57,7 +57,7 @@ if ! [ -z "$USR" ]; then
 fi
 
 # Dependencies for the rest of the script
-apt-get install -y -qq --no-install-recommends unzip micro ncat
+install_my_packages.sh packages-core.l
 
 apt-mark hold linux-image-amd64
 

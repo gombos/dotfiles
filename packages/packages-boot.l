@@ -11,6 +11,3 @@
 # init
 systemd-sysv
 udev
-
-# tools
-sudo

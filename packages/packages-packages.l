@@ -9,8 +9,6 @@ borgbackup
 detox
 dos2unix
 file
-git
-less
 micro
 pass
 rename
@@ -23,7 +21,6 @@ tesseract-ocr
 pandoc
 poppler-utils
 zip
-unzip
 xattr
 hashdeep
 libimage-exiftool-perl
@@ -46,7 +43,6 @@ iputils-ping
 iputils-tracepath
 net-tools
 nmap
-ncat
 bind9-dnsutils
 mutt
 tcpdump
