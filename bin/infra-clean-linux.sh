@@ -80,6 +80,7 @@ image_clean_function() {
     rm_file 'root/{*,.*}'
 
     rm_file 'core*'
+    rm_file '*.old'
 }
 
 find . -name *.pyc -delete

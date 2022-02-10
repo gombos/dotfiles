@@ -2,7 +2,7 @@
 
 cd /
 
-if ! [ -z "$SCRIPT" ]; then
+if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
 fi
 
@@ -13,11 +13,11 @@ echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config
 echo "UsePAM no" >> /etc/ssh/sshd_config
 echo "PermitRootLogin no" >> /etc/ssh/sshd_config
 
-if ! [ -z "$USR" ]; then
+if [ -n "$USR" ]; then
   echo "AllowUsers $USR" >> /etc/ssh/sshd_config
 fi
 
-if ! [ -z "$SSHDPORT" ]; then
+if [ -n "$SSHDPORT" ]; then
   echo "Port ${SSHDPORT}" >> /etc/ssh/sshd_config
 fi
 
@@ -29,7 +29,7 @@ fi
 
 apt-get update
 
-if ! [ -z "$USR" ]; then
+if [ -n "$USR" ]; then
   adduser --disabled-password --gecos "" $USR
   usermod -aG sudo $USR
   usermod -aG adm $USR
@@ -106,7 +106,7 @@ Description=Papertrail
 After=systemd-journald.service
 Requires=systemd-journald.service
 [Service]
-ExecStart=/bin/sh -c "journalctl -f | ncat --ssl $LOG"
+ExecStart=/bin/sh -c "journalctl -f | ncat --ssl $LOG" 2>/dev/null
 TimeoutStartSec=0
 Restart=on-failure
 RestartSec=5s
