@@ -118,7 +118,7 @@ ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.tar
 fi
 
 cat > /boot/grub/custom.cfg << 'EOF'
-set DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0"
+set DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8"
 set DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
 
 menuentry ISO $DEFAULT_ISO {
