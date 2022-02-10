@@ -121,18 +121,22 @@ cat > /boot/grub/custom.cfg << 'EOF'
 set DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0"
 set DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
 
-menuentry "ISO" $DEFAULT_ISO {
+menuentry ISO $DEFAULT_ISO {
   search --no-floppy --label linode-root --set=linuxroot
   set isofile="/linux.iso"
   loopback loop ($linuxroot)/$isofile
   linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile $*
   initrd (loop)/kernel/initrd.img
 }
+set timeout=10
+#set default=ISO
 EOF
 
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
+
+wget https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
 
 # Avoid suprises later
 reboot
