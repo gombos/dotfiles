@@ -125,7 +125,7 @@ menuentry ISO $DEFAULT {
   search --no-floppy --label linode-root --set=linuxroot
   set isofile="/linux.iso"
   loopback loop ($linuxroot)/$isofile
-  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO"
+  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO
   initrd (loop)/kernel/initrd.img
 }
 set timeout=10
