@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# todo - remove path
-Key=$( cat /Volumes/bagoly/k.git/k_public )
-MY_SERVER_AUTORIZED_KEY="$Key"
-
 LABEL="pincer"
-LOG=$( cat /Volumes/bagoly/homelab.git/log.txt )
+
+# todo - remove path
+Key=$(cat /Volumes/bagoly/k.git/k_public)
+MY_SERVER_AUTORIZED_KEY="$Key"
+LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
@@ -17,8 +17,11 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
-DATA=" export SSHDPORT=$port LABEL=$LABEL USR=usr LOG=\\\"$LOG\\\" "
-echo "{\"SCRIPT\":\"$DATA\" }"
+DATA="export \
+  SSHDPORT=$port \
+  LABEL=$LABEL \
+  USR=usr \
+  LOG=\\\"$LOG\\\" "
 
 linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
   --stackscript_data "{\"SCRIPT\":\"$DATA\" }" \
