@@ -117,19 +117,18 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
+#root=/dev/sda
 cat > /boot/grub/custom.cfg << 'EOF'
-set DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8"
-set DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
 
-menuentry ISO $DEFAULT_ISO {
+menuentry ISO $DEFAULT {
   search --no-floppy --label linode-root --set=linuxroot
   set isofile="/linux.iso"
   loopback loop ($linuxroot)/$isofile
-  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile $*
+  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=/dev/sda
   initrd (loop)/kernel/initrd.img
 }
 set timeout=10
-#set default=ISO
+set default=ISO
 EOF
 
 # cleanup
