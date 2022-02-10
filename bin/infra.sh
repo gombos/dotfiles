@@ -117,7 +117,7 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
-cat > /boot/grub/custom.cfg << EOF
+cat > /boot/grub/custom.cfg << 'EOF'
 set DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0"
 set DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
 
