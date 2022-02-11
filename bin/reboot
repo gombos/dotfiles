@@ -1,7 +1,10 @@
 #!/bin/sh
-if [ -f /sbin/kexec ]; then
-  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
-  sudo systemctl kexec
-else
+
+# this only worked on Bestia with nvidia driver.. crazy
+
+#if [ -f /sbin/kexec ]; then
+#  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
+#  sudo systemctl kexec
+#else
   cd / && sudo systemctl reboot
-fi
+#fi

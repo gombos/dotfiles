@@ -44,8 +44,6 @@ sudo mount -t sysfs sys $DIR/sys/
 # Enable package updates before installing rest of packages
 sudo chroot $DIR sh -c "./infra-build-root.sh"
 
-# Install vmware manually if needed by running infra-rootfs and executing infra-install-vmware-workstation.sh line-by-line
-
 sudo umount $DIR/proc/ $DIR/sys/
 sudo mount --make-rslave $DIR/dev/
 sudo umount -R $DIR/dev/
