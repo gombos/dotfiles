@@ -2,7 +2,7 @@
 
 cd /tmp
 rm install
-wget https://nixos.org/nix/install
+wget --quiet https://nixos.org/nix/install
 chmod +x install
 
 /home/user/.dotfiles/bin/rw /go/shared
@@ -34,24 +34,24 @@ rm install
 
 # rga
 rm -rf ripgrep_all-*
-wget https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
+wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
 mv ripgrep_all-*/rga* /usr/local/bin/
 rm -rf ripgrep_all-*
 
 # micro
-wget -O - https://getmic.ro | GETMICRO_REGISTER=y sh
+wget --quiet -O - https://getmic.ro | GETMICRO_REGISTER=y sh
 mv micro /usr/local/bin/
 
 # rclone
-wget https://github.com/rclone/rclone/releases/download/v1.57.0/rclone-v1.57.0-linux-amd64.zip
+wget --quiet https://github.com/rclone/rclone/releases/download/v1.57.0/rclone-v1.57.0-linux-amd64.zip
 unzip rclone-v1.57.0-linux-amd64.zip
 mv rclone-*/rclone /usr/local/bin/
 rm -rf rclone-*
 
 # bitwarden
-wget -O - 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
+wget --quiet -O - 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
 unzip bw.zip
 rm bw.zip
 chmod +x bw
@@ -59,20 +59,20 @@ mv bw /usr/local/bin/
 
 if [ -f /usr/bin/Xorg ]; then
 # appimage - digikam
-wget https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
+wget --quiet https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
 # appimage - chrome
 rm -rf out google-chrome chrome.yml
-wget -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
-wget https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
+wget --quiet -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
 bash -ex pkg2appimage chrome.yml
 mv out/*.AppImage /usr/local/bin/google-chrome-stable
 rm -rf out google-chrome chrome.yml
 fi
 
 # pip
-wget -O - https://bootstrap.pypa.io/get-pip.py | python3
+wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
 
 pip3 install castero
 pip3 install linode-cli

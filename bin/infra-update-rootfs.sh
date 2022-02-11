@@ -3,6 +3,7 @@
 DIR=$MNTDIR/shared/tmproot
 
 rw $MNTDIR/shared
+sudo rm -rf $DIR
 sudo btrfs subvolume create $DIR
 sudo chmod g+w $DIR
 

@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "efi minbase container base extra config iso iso-upload"
+# "efi minbase container base extra config iso upload"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -54,6 +54,6 @@ if echo $TARGET | grep -w -q iso; then
   infra-image.sh
 fi
 
-if echo $TARGET | grep -w -q iso-upload; then
+if echo $TARGET | grep -w -q upload; then
   gh release upload --clobber -R gombos/dotfiles iso /tmp/linux.iso
 fi
