@@ -29,6 +29,7 @@ fi
 
 apt-get update
 
+# Things only run in the cloud
 if [ -n "$USR" ]; then
   adduser --disabled-password --gecos "" $USR
   usermod -aG sudo $USR
@@ -58,12 +59,31 @@ if [ -n "$USR" ]; then
   if [ -d /home/$USR/.dotfiles/bin ]; then
     PATH=/home/$USR/.dotfiles/bin:$PATH
   fi
-fi
 
-# Dependencies for the rest of the script
-# todo - improve install script
-cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
-install_my_packages.sh packages-core.l
+  # Dependencies for the rest of the script
+  # todo - improve install script
+  cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
+  install_my_packages.sh packages-core.l
+
+  # populate /usr/local
+  packages-nix
+
+  wget https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
+
+cat > /boot/grub/custom.cfg << 'EOF'
+
+menuentry ISO $DEFAULT {
+  search --no-floppy --label linode-root --set=linuxroot
+  set isofile="/linux.iso"
+  loopback loop ($linuxroot)/$isofile
+  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO
+  initrd (loop)/kernel/initrd.img
+}
+#set timeout=10
+#set default=ISO
+EOF
+
+fi
 
 apt-mark hold linux-image-amd64
 
@@ -94,9 +114,6 @@ apt-get -y -qq upgrade
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
-# populate /usr/local
-packages-nix
-
 # todo - find a way to do /go/efi/config
 
 if [ -n "$LOG" ]; then
@@ -117,24 +134,9 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
-cat > /boot/grub/custom.cfg << 'EOF'
-
-menuentry ISO $DEFAULT {
-  search --no-floppy --label linode-root --set=linuxroot
-  set isofile="/linux.iso"
-  loopback loop ($linuxroot)/$isofile
-  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO
-  initrd (loop)/kernel/initrd.img
-}
-#set timeout=10
-#set default=ISO
-EOF
-
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
-
-wget https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
 
 # Avoid suprises later
 reboot
