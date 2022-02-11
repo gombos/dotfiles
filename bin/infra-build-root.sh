@@ -59,7 +59,6 @@ packages_update_db.sh
 packages_upgrade.sh
 
 install_my_packages.sh packages-boot.l
-install_my_packages.sh packages-core.l
 install_my_packages.sh packages-base-baremetal.l
 fi
 
@@ -83,14 +82,15 @@ packages_update_db.sh
 
 if ! [ -z "${NVIDIA}" ]; then
   install_my_package.sh xserver-xorg-video-nvidia-${NVIDIA}
-fi
 
-# Make sure that only restricted package installed is nvidia
-rm etc/apt/sources.list.d/restricted.list
+  # Make sure that only restricted package installed is nvidia
+  rm etc/apt/sources.list.d/restricted.list
+fi
 
 packages_update_db.sh
 packages_upgrade.sh
 
+install_my_packages.sh packages-core.l
 install_my_packages.sh packages-services.l
 install_my_packages.sh packages-x11.l
 install_my_packages.sh packages-x11apps.l
