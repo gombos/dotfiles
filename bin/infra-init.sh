@@ -11,6 +11,10 @@ chmod g+w /run/media
 # mount modules from ESP
 # populate /etc/fstab
 
+# todo
+# maybe instead of hardcoding the label, have a deterministi logic as default
+# e.g on linode there is actually only one directory under /dev/disk/by-label
+
 if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
@@ -38,7 +42,12 @@ mkdir -p $NEWROOT/boot
 mount --bind $mp/kernel $NEWROOT/boot
 
 # Allow for config to be on different drive than the rest of the boot files
-RDEXEC=/run/media/efi/config/infra-boots.sh
+if [[ -e /run/initramfs/isoscan/config ]]; then
+  RDEXEC=/run/initramfs/isoscan/config/infra-boots.sh
+else
+  RDEXEC=/run/media/efi/config/infra-boots.sh
+fi
+
 for x in $(cat /proc/cmdline); do
  case $x in
   rd.exec=*)
