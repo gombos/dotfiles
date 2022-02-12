@@ -25,9 +25,10 @@ DATA="export \
 
 linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
   --stackscript_data "{\"SCRIPT\":\"$DATA\" }" \
-  --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/ubuntu21.10  $linodeId
+  --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11 $linodeId
 
 #linode/debian11
+#linode/ubuntu21.10
 
 # copy over k
 #scp -o "StrictHostKeyChecking no" -r /Volumes/bagoly/homelab.git/boot/* l:
