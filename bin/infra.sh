@@ -139,6 +139,7 @@ mkdir -p /config
 cp /etc/ssh/sshd_config  /config
 cp /etc/network/interfaces /config
 
+# Run as root when iso boots
 cat > /config/infra-boots.sh << 'THEEND'
 #!/bin/bash
 
