@@ -148,10 +148,11 @@ R="$NEWROOT"
 cp interfaces $R/etc/network/interfaces
 cp sshd_config $R/etc/ssh/sshd_config
 
-echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
+#echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
 
-chown -R usr:adm /home
+rm -rf /home
+ln -sf /run/initramfs/isoscan/home/usr /home
 
 THEEND
 
