@@ -151,8 +151,12 @@ cp sshd_config $R/etc/ssh/sshd_config
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
 
+rm -rf $R/lib/systemd/system/home.service
+rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
+
 rm -rf /home
-ln -sf /run/initramfs/isoscan/home/usr /home
+mkdir -p /home
+ln -sf /run/initramfs/isoscan/home/usr $R/home
 
 THEEND
 
