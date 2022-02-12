@@ -134,6 +134,33 @@ EOF
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
 fi
 
+
+mkdir -p /config
+cat > /config/infra-boots.sh << 'EOF'
+#!/bin/bash
+
+R="$NEWROOT"
+
+mkdir -p /run/gombi
+
+cat > $R/etc/network/interfaces << 'THEEND'
+auto lo
+iface lo inet loopback
+
+source /etc/network/interfaces.d/*
+
+auto eth0
+allow-hotplug eth0
+
+iface eth0 inet6 auto
+iface eth0 inet static
+    address 23.92.18.151/24
+    gateway 23.92.18.1
+THEEND
+
+EOF
+
+
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
