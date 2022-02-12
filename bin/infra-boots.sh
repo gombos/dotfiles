@@ -47,6 +47,10 @@ if [ -z "$NEWROOT" ]; then
   NEWROOT="/"
 fi
 
+if [ -z "$USR" ]; then
+  USR=usr
+fi
+
 R="$NEWROOT"
 
 mp=.
@@ -180,8 +184,8 @@ then
   sed -i "s/^users:.*/&,gombi/" $R/etc/group
 
   # remove the admin user
-  sed -i '/^admin:/d' $R/etc/passwd
-  sed -i '/^admin:/d' $R/etc/shadow
+  sed -i "/^$USR:/d" $R/etc/passwd
+  sed -i "/^$USR:/d" $R/etc/shadow
 fi
 
 # henrik user
@@ -221,8 +225,8 @@ then
   chown -R 501:27 $R/admin/
 
   # remove the admin user
-  sed -i '/^admin:/d' $R/etc/passwd
-  sed -i '/^admin:/d' $R/etc/shadow
+  sed -i "/^$USR:/d" $R/etc/passwd
+  sed -i "/^$USR:/d" $R/etc/shadow
 fi
 
 # --- HOST specific logic

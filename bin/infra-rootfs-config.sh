@@ -8,6 +8,10 @@ fi
 
 . ./infra-env.sh
 
+if [ -z "$USR" ]; then
+  USR=usr
+fi
+
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
@@ -54,15 +58,15 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost linux\n" > etc/hosts
 
 # default admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --ingroup adm
-usermod -aG sudo admin
-usermod -aG netdev admin
+adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" $USR --ingroup adm
+usermod -aG sudo $USR
+usermod -aG netdev $USR
 
-chown admin:adm /home
+chown $USR:adm /home
 chmod g+w /home
 
 # make the salt deterministic, reproducible builds
-sed -ri "s/^admin:[^:]*:(.*)/admin:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
+sed -ri "s/^$USR:[^:]*:(.*)/$USR:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
@@ -194,7 +198,7 @@ printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
 cat etc/network/interfaces
 
 # Autologin
-sed -i "s|\#\ autologin=.*|autologin=admin|g" etc/lxdm/lxdm.conf
+sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf
 
 #mkdir -p usr/bin/
 #cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
