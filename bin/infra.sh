@@ -155,8 +155,7 @@ rm -rf $R/lib/systemd/system/home.service
 rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
 
 rm -rf /home
-mkdir -p /home
-ln -sf /run/initramfs/isoscan/home/usr $R/home
+ln -sf /run/initramfs/isoscan/home/usr/ $R/home
 
 THEEND
 
