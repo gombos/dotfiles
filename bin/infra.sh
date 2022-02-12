@@ -154,8 +154,12 @@ echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
 rm -rf $R/lib/systemd/system/home.service
 rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
 
+# Read only home as it point to a read only mount
 rm -rf /home
-ln -sf /run/initramfs/isoscan/home/usr/ $R/home
+cd $R
+ln -sf /run/initramfs/isoscan/home/usr
+mv usr home
+cd -
 
 THEEND
 
