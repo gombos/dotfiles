@@ -80,8 +80,8 @@ menuentry ISO $DEFAULT {
   linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO
   initrd (loop)/kernel/initrd.img
 }
+set default=ISO
 #set timeout=10
-#set default=ISO
 EOF
 
 fi
