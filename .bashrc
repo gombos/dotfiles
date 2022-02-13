@@ -93,7 +93,7 @@ alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
 alias vd='vd -f csv'
 alias finance='EDITOR="vd -f csv" pass edit'
-alias wake-bestia='ssh pincer-wan wake-bestia'
+alias wake-bestia='ssh kispincer-wan wake-bestia'
 
 alias stop-session='openbox --exit'
 
