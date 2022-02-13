@@ -26,7 +26,6 @@ keyutils
 libatasmart-bin
 fuse-overlayfs
 udisks2 # runs an extra service, mostly meant for graphical use
-rsyslog # journalctl is good enough
 ranger
 joe
 mc
