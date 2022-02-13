@@ -88,7 +88,7 @@ fi
 
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q cloud-init sysstat rsyslog telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
+apt-get purge -y -q cloud-init sysstat telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
@@ -133,7 +133,16 @@ WantedBy=multi-user.target
 EOF
 
 ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
+
+echo "*.*                   	@${LOG}" >> /etc/rsyslog.conf
 fi
+
+# cleanup
+infra-clean-linux.sh /
+rm -rf tmp/*
+
+# Only on Linode
+if [ -n "$SCRIPT" ]; then
 
 # Elevete some files so that they are picked up by ISO
 mkdir -p /config
@@ -141,6 +150,7 @@ cp /etc/ssh/sshd_config  /config
 cp /etc/network/interfaces /config
 cp /etc/hostname /config
 cp /etc/hosts /config
+cp /etc/rsyslog.conf /config
 
 # Run as root when iso boots
 cat > /config/infra-boots.sh << 'THEEND'
@@ -153,6 +163,7 @@ cp interfaces $R/etc/network/interfaces
 cp sshd_config $R/etc/ssh/sshd_config
 cp hostname $R/etc/hostname
 cp hosts $R/etc/hosts
+cp rsyslog.conf $R/etc/rsyslog.conf
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
@@ -168,10 +179,6 @@ cd -
 
 THEEND
 
-# cleanup
-infra-clean-linux.sh /
-rm -rf tmp/*
+#reboot
 
-if [ -n "$SCRIPT" ]; then
-  reboot
 fi
