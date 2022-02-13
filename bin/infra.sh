@@ -138,6 +138,8 @@ fi
 mkdir -p /config
 cp /etc/ssh/sshd_config  /config
 cp /etc/network/interfaces /config
+cp /etc/hostname /config
+cp /etc/hosts /config
 
 # Run as root when iso boots
 cat > /config/infra-boots.sh << 'THEEND'
@@ -145,8 +147,11 @@ cat > /config/infra-boots.sh << 'THEEND'
 
 R="$NEWROOT"
 
+# /config overlay
 cp interfaces $R/etc/network/interfaces
 cp sshd_config $R/etc/ssh/sshd_config
+cp hostname $R/etc/hostname
+cp hosts $R/etc/hosts
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
@@ -157,8 +162,7 @@ rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
 # Read only home as it point to a read only mount
 rm -rf $R/home
 cd $R
-ln -sf /run/initramfs/isoscan/home/usr gg
-mv gg home
+ln -sf /run/initramfs/isoscan/home/usr home
 cd -
 
 THEEND
