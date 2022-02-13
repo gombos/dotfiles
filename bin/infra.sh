@@ -62,11 +62,12 @@ if [ -n "$USR" ]; then
 
   # Dependencies for the rest of the script
   # todo - improve install script
-  cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
-  install_my_packages.sh packages-core.l
+  # cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
+  # install_my_packages.sh packages-core.l
 
+  # not needed this is only done for the iso
   # populate /usr/local
-  packages-nix
+  # packages-nix
 
   wget https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
 
@@ -171,5 +172,9 @@ THEEND
 infra-clean-linux.sh /
 rm -rf tmp/*
 
-# Avoid suprises later
-#reboot
+HOST=$(hostname)
+
+# Boot into ISO if executed on pincer
+if [ "$HOST" == "pincer" ]; then
+  reboot
+fi
