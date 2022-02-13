@@ -163,6 +163,7 @@ cd /tmp/iso
 
 # keep iso under 2GB
 
+# todo - this shoudl come from a container not from the live bestia runnig box
 # nix
 sudo mksquashfs /nix /tmp/iso/nix.img -comp zstd
 

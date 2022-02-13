@@ -12,6 +12,11 @@ if [ -z "$USR" ]; then
   USR=usr
 fi
 
+if [ -z "$GID" ]; then
+  USR=usr
+fi
+
+
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
@@ -58,11 +63,13 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost linux\n" > etc/hosts
 
 # default admin user to log in (instead of root)
-adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" $USR --ingroup adm
+#  --uid 1000 -gid 1000
+adduser --disabled-password --no-create-home --shell "/bin/bash" --home /home --gecos "" $USR
 usermod -aG sudo $USR
+usermod -aG adm $USR
 usermod -aG netdev $USR
 
-chown $USR:adm /home
+chown $USR:$USR /home
 chmod g+w /home
 
 # make the salt deterministic, reproducible builds
@@ -152,13 +159,13 @@ ExecStart=/bin/bash -c \
     mount /dev/disk/by-label/home /home; \
   else \
     if [[ "$virt" == "vmware" ]]; then \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=4,nosuid,nodev,nonempty .host:/home /home && \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=99,gid=4,nosuid,nodev,nonempty .host:/host /home/host; \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty .host:/home /home && \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty .host:/host /home/host; \
     else \
       mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
       mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
       mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home && \
-      chown -R 99:0 /home; \
+      chown -R 1000:0 /home; \
     fi; \
   fi'
 
