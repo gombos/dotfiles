@@ -331,6 +331,10 @@ if [ "$HOST" == "kispincer" ]; then
   rm -rf $R/etc/sudoers.d/sudoers
 fi
 
+if [ -n "$LOG" ]; then
+echo "*.*                       @${LOG}" >> /etc/rsyslog.conf
+fi
+
 if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
