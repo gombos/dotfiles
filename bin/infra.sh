@@ -118,22 +118,6 @@ apt-get -y -qq upgrade
 # todo - find a way to do /go/efi/config
 
 if [ -n "$LOG" ]; then
-cat > /lib/systemd/system/papertrail.service << EOF
-[Unit]
-Description=Papertrail
-After=systemd-journald.service
-Requires=systemd-journald.service
-[Service]
-ExecStart=/bin/sh -c "journalctl -f | ncat --ssl $LOG" 2>/dev/null
-TimeoutStartSec=0
-Restart=on-failure
-RestartSec=5s
-[Install]
-WantedBy=multi-user.target
-EOF
-
-ln -sf /lib/systemd/system/papertrail.service /etc/systemd/system/multi-user.target.wants/
-
 echo "*.*                   	@${LOG}" >> /etc/rsyslog.conf
 fi
 
