@@ -113,7 +113,6 @@ mkdir -p /efi/kernel
 # nls_XX - to mount vfat
 # isofs - to find root within iso file
 # autofs4 - systemd will try to load this (maybe because of fstab)
-# btrfs - for bestia - by far the largest module
 
 # storage kernel modules
 # ahci - for SATA devices on modern AHCI controllers
@@ -129,7 +128,7 @@ mkdir -p /efi/kernel
 # todo - do we really need to list all this qemu virt drivers just to find the drive at boot for qemu
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs btrfs ahci nvme xhci_pci uas sdhci_acpi mmc_block  ata_piix ata_generic pata_acpi cdrom sr_mod ahci         virtio_blk virtio virtio_ring virtio_pci         virtio_scsi virtio_console virtio_rng virtio_mem ' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block  ata_piix ata_generic pata_acpi cdrom sr_mod ahci         virtio_blk virtio virtio_ring virtio_pci         virtio_scsi virtio_console virtio_rng virtio_mem ' \
   --modules 'dmsquash-live qemu' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   initrd.img $KERNEL
@@ -326,7 +325,7 @@ mv netboot.xyz* /efi/netboot/
 # include modules that might be reqired to find and mount modules file
 # nls_iso8859_1 - mount vfat EFI partition if modules file is in EFI
 # isofs - mount iso file if modules file is inside the iso
-# ntfs, btrfs - iso file itself might be stored on the ntfs or btrfs filesystem
+# ntfs - iso file itself might be stored on the ntfs filesystem
 # ahci, uas (USB Attached SCSI), nvme - when booting on bare metal, to find the partition and filesystem
 
 # Tests:
