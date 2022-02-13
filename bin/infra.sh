@@ -151,6 +151,7 @@ cp /etc/network/interfaces /config
 cp /etc/hostname /config
 cp /etc/hosts /config
 cp /etc/rsyslog.conf /config
+cp /etc/resolv.conf /config
 
 # Run as root when iso boots
 cat > /config/infra-boots.sh << 'THEEND'
@@ -164,6 +165,7 @@ cp sshd_config $R/etc/ssh/sshd_config
 cp hostname $R/etc/hostname
 cp hosts $R/etc/hosts
 cp rsyslog.conf $R/etc/rsyslog.conf
+cp resolv.conf $R/etc/resolv.conf
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
