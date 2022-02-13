@@ -172,7 +172,7 @@ THEEND
 infra-clean-linux.sh /
 rm -rf tmp/*
 
-HOST=$(hostname)
+HOST=$(cat /etc/hostname)
 
 # Boot into ISO if executed on pincer
 if [ "$HOST" == "pincer" ]; then
