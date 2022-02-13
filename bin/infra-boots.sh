@@ -74,7 +74,7 @@ fi
 # --- HOST is known, determine networking
 # static IP is faster to assign more reliant
 
-if [ "$HOST" == "pincer" ]; then
+if [ "$HOST" == "kispincer" ]; then
   IP=2
 fi
 
@@ -246,7 +246,7 @@ fi
   fi
 #fi
 
-if [ "$HOST" == "pincer" ]; then
+if [ "$HOST" == "kispincer" ]; then
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -326,12 +326,12 @@ if [ "$HOST" == "bestia" ] ; then
   echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
-if [ "$HOST" == "pincer" ]; then
+if [ "$HOST" == "kispincer" ]; then
   ln -sf /home/containers $R/var/lib/docker
   rm -rf $R/etc/sudoers.d/sudoers
 fi
 
-if [ "$HOST" == "pincer" ] || [ "$HOST" == "bestia" ]; then
+if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
   # machinectl
 #  mkdir -p $R/var/lib/machines/lab
 #  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
