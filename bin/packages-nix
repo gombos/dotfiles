@@ -1,17 +1,15 @@
 #need to run as root
+#todo - test to run this inside a container instead on bestia
 
 cd /tmp
 rm install
 wget --quiet https://nixos.org/nix/install
 chmod +x install
 
-/home/user/.dotfiles/bin/rw /go/shared
-/home/user/.dotfiles/bin/rw /nix
-
-rm -rf /nix/*
+rm -rf /tmp/nix/*
 rm -rf /usr/local
-mkdir -p /nix/var/nix/profiles/default
-ln -sf /nix/var/nix/profiles/default /usr/local
+mkdir -p /tmp/nix/var/nix/profiles/default
+ln -sf /tmp/nix/var/nix/profiles/default /usr/local
 mkdir -p /usr/local/bin/
 
 #fixme USER=root ./install --no-daemon
@@ -84,6 +82,3 @@ pip3 install linode-cli
 # pip3 install pyusb temperusb
 
 sudo chown -R root:root /usr/local/bin/
-
-/home/user/.dotfiles/bin/ro /nix
-/home/user/.dotfiles/bin/ro /go/shared
