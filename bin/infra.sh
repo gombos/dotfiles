@@ -155,10 +155,10 @@ rm -rf $R/lib/systemd/system/home.service
 rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
 
 # Read only home as it point to a read only mount
-rm -rf /home
+rm -rf $R/home
 cd $R
-ln -sf /run/initramfs/isoscan/home/usr
-mv usr home
+ln -sf /run/initramfs/isoscan/home/usr gg
+mv gg home
 cd -
 
 THEEND
