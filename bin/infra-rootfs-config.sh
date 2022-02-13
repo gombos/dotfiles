@@ -203,7 +203,7 @@ ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
 printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
-cat etc/network/interfaces
+#cat etc/network/interfaces
 
 # Autologin
 sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf

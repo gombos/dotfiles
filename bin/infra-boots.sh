@@ -86,10 +86,13 @@ fi
 
 # set static IP
 if [ -n "$IP" ]; then
+  echo 'source /etc/network/interfaces.d/*' > $R/etc/network/interfaces
   printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 else
   printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
+
+
 
 # DHCP
 if [ -f "dhcp.conf" ]; then
@@ -203,13 +206,13 @@ if [ ! -z "$SSHID" ]
 then
   mkdir -p $R/user/.ssh/
   cat authorized_keys-user >> $R/user/.ssh/authorized_keys
-  echo "$SSHID:x:1000:1000:,,,:/user:/bin/bash" >> $R/etc/passwd
+  echo "$SSHID:x:2000:2000:,,,:/user:/bin/bash" >> $R/etc/passwd
   echo "$SSHID:*:1:0:99999:7:::" >> $R/etc/shadow
   echo "user:!::" >> $R/etc/gshadow
-  echo "user:x:1000:" >> $R/etc/group
+  echo "user:x:2000:" >> $R/etc/group
   ln -sf /home/dotfiles $R/user/.dotfiles
   ln -sf /user/.dotfiles/bin/infra-provision-user.sh $R/user/.bash_profile
-  chown -R 1000:1000 $R/user/
+  chown -R 2000:2000 $R/user/
 fi
 
 # restricted admin, no persistent home, login only via ssh key, disabled login password
