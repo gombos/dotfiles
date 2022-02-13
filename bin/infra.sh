@@ -179,6 +179,6 @@ cd -
 
 THEEND
 
-#reboot
+reboot
 
 fi
