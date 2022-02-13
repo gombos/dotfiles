@@ -88,7 +88,7 @@ fi
 
 apt-mark hold linux-image-amd64
 
-apt-get purge -y -q cloud-init sysstat telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges liblognorm5 debconf-i18n 2>/dev/null >/dev/null
+apt-get purge -y -q cloud-init sysstat telnet traceroute os-prober tasksel javascript-common vim-* whiptail publicsuffix nano mtr-tiny reportbug whois libldap-common liblockfile-bin libsasl2-modules dnsutils apt-listchanges debconf-i18n 2>/dev/null >/dev/null
 
 # Ubuntu things
 # apt-mark hold linux-image-generic
