@@ -188,6 +188,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/bin/sh -c \
   'mkdir -p /nix && \
+  rm -rf /usr/local && \
   ln -sf /nix/var/nix/profiles/default /usr/local && \
   ln -sf /nix/var/nix/profiles/default /root/.nix-profile && \
   mount /run/initramfs/live/nix.img /nix'
