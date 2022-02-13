@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Takes about 5 min to bring up a linode instance with my ISO
+# Most of this time goes into downloading the ISO from github
+
 LABEL="pincer"
 
 # todo - remove path

@@ -171,4 +171,7 @@ THEEND
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
-reboot
+
+if [ -n "$SCRIPT" ]; then
+  reboot
+fi
