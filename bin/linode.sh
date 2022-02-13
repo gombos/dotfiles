@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Takes about 5 min to bring up a linode instance with my ISO
+# Takes about 6 min to bring up a linode instance with my ISO
+# - configure host debian os
+# - download iso
+# - boot into new iso
 # Most of this time goes into downloading the ISO from github
 
 LABEL="pincer"
