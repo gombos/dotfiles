@@ -332,7 +332,7 @@ if [ "$HOST" == "kispincer" ]; then
 fi
 
 if [ -n "$LOG" ]; then
-echo "*.*                       @${LOG}" >> /etc/rsyslog.conf
+echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
 fi
 
 if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
