@@ -165,7 +165,9 @@ cp sshd_config $R/etc/ssh/sshd_config
 cp hostname $R/etc/hostname
 cp hosts $R/etc/hosts
 cp rsyslog.conf $R/etc/rsyslog.conf
-cp resolv.conf $R/etc/resolv.conf
+
+# systemd-resolved.service config
+printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
