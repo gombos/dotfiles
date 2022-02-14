@@ -113,8 +113,6 @@ apt-get -y -qq upgrade
 [ -n "$LABEL" ] && echo "$LABEL" > $R/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> $R/etc/hosts
 
-# todo - find a way to do /go/efi/config
-
 if [ -n "$LOG" ]; then
 echo "*.*                   	@${LOG}" >> /etc/rsyslog.conf
 fi
@@ -136,37 +134,6 @@ cp /etc/rsyslog.conf /config
 cp /etc/resolv.conf /config
 
 # Run as root when iso boots - runs at each boot
-# todo - move this to infra-boots.sh
-cat > /config/infra-boots.sh << 'THEEND'
-#!/bin/bash
-
-R="$NEWROOT"
-
-# /config overlay
-cp interfaces $R/etc/network/interfaces
-cp sshd_config $R/etc/ssh/sshd_config
-cp hostname $R/etc/hostname
-cp hosts $R/etc/hosts
-cp rsyslog.conf $R/etc/rsyslog.conf
-
-# systemd-resolved.service config
-printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
-rm $R/etc/network/interfaces.d/*
-
-#echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
-echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
-
-rm -rf $R/lib/systemd/system/home.service
-rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
-
-# Read only home as it point to a read only mount
-rm -rf $R/home
-cd $R
-ln -sf /run/initramfs/isoscan/home/usr home
-cd -
-
-THEEND
-
 cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 
 reboot

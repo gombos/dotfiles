@@ -355,11 +355,7 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
   fi
 fi
 
-  touch /tmp/gombi
-  echo $HOST > /tmp/gombi2
-
 if [ "$HOST" == "pincer" ]; then
-   touch /tmp/gombi3
   # /config overlay
   cp interfaces $R/etc/network/interfaces
   cp sshd_config $R/etc/ssh/sshd_config
@@ -381,5 +377,4 @@ if [ "$HOST" == "pincer" ]; then
   rm -rf $R/home
   cd $R
   ln -sf /run/initramfs/isoscan/home/usr home
-  cd -
 fi
