@@ -265,6 +265,7 @@ if [ "$HOST" == "bestia" ]; then
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
   #nx
+  chown -R 401:401 $R/usr/NX/etc
 #  mkdir -p $R/usr/NX/etc
 #  cp -a nx/* $R/usr/NX/etc/
 
