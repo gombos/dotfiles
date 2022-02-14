@@ -249,12 +249,7 @@ if [ "$HOST" == "kispincer" ]; then
 fi
 
 if [ "$HOST" == "bestia" ]; then
-  mkdir -p /nix
-#  echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
-
-#  rm -rf $R/usr/local
-#  ln -sf /nix/var/nix/profiles/default $R/usr/local
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -270,8 +265,8 @@ if [ "$HOST" == "bestia" ]; then
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
   #nx
-  mkdir -p $R/usr/NX/etc
-  cp -a nx/* $R/usr/NX/etc/
+#  mkdir -p $R/usr/NX/etc
+#  cp -a nx/* $R/usr/NX/etc/
 
   # NFS
   mkdir -p $R/var/lib/nfs/sm
