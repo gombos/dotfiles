@@ -86,10 +86,7 @@ fi
 
 # set static IP
 if [ -n "$IP" ]; then
-#  echo 'source /etc/network/interfaces.d/*' > $R/etc/network/interfaces
   printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
-else
-  printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
 
 # DHCP

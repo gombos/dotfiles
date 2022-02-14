@@ -152,6 +152,7 @@ cp rsyslog.conf $R/etc/rsyslog.conf
 
 # systemd-resolved.service config
 printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
+rm $R/etc/network/interfaces.d/eth0
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab

@@ -55,11 +55,16 @@ echo "nixbld:x:402:nobody" >> etc/group
 
 # rootfs customizations
 
-# networking
+# networking - hostname
+printf "127.0.0.1 localhost linux\n" > etc/hosts
+
+# networking - IP
 mkdir -p etc/network/interfaces.d
 printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
-printf "127.0.0.1 localhost linux\n" > etc/hosts
-#printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
+
+# If wired is connected, this will wait to get an IP via DHCP by default
+# Make sure to mask this line for static IPs
+printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 
 # todo - vmware fix
 rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved

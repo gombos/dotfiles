@@ -15,7 +15,7 @@ tlp-rdw # kernel power management, disable radio (wifi, bluetooth) triggered by 
 
 # network
 network-manager
-#network-manager-gnome
+#network-manager-gnome # you can use nmtui instead
 #nm-tray
 
 # x11
