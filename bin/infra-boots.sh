@@ -136,7 +136,7 @@ if [ ! -z "$SSHD_KEY" ]; then
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
 
   #harden sshd
-  echo "Port $SSHD_PORT=" >> $R/etc/ssh/sshd_config
+  echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
 fi
 
 # configure vmware service

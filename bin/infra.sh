@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Runs when rootfs is computed
+
 cd /
 
 if [ -n "$SCRIPT" ]; then

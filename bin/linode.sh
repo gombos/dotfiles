@@ -23,14 +23,13 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
-DATA="export \
-  SSHDPORT=$port \
+BOOTSCRIPT="SSHDPORT=$port \
   LABEL=$LABEL \
   USR=usr \
   LOG=\\\"$LOG\\\" "
 
 linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
-  --stackscript_data "{\"SCRIPT\":\"$DATA\" }" \
+  --stackscript_data "{\"SCRIPT\":\"$BOOTSCRIPT\" }" \
   --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11 $linodeId
 
 #linode/debian11
