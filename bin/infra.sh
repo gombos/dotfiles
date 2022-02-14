@@ -73,27 +73,10 @@ if [ -n "$USR" ]; then
   wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
   cd ..
 
-cat > /boot/grub/custom.cfg << 'EOF'
+  cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
 
-isolabel=linode-root
-DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro systemd.hostname=$h net.ifnames=0 quiet"
-DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
-OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
+  mkdir -p /config
 
-menuentry linux_iso $DEFAULT_ISO $OVERRIDE {
-  search --no-floppy --label $isolabel --set=linuxroot
-  set isofile="/isos/linux.iso"
-  loopback loop ($linuxroot)/$isofile
-  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile $*
-  initrd (loop)/kernel/initrd.img
-}
-set default=linux_iso
-#set timeout=10
-EOF
-
-cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
-
-mkdir -p /config
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
 OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
