@@ -83,7 +83,7 @@ if [ -n "$USR" ]; then
 
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer"
+OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer systemd.mask=NetworkManager.service systemd.mask=NetworkManager-wait-online.service"
 EOF
 
 fi
