@@ -129,7 +129,7 @@ rm -rf tmp/*
 if [ -n "$SCRIPT" ]; then
 
 # Elevete some files so that they are picked up by ISO
-mkdir -p /config/updates/etc/ssh/sshd_config /config/updates/etc/network
+mkdir -p /config/updates/etc/ssh /config/updates/etc/network
 
 cp /etc/ssh/sshd_config  /config/updates/etc/ssh
 cp /etc/network/interfaces /config/updates/etc/network
@@ -137,7 +137,6 @@ cp /etc/network/interfaces /config/updates/etc/network
 cp /etc/hostname /config/updates/etc
 cp /etc/hosts /config/updates/etc
 cp /etc/rsyslog.conf /config/updates/etc
-cp /etc/resolv.conf /config/updates/etc
 
 # Run as root when iso boots - runs at each boot
 cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
