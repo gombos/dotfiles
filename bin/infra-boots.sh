@@ -236,13 +236,6 @@ if [ "$HOST" == "kispincer" ]; then
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
 
-#  BESTIA=$(cat dhcp.conf | grep ,bestia | cut -d, -f1 | cut -d= -f2)
-#  echo "wakeonlan $BESTIA" > $R/usr/bin/wake-bestia
-#  chmod 555 $R/usr/bin/wake-bestia
-
-  # cron
-#  ln -sf /lib/systemd/system/cron.service $R/etc/systemd/system/multi-user.target.wants/cron.service
-
   # NFS
   mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
@@ -257,7 +250,7 @@ fi
 
 if [ "$HOST" == "bestia" ]; then
   mkdir -p /nix
-  echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
+#  echo 'LABEL=linux /nix btrfs subvol=usrlocal 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
 #  rm -rf $R/usr/local
@@ -290,16 +283,6 @@ if [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
 
   # todo - maybe also rpc-statd-notify.service
-
-  # autosuspend
-  if [ -f "$mp/dotfiles/boot/autosuspend.conf" ]; then
-    cp "$mp/dotfiles/boot/autosuspend.conf" $R/etc/autosuspend.conf
-    ln -sf /lib/systemd/system/autosuspend.service $R/etc/systemd/system/multi-user.target.wants/autosuspend.service
-    if [ -f "$mp/dotfiles/boot/active.ics" ]; then
-      cp "$mp/dotfiles/boot/active.ics" /run/
-    fi
-  fi
-
 fi
 
 # server profile
