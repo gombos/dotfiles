@@ -89,6 +89,10 @@ if [ -n "$IP" ]; then
   printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 fi
 
+if [ -d "updates" ]; then
+  cp -a updates/* $R/
+fi
+
 # DHCP
 if [ -f "dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
@@ -357,11 +361,11 @@ fi
 
 if [ "$HOST" == "pincer" ]; then
   # /config overlay
-  cp interfaces $R/etc/network/interfaces
-  cp sshd_config $R/etc/ssh/sshd_config
-  cp hostname $R/etc/hostname
-  cp hosts $R/etc/hosts
-  cp rsyslog.conf $R/etc/rsyslog.conf
+#  cp interfaces $R/etc/network/interfaces
+#  cp sshd_config $R/etc/ssh/sshd_config
+#  cp hostname $R/etc/hostname
+#  cp hosts $R/etc/hosts
+#  cp rsyslog.conf $R/etc/rsyslog.conf
 
   # systemd-resolved.service config
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
