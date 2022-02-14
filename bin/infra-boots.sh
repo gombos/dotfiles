@@ -92,8 +92,6 @@ else
   printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 fi
 
-
-
 # DHCP
 if [ -f "dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname

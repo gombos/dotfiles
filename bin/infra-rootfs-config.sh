@@ -53,14 +53,16 @@ sort -o etc/default/locale etc/default/locale
 
 echo "nixbld:x:402:nobody" >> etc/group
 
-# todo - vmware fix
-rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
+# rootfs customizations
 
-# rootfs customizations - both for base and full
-
+# networking
 mkdir -p etc/network/interfaces.d
 printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost linux\n" > etc/hosts
+printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
+
+# todo - vmware fix
+rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
@@ -201,9 +203,6 @@ mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
-
-printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
-#cat etc/network/interfaces
 
 # Autologin
 sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf
