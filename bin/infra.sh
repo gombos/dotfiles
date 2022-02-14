@@ -69,7 +69,7 @@ if [ -n "$USR" ]; then
   # populate /usr/local
   # packages-nix
   mkdir -p isos/
-  cd isos/
+  cd isos
   wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
   cd ..
 
