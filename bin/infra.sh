@@ -79,7 +79,7 @@ if [ -n "$USR" ]; then
 
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
+OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer"
 EOF
 
 fi
