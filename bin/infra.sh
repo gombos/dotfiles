@@ -80,7 +80,7 @@ DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro systemd.hostname=$h net.if
 DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
 OVERRIDE="noquiet"
 
-menuentry linux_iso $OVERRIDE {
+menuentry linux_iso $DEFAULT_ISO $OVERRIDE {
   search --no-floppy --label $isolabel --set=linuxroot
   set isofile="/isos/linux.iso"
   loopback loop ($linuxroot)/$isofile
