@@ -128,8 +128,6 @@ fi
 if [ ! -z "$MID" ]; then
   rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
   echo $MID > $R/etc/machine-id
-#  mkdir -p $R/var/lib/dbus
-#  ln -sf $R/etc/machine-id $R/var/lib/dbus/machine-id
 fi
 
 # sshd host keys
@@ -156,14 +154,6 @@ if [ -d "vmware" ]; then
   sed -i 's/^installerDefaults.dataCollectionEnabled .*/installerDefaults.dataCollectionEnabled = "no"/' $R/etc/vmware/config
   sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
 fi
-
-# /etc/udev/rules.d
-# support my devices
-if [ -f "99-kucko.rules" ]; then
-  cp "99-kucko.rules" /run/99-kucko.rules
-  chmod 0440 /run/99-kucko.rules
-fi
-ln -sf ../../../run/99-kucko.rules $R/etc/udev/rules.d
 
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
@@ -231,19 +221,15 @@ then
   sed -i "/^$USR:/d" $R/etc/shadow
 fi
 
-# --- HOST specific logic
-
-# install all service files
-#if [ -d "$mp/config" ]; then
-  FILES="*.service"
-  if [ $FILES != '*.service' ]; then
-    for f in *.service; do
-      cp $f $R/etc/systemd/system/
-      chmod 444 $R/etc/systemd/system/$f
-      ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
-    done
-  fi
-#fi
+# .service files
+FILES="*.service"
+if [ $FILES != '*.service' ]; then
+  for f in *.service; do
+    cp $f $R/etc/systemd/system/
+    chmod 444 $R/etc/systemd/system/$f
+    ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
+  done
+fi
 
 if [ "$HOST" == "kispincer" ]; then
   # Patch apcupsd config to connect it via usb
@@ -327,7 +313,6 @@ fi
 
 if [ "$HOST" == "kispincer" ]; then
   ln -sf /home/containers $R/var/lib/docker
-  rm -rf $R/etc/sudoers.d/sudoers
 fi
 
 if [ -n "$LOG" ]; then
@@ -357,6 +342,10 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
     mkdir -p $R/var/lib/nginx
     cp nginx.conf $R/etc/nginx/
   fi
+fi
+
+if [ "$HOST" == "kispincer" ] || [ "$HOST" == "pincer" ]; then
+  rm -rf $R/etc/sudoers.d/sudoers
 fi
 
 if [ "$HOST" == "pincer" ]; then
