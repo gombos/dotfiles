@@ -68,19 +68,21 @@ if [ -n "$USR" ]; then
   # not needed this is only done for the iso
   # populate /usr/local
   # packages-nix
-
+  mkdir -p isos/
+  cd isos/
   wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
+  cd ..
 
 cat > /boot/grub/custom.cfg << 'EOF'
-
-menuentry ISO $DEFAULT {
-  search --no-floppy --label linode-root --set=linuxroot
-  set isofile="/linux.iso"
+isolabel=linode-root
+menuentry linux_iso $DEFAULT $OVERRIDE {
+  search --no-floppy --label $isolabel --set=linuxroot
+  set isofile="/isos/linux.iso"
   loopback loop ($linuxroot)/$isofile
   linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro net.ifnames=0 noquiet nomodeset systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 root=live:CDLABEL=ISO
   initrd (loop)/kernel/initrd.img
 }
-set default=ISO
+set default=linux_iso
 #set timeout=10
 EOF
 
@@ -137,7 +139,8 @@ cp /etc/hosts /config
 cp /etc/rsyslog.conf /config
 cp /etc/resolv.conf /config
 
-# Run as root when iso boots
+# Run as root when iso boots - runs at each boot
+# todo - move this to infra-boots.sh
 cat > /config/infra-boots.sh << 'THEEND'
 #!/bin/bash
 
@@ -152,7 +155,7 @@ cp rsyslog.conf $R/etc/rsyslog.conf
 
 # systemd-resolved.service config
 printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
-rm $R/etc/network/interfaces.d/eth0
+rm $R/etc/network/interfaces.d/*
 
 #echo "/dev/sda  /home ext4 errors=remount-ro  0  1" >> $R/etc/fstab
 echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
