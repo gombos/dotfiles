@@ -69,7 +69,7 @@ if [ -n "$USR" ]; then
   # populate /usr/local
   # packages-nix
 
-  wget https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
+  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
 
 cat > /boot/grub/custom.cfg << 'EOF'
 
