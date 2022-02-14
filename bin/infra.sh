@@ -78,13 +78,13 @@ cat > /boot/grub/custom.cfg << 'EOF'
 isolabel=linode-root
 DEFAULT="rd.live.image rd.live.overlay.overlayfs=1 ro systemd.hostname=$h net.ifnames=0 quiet"
 DEFAULT_ISO="$DEFAULT root=live:CDLABEL=ISO"
-OVERRIDE="noquiet"
+OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
 
 menuentry linux_iso $DEFAULT_ISO $OVERRIDE {
   search --no-floppy --label $isolabel --set=linuxroot
   set isofile="/isos/linux.iso"
   loopback loop ($linuxroot)/$isofile
-  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile rd.live.image rd.live.overlay.overlayfs=1 ro systemd.hostname=$h net.ifnames=0 quiet root=live:CDLABEL=ISO systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8 $*
+  linux (loop)/kernel/vmlinuz iso-scan/filename=$isofile $*
   initrd (loop)/kernel/initrd.img
 }
 set default=linux_iso
