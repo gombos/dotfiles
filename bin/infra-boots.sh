@@ -159,10 +159,6 @@ fi
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
 
-if [ -f "crontab" ]; then
-  cp crontab $R/etc/
-fi
-
 # gombi user
 if [ ! -z "$GOMBIPWD" ]
 then
