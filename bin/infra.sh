@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Runs when rootfs is computed
+# Could run either offline or only at first boot
+# It should not run at each boot
 
 cd /
 
@@ -127,13 +129,15 @@ rm -rf tmp/*
 if [ -n "$SCRIPT" ]; then
 
 # Elevete some files so that they are picked up by ISO
-mkdir -p /config
-cp /etc/ssh/sshd_config  /config
-cp /etc/network/interfaces /config
-cp /etc/hostname /config
-cp /etc/hosts /config
-cp /etc/rsyslog.conf /config
-cp /etc/resolv.conf /config
+mkdir -p /config/updates/etc/ssh/sshd_config /config/updates/etc/network
+
+cp /etc/ssh/sshd_config  /config/updates/etc/ssh
+cp /etc/network/interfaces /config/updates/etc/network
+
+cp /etc/hostname /config/updates/etc
+cp /etc/hosts /config/updates/etc
+cp /etc/rsyslog.conf /config/updates/etc
+cp /etc/resolv.conf /config/updates/etc
 
 # Run as root when iso boots - runs at each boot
 cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
