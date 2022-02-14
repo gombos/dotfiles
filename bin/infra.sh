@@ -91,6 +91,13 @@ set default=linux_iso
 #set timeout=10
 EOF
 
+cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
+
+cat > /config/grub.cfg << 'EOF'
+set isolabel=linode-root
+set OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
+EOF
+
 fi
 
 apt-mark hold linux-image-amd64
