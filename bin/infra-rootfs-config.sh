@@ -59,7 +59,7 @@ echo "nixbld:x:402:nobody" >> etc/group
 mkdir -p etc/network/interfaces.d
 printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "127.0.0.1 localhost linux\n" > etc/hosts
-printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
+#printf "allow-hotplug eth0\niface eth0 inet dhcp\n" >> etc/network/interfaces
 
 # todo - vmware fix
 rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
