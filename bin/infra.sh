@@ -91,7 +91,7 @@ set default=linux_iso
 #set timeout=10
 EOF
 
-cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
+#cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
 
 cat > /config/grub.cfg << 'EOF'
 set isolabel=linode-root
