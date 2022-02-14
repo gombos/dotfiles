@@ -89,6 +89,7 @@ if [ -n "$IP" ]; then
   printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 fi
 
+# updates
 if [ -d "updates" ]; then
   cp -a updates/* $R/
 fi
@@ -265,9 +266,8 @@ if [ "$HOST" == "bestia" ]; then
   #sed -i 's|mail_location.*|mail_location = maildir:~/Maildir:LAYOUT=fs|g' $R/etc/dovecot/conf.d/10-mail.conf
 
   #nx
+  # todo - do not hardcode id in several places
   chown -R 401:401 $R/usr/NX/etc
-#  mkdir -p $R/usr/NX/etc
-#  cp -a nx/* $R/usr/NX/etc/
 
   # NFS
   mkdir -p $R/var/lib/nfs/sm
@@ -279,12 +279,8 @@ if [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
 
   # todo - maybe also rpc-statd-notify.service
-fi
 
-# server profile
-
-# Persistent container storage for docker
-if [ "$HOST" == "bestia" ] ; then
+  # Persistent container storage for docker
   mkdir -p /var/lib/docker
   echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
@@ -295,18 +291,10 @@ if [ "$HOST" == "kispincer" ]; then
 fi
 
 if [ -n "$LOG" ]; then
-echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
+  echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
 fi
 
 if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
-  # machinectl
-#  mkdir -p $R/var/lib/machines/lab
-#  echo '/live/image /var/lib/machines/lab none defaults,bind 0 0' >> $R/etc/fstab
-
-  # portablectl
-#  mkdir -p $R/var/lib/portables/lab
-#  echo '/live/image /var/lib/portables/lab none defaults,bind 0 0' >> $R/etc/fstab
-
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
@@ -328,13 +316,6 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "pincer" ]; then
-  # /config overlay
-#  cp interfaces $R/etc/network/interfaces
-#  cp sshd_config $R/etc/ssh/sshd_config
-#  cp hostname $R/etc/hostname
-#  cp hosts $R/etc/hosts
-#  cp rsyslog.conf $R/etc/rsyslog.conf
-
   # systemd-resolved.service config
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
   rm $R/etc/network/interfaces.d/*
