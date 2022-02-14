@@ -88,11 +88,10 @@ menuentry linux_iso $DEFAULT $OVERRIDE {
   initrd (loop)/kernel/initrd.img
 }
 set default=linux_iso
-#set timeout=10
+set timeout=10
 EOF
 
-#cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
-
+mkdir -p /config
 cat > /config/grub.cfg << 'EOF'
 set isolabel=linode-root
 set OVERRIDE="systemd.unit=multi-user.target nomodeset systemd.want=getty@tty1.service console=ttyS0,19200n8"
