@@ -167,6 +167,8 @@ cd -
 
 THEEND
 
+cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
+
 reboot
 
 fi
