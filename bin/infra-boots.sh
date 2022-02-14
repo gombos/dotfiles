@@ -240,8 +240,7 @@ if [ "$HOST" == "kispincer" ]; then
   # NFS
   mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
-  cp exports $R/etc/exports
-  cp exports $R/var/lib/nfs/etab
+  cp $R/etc/exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
   ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
@@ -272,8 +271,7 @@ if [ "$HOST" == "bestia" ]; then
   # NFS
   mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
-  cp exports $R/etc/exports
-  cp exports $R/var/lib/nfs/etab
+  cp $R/etc/exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
   ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
