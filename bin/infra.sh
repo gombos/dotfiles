@@ -46,6 +46,8 @@ if [ -n "$USR" ]; then
   sed -i "/^usr:/d" /etc/shadow
   head -1 /etc/shadow | sed -e "s/^root/usr/" >> /etc/shadow
 
+  # Todo - elevate this to the iso as well
+
   # Take key from root
   mv /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
