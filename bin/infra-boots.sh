@@ -326,6 +326,6 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /run/initramfs/isoscan/home/usr home
 
   # shortcuts
-  ln -sf /run/initramfs/isoscan /go/host
+  ln -sf /run/initramfs/isoscan $R/go/host
 
 fi
