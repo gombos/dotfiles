@@ -49,7 +49,7 @@ if [ -n "$USR" ]; then
   SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
   echo $SHADOW >> /etc/shadow
 
-  echo $SHADOW > /config/shadow
+  #echo $SHADOW > /config/shadow
   echo -n "IPWD=\'" >> /config/rootfs-kulcs.cfg
   echo -n $SHADOW | cut -d: -f2 >> /config/rootfs-kulcs.cfg
   echo "\'" >> /config/rootfs-kulcs.cfg

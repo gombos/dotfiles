@@ -23,6 +23,7 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
+# Needs to be both a valid JSON value and valid shell script
 BOOTSCRIPT="SSHDPORT=$port \
   LABEL=$LABEL \
   USR=usr \
