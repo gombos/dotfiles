@@ -311,27 +311,22 @@ fi
 
 if [ "$HOST" == "pincer" ]; then
 
-  # Take password from host
+  # accounts
   if [[ -e shadow ]]; then
     sed -i "/^usr:/d" $R/etc/shadow
     cat shadow >> $R/etc/shadow
   fi
 
-  # systemd-resolved.service config
+  # networking
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
   rm $R/etc/network/interfaces.d/*
 
+  # filesystem
   echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
-
-  rm -rf $R/lib/systemd/system/home.service
-  rm -rf $R/etc/systemd/system/local-fs.target.wants/home.service
-
   mount /run/initramfs/isoscan -o remount,rw
 
   rm -rf $R/home
-  cd $R
-  ln -sf /run/initramfs/isoscan/home/usr home
+  ln -sf /run/initramfs/isoscan/home/usr /$R/home
 
-  # shortcuts
   ln -sf /run/initramfs/isoscan $R/go/host
 fi
