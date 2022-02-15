@@ -67,8 +67,7 @@ if [ -n "$USR" ]; then
   git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   chown -R 1000:1000 /home/$USR
 
-  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/1.iso
-  ln -sf /isos/1.iso /isos/linux.iso
+  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
 
   cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
 
