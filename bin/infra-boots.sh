@@ -160,19 +160,19 @@ fi
 # gombi user
 if [ ! -z "$GOMBIPWD" ]
 then
-  echo "gombi:x:1000:1000:,,,:/home/user:/bin/bash" >> $R/etc/passwd
-  echo "gombi:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
-  echo "gombi:!::" >> $R/etc/gshadow
-  echo "gombi:x:1000:" >> $R/etc/group
-  sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
-  sed -i "s/^adm:.*/&,gombi/" $R/etc/group
-  sed -i "s/^root:.*/&,gombi/" $R/etc/group
-  sed -i "s/^docker:.*/&,gombi/" $R/etc/group
-  sed -i "s/^users:.*/&,gombi/" $R/etc/group
-
-  # remove the admin user
+  # remove the default rootfs user
   sed -i "/^$USR:/d" $R/etc/passwd
   sed -i "/^$USR:/d" $R/etc/shadow
+
+  echo "gombi:x:1000:1000:,,,:/home/user:/bin/bash" >> $R/etc/passwd
+  echo "gombi:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
+#  echo "gombi:!::" >> $R/etc/gshadow
+#  echo "gombi:x:1000:" >> $R/etc/group
+
+#  sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
+#  sed -i "s/^adm:.*/&,gombi/" $R/etc/group
+  sed -i "s/^docker:.*/&,gombi/" $R/etc/group
+  sed -i "s/^users:.*/&,gombi/" $R/etc/group
 fi
 
 # henrik user
