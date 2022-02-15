@@ -164,15 +164,15 @@ then
   sed -i "/^$USR:/d" $R/etc/passwd
   sed -i "/^$USR:/d" $R/etc/shadow
 
-  echo "gombi:x:1000:1000:,,,:/home/user:/bin/bash" >> $R/etc/passwd
-  echo "gombi:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
+  echo "$USR:x:1000:1000:,,,:/home/$USR:/bin/bash" >> $R/etc/passwd
+  echo "$USR:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
 #  echo "gombi:!::" >> $R/etc/gshadow
 #  echo "gombi:x:1000:" >> $R/etc/group
 
 #  sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
 #  sed -i "s/^adm:.*/&,gombi/" $R/etc/group
-  sed -i "s/^docker:.*/&,gombi/" $R/etc/group
-  sed -i "s/^users:.*/&,gombi/" $R/etc/group
+  sed -i "s/^docker:.*/&,$USR/" $R/etc/group
+  sed -i "s/^users:.*/&,$USR/" $R/etc/group
 fi
 
 # henrik user
@@ -324,7 +324,7 @@ if [ "$HOST" == "pincer" ]; then
   mount /run/initramfs/isoscan -o remount,rw
 
   rm -rf $R/home
-  ln -sf /run/initramfs/isoscan/home/usr /$R/home
+  ln -sf /run/initramfs/isoscan/home /$R/home
 
   ln -sf /run/initramfs/isoscan $R/go/host
 fi
