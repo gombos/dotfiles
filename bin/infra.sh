@@ -41,33 +41,33 @@ if [ -n "$LOG" ]; then
   echo "*.*                     @${LOG}" >> /config/updates/etc/rsyslog.conf
 fi
 
+wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
+
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
 OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
 EOF
 
-if [ -n "$USR" ]; then
-  # Take password from root
-  echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
-  head -1 /etc/shadow | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
-  echo "" >> /config/rootfs-kulcs.cfg
+# Take password from root
+echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
+head -1 /etc/shadow | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
+echo "" >> /config/rootfs-kulcs.cfg
 
+# Disable root login
+rm -rf /root/.ssh
+usermod -p '*' root
+
+if [ -n "$USR" ]; then
   # Take ssh key from root
   mkdir -p /home/$USR/.ssh/
   mv /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
 
-  # Disable root login
-  rm -rf /root/.ssh
-  usermod -p '*' root
-
-  # todo - switch to wget and unzip instead of git
-  apt-get update
-  apt-get install -y -qq --no-install-recommends git
-  git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
+  wget https://github.com/gombos/dotfiles/archive/refs/heads/main.zip
+  unzip main.zip
+  mv dotfiles-main /home/$USR/.dotfiles
+  rm -rf main.zip
   chown -R 1000:1000 /home/$USR
-
-  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
 
   cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
 
@@ -75,4 +75,4 @@ if [ -n "$USR" ]; then
   ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 fi
 
-/sbin/reboot
+#/sbin/reboot
