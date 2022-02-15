@@ -49,7 +49,8 @@ if [ -n "$USR" ]; then
   SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
   echo $SHADOW >> /etc/shadow
 
-  echo -n 'GOMBIPWD=' >> /config/rootfs-kulcs.cfg
+  echo $SHADOW > /config/shadow
+  echo -n 'IPWD=' >> /config/rootfs-kulcs.cfg
   echo $SHADOW | cut -d: -f2 >> /config/rootfs-kulcs.cfg
 
   # Todo - elevate this to the iso as well
