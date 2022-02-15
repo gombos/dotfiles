@@ -37,17 +37,17 @@ apt-get update
 
 # Things only run in the cloud
 if [ -n "$USR" ]; then
-  adduser --disabled-password --gecos "" $USR
-  usermod -aG sudo $USR
-  usermod -aG adm $USR
+#  adduser --disabled-password --gecos "" $USR
+#  usermod -aG sudo $USR
+#  usermod -aG adm $USR
 
-  rm -rf /home/$USR/.*
+#  rm -rf /home/$USR/.*
   mkdir -p /home/$USR/.ssh/
 
   # Take password from root
-  sed -i "/^usr:/d" /etc/shadow
+#  sed -i "/^usr:/d" /etc/shadow
   SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
-  echo $SHADOW >> /etc/shadow
+#  echo $SHADOW >> /etc/shadow
 
   echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
   echo $SHADOW | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
@@ -58,7 +58,6 @@ if [ -n "$USR" ]; then
   # Take key from root
   mv /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
-  chown -R $USR:$USR /home/$USR/.ssh/
   rm -rf /root/.ssh
 
   # Disable root login
@@ -66,8 +65,9 @@ if [ -n "$USR" ]; then
 
   apt-get install -y -qq --no-install-recommends git
 
-  runuser -u $USR -- git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
-  runuser -u $USR -- /home/$USR/.dotfiles/bin/infra-provision-user.sh
+  git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
+  /home/$USR/.dotfiles/bin/infra-provision-user.sh
+  chown -R 1000:1000 /home/$USR
 
   if [ -d /home/$USR/.dotfiles/bin ]; then
     PATH=/home/$USR/.dotfiles/bin:$PATH
