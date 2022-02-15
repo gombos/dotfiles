@@ -315,6 +315,4 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /run/initramfs/isoscan/home $R/home
 
   ln -sf /run/initramfs/isoscan $R/go/host
-
-  runuser -u $USR -- $R/home/$USR/.dotfiles/bin/infra-provision-user.sh
 fi
