@@ -37,58 +37,34 @@ apt-get update
 
 # Things only run in the cloud
 if [ -n "$USR" ]; then
-#  adduser --disabled-password --gecos "" $USR
-#  usermod -aG sudo $USR
-#  usermod -aG adm $USR
-
-#  rm -rf /home/$USR/.*
-  mkdir -p /home/$USR/.ssh/
-
   # Take password from root
-#  sed -i "/^usr:/d" /etc/shadow
-  SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
-#  echo $SHADOW >> /etc/shadow
-
   echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
-  echo $SHADOW | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
+  head -1 /etc/shadow | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
   echo "" >> /config/rootfs-kulcs.cfg
 
-  # Todo - elevate this to the iso as well
-
-  # Take key from root
+  # Take ssh key from root
+  mkdir -p /home/$USR/.ssh/
   mv /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
-  rm -rf /root/.ssh
 
   # Disable root login
+  rm -rf /root/.ssh
   usermod -p '*' root
 
   apt-get install -y -qq --no-install-recommends git
-
   git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
-  /home/$USR/.dotfiles/bin/infra-provision-user.sh
   chown -R 1000:1000 /home/$USR
 
   if [ -d /home/$USR/.dotfiles/bin ]; then
     PATH=/home/$USR/.dotfiles/bin:$PATH
   fi
 
-  # Dependencies for the rest of the script
-  # todo - improve install script
-  # cp /home/$USR/.dotfiles/packages/packages-core.l /tmp/
-  # install_my_packages.sh packages-core.l
-
-  # not needed this is only done for the iso
-  # populate /usr/local
-  # packages-nix
   mkdir -p isos/
   cd isos
   wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
   cd ..
 
   cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
-
-  mkdir -p /config
 
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
