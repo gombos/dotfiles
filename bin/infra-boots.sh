@@ -157,7 +157,7 @@ fi
 # Disable all the preinstaled cron jobs (except cron.d/ jobs)
 > $R/etc/crontab
 
-# gombi user
+# USR user
 if [ ! -z "$GOMBIPWD" ]
 then
   # remove the default rootfs user
@@ -166,11 +166,6 @@ then
 
   echo "$USR:x:1000:1000:,,,:/home/$USR:/bin/bash" >> $R/etc/passwd
   echo "$USR:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
-#  echo "gombi:!::" >> $R/etc/gshadow
-#  echo "gombi:x:1000:" >> $R/etc/group
-
-#  sed -i "s/^sudo:.*/&,gombi/" $R/etc/group
-#  sed -i "s/^adm:.*/&,gombi/" $R/etc/group
   sed -i "s/^docker:.*/&,$USR/" $R/etc/group
   sed -i "s/^users:.*/&,$USR/" $R/etc/group
 fi
