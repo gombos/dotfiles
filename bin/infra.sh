@@ -48,8 +48,8 @@ if [ -n "$USR" ]; then
   chmod 400 /home/$USR/.ssh/authorized_keys
 
   # Disable root login
-  #rm -rf /root/.ssh
-  #usermod -p '*' root
+  rm -rf /root/.ssh
+  usermod -p '*' root
 
   # todo - switch to wget and unzip instead of git
   apt-get update
@@ -87,5 +87,5 @@ if [ -n "$SCRIPT" ]; then
   # Run as root when iso boots - runs at each boot
   ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 
-  # reboot
+  reboot
 fi
