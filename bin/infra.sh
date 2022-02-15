@@ -8,6 +8,7 @@ cd /
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
+  mkdir -p /config/updates/etc/ssh /config/updates/etc/network
 fi
 
 # Might run at first boot, services might be already running
@@ -44,7 +45,9 @@ if [ -n "$USR" ]; then
 
   # Take password from root
   sed -i "/^usr:/d" /etc/shadow
-  head -1 /etc/shadow | sed -e "s/^root/usr/" >> /etc/shadow
+  SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
+  echo $SHADOW >> /etc/shadow
+  echo $SHADOW > /config/shadow
 
   # Todo - elevate this to the iso as well
 
@@ -131,8 +134,6 @@ rm -rf tmp/*
 if [ -n "$SCRIPT" ]; then
 
 # Elevete some files so that they are picked up by ISO
-mkdir -p /config/updates/etc/ssh /config/updates/etc/network
-
 cp /etc/ssh/sshd_config  /config/updates/etc/ssh
 cp /etc/network/interfaces /config/updates/etc/network
 
@@ -141,8 +142,6 @@ cp /etc/hosts /config/updates/etc
 cp /etc/rsyslog.conf /config/updates/etc
 
 # Run as root when iso boots - runs at each boot
-#cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
-
 ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 
 reboot

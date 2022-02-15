@@ -328,4 +328,8 @@ if [ "$HOST" == "pincer" ]; then
   # shortcuts
   ln -sf /run/initramfs/isoscan $R/go/host
 
+  # Take password from host
+  sed -i "/^usr:/d" $R/etc/shadow
+  cat shadow >> $R/etc/shadow
+
 fi
