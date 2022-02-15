@@ -66,8 +66,6 @@ done
 
 # Per-host configuration is optional
 if [ -f "rootfs-kulcs.cfg" ]; then
-#  cd $mp/config
-  # Per instance configuration file
   . ./rootfs-kulcs.cfg
 fi
 

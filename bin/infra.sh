@@ -9,6 +9,7 @@ cd /
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   mkdir -p /config/updates/etc/ssh /config/updates/etc/network
+  echo $SCRIPT >> /config/rootfs-kulcs.cfg
 fi
 
 # Might run at first boot, services might be already running
@@ -47,7 +48,9 @@ if [ -n "$USR" ]; then
   sed -i "/^usr:/d" /etc/shadow
   SHADOW=$(head -1 /etc/shadow | sed -e "s/^root/usr/")
   echo $SHADOW >> /etc/shadow
-  echo $SHADOW > /config/shadow
+
+  echo -n 'GOMBIPWD=' >> /config/rootfs-kulcs.cfg
+  echo $SHADOW | cut -d: -f2 >> /config/rootfs-kulcs.cfg
 
   # Todo - elevate this to the iso as well
 
