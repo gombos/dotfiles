@@ -312,7 +312,9 @@ if [ "$HOST" == "pincer" ]; then
   mount /run/initramfs/isoscan -o remount,rw
 
   rm -rf $R/home
-  ln -sf /run/initramfs/isoscan/home /$R/home
+  ln -sf /run/initramfs/isoscan/home $R/home
 
   ln -sf /run/initramfs/isoscan $R/go/host
+
+  runuser -u $USR -- $R/home/$USR/.dotfiles/bin/infra-provision-user.sh
 fi
