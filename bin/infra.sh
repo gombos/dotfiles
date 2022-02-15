@@ -50,8 +50,9 @@ if [ -n "$USR" ]; then
   echo $SHADOW >> /etc/shadow
 
   echo $SHADOW > /config/shadow
-  echo -n 'IPWD=' >> /config/rootfs-kulcs.cfg
-  echo $SHADOW | cut -d: -f2 >> /config/rootfs-kulcs.cfg
+  echo -n "IPWD=\'" >> /config/rootfs-kulcs.cfg
+  echo -n $SHADOW | cut -d: -f2 >> /config/rootfs-kulcs.cfg
+  echo "\'" >> /config/rootfs-kulcs.cfg
 
   # Todo - elevate this to the iso as well
 
