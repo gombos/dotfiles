@@ -55,7 +55,7 @@ echo "" >> /config/rootfs-kulcs.cfg
 
 # Disable root login
 rm -rf /root/.ssh
-usermod -p '*' root
+#usermod -p '*' root
 
 if [ -n "$USR" ]; then
   # Take ssh key from root
