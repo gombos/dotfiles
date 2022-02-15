@@ -310,6 +310,13 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "pincer" ]; then
 fi
 
 if [ "$HOST" == "pincer" ]; then
+
+  # Take password from host
+  if [[ -e shadow ]]; then
+    sed -i "/^usr:/d" $R/etc/shadow
+    cat shadow >> $R/etc/shadow
+  fi
+
   # systemd-resolved.service config
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
   rm $R/etc/network/interfaces.d/*
@@ -327,9 +334,4 @@ if [ "$HOST" == "pincer" ]; then
 
   # shortcuts
   ln -sf /run/initramfs/isoscan $R/go/host
-
-  # Take password from host
-  sed -i "/^usr:/d" $R/etc/shadow
-  cat shadow >> $R/etc/shadow
-
 fi
