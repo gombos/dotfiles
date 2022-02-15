@@ -5,7 +5,8 @@
 # It should not run at each boot
 
 cd /
-mkdir -p /config/updates/etc/ssh /config/updates/etc/network
+
+mkdir -p /config/updates/etc/ssh /config/updates/etc/network /isos
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
@@ -66,10 +67,8 @@ if [ -n "$USR" ]; then
   git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   chown -R 1000:1000 /home/$USR
 
-  mkdir -p isos/
-  cd isos
-  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso
-  cd ..
+  wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/1.iso
+  ln -sf /isos/1.iso /isos/linux.iso
 
   cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
 
