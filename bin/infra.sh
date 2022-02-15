@@ -143,7 +143,7 @@ cp /etc/rsyslog.conf /config/updates/etc
 # Run as root when iso boots - runs at each boot
 #cp /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 
-ln -sf /home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
+ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 
 reboot
 
