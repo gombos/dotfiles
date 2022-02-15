@@ -321,7 +321,6 @@ if [ "$HOST" == "pincer" ]; then
 
   mount /run/initramfs/isoscan -o remount,rw
 
-  # Read only home as it point to a read only mount
   rm -rf $R/home
   cd $R
   ln -sf /run/initramfs/isoscan/home/usr home
