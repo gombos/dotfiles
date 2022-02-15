@@ -51,6 +51,8 @@ if [ -n "$USR" ]; then
   #rm -rf /root/.ssh
   #usermod -p '*' root
 
+  # todo - switch to wget and unzip instead of git
+  apt-get update
   apt-get install -y -qq --no-install-recommends git
   git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   chown -R 1000:1000 /home/$USR
