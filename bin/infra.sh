@@ -41,6 +41,8 @@ if [ -n "$LOG" ]; then
   echo "*.*                     @${LOG}" >> /config/updates/etc/rsyslog.conf
 fi
 
+wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
+wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
 wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
 
 cat > /config/grub.cfg << 'EOF'
@@ -53,26 +55,16 @@ echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
 head -1 /etc/shadow | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
 echo "" >> /config/rootfs-kulcs.cfg
 
-# Disable root login
-rm -rf /root/.ssh
-usermod -p '*' root
-
 if [ -n "$USR" ]; then
   # Take ssh key from root
   mkdir -p /home/$USR/.ssh/
-  mv /root/.ssh/authorized_keys /home/$USR/.ssh/
+  cp /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
-
-  # todo - switch to wget and unzip instead of git
-  apt-get update
-  apt-get install -y -qq --no-install-recommends git
-  git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   chown -R 1000:1000 /home/$USR
-
-  cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
-
-  # Run as root when iso boots - runs at each boot
-  ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 fi
 
-/sbin/reboot
+# Disable root login
+#rm -rf /root/.ssh
+#usermod -p '*' root
+
+#/sbin/reboot
