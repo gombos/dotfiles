@@ -158,7 +158,13 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
 #mkdir -p usr/bin/
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
-#cp /tmp/*.service usr/lib/systemd/system/
+
+cat sbin/iso-scan
+
+cp /tmp/iso-scan.sh sbin/iso-scan
+
+cat sbin/iso-scan
+
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
 #cd ..
