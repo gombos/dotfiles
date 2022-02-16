@@ -158,14 +158,14 @@ fi
 > $R/etc/crontab
 
 # USR user
-if [ ! -z "$GOMBIPWD" ]
+if [ ! -z "$USRPWD" ]
 then
   # remove the default rootfs user
   sed -i "/^$USR:/d" $R/etc/passwd
   sed -i "/^$USR:/d" $R/etc/shadow
 
   echo "$USR:x:1000:1000:,,,:/home/$USR:/bin/bash" >> $R/etc/passwd
-  echo "$USR:$GOMBIPWD:1:0:99999:7:::" >> $R/etc/shadow
+  echo "$USR:$USRPWD:1:0:99999:7:::" >> $R/etc/shadow
   sed -i "s/^docker:.*/&,$USR/" $R/etc/group
   sed -i "s/^users:.*/&,$USR/" $R/etc/group
 fi

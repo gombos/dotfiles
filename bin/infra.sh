@@ -37,10 +37,6 @@ fi
 [ -n "$LABEL" ] && echo "$LABEL" > /config/updates/etc/hostname
 [ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> /config/updates/etc/hosts
 
-if [ -n "$LOG" ]; then
-  echo "*.*                     @${LOG}" >> /config/updates/etc/rsyslog.conf
-fi
-
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
 wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
@@ -51,7 +47,7 @@ OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console
 EOF
 
 # Take password from root
-echo -n "GOMBIPWD='" >> /config/rootfs-kulcs.cfg
+echo -n "USRPWD='" >> /config/rootfs-kulcs.cfg
 head -1 /etc/shadow | cut -d: -f2 | tr '\n' "'" >> /config/rootfs-kulcs.cfg
 echo "" >> /config/rootfs-kulcs.cfg
 
