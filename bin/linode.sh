@@ -1,12 +1,16 @@
 #!/bin/bash
 
 # Takes about 6 min to bring up a linode instance with my ISO
-# - configure host debian os
+# - boot into host debian os
 # - download iso
 # - boot into new iso
 # Most of this time goes into downloading the ISO from github
 
-LABEL="pincer"
+[ -z "$LABEL" ] && LABEL="pincer"
+
+# debian11 (0.9GB) ubuntu21.10 (2.1GB) alpine3.15 (0.2 GB) centos-stream9 (1.2 GB) arch (2.1GB)
+# linode-cli images list
+[ -z "$DISTRO" ] && DISTRO="debian11"
 
 # todo - remove path
 Key=$(cat /Volumes/bagoly/k.git/k_public)
@@ -21,26 +25,23 @@ port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format 
 
 stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers --format id)
 
-linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
-
 # Needs to be both a valid JSON value and valid shell script
 BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
   LOG=\\\"$LOG\\\" "
 
-linode-cli linodes rebuild --root_pass --stackscript_id $stackscript_id \
-  --stackscript_data "{\"SCRIPT\":\"$BOOTSCRIPT\" }" \
-  --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11 $linodeId
+linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
-#linode/debian11
-#linode/ubuntu21.10
+if [ -n "$linodeId" ]; then
+  linode-cli linodes rebuild --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO $linodeId \
+  --stackscript_id $stackscript_id --stackscript_data "{\"SCRIPT\":\"$BOOTSCRIPT\" }"
+else
+  linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO
+fi
 
 # copy over k
 #scp -o "StrictHostKeyChecking no" -r /Volumes/bagoly/homelab.git/boot/* l:
-
-# Initial provisioning, will loose IP address
-#linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --stackscript_id 969974 --authorized_keys  "$MY_SERVER_AUTORIZED_KEY" --image linode/debian11
 
 # Reregisters IP if IP changed - assumes one linode, one domain and one A record
 #ip=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'ipv4')
