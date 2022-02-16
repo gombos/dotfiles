@@ -55,7 +55,7 @@ echo "" >> /config/rootfs-kulcs.cfg
 
 # Disable root login
 rm -rf /root/.ssh
-#usermod -p '*' root
+usermod -p '*' root
 
 if [ -n "$USR" ]; then
   # Take ssh key from root
@@ -63,10 +63,10 @@ if [ -n "$USR" ]; then
   mv /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
 
-  wget https://github.com/gombos/dotfiles/archive/refs/heads/main.zip
-  unzip main.zip
-  mv dotfiles-main /home/$USR/.dotfiles
-  rm -rf main.zip
+  # todo - switch to wget and unzip instead of git
+  apt-get update
+  apt-get install -y -qq --no-install-recommends git
+  git clone https://github.com/gombos/dotfiles.git /home/$USR/.dotfiles
   chown -R 1000:1000 /home/$USR
 
   cp /home/$USR/.dotfiles/boot/grub.cfg /boot/grub/custom.cfg
@@ -75,4 +75,4 @@ if [ -n "$USR" ]; then
   ln -sf /run/initramfs/isoscan/home/$USR/.dotfiles/bin/infra-boots.sh /config/infra-boots.sh
 fi
 
-#/sbin/reboot
+/sbin/reboot
