@@ -6,7 +6,7 @@
 
 cd /
 
-mkdir -p /config/updates/etc/ssh /config/updates/etc/network /isos
+mkdir -p /config/updates/etc/network /isos
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
@@ -14,28 +14,7 @@ if [ -n "$SCRIPT" ]; then
 fi
 
 # Elevete some files so that they are picked up by ISO
-cp /etc/ssh/sshd_config  /config/updates/etc/ssh
 cp /etc/network/interfaces /config/updates/etc/network
-
-#cp /etc/hosts /config/updates/etc
-#cp /etc/rsyslog.conf /config/updates/etc
-
-# Might run at first boot, services might be already running
-echo "PasswordAuthentication no" >> /config/updates/etc/ssh/sshd_config
-echo "ChallengeResponseAuthentication no" >> /config/updates/etc/ssh/sshd_config
-echo "UsePAM no" >> /config/updates/etc/ssh/sshd_config
-echo "PermitRootLogin no" >> /config/updates/etc/ssh/sshd_config
-
-if [ -n "$USR" ]; then
-  echo "AllowUsers $USR" >> /config/updates/etc/ssh/sshd_config
-fi
-
-if [ -n "$SSHDPORT" ]; then
-  echo "Port ${SSHDPORT}" >> /config/updates/etc/ssh/sshd_config
-fi
-
-#[ -n "$LABEL" ] && echo "$LABEL" > /config/updates/etc/hostname
-#[ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> /config/updates/etc/hosts
 
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
@@ -43,7 +22,7 @@ wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso 
 
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
+OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
 EOF
 
 # Take password from root

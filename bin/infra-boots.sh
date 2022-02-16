@@ -135,9 +135,6 @@ if [ ! -z "$SSHD_KEY" ]; then
   echo -e $SSHD_KEY > $R/etc/ssh/ssh_host_ed25519_key
   echo $SSHD_KEY_PUB > $R/etc/ssh/ssh_host_ed25519_key.pub
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
-
-  #harden sshd
-  echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
 fi
 
 # configure vmware service
@@ -302,6 +299,16 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "pincer" ]; then
   rm -rf $R/etc/sudoers.d/sudoers
 fi
 
+# Might run at first boot, services might be already running
+echo "PasswordAuthentication no" >> $R/etc/ssh/sshd_config
+echo "ChallengeResponseAuthentication no" >> $R/etc/ssh/sshd_config
+echo "UsePAM no" >> $R/etc/ssh/sshd_config
+echo "PermitRootLogin no" >> $R/etc/ssh/sshd_config
+
+if [ -n "$SSHD_PORT" ]; then
+  echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
+fi
+
 if [ "$HOST" == "pincer" ]; then
   # networking
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
@@ -315,4 +322,9 @@ if [ "$HOST" == "pincer" ]; then
   ln -sf /run/initramfs/isoscan/home $R/home
 
   ln -sf /run/initramfs/isoscan $R/go/host
+
+  if [ -n "$USR" ]; then
+    echo "AllowUsers $USR" >> $R/etc/ssh/sshd_config
+  fi
+
 fi
