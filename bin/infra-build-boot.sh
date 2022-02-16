@@ -125,10 +125,6 @@ mkdir -p /efi/kernel
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-# todo - do we really need to list all this qemu virt drivers just to find the drive at boot for qemu
-# virtio virtio_ring virtio_pci     virtio_console
-# virtio_blk virtio-rng virtio_mem
-
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live' \
