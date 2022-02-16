@@ -1,21 +1,20 @@
 #!/bin/bash
 
-# Runs when rootfs is computed
-# Could run either offline or only at first boot
-# It should not run at each boot
+# Runs on image boot first and pulls the iso and boots into ISO
+# Do not assume a specific distro (or package manager) if possible
 
 cd /
-
-mkdir -p /config/updates/etc/network /isos
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   echo $SCRIPT >> /config/rootfs-kulcs.cfg
 fi
 
-# Elevete some files so that they are picked up by ISO
+# Elevate some files so that they are picked up by ISO
+mkdir -p /config/updates/etc/network
 cp /etc/network/interfaces /config/updates/etc/network
 
+mkdir -p /isos
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
 wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
@@ -45,4 +44,5 @@ fi
 rm -rf /root/.ssh
 usermod -p '*' root
 
-/sbin/reboot
+# reboot into ISO
+reboot
