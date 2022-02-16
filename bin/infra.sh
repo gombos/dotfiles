@@ -20,9 +20,9 @@ wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cf
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
 wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
 
-cat > /config/grub.cfg << 'EOF'
+cat > /config/grub.cfg << EOF
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
+OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
 EOF
 
 # Take password from root
