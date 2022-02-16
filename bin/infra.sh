@@ -58,13 +58,16 @@ echo "" >> /config/rootfs-kulcs.cfg
 if [ -n "$USR" ]; then
   # Take ssh key from root
   mkdir -p /home/$USR/.ssh/
+  wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-provision.sh -O /home/$USR/.bash_profile
+
   cp /root/.ssh/authorized_keys /home/$USR/.ssh/
   chmod 400 /home/$USR/.ssh/authorized_keys
+
   chown -R 1000:1000 /home/$USR
 fi
 
 # Disable root login
-#rm -rf /root/.ssh
-#usermod -p '*' root
+rm -rf /root/.ssh
+usermod -p '*' root
 
-#/sbin/reboot
+/sbin/reboot
