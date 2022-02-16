@@ -160,7 +160,10 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 
 cp /tmp/iso-scan.sh sbin/iso-scan
-cp /tmp/dmsquash-live-root.sh /sbin/dmsquash-live-root
+cp /tmp/dmsquash-live-root.sh sbin/dmsquash-live-root
+
+cat sbin/dmsquash-live-root
+
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 

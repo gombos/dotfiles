@@ -189,7 +189,7 @@ do_live_overlay() {
             warn "Using temporary overlay."
         elif [ -n "$devspec" -a -n "$pathspec" ]; then
             [ -z "$m" ] \
-                && m='   Unable to find a persistent overlay; using a temporary one.'
+                && m='   Unable gombi to find a persistent overlay; using a temporary one.'
             m="$m"$'\n      All root filesystem changes will be lost on shutdown.'
             m="$m"$'\n         Press [Enter] to continue.'
             printf "\n\n\n\n%s\n\n\n" "${m}" > /dev/kmsg
