@@ -3,7 +3,7 @@
 # Runs on image boot first and pulls the iso and boots into ISO
 # Do not assume a specific distro (or package manager) if possible
 
-cd /
+mkdir -p /config/updates/etc/network /isos
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
@@ -11,10 +11,8 @@ if [ -n "$SCRIPT" ]; then
 fi
 
 # Elevate some files so that they are picked up by ISO
-mkdir -p /config/updates/etc/network
 cp /etc/network/interfaces /config/updates/etc/network
 
-mkdir -p /isos
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
 wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
