@@ -17,8 +17,8 @@ fi
 cp /etc/ssh/sshd_config  /config/updates/etc/ssh
 cp /etc/network/interfaces /config/updates/etc/network
 
-cp /etc/hosts /config/updates/etc
-cp /etc/rsyslog.conf /config/updates/etc
+#cp /etc/hosts /config/updates/etc
+#cp /etc/rsyslog.conf /config/updates/etc
 
 # Might run at first boot, services might be already running
 echo "PasswordAuthentication no" >> /config/updates/etc/ssh/sshd_config
@@ -34,8 +34,8 @@ if [ -n "$SSHDPORT" ]; then
   echo "Port ${SSHDPORT}" >> /config/updates/etc/ssh/sshd_config
 fi
 
-[ -n "$LABEL" ] && echo "$LABEL" > /config/updates/etc/hostname
-[ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> /config/updates/etc/hosts
+#[ -n "$LABEL" ] && echo "$LABEL" > /config/updates/etc/hostname
+#[ -n "$LABEL" ] && echo "127.0.0.1 $LABEL" >> /config/updates/etc/hosts
 
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
