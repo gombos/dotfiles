@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Takes about 6 min to bring up a linode instance with my ISO
-# - boot into host debian os
-# - download iso
-# - boot into new iso
-# Most of this time goes into downloading the ISO from github
+# Takes about 4 min to bring up a linode instance with my ISO
+# - create linode and boot into host debian os (1 min)
+# - download iso (1 min)
+# - shut down (1 min) - can this be done faster ?
+# - boot into new iso (1 min)
 
 [ -z "$LABEL" ] && LABEL="pincer"
 
