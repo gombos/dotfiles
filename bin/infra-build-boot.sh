@@ -95,7 +95,7 @@ cd ..
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
-# todo - remove btrfs module from initrd and instead mount the modules file earlier
+# todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
 
 # todo - remove base dependency after
@@ -120,17 +120,20 @@ mkdir -p /efi/kernel
 # xhci_pci, uas - usb
 # sdhci_acpi, mmc_block - mmc
 
-#sd_mod for all SCSI, SATA, and PATA (IDE) devices
-#ehci_pci and usb_storage for USB storage devices
-#virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
+# sd_mod for all SCSI, SATA, and PATA (IDE) devices
+# ehci_pci and usb_storage for USB storage devices
+# virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
 # todo - do we really need to list all this qemu virt drivers just to find the drive at boot for qemu
+# virtio virtio_ring virtio_pci     virtio_console
+# virtio_blk virtio-rng virtio_mem
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block  ata_piix ata_generic pata_acpi cdrom sr_mod ahci         virtio_blk virtio virtio_ring virtio_pci         virtio_scsi virtio_console virtio_rng virtio_mem ' \
-  --modules 'dmsquash-live qemu' \
+  --add-drivers 'nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
+  --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
+  --aggresive-strip \
   initrd.img $KERNEL
 
 rm initrd.img
