@@ -22,7 +22,7 @@ wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso 
 
 cat > /config/grub.cfg << 'EOF'
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
+OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=pincer systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online"
 EOF
 
 # Take password from root
