@@ -140,7 +140,7 @@ do_live_overlay() {
         if [ -f /run/initramfs/overlayfs$pathspec -a -w /run/initramfs/overlayfs$pathspec ]; then
             OVERLAY_LOOPDEV=$(losetup -f --show ${readonly_overlay:+-r} /run/initramfs/overlayfs$pathspec)
             over=$OVERLAY_LOOPDEV
-            umount -l /run/initramfs/overlayfs || :
+            #umount -l /run/initramfs/overlayfs || :
             oltype=$(det_img_fs "$OVERLAY_LOOPDEV")
             if [ -z "$oltype" ] || [ "$oltype" = DM_snapshot_cow ]; then
                 if [ -n "$reset_overlay" ]; then
