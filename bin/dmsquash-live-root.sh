@@ -125,40 +125,12 @@ do_live_overlay() {
         pathspec="/${live_dir}/overlay-$l-$u"
     fi
     devspec=${overlay%%:*}
-    echo "gg"
-    echo $devspec
 
     # need to know where to look for the overlay
     if [ -z "$setup" -a -n "$devspec" -a -n "$pathspec" -a -n "$overlay" ]; then
         mkdir -m 0755 -p /run/initramfs/overlayfs
-
-        echo 3
-        echo $devspec   "$pathspec" "$overlay"
-
-        if ismounted "$pathspec"; then
-          echo 4
-          pathmount=find_mount($pathspec)
-          echo pathmount
-          mount -n -o remount,rw $pathspec
-        fi
-
-        #ln -sf $pathmount /run/initramfs/overlayfs
-        #else
-          echo normal
-          mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
-        #fi
-
-
-        echo aftermount
-        ls -la /run/initramfs/overlayfs
-        ls -la /run/initramfs/overlayfs$pathspec
-#        ln -sf /run/initramfs/overlayfs /dev/sda
-
-        ls -la /run/initramfs/overlayfs
-        ls -la /run/initramfs/overlayfs$pathspec
-
+        mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
         if [ -f /run/initramfs/overlayfs$pathspec -a -w /run/initramfs/overlayfs$pathspec ]; then
-            echo insideif
             OVERLAY_LOOPDEV=$(losetup -f --show ${readonly_overlay:+-r} /run/initramfs/overlayfs$pathspec)
             over=$OVERLAY_LOOPDEV
             umount -l /run/initramfs/overlayfs || :
@@ -215,17 +187,10 @@ do_live_overlay() {
             warn "Using temporary overlay."
         elif [ -n "$devspec" -a -n "$pathspec" ]; then
             [ -z "$m" ] \
-                && m='   Unable gombi to find a persistent overlay; using a temporary one.'
+                && m='   Unable to find a persistent overlay; using a temporary one.'
             m="$m"$'\n      All root filesystem changes will be lost on shutdown.'
             m="$m"$'\n         Press [Enter] to continue.'
             printf "\n\n\n\n%s\n\n\n" "${m}" > /dev/kmsg
-
-
-            printf "gombi1\n" > /dev/kmsg
-            echo $devspec
-            echo $pathspec
-            printf "gombi2\n" > /dev/kmsg
-
             if [ -n "$DRACUT_SYSTEMD" ]; then
                 if type plymouth > /dev/null 2>&1 && plymouth --ping; then
                     if getargbool 0 rhgb || getargbool 0 splash; then
