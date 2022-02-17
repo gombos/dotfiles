@@ -131,6 +131,7 @@ do_live_overlay() {
         if ismounted "$devspec"; then
             echo 4
             ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
+
         else
             mkdir -m 0755 -p /run/initramfs/overlayfs
             ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
@@ -153,6 +154,8 @@ do_live_overlay() {
                 fi
                 setup="yes"
             else
+                rm /run/initramfs/overlayfs
+                mkdir -m 0755 -p /run/initramfs/overlayfs
                 mount -n -t "$oltype" ${readonly_overlay:+-r} "$OVERLAY_LOOPDEV" /run/initramfs/overlayfs
                 if [ -d /run/initramfs/overlayfs/overlayfs ] \
                     && [ -d /run/initramfs/overlayfs/ovlwork ]; then
