@@ -130,7 +130,7 @@ do_live_overlay() {
     if [ -z "$setup" -a -n "$devspec" -a -n "$pathspec" -a -n "$overlay" ]; then
         if ismounted "$devspec"; then
             echo 4
-            pathmount=$(find_mount "$devspec")
+            pathmount=$(findmnt -e -v -n -o 'TARGET' --source "$devspec")
             echo 5
             echo $pathmount
             ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
