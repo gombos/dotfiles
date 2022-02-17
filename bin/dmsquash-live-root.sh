@@ -128,16 +128,14 @@ do_live_overlay() {
 
     # need to know where to look for the overlay
     if [ -z "$setup" -a -n "$devspec" -a -n "$pathspec" -a -n "$overlay" ]; then
-        mkdir -m 0755 -p /run/initramfs/overlayfs
-
- #       if ismounted "$devspec"; then
-          echo 4
-#          devmp=find_mount($devspec)
-#          echo $devmp
-#          mount --bind "$devmp" /run/initramfs/overlayfs
-#        else
-          mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
-#        fi
+        if ismounted "$devspec"; then
+            echo 4
+            ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
+        else
+            mkdir -m 0755 -p /run/initramfs/overlayfs
+            ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
+            mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
+        fi
 
         if [ -f /run/initramfs/overlayfs$pathspec -a -w /run/initramfs/overlayfs$pathspec ]; then
             OVERLAY_LOOPDEV=$(losetup -f --show ${readonly_overlay:+-r} /run/initramfs/overlayfs$pathspec)
