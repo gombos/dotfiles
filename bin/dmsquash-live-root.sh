@@ -134,10 +134,10 @@ do_live_overlay() {
             echo 5
             echo $pathmount
             #ln -sf $pathmount /run/initramfs/overlayfs
+            mkdir -m 0755 -p /run/initramfs/overlayfs
             mount --bind $pathmount /run/initramfs/overlayfs
         else
             mkdir -m 0755 -p /run/initramfs/overlayfs
-            ln -sf /run/initramfs/isoscan /run/initramfs/overlayfs
             mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
         fi
 
