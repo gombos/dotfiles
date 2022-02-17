@@ -134,7 +134,7 @@ do_live_overlay() {
           echo 4
           devmp=find_mount($pathspec)
           echo $devmp
-          mount --bind "$devmp" /run/initramfs/overlayfs
+#          mount --bind "$devmp" /run/initramfs/overlayfs
         else
           mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
         fi
