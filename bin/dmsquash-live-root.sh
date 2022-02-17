@@ -140,11 +140,13 @@ do_live_overlay() {
           pathmount=find_mount($pathspec)
           echo pathmount
           mount -n -o remount,rw $pathspec
-          ln -sf $pathmount /run/initramfs/overlayfs
-        else
+        fi
+
+        #ln -sf $pathmount /run/initramfs/overlayfs
+        #else
           echo normal
           mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
-        fi
+        #fi
 
 
         echo aftermount
