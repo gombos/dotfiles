@@ -134,7 +134,10 @@ do_live_overlay() {
 
         echo 3
         echo $devspec   "$pathspec" "$overlay"
-        mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
+        ismounted "$pathspec" || overlayfsflags="-o remount,rw"
+        echo "$overlayfsflags"
+
+        mount -n -t auto "$overlayfsflags" "$devspec" /run/initramfs/overlayfs || :
         echo aftermount
         ls -la /run/initramfs/overlayfs
         ls -la /run/initramfs/overlayfs$pathspec
