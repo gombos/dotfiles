@@ -130,8 +130,8 @@ do_live_overlay() {
     if [ -z "$setup" -a -n "$devspec" -a -n "$pathspec" -a -n "$overlay" ]; then
         mkdir -m 0755 -p /run/initramfs/overlayfs
         if ismounted "$devspec"; then
-            devmn=$(findmnt -e -v -n -o 'TARGET' --source "$devspec")
-            # We need $devspec mounted rw if it is going to be used as an overlay storage
+            devmnt=$(findmnt -e -v -n -o 'TARGET' --source "$devspec")
+            # We need $devspec writable for overlay storage
             mount -o remount,rw "$devspec"
             mount --bind "$devmnt" /run/initramfs/overlayfs
         else
