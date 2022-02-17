@@ -130,12 +130,13 @@ do_live_overlay() {
     if [ -z "$setup" -a -n "$devspec" -a -n "$pathspec" -a -n "$overlay" ]; then
         mkdir -m 0755 -p /run/initramfs/overlayfs
         if ismounted "$devspec"; then
-            pathmount=$(findmnt -e -v -n -o 'TARGET' --source "$devspec")
-            mount --bind $pathmount /run/initramfs/overlayfs
+            devmn=$(findmnt -e -v -n -o 'TARGET' --source "$devspec")
+            # We need $devspec mounted rw if it is going to be used as an overlay storage
+            mount -o remount,rw "$devspec"
+            mount --bind "$devmnt" /run/initramfs/overlayfs
         else
             mount -n -t auto "$devspec" /run/initramfs/overlayfs || :
         fi
-
         if [ -f /run/initramfs/overlayfs$pathspec -a -w /run/initramfs/overlayfs$pathspec ]; then
             OVERLAY_LOOPDEV=$(losetup -f --show ${readonly_overlay:+-r} /run/initramfs/overlayfs$pathspec)
             over=$OVERLAY_LOOPDEV
@@ -152,8 +153,6 @@ do_live_overlay() {
                 fi
                 setup="yes"
             else
-#                rm /run/initramfs/overlayfs
-#                mkdir -m 0755 -p /run/initramfs/overlayfs
                 mount -n -t "$oltype" ${readonly_overlay:+-r} "$OVERLAY_LOOPDEV" /run/initramfs/overlayfs
                 if [ -d /run/initramfs/overlayfs/overlayfs ] \
                     && [ -d /run/initramfs/overlayfs/ovlwork ]; then
