@@ -152,8 +152,23 @@ rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/sbin/dmsetup
 rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
-# optimize
+# optimize - this does not remove the dependent libraries
 rm -rf usr/sbin/chroot
+rm -rf usr/sbin/rmmod
+rm -rf usr/bin/uname
+rm -rf usr/bin/dmesg
+rm -rf usr/bin/kmod
+rm -rf usr/bin/tar
+rm -rf usr/bin/cpio
+rm -rf usr/bin/bzip2
+rm -rf usr/bin/gzip
+rm -rf usr/bin/chmod
+rm -rf etc/cmdline.d
+rm -rf etc/fstab.empty
+rm -rf etc/conf.d/systemd.conf
+rm -rf etc/ld.so.conf
+rm -rf etc/ld.so.conf.d/libc.conf
+rm -rf var/tmp
 
 # kexec can only handle one initrd file
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
