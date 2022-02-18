@@ -81,7 +81,7 @@ touch /usr/sbin/dmsetup
 #git clone https://github.com/dracutdevs/dracut.git dracutdir
 
 # swith to my branch for now
-git clone git@github.com:LaszloGombos/dracut.git dracutdir
+git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # patch dracut
 #cp -av dracut/* dracutdir
