@@ -167,8 +167,8 @@ rm -rf usr/bin/chmod
 rm -rf etc/cmdline.d
 rm -rf etc/fstab.empty
 rm -rf etc/conf.d
-rm -rf etc/ld.so.conf
-rm -rf etc/ld.so.conf.d/libc.conf
+#rm -rf etc/ld.so.conf
+#rm -rf etc/ld.so.conf.d/libc.conf
 
 #rm -rf var/tmp
 
