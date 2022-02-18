@@ -38,8 +38,6 @@ mkdir -p /efi
 
 export DEBIAN_FRONTEND=noninteractive
 
-#sed -i -- 's/# deb-src/deb-src/g' /etc/apt/sources.list
-
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
@@ -74,13 +72,16 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 # fake to satisfy mandatory dependencies
 touch /usr/sbin/dmsetup
 
-# dracut
+# dracut official release
 #rm -rf 055.zip dracut-055
 #wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
 #unzip -q 055.zip
 #cd dracut-055
 
-git clone https://github.com/dracutdevs/dracut.git dracutdir
+#git clone https://github.com/dracutdevs/dracut.git dracutdir
+
+# swith to my branch for now
+git clone git@github.com:LaszloGombos/dracut.git dracutdir
 
 # patch dracut
 #cp -av dracut/* dracutdir
@@ -161,7 +162,7 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 #mkdir -p usr/bin/
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 
-cp /tmp/dmsquash-live-root.sh sbin/dmsquash-live-root
+# cp /tmp/dmsquash-live-root.sh sbin/dmsquash-live-root
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
