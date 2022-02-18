@@ -156,19 +156,17 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 rm -rf usr/sbin/chroot
 rm -rf usr/bin/dmesg
 rm -rf usr/bin/chmod
+rm -rf usr/bin/tar
+rm -rf usr/bin/cpio
+rm -rf usr/bin/bzip2
+rm -rf usr/bin/gzip
 
-#rm -rf usr/sbin/rmmod
-#rm -rf usr/bin/uname
+rm -rf usr/sbin/rmmod
 #rm -rf usr/bin/kmod
 
-#rm -rf usr/bin/tar
-#rm -rf usr/bin/cpio
-#rm -rf usr/bin/bzip2
-#rm -rf usr/bin/gzip
-
-#rm -rf etc/cmdline.d
 rm -rf etc/fstab.empty
 
+rm -rf etc/cmdline.d
 #rm -rf etc/conf.d
 #rm -rf etc/ld.so.conf
 #rm -rf etc/ld.so.conf.d/libc.conf
