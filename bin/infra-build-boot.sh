@@ -137,16 +137,18 @@ rm initrd.img
 # Populate logs with the list of filenames
 cd /tmp/dracut/dracut.*/initramfs
 
-# Clean some files
+# Clean some dracut info files
 rm -rf usr/lib/dracut/build-parameter.txt
-rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
-rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
-rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/lib/dracut/dracut-*
 rm -rf usr/lib/dracut/modules.txt
-rm -rf usr/sbin/dmsetup
+
+# when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
+rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
 # todo - ideally dm dracut module is not included instead of this hack
+rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+rm -rf usr/sbin/dmsetup
 rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
 # kexec can only handle one initrd file
@@ -313,10 +315,6 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
 
-#mkdir -p /efi/config/
-#cp /tmp/infra-boots.sh /efi/config/infra-boots.sh
-#chmod +x /efi/config/infra-boots.sh
-
 # Keep initramfs simple and do not require networking
 
 # todo --debug --no-early-microcode --xz --keep --verbose --no-compress --no-kernel
@@ -341,17 +339,6 @@ mv netboot.xyz* /efi/netboot/
 
 # shutdown - to help kexec
 # terminfo - to debug
-
-# --mount 'LABEL=EFI /run/media/efi auto ro,noexec,nosuid,nodev 0 0' \
-#  --include /tmp/infra-init.sh /sbin/infra-init.sh \
-#  --include /tmp/infra-init.sh /sbin/infra-init.sh \
-#  --include /usr/bin/cut /usr/bin/cut \
-#  --include /usr/bin/head /usr/bin/head \
-#  --include /usr/bin/grep /usr/bin/grep \
-#  --include /usr/bin/touch /usr/bin/touch \
-#  --include /usr/bin/chmod /usr/bin/chmod \
-
-# ls -la /bin/sh
 
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
