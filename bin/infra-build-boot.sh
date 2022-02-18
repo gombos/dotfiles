@@ -152,6 +152,9 @@ rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/sbin/dmsetup
 rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 
+# optimize
+rm -rf usr/sbin/chroot
+
 # kexec can only handle one initrd file
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
 #rm -rf usr/lib/modules
