@@ -43,6 +43,8 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # TODO - remove bash dependency
 
+
+# TODO - get kernel without apt, so that I can use any distro as a base, including alpine, do not rely on package manager
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
@@ -155,13 +157,11 @@ rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
 # optimize - this does not remove the dependent libraries
 rm -rf usr/sbin/chroot
 rm -rf usr/bin/dmesg
-rm -rf usr/bin/chmod
 rm -rf usr/bin/tar
 rm -rf usr/bin/cpio
 rm -rf usr/bin/bzip2
 rm -rf usr/bin/gzip
 rm -rf usr/bin/xz
-
 rm -rf usr/sbin/rmmod
 
 rm -rf var/tmp
@@ -171,6 +171,9 @@ rm -rf etc/fstab.empty
 rm -rf etc/cmdline.d
 rm -rf etc/ld.so.conf.d/libc.conf
 rm -rf etc/ld.so.conf
+
+# todo - chmod is used by my init script and will break boot
+#rm -rf usr/bin/chmod
 
 # kexec can only handle one initrd file
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
