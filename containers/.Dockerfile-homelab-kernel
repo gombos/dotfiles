@@ -1,12 +1,11 @@
 # Base image could be independent from rootfs
 
-FROM 0gombi0/homelab:kernel as kernel
-
-
 FROM ubuntu:jammy as base
-COPY --from=kernel /efi /efi
 
 COPY bin/* /tmp/
 COPY boot/ /tmp/
 WORKDIR /tmp
-RUN ./infra-build-boot.sh
+RUN ./infra-build-kernel.sh
+
+FROM scratch
+COPY --from=base /efi /efi

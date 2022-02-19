@@ -34,7 +34,7 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-mkdir -p /efi
+mkdir -p /efi /usr/lib
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -43,23 +43,9 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # TODO - remove bash dependency
 
-
-# TODO - get kernel without apt, so that I can use any distro as a base, including alpine, do not rely on package manager
-apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
-
-# Build custom kernel that has isofs built in
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 build-essential libncurses5-dev gcc libssl-dev bc libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf fakeroot
-
-#apt-get build-dep -y linux-image-$KERNEL
-#apt-get build-dep -y linux-image-unsigned-$KERNEL
-#apt-get source linux-image-unsigned-$KERNEL
-
-#cd linux-5.13.0
-#make oldconfig
-#scripts/diffconfig .config{.old,}
-#make deb-pkg
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod
+unsquashfs /efi/kernel/modules
+mv squashfs-root /usr/lib/modules
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
@@ -201,11 +187,11 @@ ls -lha /efi/kernel/initrd.img
 cd /tmp
 rm -rf /tmp/dracut
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils
 
-if ! [ -z "${NVIDIA}" ]; then
-  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
-fi
+#if ! [ -z "${NVIDIA}" ]; then
+#  apt-get --reinstall install -y nvidia-driver-${NVIDIA}
+#fi
 
 # bootloader
 # mtools - efi iso boot
@@ -217,7 +203,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
 
 # kernel binary
 mkdir -p /efi/kernel
-cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
+#cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # for grub root variable is set to memdisk initially
 # grub_cmdpath is the location from which core.img was loaded as an absolute directory name
@@ -297,9 +283,6 @@ mkfs.vfat $ISODIR/efiboot.img && \
 LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
 LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
 
-# Make sure we have all the required modules built
-$SCRIPTS/infra-install-vmware-workstation-modules.sh
-
 rm -rf /tmp/initrd
 mkdir -p /tmp/initrd
 cd /tmp/initrd
@@ -358,19 +341,4 @@ mv netboot.xyz* /efi/netboot/
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-
-# modules file
-
-#find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
-
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd
-
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
-
-# try ot install busybox on rootfs or pick another compression algorithm that kmod supports
-#find /usr/lib/modules/ -name '*.ko' -exec zstd {} \;
-#find /usr/lib/modules/ -name '*.ko' -delete
-# busybox depmod
-
-mksquashfs /usr/lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd /tmp/cleanup /tmp/updates

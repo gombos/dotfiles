@@ -6,12 +6,17 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "efi minbase container base extra config iso upload"
+# "kernel efi minbase container base extra config iso upload"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
   TARGET="config"
+fi
+
+if echo $TARGET | grep -w -q kernel; then
+  docker build -t 0gombi0/homelab:kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-kernel
+  docker push 0gombi0/homelab:kernel
 fi
 
 if echo $TARGET | grep -w -q efi; then
