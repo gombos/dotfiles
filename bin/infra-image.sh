@@ -73,7 +73,7 @@ mkdir /tmp/iso/
 
 if [ -z $2 ]; then
   infra-get-efi.sh
-  sudo rsync -r /tmp/efi/efi/ /tmp/iso
+  sudo rsync -r /tmp/efi/ /tmp/iso
 else
   sudo rsync -r $2 /tmp/iso
 fi

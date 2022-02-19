@@ -8,8 +8,7 @@ else
 fi
 
 sudo rm -rf /tmp/efi
-mkdir /tmp/efi
-cd /tmp/efi
+cd /tmp
 
 container_id=$(sudo docker create $image /)
 sudo docker export $container_id | sudo tar xf -
