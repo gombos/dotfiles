@@ -160,6 +160,8 @@ rm -rf usr/bin/tar
 rm -rf usr/bin/cpio
 rm -rf usr/bin/bzip2
 rm -rf usr/bin/gzip
+rm -rf usr/bin/xz
+
 rm -rf usr/sbin/rmmod
 
 rm -rf var/tmp
@@ -167,10 +169,8 @@ rm -rf root
 
 rm -rf etc/fstab.empty
 rm -rf etc/cmdline.d
-
-rm -rf etc/conf.d
-#rm -rf etc/ld.so.conf
-#rm -rf etc/ld.so.conf.d/libc.conf
+rm -rf etc/ld.so.conf.d/libc.conf
+rm -rf etc/ld.so.conf
 
 # kexec can only handle one initrd file
 #find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
