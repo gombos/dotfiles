@@ -198,8 +198,6 @@ find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/
 
 ls -lha /efi/kernel/initrd.img
 
-#mksquashfs . /efi/kernel/initrd.img
-
 cd /tmp
 rm -rf /tmp/dracut
 
@@ -351,15 +349,8 @@ mv netboot.xyz* /efi/netboot/
 # ntfs - iso file itself might be stored on the ntfs filesystem
 # ahci, uas (USB Attached SCSI), nvme - when booting on bare metal, to find the partition and filesystem
 
-# Tests:
-# - ahci: boot from ata drive attached to a montherboard
-# - uas: boot from usb external drive
-# - nvme: boot from nvme drive
-
-# todo - remove dmsquash-live-ntfs dracut as anyways ntfs module is included and that should be enough - test it after removing
 # todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
-
-# --modules 'base bash dm dmsquash-live dmsquash-live-ntfs dracut-systemd fs-lib img-lib rootfs-block shutdown systemd systemd-initrd terminfo udev-rules'
+# find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
 
 # shutdown - to help kexec
 # terminfo - to debug
@@ -367,22 +358,8 @@ mv netboot.xyz* /efi/netboot/
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-# Uncompress
-#gunzip -c -S img initrd.img | cpio -idmv 2>/dev/null
 
-#rm initrd.img
-
-#mkdir /tmp/updates
-#cd /tmp/updates
-
-#mkdir -p usr/bin/ etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
-#cp /tmp/infra-init.sh usr/bin/
-
-#cp /tmp/*.service usr/lib/systemd/system/
-#ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
-
-#cd /tmp/
-#find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
+# modules file
 
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
@@ -395,13 +372,5 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
 #find /usr/lib/modules/ -name '*.ko' -delete
 # busybox depmod
 
-#find /usr/lib/modules
-
 mksquashfs /usr/lib/modules /efi/kernel/modules
-
 rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
-
-# Populate logs with the list of filenames
-#find /efi
-
-# use syslinux only for booting legacy/non-ufi systems - for uefi system, no need to introduce an extra complexity into booting
