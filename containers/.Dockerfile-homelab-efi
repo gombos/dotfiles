@@ -4,6 +4,7 @@ FROM 0gombi0/homelab:kernel as kernel
 
 
 FROM ubuntu:jammy as base
+# FROM alpine as base
 COPY --from=kernel /efi /efi
 
 COPY bin/* /tmp/

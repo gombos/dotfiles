@@ -66,3 +66,10 @@ rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
 #scripts/diffconfig .config{.old,}
 #make deb-pkg
 
+# dracut-install hack
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod cpio build-essential libkmod-dev pkg-config dash udev coreutils mount unzip wget ca-certificates git
+#cd /efi
+#git clone https://github.com/LaszloGombos/dracut.git dracutdir
+#cd dracutdir
+#bash -c "./configure --disable-documentation"
+#make dracut-install

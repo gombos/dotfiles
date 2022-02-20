@@ -34,7 +34,7 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-mkdir -p /efi /usr/lib
+mkdir -p /efi /lib
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -44,8 +44,10 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 # TODO - remove bash dependency
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod
+#apk add squashfs-tools kmod cpio dash udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
+
 unsquashfs /efi/kernel/modules
-mv squashfs-root /usr/lib/modules
+mv squashfs-root /lib/modules
 
 # dracut/initrd
 # unzip wget ca-certificates git - get the release
@@ -76,7 +78,8 @@ git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # build dracut
 cd dracutdir
-./configure --disable-documentation
+sed -i -e 's/__GLIBC_PREREQ(2, 30) == 0/1/' src/install/util.c
+bash -c "./configure --disable-documentation"
 make 2>/dev/null
 make install
 cd ..
@@ -138,7 +141,7 @@ rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
 rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/sbin/dmsetup
-rm -rf usr/lib/modules/$KERNEL/kernel/drivers/md
+rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - this does not remove the dependent libraries
 rm -rf usr/sbin/chroot
