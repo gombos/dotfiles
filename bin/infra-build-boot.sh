@@ -42,7 +42,7 @@ mkdir -p /efi /lib
 
 if [[ "$ID" == alpine ]]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
-  apk add squashfs-tools kmod cpio udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
+  apk add squashfs-tools kmod udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
   # make defautl shell bash for now
   rm -rf /bin/sh
@@ -51,8 +51,8 @@ else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
   apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio build-essential libkmod-dev pkg-config dash udev coreutils mount unzip wget ca-certificates git
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils unzip wget ca-certificates git
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libkmod-dev pkg-config mount g++ make
 fi
 
 unsquashfs /efi/kernel/modules
@@ -79,9 +79,6 @@ git clone https://github.com/LaszloGombos/dracut.git dracutdir
 cd dracutdir
 sed -i -e 's/__GLIBC_PREREQ(2, 30) == 0/1/' src/install/util.c
 cp /tmp/module-setup.sh  modules.d/99base/module-setup.sh
-
-cat modules.d/99base/module-setup.sh
-
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
 make install
@@ -118,6 +115,8 @@ mkdir -p /efi/kernel
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
+DEBUG='--debug --verbose'
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live' \
@@ -146,12 +145,10 @@ rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - this does not remove the dependent libraries
 #rm -rf usr/sbin/chroot
+#rm -rf usr/bin/cpio
 rm -rf usr/bin/dmesg
 rm -rf usr/bin/tar
-rm -rf usr/bin/cpio
-rm -rf usr/bin/bzip2
 rm -rf usr/bin/gzip
-rm -rf usr/bin/xz
 rm -rf usr/sbin/rmmod
 
 rm -rf var/tmp
@@ -177,15 +174,20 @@ rm -rf etc/ld.so.conf
 
 # alpine needs this hack
 #cp /tmp/iso-scan.sh  sbin/iso-scan
-cp module-setup.sh   ~/pr/dracut/modules.d/99base/module-setup.sh
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
 # list files
+
+if [[ "$ID" == alpine ]]; then
+  apk add cpio
+else
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
+fi
+
 find .
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd.img
-exit
 
 # Keep initramfs simple and do not require networking
 
