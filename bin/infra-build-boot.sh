@@ -26,8 +26,6 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
-alpine=$(cat /etc/os-release | grep "NAME=" | grep -ic "Alpine")
-
 cd /tmp
 
 . ./infra-env.sh
@@ -40,8 +38,13 @@ mkdir -p /efi /lib
 
 # TODO - remove bash dependency
 
-if [ -z "$alpine" ]; then
-  apk add squashfs-tools kmod cpio dash udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
+if [ "$ID" == "alpine" ]; then
+  # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
+  apk add squashfs-tools kmod cpio udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
+
+  # make defautl shell bash for now
+  rm -rf /bin/sh
+  ln -sf /bin/bash /bin/sh
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -112,7 +115,7 @@ mkdir -p /efi/kernel
 # ehci_pci - USB 2.0 storage devices
 
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
+  --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   --aggresive-strip \
@@ -168,7 +171,8 @@ rm -rf etc/ld.so.conf
 #mkdir -p usr/bin/
 #mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
 
-# cp /tmp/dmsquash-live-root.sh sbin/dmsquash-live-root
+# alpine needs this hack
+#cp /tmp/iso-scan.sh  sbin/iso-scan
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 

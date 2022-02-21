@@ -15,6 +15,9 @@ chmod g+w /run/media
 # maybe instead of hardcoding the label, have a deterministi logic as default
 # e.g on linode there is actually only one directory under /dev/disk/by-label
 
+modprobe autofs4
+modprobe squashfs
+
 if [[ -e /dev/disk/by-label/EFI ]]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
@@ -27,14 +30,14 @@ fi
 
 # Make the modules available to boot
 if [ -f "$mp/kernel/modules"  ]; then
-  mkdir -p $NEWROOT/usr/lib/modules
-  mount $mp/kernel/modules $NEWROOT/usr/lib/modules
+  mkdir -p $NEWROOT/lib/modules
+  mount $mp/kernel/modules $NEWROOT/lib/modules
 fi
 
 # Make the firmware available to boot
 if [ -f "$mp/kernel/firmware"  ]; then
-  mkdir -p $NEWROOT/usr/lib/firmware
-  mount $mp/kernel/firmware $NEWROOT/usr/lib/firmware
+  mkdir -p $NEWROOT/lib/firmware
+  mount $mp/kernel/firmware $NEWROOT/lib/firmware
 fi
 
 # Make the kernel available for kexec
