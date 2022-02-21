@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Requirements:
 # - Does not need /home
 # - Does not need /etc or /usr rw
@@ -38,7 +40,7 @@ mkdir -p /efi /lib
 
 # TODO - remove bash dependency
 
-if [ "$ID" == "alpine" ]; then
+if [[ "$ID" == alpine ]]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
   apk add squashfs-tools kmod cpio udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
@@ -76,6 +78,10 @@ git clone https://github.com/LaszloGombos/dracut.git dracutdir
 # build dracut
 cd dracutdir
 sed -i -e 's/__GLIBC_PREREQ(2, 30) == 0/1/' src/install/util.c
+cp /tmp/module-setup.sh  modules.d/99base/module-setup.sh
+
+cat modules.d/99base/module-setup.sh
+
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
 make install
@@ -86,8 +92,6 @@ mkdir -p /efi/kernel
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
-
-# todo - remove base dependency after
 
 # to debug, add the following dracut modules
 # kernel-modules shutdown terminfo debug
@@ -141,7 +145,7 @@ rm -rf usr/sbin/dmsetup
 rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - this does not remove the dependent libraries
-rm -rf usr/sbin/chroot
+#rm -rf usr/sbin/chroot
 rm -rf usr/bin/dmesg
 rm -rf usr/bin/tar
 rm -rf usr/bin/cpio
@@ -173,6 +177,7 @@ rm -rf etc/ld.so.conf
 
 # alpine needs this hack
 #cp /tmp/iso-scan.sh  sbin/iso-scan
+cp module-setup.sh   ~/pr/dracut/modules.d/99base/module-setup.sh
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
