@@ -52,6 +52,7 @@ if [ -z "$USR" ]; then
 fi
 
 R="$NEWROOT"
+UPDATES="updates"
 
 mp=.
 
@@ -88,17 +89,16 @@ if [ -n "$IP" ]; then
 fi
 
 # updates
-if [ -d "updates" ]; then
-  cp -a updates/* $R/
+if [ -d "$UPDATES" ]; then
+  cp -a $UPDATES/* $R/
 fi
 
 # DHCP
-if [ -f "dhcp.conf" ]; then
+if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
  [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
  [ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
 
-  cp dhcp.conf $R/etc/dnsmasq.d/
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 
 # todo - rewrite, no cut, no mawk
