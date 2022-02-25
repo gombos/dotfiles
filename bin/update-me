@@ -22,11 +22,10 @@ pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | x
 
 #brew install fio micro rclone ripgrep ripgrep-all
 
-#nix
-# Nix is only for bestia
-if [[ `hostname -s` == "bestia" ]]; then
-  $DOTFILES/bin/packages-nix
-fi
+#usrlocal
+#if [[ `hostname -s` == "bestia" ]]; then
+#  $DOTFILES/bin/packages-usrlocal
+#fi
 
 # docker
 sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
