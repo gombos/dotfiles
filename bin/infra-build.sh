@@ -55,8 +55,8 @@ if echo $TARGET | grep -w -q config; then
   docker push 0gombi0/homelab-baremetal:latest
 fi
 
-if echo $TARGET | grep -w -q config; then
-  docker build -t --device /dev/fuse --cap-add SYS_ADMIN  0gombi0/homelab-baremetal:nix     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-config
+if echo $TARGET | grep -w -q nix; then
+  docker run  -v /tmp/nix:/usr/local/bin  -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra  /tmp/bin/packages-nix
   docker push 0gombi0/homelab-baremetal:latest
 fi
 

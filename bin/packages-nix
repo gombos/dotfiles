@@ -1,25 +1,23 @@
 #!/bin/bash
 
-#need to run as root
-#todo - test to run this inside a container instead on bestia
-
 cd /tmp
-rm -rf install
-wget --quiet https://nixos.org/nix/install
-chmod +x install
 
-rm -rf /tmp/nix/*
-rm -rf /usr/local
-mkdir -p /tmp/nix/var/nix/profiles/default
-ln -sf /tmp/nix/var/nix/profiles/default /usr/local
-mkdir -p /usr/local/bin/
+mkdir -p /usr/local
+rm -rf /usr/local/*
 
-#fixme USER=root ./install --no-daemon
-rm install
+mkdir -p /nix
+rm -rf /nix/*
 
-#fixme. ~/.nix-profile/etc/profile.d/nix.sh
-
-#fixme nix-channel --update
+#echo "nixbld:x:402:nobody" >> /etc/group
+#rm -rf install
+#wget --quiet https://nixos.org/nix/install
+#chmod +x install
+#USER=root ./install --no-daemon
+#/root/.nix-profile/etc/profile.d/nix.sh
+#rm -rf install
+#mkdir -p /nix/var/nix/profiles/default
+#ln -sf /nix/var/nix/profiles/default /usr/local
+#nix-channel --update
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
@@ -31,6 +29,8 @@ rm install
 #fixme nix-store --gc
 #fixme nix-store --optimise
 #fixme sudo chown root:root /nix/store
+
+mkdir -p /usr/local/bin/
 
 # rga
 rm -rf ripgrep_all-*
@@ -84,3 +84,5 @@ pip3 install linode-cli
 # pip3 install pyusb temperusb
 
 sudo chown -R root:root /usr/local/bin/
+
+find /usr/local
