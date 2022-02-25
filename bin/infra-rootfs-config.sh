@@ -187,8 +187,8 @@ ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.want
 cat > /lib/systemd/system/nix.service << 'EOF'
 
 [Unit]
-Description=Mount nix.img file as /nix if exists
-ConditionPathExists=/run/initramfs/live/nix.img
+Description=Mount usrlocal.img file if exists
+ConditionPathExists=/run/initramfs/live/usrlocal.img
 
 [Service]
 Type=oneshot
@@ -197,8 +197,8 @@ ExecStart=/bin/sh -c \
   'rm -rf /usr/local && \
   mkdir -p /nix /usr/local && \
   ln -sf /nix/var/nix/profiles/default /root/.nix-profile && \
-  mount /run/initramfs/live/nix.img /usr/local && \
-  mount --bind /run/initramfs/live/nix.img /usr/local'
+  mount /run/initramfs/live/usrlocal.img /usr/local && \
+  mount --bind /usr/local /nix'
 
 [Install]
 WantedBy=local-fs.target

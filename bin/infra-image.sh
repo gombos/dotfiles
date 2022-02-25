@@ -171,7 +171,7 @@ cd /tmp/iso
 # nix
 sudo rm -rf /tmp/nix
 docker run  --device /dev/fuse --cap-add SYS_ADMIN  -v /tmp/nix:/usr/local  -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra  /tmp/bin/packages-nix
-sudo mksquashfs /tmp/nix /tmp/iso/nix.img -comp zstd
+sudo mksquashfs /tmp/nix /tmp/iso/usrlocal.img -comp zstd
 
 sudo chown -R 1000:1000 .
 
