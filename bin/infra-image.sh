@@ -169,7 +169,7 @@ cd /tmp/iso
 
 TMPUSRLOCAL=/tmp/usrlocal
 sudo rm -rf $TMPUSRLOCAL
-docker run  --device /dev/fuse --cap-add SYS_ADMIN -v $TMPUSRLOCAL:/usr/local -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra /tmp/bin/packages-usrlocal
+docker run --privileged --device /dev/fuse --cap-add SYS_ADMIN -v $TMPUSRLOCAL:/usr/local -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra /tmp/bin/packages-usrlocal
 sudo mksquashfs $TMPUSRLOCAL /tmp/iso/usrlocal.img -comp zstd
 
 sudo chown -R 1000:1000 .
