@@ -1,4 +1,6 @@
-FROM 0gombi0/homelab:rootfs as base
+#FROM ubuntu:jammy as base
+
+FROM 0gombi0/homelab-baremetal:extra as base
 
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp

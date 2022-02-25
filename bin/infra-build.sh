@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "kernel efi minbase container base extra config iso upload"
+# "kernel efi minbase container base extra config nix iso upload"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
@@ -52,6 +52,11 @@ fi
 
 if echo $TARGET | grep -w -q config; then
   docker build -t 0gombi0/homelab-baremetal:latest     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-config
+  docker push 0gombi0/homelab-baremetal:latest
+fi
+
+if echo $TARGET | grep -w -q config; then
+  docker build -t --device /dev/fuse --cap-add SYS_ADMIN  0gombi0/homelab-baremetal:nix     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-config
   docker push 0gombi0/homelab-baremetal:latest
 fi
 

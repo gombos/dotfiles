@@ -1,8 +1,10 @@
+#!/bin/bash
+
 #need to run as root
 #todo - test to run this inside a container instead on bestia
 
 cd /tmp
-rm install
+rm -rf install
 wget --quiet https://nixos.org/nix/install
 chmod +x install
 
