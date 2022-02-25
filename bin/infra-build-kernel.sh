@@ -157,7 +157,6 @@ mkfs.vfat $ISODIR/efiboot.img && \
 LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
 LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
 
-
 # TCE binary
 mkdir -p /efi/tce
 mkdir -p /efi/tce/optional

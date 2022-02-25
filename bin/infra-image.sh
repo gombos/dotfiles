@@ -127,14 +127,14 @@ fi
 
 # rootfs squashfs
 #infra-get-squash.sh
-sudo mkdir -p /tmp/iso/LiveOS
+sudo mkdir -p /tmp/iso/Live
 
 sudo rm -rf /tmp/laptop
 mkdir -p /tmp/laptop
 infra-get-rootfs.sh /tmp/laptop
 sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
 sudo rm -rf /tmp/laptop/lib/firmware
-sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
+sudo mksquashfs /tmp/laptop /tmp/iso/Live/squashfs.img -comp zstd
 
 # home
 FILE=/tmp/iso/home.img
@@ -184,12 +184,12 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # todo rename BOOT to boot
 # todo - is this really needed - /EFI/efiboot.img=../isotemp/efiboot.img , maybe needed for dd
 
-# cp /tmp/iso/LiveOS/squashfs.img /tmp/iso/LiveOS/home.img
-
 # 2nd partition -  0xef - ef EFI (FAT-12/16/
 # /tmp/home.img \
 
 # hybrid - ISO can be written bit-for-bit to a USB device to make it a working Live USB
+# the resulting image will be MBR partitioned (and not GPT), which can boot both in
+# BIOS (BIOS-disk and BIOS-cdrom) and EFI mode (bootx64.efi)
 
 # To mount on MacOS
  # hdiutil attach -nobrowse -nomount linux.iso
@@ -200,8 +200,19 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # Using xorriso on MacOS
   #xorriso -indev linux.iso -osirrox on -extract / linux
 
-# minimal isu config
-#sudo rm -rf /tmp/iso/nix.img /tmp/iso/kernel/firmware /tmp/iso/kernel/modules /tmp/iso/home.img
+# ISO use cases:
+# copy iso file into e.g. /isos and chainboot into the iso (e.g. from grub)
+# use it cdrom file in a vm
+# extract/mount it and use parts - e.g. rootfs or qemu
+# mount it an copy files to a fat partition - cp -a /isomntpoint/* /usbmountpoint/ - will boot on uefi platform
+# extract, remaster and repackage
+# dd it into a drive (hybrid) and boot (BIOS of EFI) - Bitcopy (a.k.a "dd" )isoImage to usbstick
+
+# boot_hybrid.img - MBR
+# efiboot.img - MBR - vfat with EFI/BOOT/bootx64.efi in it
+
+# todo - remove graft points, makes it hard to reason about the steps
+# todo - -append_partition 2 0xef isolinux/efiboot.img \ - something like this is useful ?
 
 xorriso \
    -as mkisofs \
