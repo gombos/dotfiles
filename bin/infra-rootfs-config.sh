@@ -194,11 +194,9 @@ ConditionPathExists=/run/initramfs/live/usrlocal.img
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/bin/sh -c \
-  'rm -rf /usr/local && \
-  mkdir -p /nix /usr/local && \
-  ln -sf /nix/var/nix/profiles/default /root/.nix-profile && \
-  mount /run/initramfs/live/usrlocal.img /usr/local && \
-  mount --bind /usr/local /nix'
+ 'rm -rf /usr/local && \
+  mkdir -p /usr/local && \
+  mount /run/initramfs/live/usrlocal.img /usr/local'
 
 [Install]
 WantedBy=local-fs.target
