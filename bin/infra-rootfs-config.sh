@@ -166,8 +166,8 @@ ExecStart=/bin/bash -c \
     mount /dev/disk/by-label/home /home; \
   else \
     if [[ "$virt" == "vmware" ]]; then \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty .host:/home /home && \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev,nonempty .host:/host /home/host; \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
+      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
     else \
       mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
       mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
