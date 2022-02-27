@@ -8,6 +8,7 @@ linux-firmware
 rfkill
 wireless-tools
 bluez
+# iwd - replacement for wpasupplicant
 
 # laptop
 thermald # monitors and controls temperature in laptops
