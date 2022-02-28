@@ -81,6 +81,10 @@ if [ "$HOST" == "bestia" ]; then
   IP=3
 fi
 
+if [ "$HOST" == "kisbestia" ]; then
+  IP=5
+fi
+
 # --- static IP is known
 
 # set static IP
@@ -307,6 +311,10 @@ echo "PermitRootLogin no" >> $R/etc/ssh/sshd_config
 
 if [ -n "$SSHD_PORT" ]; then
   echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
+fi
+
+if [ -e /dev/disk/by-partlabel/swap ]; then
+  echo "/dev/disk/by-partlabel/swap   none  swap defaults           0  0" >> $R/etc/fstab
 fi
 
 if [ "$HOST" == "pincer" ]; then
