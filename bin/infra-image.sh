@@ -26,7 +26,7 @@ MNT_EFI=$MNT_DIR/efi
 
 sudo rm -rf $MNT $MNT_EFI $MNT_DIR
 
-mkdir -p $MNT $MNT_EFI
+sudo mkdir -p $MNT $MNT_EFI
 #echo "Installing $RELEASE into $FILE..."
 
 # 3GB image file to fit comfortable to 8 GB sticks or larger
@@ -69,7 +69,7 @@ mkdir -p $MNT $MNT_EFI
 #sudo mkfs.vfat -F 32 -n EFI -i 10000000 ${DISK}p1 || fail "cannot create efi"
 #sudo mount ${DISK}p1 $MNT_EFI || fail "cannot mount"
 
-mkdir /tmp/iso/
+sudo mkdir /tmp/iso/
 
 if [ -z $2 ]; then
   infra-get-efi.sh
@@ -130,11 +130,13 @@ fi
 sudo mkdir -p /tmp/iso/Live
 
 sudo rm -rf /tmp/laptop
-mkdir -p /tmp/laptop
+sudo mkdir -p /tmp/laptop
 infra-get-rootfs.sh /tmp/laptop
 sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
 sudo rm -rf /tmp/laptop/lib/firmware
+
 sudo mksquashfs /tmp/laptop /tmp/iso/Live/squashfs.img -comp zstd
+sudo rm -rf /tmp/laptop
 
 # home
 FILE=/tmp/iso/home.img
@@ -175,7 +177,7 @@ sudo mksquashfs $TMPUSRLOCAL /tmp/iso/usrlocal.img -comp zstd
 sudo chown -R 1000:1000 .
 
 # Only include files once in the iso
-mkdir /tmp/isotemp
+sudo mkdir /tmp/isotemp
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
