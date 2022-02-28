@@ -8,6 +8,7 @@ linux-firmware
 rfkill
 wireless-tools
 bluez
+wpasupplicant
 # iwd - replacement for wpasupplicant
 
 # laptop
