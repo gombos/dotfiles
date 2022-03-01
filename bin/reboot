@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# quickest way (staying with the same kernel)
+# sudo init 1; sudo init 3
+# systemctl isolate rescue; systemctl isolate default
+
 if [ -f /sbin/kexec ]; then
   sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
   sudo systemctl kexec
