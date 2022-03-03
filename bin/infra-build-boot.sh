@@ -40,7 +40,8 @@ mkdir -p /efi /lib
 
 # TODO - remove bash dependency
 
-# TODO try to use libudev-compat vdevd instead of udev
+# test libudev-zero mdevd https://pkgs.alpinelinux.org/package/v3.15/community/x86_64/libudev-zero
+# https://sysdfree.wordpress.com/2021/08/30/349/
 
 if [[ "$ID" == alpine ]]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
