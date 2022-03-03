@@ -40,6 +40,8 @@ mkdir -p /efi /lib
 
 # TODO - remove bash dependency
 
+# TODO try to use libudev-compat vdevd instead of udev
+
 if [[ "$ID" == alpine ]]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
   apk add squashfs-tools kmod udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
@@ -83,14 +85,12 @@ mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
 
 # fake to satisfy mandatory dependencies
-mv /usr/bin/tar /tmp/
-mv /usr/bin/gzip /tmp/
+mv /bin/tar /tmp/
+mv /bin/gzip /tmp/
 
-> /usr/bin/tar
+> /bin/tar
 > /usr/sbin/dmsetup
-> /usr/sbin/chroot
-> /usr/bin/dmesg
-> /usr/bin/gzip
+> /bin/gzip
 
 # Symlinks
 rm -rf /usr/sbin/rmmod
@@ -154,6 +154,13 @@ rm -rf lib/modules/$KERNEL/kernel/drivers/md
 # optimize - Remove empty (fake) binaries
 find usr/bin usr/sbin -type f -empty -delete -print
 
+ls -la bin
+ls -la usr/sbin
+
+# just symlinks in alpine
+rm -rf  usr/sbin/chroot
+rm -rf  bin/dmesg
+
 rm -rf var/tmp
 rm -rf root
 
@@ -180,8 +187,8 @@ rm -rf etc/ld.so.conf
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
-mv /tmp/tar /usr/bin/
-mv /tmp/gzip /usr/bin/
+mv /tmp/tar /bin/
+mv /tmp/gzip /bin/
 
 if [[ "$ID" == alpine ]]; then
   apk add cpio

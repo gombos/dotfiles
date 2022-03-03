@@ -2,12 +2,12 @@
 
 FROM 0gombi0/homelab:kernel as kernel
 
+FROM ubuntu:jammy
+#FROM alpine
 
-FROM ubuntu:jammy as base
-#FROM alpine as base
 COPY --from=kernel /efi /efi
 
 COPY bin/* /tmp/
 COPY boot/ /tmp/
 WORKDIR /tmp
-RUN ./infra-build-boot.sh
+RUN /bin/sh -c '. ./infra-build-boot.sh'
