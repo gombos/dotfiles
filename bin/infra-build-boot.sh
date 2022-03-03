@@ -58,9 +58,6 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-# fake to satisfy mandatory dependencies
-touch /usr/sbin/dmsetup
-
 # dracut official release
 #rm -rf 055.zip dracut-055
 #wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
@@ -75,10 +72,8 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 # patch dracut
 #cp -av dracut/* dracutdir
 
-# build dracut
+# build dracut from source
 cd dracutdir
-sed -i -e 's/__GLIBC_PREREQ(2, 30) == 0/1/' src/install/util.c
-cp /tmp/module-setup.sh  modules.d/99base/module-setup.sh
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
 make install
@@ -86,6 +81,20 @@ cd ..
 
 mkdir -p /tmp/dracut
 mkdir -p /efi/kernel
+
+# fake to satisfy mandatory dependencies
+mv /usr/bin/tar /tmp/
+mv /usr/bin/gzip /tmp/
+
+> /usr/bin/tar
+> /usr/sbin/dmsetup
+> /usr/sbin/chroot
+> /usr/bin/dmesg
+> /usr/bin/gzip
+
+# Symlinks
+rm -rf /usr/sbin/rmmod
+> /usr/sbin/rmmod
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
@@ -126,7 +135,6 @@ dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --repr
 
 rm initrd.img
 
-# Populate logs with the list of filenames
 cd /tmp/dracut/dracut.*/initramfs
 
 # Clean some dracut info files
@@ -143,13 +151,8 @@ rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
 rm -rf usr/sbin/dmsetup
 rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
-# optimize - this does not remove the dependent libraries
-rm -rf usr/sbin/chroot
-#rm -rf usr/bin/cpio
-rm -rf usr/bin/dmesg
-rm -rf usr/bin/tar
-rm -rf usr/bin/gzip
-rm -rf usr/sbin/rmmod
+# optimize - Remove empty (fake) binaries
+find usr/bin usr/sbin -type f -empty -delete -print
 
 rm -rf var/tmp
 rm -rf root
@@ -177,7 +180,8 @@ rm -rf etc/ld.so.conf
 
 #ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
 
-# list files
+mv /tmp/tar /usr/bin/
+mv /tmp/gzip /usr/bin/
 
 if [[ "$ID" == alpine ]]; then
   apk add cpio
@@ -185,7 +189,9 @@ else
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
 fi
 
+# Populate logs with the list of filenames
 find .
+ls -lRa .
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd.img
 
