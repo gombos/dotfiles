@@ -36,6 +36,8 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
+DEBUG='--debug --verbose'
+
 mkdir -p /efi /lib
 
 # TODO - remove bash dependency
@@ -83,19 +85,22 @@ make install
 cd ..
 
 mkdir -p /tmp/dracut
-mkdir -p /efi/kernel
 
-# fake to satisfy mandatory dependencies
-mv /bin/tar /tmp/
-mv /bin/gzip /tmp/
-
-> /bin/tar
 > /usr/sbin/dmsetup
-> /bin/gzip
 
-# Symlinks
-rm -rf /usr/sbin/rmmod
-> /usr/sbin/rmmod
+# release optimizations
+if [ -n "${DEBUG}" ]; then
+  # fake to satisfy mandatory dependencies
+  mv /bin/tar /tmp/
+  mv /bin/gzip /tmp/
+
+  > /bin/tar
+  > /bin/gzip
+
+  # Symlinks
+  rm -rf /usr/sbin/rmmod
+  > /usr/sbin/rmmod
+fi
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
@@ -125,9 +130,7 @@ rm -rf /usr/sbin/rmmod
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-DEBUG='--debug --verbose'
-
-dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
+dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $DEBUG \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
@@ -138,37 +141,36 @@ rm initrd.img
 
 cd /tmp/dracut/dracut.*/initramfs
 
-# Clean some dracut info files
-rm -rf usr/lib/dracut/build-parameter.txt
-rm -rf usr/lib/dracut/dracut-*
-rm -rf usr/lib/dracut/modules.txt
+if [ -n "${DEBUG}" ]; then
+  # Clean some dracut info files
+  rm -rf usr/lib/dracut/build-parameter.txt
+  rm -rf usr/lib/dracut/dracut-*
+  rm -rf usr/lib/dracut/modules.txt
 
-# when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+  # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
+  rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
-# todo - ideally dm dracut module is not included instead of this hack
-rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
-rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
-rm -rf usr/sbin/dmsetup
-rm -rf lib/modules/$KERNEL/kernel/drivers/md
+  # todo - ideally dm dracut module is not included instead of this hack
+  rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+  rm -rf usr/lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+  rm -rf usr/sbin/dmsetup
+  rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
-# optimize - Remove empty (fake) binaries
-find usr/bin usr/sbin -type f -empty -delete -print
+  # optimize - Remove empty (fake) binaries
+  find usr/bin usr/sbin -type f -empty -delete -print
 
-ls -la bin
-ls -la usr/sbin
+  # just symlinks in alpine
+  rm -rf  usr/sbin/chroot
+  rm -rf  bin/dmesg
 
-# just symlinks in alpine
-rm -rf  usr/sbin/chroot
-rm -rf  bin/dmesg
+  rm -rf var/tmp
+  rm -rf root
 
-rm -rf var/tmp
-rm -rf root
-
-rm -rf etc/fstab.empty
-rm -rf etc/cmdline.d
-rm -rf etc/ld.so.conf.d/libc.conf
-rm -rf etc/ld.so.conf
+  rm -rf etc/fstab.empty
+  rm -rf etc/cmdline.d
+  rm -rf etc/ld.so.conf.d/libc.conf
+  rm -rf etc/ld.so.conf
+fi
 
 # todo - chmod is used by my init script and will break boot
 #rm -rf usr/bin/chmod
