@@ -178,8 +178,8 @@ sudo chown -R 1000:1000 .
 
 # Only include files once in the iso
 sudo mkdir /tmp/isotemp
-mv isolinux/bios.img /tmp/isotemp/
-mv isolinux/efiboot.img /tmp/isotemp/
+sudo mv isolinux/bios.img /tmp/isotemp/
+sudo mv isolinux/efiboot.img /tmp/isotemp/
 
 # todo combine boot and syslinux directories into biosboot directory
 # todo rename isolinux to isoboot

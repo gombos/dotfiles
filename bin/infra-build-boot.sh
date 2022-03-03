@@ -67,10 +67,10 @@ touch /usr/sbin/dmsetup
 #unzip -q 055.zip
 #cd dracut-055
 
-#git clone https://github.com/dracutdevs/dracut.git dracutdir
+git clone https://github.com/dracutdevs/dracut.git dracutdir
 
 # swith to my branch for now
-git clone https://github.com/LaszloGombos/dracut.git dracutdir
+# git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # patch dracut
 #cp -av dracut/* dracutdir
@@ -144,7 +144,7 @@ rm -rf usr/sbin/dmsetup
 rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - this does not remove the dependent libraries
-#rm -rf usr/sbin/chroot
+rm -rf usr/sbin/chroot
 #rm -rf usr/bin/cpio
 rm -rf usr/bin/dmesg
 rm -rf usr/bin/tar
