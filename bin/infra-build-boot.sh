@@ -36,7 +36,7 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-DEBUG='--debug --verbose'
+#D='--debug --verbose'
 
 mkdir -p /efi /lib
 
@@ -45,7 +45,7 @@ mkdir -p /efi /lib
 # test libudev-zero mdevd https://pkgs.alpinelinux.org/package/v3.15/community/x86_64/libudev-zero
 # https://sysdfree.wordpress.com/2021/08/30/349/
 
-if [[ "$ID" == alpine ]]; then
+if [ "$ID" = "alpine" ]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
   apk add squashfs-tools kmod udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
@@ -89,7 +89,7 @@ mkdir -p /tmp/dracut
 > /usr/sbin/dmsetup
 
 # release optimizations
-if [ -n "${DEBUG}" ]; then
+if [ -z "${D}" ]; then
   # fake to satisfy mandatory dependencies
   mv /bin/tar /tmp/
   mv /bin/gzip /tmp/
@@ -130,7 +130,7 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $DEBUG \
+dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live' \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
@@ -141,7 +141,8 @@ rm initrd.img
 
 cd /tmp/dracut/dracut.*/initramfs
 
-if [ -n "${DEBUG}" ]; then
+if [ -z "${D}" ]; then
+  echo hello
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
   rm -rf usr/lib/dracut/dracut-*
@@ -161,7 +162,7 @@ if [ -n "${DEBUG}" ]; then
 
   # just symlinks in alpine
   rm -rf  usr/sbin/chroot
-  rm -rf  bin/dmesg
+  rm -rf  usr/bin/dmesg
 
   rm -rf var/tmp
   rm -rf root
@@ -193,7 +194,7 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-if [[ "$ID" == alpine ]]; then
+if [ "$ID" = "alpine" ]; then
   apk add cpio
 else
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio

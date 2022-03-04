@@ -60,7 +60,7 @@ mv bw /usr/local/bin/
 
 if [ -f /usr/bin/Xorg ]; then
 # appimage - digikam
-wget --quiet https://download.kde.org/stable/digikam/7.3.0/digiKam-7.3.0-x86-64.appimage -O /usr/local/bin/digikam
+wget --quiet https://download.kde.org/stable/digikam/7.6.0/digiKam-7.6.0-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
 # appimage - chrome
