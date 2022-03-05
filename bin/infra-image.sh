@@ -140,8 +140,8 @@ sudo rm -rf /tmp/laptop
 
 # home
 FILE=/tmp/iso/home.img
-dd if=/dev/zero of=$FILE bs=1M count=4
-mkfs.ext4 -L "home_iso" $FILE
+sudo dd if=/dev/zero of=$FILE bs=1M count=4
+sudo mkfs.ext4 -L "home_iso" $FILE
 
 # Find an empty loopback device
 DISK=""

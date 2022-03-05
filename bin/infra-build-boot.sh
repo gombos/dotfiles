@@ -36,7 +36,7 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-#D='--debug --verbose'
+D='--debug --verbose'
 
 mkdir -p /efi /lib
 
@@ -75,7 +75,6 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 # git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # patch dracut
-#cp -av dracut/* dracutdir
 
 # build dracut from source
 cd dracutdir
@@ -130,9 +129,15 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
+DRACUT_MODULES='dmsquash-live'
+
+if [ -n "${D}" ]; then
+  DRACUT_MODULES="$DRACUT_MODULES debug"
+fi
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
-  --modules 'dmsquash-live' \
+  --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
   --aggresive-strip \
   initrd.img $KERNEL
@@ -142,7 +147,6 @@ rm initrd.img
 cd /tmp/dracut/dracut.*/initramfs
 
 if [ -z "${D}" ]; then
-  echo hello
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
   rm -rf usr/lib/dracut/dracut-*
