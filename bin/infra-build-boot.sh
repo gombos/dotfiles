@@ -50,7 +50,7 @@ if [ "$ID" = "arch" ]; then
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
-  apk add squashfs-tools kmod udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
+  apk add squashfs-tools kmod udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
   # make defautl shell bash for now
   rm -rf /bin/sh
@@ -59,18 +59,12 @@ else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
   apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils unzip wget ca-certificates git
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils wget ca-certificates git busybox-initramfs
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libkmod-dev pkg-config mount g++ make
 fi
 
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
-
-# dracut official release
-#rm -rf 055.zip dracut-055
-#wget --no-verbose --no-check-certificate https://github.com/dracutdevs/dracut/archive/refs/tags/055.zip
-#unzip -q 055.zip
-#cd dracut-055
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
 
@@ -90,6 +84,7 @@ mkdir -p /tmp/dracut
 
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
+mv /usr/lib/initramfs-tools/bin/busybox /usr/bin/
 
 # release optimizations
 if [ -z "${D}" ]; then
@@ -133,7 +128,7 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-DRACUT_MODULES='dmsquash-live'
+DRACUT_MODULES='dmsquash-live busybox'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
