@@ -36,7 +36,7 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-D='--debug --verbose'
+#D='--debug --verbose'
 
 mkdir -p /efi /lib
 
@@ -45,7 +45,10 @@ mkdir -p /efi /lib
 # test libudev-zero mdevd https://pkgs.alpinelinux.org/package/v3.15/community/x86_64/libudev-zero
 # https://sysdfree.wordpress.com/2021/08/30/349/
 
-if [ "$ID" = "alpine" ]; then
+if [ "$ID" = "arch" ]; then
+  pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
+  pacman -Q
+elif [ "$ID" = "alpine" ]; then
   # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
   apk add squashfs-tools kmod udev coreutils unzip wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
@@ -86,6 +89,7 @@ cd ..
 mkdir -p /tmp/dracut
 
 > /usr/sbin/dmsetup
+rm -rf /usr/lib/systemd/systemd
 
 # release optimizations
 if [ -z "${D}" ]; then
@@ -198,7 +202,9 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-if [ "$ID" = "alpine" ]; then
+if [ "$ID" = "arch" ]; then
+  pacman --noconfirm -Sy cpio && yes | pacman  -Scc
+elif [ "$ID" = "alpine" ]; then
   apk add cpio
 else
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio

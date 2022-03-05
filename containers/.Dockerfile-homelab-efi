@@ -2,8 +2,8 @@
 
 FROM 0gombi0/homelab:kernel as kernel
 
-FROM ubuntu:jammy
-#FROM docker.io/archlinux
+#FROM ubuntu:jammy
+FROM archlinux
 #FROM alpine
 
 COPY --from=kernel /efi /efi
