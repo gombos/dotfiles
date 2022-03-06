@@ -70,7 +70,7 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 # patch dracut
 # TODO - finish
 #cp /tmp/dmsquash-generator.sh dracutdir/modules.d/90dmsquash-live/
-cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
+#cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
 
 # build dracut from source
 cd dracutdir
