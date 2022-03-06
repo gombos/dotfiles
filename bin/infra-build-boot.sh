@@ -42,14 +42,10 @@ mkdir -p /efi /lib
 
 # TODO - remove bash dependency
 
-# test libudev-zero mdevd https://pkgs.alpinelinux.org/package/v3.15/community/x86_64/libudev-zero
-# https://sysdfree.wordpress.com/2021/08/30/349/
-
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
-  # todo  - kernel modules and not loaded, also mouting /lib/modules does not work for some reason, config is not executed
   apk add squashfs-tools kmod udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
 
   # make defautl shell bash for now
@@ -72,6 +68,9 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 # git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # patch dracut
+# TODO - finish
+#cp /tmp/dmsquash-generator.sh dracutdir/modules.d/90dmsquash-live/
+cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
 
 # build dracut from source
 cd dracutdir
@@ -164,8 +163,8 @@ if [ -z "${D}" ]; then
   find usr/bin usr/sbin -type f -empty -delete -print
 
   # just symlinks in alpine
-  rm -rf  usr/sbin/chroot
-  rm -rf  usr/bin/dmesg
+  rm -rf usr/sbin/chroot
+  rm -rf usr/bin/dmesg
 
   rm -rf var/tmp
   rm -rf root
@@ -175,6 +174,9 @@ if [ -z "${D}" ]; then
   rm -rf etc/ld.so.conf.d/libc.conf
   rm -rf etc/ld.so.conf
 fi
+
+# TODO - finish this
+# rm -rf usr/bin/bash
 
 # todo - chmod is used by my init script and will break boot
 #rm -rf usr/bin/chmod

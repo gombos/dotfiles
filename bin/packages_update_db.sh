@@ -1,5 +1,7 @@
-  if [ -f usr/local/bin/pacapt ]; then
-    usr/local/bin/pacapt -Sy
-  fi
+#!/bin/sh
 
-  apt-get update -y -qq -o Dpkg::Use-Pty=0
+if [ -f usr/local/bin/pacapt ]; then
+  usr/local/bin/pacapt -Sy
+fi
+
+apt-get update -y -qq -o Dpkg::Use-Pty=0

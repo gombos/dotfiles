@@ -259,10 +259,11 @@ rm -rf /var/log/journal/*
 [ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
 
 # -- common
-
+echo 1
 apt-get update
-apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
-apt-get -y -qq upgrade
+#apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
+apt-get -y upgrade
+echo 2
 
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
