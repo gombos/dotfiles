@@ -54,8 +54,6 @@ fi
 R="$NEWROOT"
 UPDATES="updates"
 
-mp=.
-
 # command line
 for x in $(cat /proc/cmdline); do
   case $x in
@@ -73,15 +71,15 @@ fi
 # --- HOST is known, determine networking
 # static IP is faster to assign more reliant
 
-if [ "$HOST" == "kispincer" ]; then
+if [ "$HOST" = "kispincer" ]; then
   IP=2
 fi
 
-if [ "$HOST" == "bestia" ]; then
+if [ "$HOST" = "bestia" ]; then
   IP=3
 fi
 
-if [ "$HOST" == "kisbestia" ]; then
+if [ "$HOST" = "kisbestia" ]; then
   IP=5
 fi
 
@@ -128,16 +126,16 @@ else
 fi
 
 # machine-id
-if [ ! -z "$MID" ]; then
+if [ -n "$MID" ]; then
   rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
-  echo $MID > $R/etc/machine-id
+  echo "$MID" > $R/etc/machine-id
 fi
 
 # sshd host keys
-if [ ! -z "$SSHD_KEY" ]; then
+if [ -n "$SSHD_KEY" ]; then
   rm -rf $R/etc/ssh/ssh_host_*key* 2>/dev/null
   echo -e $SSHD_KEY > $R/etc/ssh/ssh_host_ed25519_key
-  echo $SSHD_KEY_PUB > $R/etc/ssh/ssh_host_ed25519_key.pub
+  echo "$SSHD_KEY_PUB" > $R/etc/ssh/ssh_host_ed25519_key.pub
   chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
 fi
 
@@ -159,7 +157,7 @@ fi
 > $R/etc/crontab
 
 # USR user
-if [ ! -z "$USRPWD" ]
+if [ -n "$USRPWD" ]
 then
   # remove the default rootfs user
   sed -i "/^$USR:/d" $R/etc/passwd
@@ -172,7 +170,7 @@ then
 fi
 
 # henrik user
-if [ ! -z "$HENRIKPWD" ]
+if [ -n "$HENRIKPWD" ]
 then
   echo "henrik:x:1001:1001:,,,:/home/henrik:/bin/bash" >> $R/etc/passwd
   echo "henrik:$HENRIKPWD:1:0:99999:7:::" >> $R/etc/shadow
@@ -182,7 +180,7 @@ then
 fi
 
 # ssh jumphost user - Restricted user, no persistent home, login only via ssh key, disabled login password
-if [ ! -z "$SSHID" ]
+if [ -n "$SSHID" ]
 then
   mkdir -p $R/user/.ssh/
   cat authorized_keys-user >> $R/user/.ssh/authorized_keys
@@ -196,7 +194,7 @@ then
 fi
 
 # restricted admin, no persistent home, login only via ssh key, disabled login password
-if [ ! -z "$ADMINID" ]
+if [ -n "$ADMINID" ]
 then
   mkdir -p $R/admin/.ssh
   cat authorized_keys >> $R/admin/.ssh/authorized_keys
@@ -222,7 +220,7 @@ if [ $FILES != '*.service' ]; then
   done
 fi
 
-if [ "$HOST" == "kispincer" ]; then
+if [ "$HOST" = "kispincer" ]; then
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -238,7 +236,7 @@ if [ "$HOST" == "kispincer" ]; then
   echo "LABEL=home_pincer /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
 fi
 
-if [ "$HOST" == "bestia" ]; then
+if [ "$HOST" = "bestia" ]; then
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
@@ -274,11 +272,11 @@ if [ "$HOST" == "bestia" ]; then
   echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
-if [ "$HOST" == "kispincer" ]; then
+if [ "$HOST" = "kispincer" ]; then
   ln -sf /home/containers $R/var/lib/docker
 fi
 
-if [ "$HOST" == "kisbestia" ]; then
+if [ "$HOST" = "kisbestia" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
 fi
 
@@ -286,11 +284,11 @@ if [ -n "$LOG" ]; then
   echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
 fi
 
-if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
+if [ "$HOST" = "kispincer" ] || [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
-  if [[ -e /run/media/efi/config/letsencrypt ]]; then
+  if [ -e /run/media/efi/config/letsencrypt ]; then
     mkdir -p /run/media/letsencrypt
     cp -r /run/media/efi/config/letsencrypt /run/media/
   fi
@@ -303,7 +301,7 @@ if [ "$HOST" == "kispincer" ] || [ "$HOST" == "bestia" ]; then
   fi
 fi
 
-if [ "$HOST" == "kispincer" ] || [ "$HOST" == "pincer" ]; then
+if [ "$HOST" = "kispincer" ] || [ "$HOST" = "pincer" ]; then
   rm -rf $R/etc/sudoers.d/sudoers
 fi
 
@@ -321,7 +319,7 @@ if [ -e /dev/disk/by-partlabel/swap ]; then
   echo "/dev/disk/by-partlabel/swap   none  swap defaults           0  0" >> $R/etc/fstab
 fi
 
-if [ "$HOST" == "pincer" ]; then
+if [ "$HOST" = "pincer" ]; then
   # networking
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
   rm $R/etc/network/interfaces.d/*

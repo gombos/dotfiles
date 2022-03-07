@@ -127,7 +127,10 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-DRACUT_MODULES='dmsquash-live busybox'
+# TODO - busybox module breaks and mounts over /run somehow
+# busybox
+
+DRACUT_MODULES='dmsquash-live'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"

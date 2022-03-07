@@ -18,7 +18,6 @@ chmod g+w /run/media
 if [ -e /dev/disk/by-label/EFI ]; then
   mkdir -p /run/media/efi
   mount -o ro,noexec,nosuid,nodev /dev/disk/by-label/EFI /run/media/efi
-  mp=/run/media/efi
 fi
 
 if [ -e /dev/disk/by-label/ISO ]; then
