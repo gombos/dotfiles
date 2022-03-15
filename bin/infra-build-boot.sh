@@ -211,11 +211,15 @@ else
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
 fi
 
+find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+rm -rf lib/modules
+
 # Populate logs with the list of filenames
 find .
 ls -lRa .
-find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
-ls -lha /efi/kernel/initrd.img
+find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_base.img
+
+ls -lha /efi/kernel/initrd*.img
 
 # Keep initramfs simple and do not require networking
 
