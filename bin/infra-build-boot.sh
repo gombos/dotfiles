@@ -62,7 +62,8 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-git clone https://github.com/dracutdevs/dracut.git dracutdir
+#git clone https://github.com/dracutdevs/dracut.git dracutdir
+git clone --branch kernel-modules-base https://github.com/LaszloGombos/dracut.git dracutdir
 
 # swith to my branch for now
 # git clone https://github.com/LaszloGombos/dracut.git dracutdir
@@ -130,7 +131,7 @@ fi
 # TODO - busybox module breaks and mounts over /run somehow
 # busybox
 
-DRACUT_MODULES='dmsquash-live'
+DRACUT_MODULES='dmsquash-live kernel-modules-base'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
