@@ -160,6 +160,7 @@ sudo mount $DISK $MNT_EFI
 
 cd $MNT_EFI
 sudo git clone https://github.com/gombos/dotfiles.git .dotfiles
+sudo cp .dotfiles/boot/grub.cfg /tmp/iso/EFI/BOOT/
 sudo HOME=$MNT_EFI .dotfiles/bin/infra-provision-user.sh
 sudo chown -R 99:4 .
 cd /

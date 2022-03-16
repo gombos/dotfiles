@@ -34,9 +34,6 @@ cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
 
-
-# modules file
-
 #find /usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --fast > /efi/kernel/modules.img
 
 #apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 busybox zstd
@@ -62,14 +59,6 @@ rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
 #make oldconfig
 #scripts/diffconfig .config{.old,}
 #make deb-pkg
-
-# dracut-install hack
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod cpio build-essential libkmod-dev pkg-config dash udev coreutils mount unzip wget ca-certificates git
-#cd /efi
-#git clone https://github.com/LaszloGombos/dracut.git dracutdir
-#cd dracutdir
-#bash -c "./configure --disable-documentation"
-#make dracut-install
 
 # bootloader
 # mtools - efi iso boot
@@ -189,4 +178,3 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 mkdir -p /efi/netboot
 mv netboot.xyz* /efi/netboot/
-
