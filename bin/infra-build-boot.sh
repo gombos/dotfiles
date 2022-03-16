@@ -217,7 +217,7 @@ rm -rf lib/modules
 # Populate logs with the list of filenames
 find .
 ls -lRa .
-find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_base.img
+find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 
 ls -lha /efi/kernel/initrd*.img
 
