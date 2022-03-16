@@ -2,7 +2,7 @@
 
 FROM 0gombi0/homelab:kernel as kernel
 
-FROM ubuntu:impish
+FROM ubuntu:jammy
 #FROM archlinux
 #FROM alpine
 
