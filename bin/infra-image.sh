@@ -127,7 +127,7 @@ fi
 
 # rootfs squashfs
 #infra-get-squash.sh
-sudo mkdir -p /tmp/iso/Live
+sudo mkdir -p /tmp/iso/LiveOS
 
 sudo rm -rf /tmp/laptop
 sudo mkdir -p /tmp/laptop
@@ -135,7 +135,7 @@ infra-get-rootfs.sh /tmp/laptop
 sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
 sudo rm -rf /tmp/laptop/lib/firmware
 
-sudo mksquashfs /tmp/laptop /tmp/iso/Live/squashfs.img -comp zstd
+sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
 sudo rm -rf /tmp/laptop
 
 # home
