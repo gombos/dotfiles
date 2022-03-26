@@ -10,7 +10,8 @@
 #qemu-system-x86_64 -m 512 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -drive file=/mnt/Live/squashfs.img,if=ide,format=raw -netdev user,id=net0 -device e1000,netdev=net0  -append "console=ttyS0 root=/dev/sda rw net.ifnames=0"
 
 # with initrd
-cat /mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom /go/efi/isos/linux.iso -append "console=ttyS0 rd.live.image rd.live.overlay.overlayfs=1 root=live:CDLABEL=ISO systemd.mask=docker"
+# rd.live.image rd.live.overlay.overlayfs=1
+cat /mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom /go/efi/isos/linux.iso -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO"
 
 # -nodefaults -snapshot -cpu host
 # qemu-system-x86_64 -m 512 -nographic -append console=ttyS0 -kernel /mnt/kernel/vmlinuz  -initrd /mnt/kernel/initrd.img
