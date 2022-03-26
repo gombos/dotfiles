@@ -11,7 +11,7 @@
 
 # with initrd
 # rd.live.image rd.live.overlay.overlayfs=1
-cat /mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom /go/efi/isos/linux.iso -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO"
+cat /mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom /go/efi/isos/linux.iso -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO" --enable-kvm
 
 # -nodefaults -snapshot -cpu host
 # qemu-system-x86_64 -m 512 -nographic -append console=ttyS0 -kernel /mnt/kernel/vmlinuz  -initrd /mnt/kernel/initrd.img

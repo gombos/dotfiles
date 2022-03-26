@@ -75,6 +75,7 @@ adduser --disabled-password --no-create-home --shell "/bin/bash" --home /home --
 usermod -aG sudo $USR
 usermod -aG adm $USR
 usermod -aG netdev $USR
+usermod -aG kvm $USR
 
 chown $USR:$USR /home
 chmod g+w /home
