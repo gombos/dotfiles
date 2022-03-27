@@ -194,20 +194,36 @@ fi
 #mkdir updates
 #cd updates
 
-#mkdir -p usr/bin/
-#mkdir -p etc/systemd/system/basic.target.wants/ usr/lib/systemd/system/
-
-# alpine needs this hack
-#cp /tmp/iso-scan.sh  sbin/iso-scan
-
-#ln -sf /lib/systemd/system/boot.service etc/systemd/system/basic.target.wants/boot.service
-
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
+
+wget https://www.busybox.net/downloads/binaries/1.35.0-x86_64-linux-musl/busybox
+chmod +x busybox
+rm -rf usr/bin/busybox
+mv busybox usr/bin/
+
+#./busybox --install usr/bin
+#rm -rf ./busybox
+
+rm usr/sbin/blkid && cd usr/sbin && ln -sf ../bin/busybox blkid && cd ../..
+rm usr/sbin/losetup && cd usr/sbin && ln -sf ../bin/busybox losetup && cd ../..
+
+rm usr/bin/setsid && cd usr/bin && ln -sf ../bin/busybox setsid && cd ../..
+rm usr/bin/dd && cd usr/bin && ln -sf ../bin/busybox dd && cd ../..
+rm usr/bin/flock && cd usr/bin && ln -sf ../bin/busybox flock && cd ../..
+rm usr/bin/chown && cd usr/bin && ln -sf ../bin/busybox chown && cd ../..
+
+# remaining non-busybox binaries
+#udevadm
+#kmod
+#findmnt
+#bash
+#switch_root
 
 # switch_root from busybox is buggy
 rm usr/sbin/switch_root && cp /usr/sbin/switch_root usr/sbin/
 
+# sh
 rm usr/bin/sh && cd usr/bin && ln -sf bash sh && cd ../..
 
 if [ "$ID" = "arch" ]; then
