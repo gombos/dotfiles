@@ -55,7 +55,7 @@ else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
   apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils wget ca-certificates git busybox-initramfs
+  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils wget ca-certificates git busybox-initramfs dash
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libkmod-dev pkg-config mount g++ make
 fi
 
@@ -129,9 +129,10 @@ fi
 # ehci_pci - USB 2.0 storage devices
 
 # TODO - busybox module breaks and mounts over /run somehow
+# TODO - switch to dash from bash as default shell, will save 1MB
 # busybox
 
-DRACUT_MODULES='dmsquash-live'
+DRACUT_MODULES='dmsquash-live busybox'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
@@ -204,6 +205,11 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
+# switch_root from busybox is buggy
+rm usr/sbin/switch_root && cp /usr/sbin/switch_root usr/sbin/
+
+rm usr/bin/sh && cd usr/bin && ln -sf bash sh && cd ../..
+
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy cpio && yes | pacman  -Scc
 elif [ "$ID" = "alpine" ]; then
@@ -219,7 +225,6 @@ rm -rf lib/modules
 find .
 ls -lRa .
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
-
 ls -lha /efi/kernel/initrd*.img
 
 # Keep initramfs simple and do not require networking

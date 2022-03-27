@@ -21,6 +21,8 @@ sudo mount $ISO /tmp/mnt
 
 # with initrd
 cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO \
--append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rd.break"
+-append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
+
+sudo umount /tmp/mnt 2>/dev/null
 
 # -nodefaults -cpu host
