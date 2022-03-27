@@ -62,8 +62,8 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-#git clone https://github.com/dracutdevs/dracut.git dracutdir
-git clone --branch kernel-modules-base https://github.com/LaszloGombos/dracut.git dracutdir
+git clone https://github.com/dracutdevs/dracut.git dracutdir
+#git clone --branch kernel-modules-base https://github.com/LaszloGombos/dracut.git dracutdir
 
 # swith to my branch for now
 # git clone https://github.com/LaszloGombos/dracut.git dracutdir
@@ -131,7 +131,7 @@ fi
 # TODO - busybox module breaks and mounts over /run somehow
 # busybox
 
-DRACUT_MODULES='dmsquash-live kernel-modules-base'
+DRACUT_MODULES='dmsquash-live'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
@@ -141,6 +141,7 @@ dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --repr
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
+  --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /usr/lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   --aggresive-strip \
   initrd.img $KERNEL
 

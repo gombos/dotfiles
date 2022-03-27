@@ -52,7 +52,9 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 
 # Enable package updates before installing rest of packages
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/updates.list
+
+mkdir -p etc/apt/sources.list.d
+echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list.d/security.list
 echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" >> etc/apt/sources.list.d/updates.list
 
 packages_update_db.sh
