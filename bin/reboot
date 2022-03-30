@@ -5,7 +5,8 @@
 # systemctl isolate rescue; systemctl isolate default
 
 if [ -f /sbin/kexec ]; then
-  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/boot/initrd.img --reuse-cmdline
+  cat /boot/initrd*img > /tmp/initrd
+  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/tmp/initrd --reuse-cmdline
   sudo systemctl kexec
 else
   cd / && sudo systemctl reboot

@@ -2,9 +2,9 @@
 
 FROM 0gombi0/homelab:kernel as kernel
 
-FROM ubuntu:jammy
+#FROM ubuntu:jammy
 #FROM archlinux
-#FROM alpine
+FROM alpine
 
 COPY --from=kernel /efi /efi
 

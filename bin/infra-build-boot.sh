@@ -40,17 +40,11 @@ fi
 
 mkdir -p /efi /lib
 
-# TODO - remove bash dependency
-
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
-  apk add squashfs-tools kmod udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev findmnt gcompat
-
-  # make defautl shell bash for now
-  rm -rf /bin/sh
-  ln -sf /bin/bash /bin/sh
+  apk add squashfs-tools udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev gcompat blkid util-linux-misc
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -58,6 +52,8 @@ else
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils wget ca-certificates git busybox-initramfs dash
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libkmod-dev pkg-config mount g++ make
 fi
+
+# Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
@@ -70,8 +66,7 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 
 # patch dracut
 # TODO - finish
-#cp /tmp/dmsquash-generator.sh dracutdir/modules.d/90dmsquash-live/
-#cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
+cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
 
 # build dracut from source
 cd dracutdir
@@ -128,10 +123,6 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
-# TODO - busybox module breaks and mounts over /run somehow
-# TODO - switch to dash from bash as default shell, will save 1MB
-# busybox
-
 DRACUT_MODULES='dmsquash-live busybox'
 
 if [ -n "${D}" ]; then
@@ -141,8 +132,8 @@ fi
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
-  --include /tmp/infra-init.sh  /usr/lib/dracut/hooks/pre-pivot/00-init.sh \
-  --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /usr/lib/dracut/hooks/cmdline/01-parse-kernel.sh \
+  --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/00-init.sh \
+  --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   --aggresive-strip \
   initrd.img $KERNEL
 
@@ -169,8 +160,8 @@ if [ -z "${D}" ]; then
   find usr/bin usr/sbin -type f -empty -delete -print
 
   # just symlinks in alpine
-  rm -rf usr/sbin/chroot
-  rm -rf usr/bin/dmesg
+  rm -rf sbin/chroot
+  rm -rf bin/dmesg
 
   rm -rf var/tmp
   rm -rf root
@@ -181,50 +172,17 @@ if [ -z "${D}" ]; then
   rm -rf etc/ld.so.conf
 fi
 
-# TODO - finish this
-# rm -rf usr/bin/bash
-
-# todo - chmod is used by my init script and will break boot
-#rm -rf usr/bin/chmod
-
-# kexec can only handle one initrd file
-#find usr/lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/modules.img
-#rm -rf usr/lib/modules
-
-#mkdir updates
-#cd updates
-
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-wget https://www.busybox.net/downloads/binaries/1.35.0-x86_64-linux-musl/busybox
-chmod +x busybox
-rm -rf usr/bin/busybox
-mv busybox usr/bin/
+rm bin/bash
+rm bin/findmnt
 
-#./busybox --install usr/bin
-#rm -rf ./busybox
+# buggy busybox libraries
+rm sbin/switch_root && cp /sbin/switch_root sbin/
 
-rm usr/sbin/blkid && cd usr/sbin && ln -sf ../bin/busybox blkid && cd ../..
-rm usr/sbin/losetup && cd usr/sbin && ln -sf ../bin/busybox losetup && cd ../..
-
-rm usr/bin/setsid && cd usr/bin && ln -sf ../bin/busybox setsid && cd ../..
-rm usr/bin/dd && cd usr/bin && ln -sf ../bin/busybox dd && cd ../..
-rm usr/bin/flock && cd usr/bin && ln -sf ../bin/busybox flock && cd ../..
-rm usr/bin/chown && cd usr/bin && ln -sf ../bin/busybox chown && cd ../..
-
-# remaining non-busybox binaries
-#udevadm
-#kmod
-#findmnt
-#bash
-#switch_root
-
-# switch_root from busybox is buggy
-rm usr/sbin/switch_root && cp /usr/sbin/switch_root usr/sbin/
-
-# sh
-rm usr/bin/sh && cd usr/bin && ln -sf bash sh && cd ../..
+# blkid bugs might be able to worked around
+rm sbin/blkid && cp /sbin/blkid sbin/
 
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy cpio && yes | pacman  -Scc
