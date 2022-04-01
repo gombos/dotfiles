@@ -47,4 +47,4 @@ diskutil disableJournal ${DISK}s3
 #https://en.wikipedia.org/wiki/GUID_Partition_Table
 # diskutil list
 # gpt -r show
-
+# vfat EBD0A0A2-B9E5-4433-87C0-68B6B72699C7
