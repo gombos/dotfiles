@@ -24,6 +24,9 @@ find $DST -type f -printf "%f\n" | grep '[_|-]' | grep '^19[0-9][0-9]' | grep -v
 # shopt -s globstar && rename -v 's/IMG_//' **
 find $DST -name "IMG_*"
 
+# there should be no DCIM directory
+find $DST -name DCIM
+
 # find . -type f -print0 | xargs -0 getfattr -d -m - | sed 's/^\#\ file\:\ //' | sed '/^$/d' | sed -z 's/\nu/,u/g'
 
 # add dates to filename
