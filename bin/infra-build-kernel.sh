@@ -133,7 +133,7 @@ GRUB_MODULES="normal part_msdos part_gpt fat ext2 iso9660 ntfs hfsplus linux lin
 # grub-mkstandalone just a wrapper on top of grub-mkimage
 
 grub-mkstandalone --format=i386-pc --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
-grub-mkstandalone --format x86_64-efi --output="/efi/EFI/BOOT/bootx64.efi" --install-modules="$GRUB_MODULES" --modules="$GRUB_MODULES" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
+grub-mkstandalone --format=x86_64-efi --output="/efi/EFI/BOOT/bootx64.efi" --install-modules="$GRUB_MODULES linuxefi" --modules="$GRUB_MODULES linuxefi" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
 
 cp /usr/lib/grub/i386-pc/boot_hybrid.img $ISODIR/
 
