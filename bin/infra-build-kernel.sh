@@ -55,7 +55,7 @@ rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
 #apt-get build-dep -y linux-image-unsigned-$KERNEL
 #apt-get source linux-image-unsigned-$KERNEL
 
-#cd linux-5.13.0
+#cd linux
 #make oldconfig
 #scripts/diffconfig .config{.old,}
 #make deb-pkg

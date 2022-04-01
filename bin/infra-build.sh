@@ -6,7 +6,7 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "kernel efi minbase container base extra config iso upload"
+# "kernel efi minbase container base extra config iso"
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
