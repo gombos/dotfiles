@@ -169,12 +169,7 @@ sudo umount $MNT_EFI
 cd /tmp/iso
 
 # keep iso under 2GB
-
-TMPUSRLOCAL=/tmp/usrlocal
-sudo rm -rf $TMPUSRLOCAL
-docker run --privileged --device /dev/fuse --cap-add SYS_ADMIN -v $TMPUSRLOCAL:/usr/local -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra /tmp/bin/packages-usrlocal
-sudo mksquashfs $TMPUSRLOCAL /tmp/iso/usrlocal.img -comp zstd
-
+sudo wget https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
 sudo chown -R 1000:1000 .
 
 # Only include files once in the iso

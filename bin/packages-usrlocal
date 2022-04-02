@@ -2,7 +2,7 @@
 
 cd /tmp
 
-rm -rf /usr/local
+#rm -rf /usr/local
 mkdir -p /usr/local/bin
 
 # todo - separate out nix to its own script
