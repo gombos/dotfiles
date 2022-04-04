@@ -1,0 +1,7 @@
+# Base image could be independent from rootfs
+
+FROM ubuntu:jammy
+
+COPY bin/* /tmp/
+WORKDIR /tmp
+RUN ./testme.sh
