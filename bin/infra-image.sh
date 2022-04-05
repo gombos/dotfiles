@@ -213,6 +213,8 @@ sudo mv isolinux/efiboot.img /tmp/isotemp/
 # todo - remove graft points, makes it hard to reason about the steps
 # todo - -append_partition 2 0xef isolinux/efiboot.img \ - something like this is useful ?
 
+cp /tmp/kernel/tmp/linux-5.15.32/arch/x86/boot/bzImage  /tmp/iso/kernel/vmlinuz
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \

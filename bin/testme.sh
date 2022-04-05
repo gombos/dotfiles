@@ -16,17 +16,87 @@ cd linux-5.15.32
 make distclean
 make olddefconfig
 
-# builtin
+./scripts/config --set-val CONFIG_CDROM y
+
+# fs/fat/fat.ko
+./scripts/config --set-val CONFIG_FAT_FS y
+
+# fs/squashfs/squashfs.ko
+./scripts/config --set-val CONFIG_SQUASHFS y
+./scripts/config --set-val CONFIG_SQUASHFS_ZSTD y
+
+# fs/fat/vfat.ko
+./scripts/config --set-val CONFIG_VFAT_FS y
+./scripts/config --set-val CONFIG_FAT_DEFAULT_CODEPAGE 437
+./scripts/config --set-val CONFIG_FAT_DEFAULT_IOCHARSET iso8859-1
+
+# fs/exfat/exfat.ko
+./scripts/config --set-val CONFIG_EXFAT_FS y
+./scripts/config --set-val CONFIG_EXFAT_DEFAULT_IOCHARSET utf8
+
+# fs/isofs/isofs.ko
+./scripts/config --set-val CONFIG_ISO9660_FS y
+
+# drivers/ata/ahci.ko
+./scripts/config --set-val CONFIG_SATA_AHCI y
+
+# fs/overlayfs/overlay.ko
+./scripts/config --set-val CONFIG_OVERLAY_FS y
+
+./scripts/config --set-val CONFIG_ASHMEM y
 ./scripts/config --set-val CONFIG_ANDROID y
 ./scripts/config --set-val CONFIG_ANDROID_BINDER_IPC y
 ./scripts/config --set-val CONFIG_ANDROID_BINDERFS y
 
+./scripts/config --set-val CONFIG_VIRT_DRIVERS y
+
+./scripts/config --set-val CONFIG_USB_PCI y
+
+./scripts/config --set-val CONFIG_MODULE_COMPRESS_ZSTD y
+
+./scripts/config --set-val CONFIG_LOCKD_V4 y
+## storage
+
+# drivers/nvme/host/nvme.ko
+./scripts/config --set-val CONFIG_BLK_DEV_NVME m
+
+# drivers/mmc/core/mmc_core.ko
+./scripts/config --set-val CONFIG_MMC m
+
+# drivers/mmc/core/mmc_block.ko
+./scripts/config --set-val CONFIG_MMC_BLOCK m
+
+# drivers/block/virtio_blk.ko
+./scripts/config --set-val CONFIG_VIRTIO_BLK m
+
+# drivers/usb/storage/uas.ko
+./scripts/config --set-val CONFIG_USB_UAS m
+
+# fs/fuse/fuse.ko
+./scripts/config --set-val CONFIG_FUSE_FS m
+
 # fs/autofs/autofs4.ko
 ./scripts/config --set-val CONFIG_AUTOFS4_FS m
-./scripts/config --set-val CONFIG_BLK_DEV_NVME m
 
 # fs/btrfs/btrfs.ko
 ./scripts/config --set-val CONFIG_BTRFS_FS m
+
+# fs/ntfs3/ntfs3.ko
+./scripts/config --set-val CONFIG_NTFS3_FS m
+
+# fs/nfsd/nfsd.ko
+./scripts/config --set-val CONFIG_NFSD m
+
+./scripts/config --set-val CONFIG_NFS_FS m
+./scripts/config --set-val CONFIG_NFS_V2 n
+./scripts/config --set-val CONFIG_NFS_V3 m
+./scripts/config --set-val CONFIG_NFS_V3_ACL y
+./scripts/config --set-val CONFIG_NFS_V4 m
+
+# fs/fuse/virtiofs.ko
+./scripts/config --set-val CONFIG_VIRTIO_FS m
+
+# video
 
 # drivers/gpu/drm/i915/i915.ko
 ./scripts/config --set-val CONFIG_DRM_I915 m
@@ -34,58 +104,76 @@ make olddefconfig
 # drivers/gpu/drm/nouveau/nouveau.ko
 ./scripts/config --set-val CONFIG_DRM_NOUVEAU m
 
+# networking
+
 # drivers/net/ethernet/intel/e1000/e1000.ko
 ./scripts/config --set-val CONFIG_E1000 m
 
 # drivers/net/ethernet/intel/e1000/e1000e.ko
 ./scripts/config --set-val CONFIG_E1000E m
 
+# drivers/net/virtio_net.ko
+./scripts/config --set-val CONFIG_VIRTIO_NET m
+
+# input
+
+# drivers/hid/hid.ko
 ./scripts/config --set-val CONFIG_HID m
-./scripts/config --set-val CONFIG_ISO9660_FS m
 
-# kernel/arch/x86/kvm/kvm.ko
-./scripts/config --set-val CONFIG_KVM m
+# drivers/hid/hid-generic.ko
+./scripts/config --set-val CONFIG_HID_GENERIC m
 
-# kernel/arch/x86/kvm/kvm-intel.ko
-./scripts/config --set-val CONFIG_KVM_INTEL m
-
-./scripts/config --set-val CONFIG_MMC m
-./scripts/config --set-val CONFIG_MMC_BLOCK m
-
-# kernel/sound/soundcore.ko
-./scripts/config --set-val CONFIG_SOUND m
-
-# kernel/sound/snd.ko
-./scripts/config --set-val CONFIG_SND m
-
-./scripts/config --set-val CONFIG_MODULE_COMPRESS_ZSTD y
-./scripts/config --set-val CONFIG_MODULE_COMPRESS_ZSTD_LEVEL 19
+# drivers/hid/usbhid/usbhid.ko
+./scripts/config --set-val CONFIG_USB_HID m
 
 # drivers/input/mouse/psmouse.ko
 ./scripts/config --set-val CONFIG_MOUSE_PS2 m
 
-# fs/ntfs3/ntfs3.ko
-./scripts/config --set-val CONFIG_NFSD m
+# usb
 
-# fs/ntfs3/ntfs3.ko
-./scripts/config --set-val CONFIG_NTFS3_FS m
-
-# fs/overlayfs/overlay.ko
-./scripts/config --set-val CONFIG_OVERLAY_FS m
-
-# ahci
-./scripts/config --set-val CONFIG_SATA_AHCI m
-
-# xhci-pci
+# drivers/usb/host/ehci-pci.ko
 ./scripts/config --set-val CONFIG_USB_XHCI_PCI m
 
-# Disable kernel debug
+# drivers/usb/host/ehci-hcd.ko
+./scripts/config --set-val CONFIG_USB_EHCI_HCD m
+
+# virtualization
+
+# arch/x86/kvm/kvm.ko
+./scripts/config --set-val CONFIG_KVM m
+
+# arch/x86/kvm/kvm-intel.ko
+./scripts/config --set-val CONFIG_KVM_INTEL m
+
+# drivers/virtio/virtio.ko
+./scripts/config --set-val CONFIG_VIRTIO m
+
+# drivers/virtio/virtio_pci.ko
+./scripts/config --set-val CONFIG_VIRTIO_PCI m
+
+# sound
+
+# sound/soundcore.ko
+./scripts/config --set-val CONFIG_SOUND m
+
+# sound/snd.ko
+./scripts/config --set-val CONFIG_SND m
+
+# Disable features
 ./scripts/config --set-val CONFIG_FTRACE n
 ./scripts/config --set-val CONFIG_DEBUG_KERNEL n
 ./scripts/config --set-val CONFIG_PRINTK_TIME n
 ./scripts/config --set-val CONFIG_DEBUG_FS n
 ./scripts/config --set-val CONFIG_STACK_VALIDATION n
+./scripts/config --set-val CONFIG_DRM_LEGACY n
+./scripts/config --set-val CONFIG_QUOTA n
 
+#./scripts/config --set-val CONFIG_LOCKD m
+#./scripts/config --set-val CONFIG_EXPORTFS m
+
+cat .config
+
+# Fix dependencies (flip some m to y)
 make oldconfig
 
 cat .config
