@@ -78,6 +78,9 @@ else
   sudo rsync -r $2 /tmp/iso
 fi
 
+ls -la /tmp/efi/kernel
+ls -la /tmp/iso/kernel
+
 # https://wiki.archlinux.org/title/Syslinux
 #sudo sgdisk $DISK --attributes=1:set:2
 #sudo dd bs=440 count=1 conv=notrunc if=$MNT_EFI/syslinux/gptmbr.bin of=$DISK
@@ -138,6 +141,8 @@ sudo rm -rf /tmp/laptop/lib/firmware
 sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
 sudo rm -rf /tmp/laptop
 
+ls -la /tmp/iso/kernel
+
 # home
 FILE=/tmp/iso/home.img
 sudo dd if=/dev/zero of=$FILE bs=1M count=4
@@ -169,7 +174,7 @@ sudo umount $MNT_EFI
 cd /tmp/iso
 
 # keep iso under 2GB
-sudo wget https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
+sudo wget --quiet https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
 sudo chown -R 1000:1000 .
 
 # Only include files once in the iso
@@ -213,7 +218,8 @@ sudo mv isolinux/efiboot.img /tmp/isotemp/
 # todo - remove graft points, makes it hard to reason about the steps
 # todo - -append_partition 2 0xef isolinux/efiboot.img \ - something like this is useful ?
 
-cp /tmp/kernel/tmp/linux-5.15.32/arch/x86/boot/bzImage  /tmp/iso/kernel/vmlinuz
+# todo - to hack kernel
+#cp /tmp/kernel/tmp/linux-5.15.32/arch/x86/boot/bzImage  /tmp/iso/kernel/vmlinuz
 
 xorriso \
    -as mkisofs \
