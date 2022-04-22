@@ -26,12 +26,9 @@ cd /
 
 rm -rf etc/apt/sources.list.d/*
 
-# -- common
-echo 1
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 #apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-echo 2
 
 # Directory tree
 # Allow per-machine/per-instance /boot /etc /usr /home /var
@@ -73,9 +70,6 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 # If wired is connected, this will wait to get an IP via DHCP by default
 # Make sure to mask this line for static IPs
 printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
-
-# todo - vmware fix
-# rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
