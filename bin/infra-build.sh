@@ -6,12 +6,13 @@ exec 1>/tmp/build-infra.log 2>&1
 
 . infra-env.sh
 
-# "kernel efi minbase container base extra config iso"
+# extra targets
+# container upload
 
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="config"
+  TARGET="kernel efi minbase base extra config usrlocal iso"
 fi
 
 if echo $TARGET | grep -w -q kernel; then
@@ -28,13 +29,12 @@ if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
   sudo LANG=C debootstrap --variant=minbase --components=main,universe --exclude=procps,libprocps8,usrmerge,sensible-utils $RELEASE /tmp/minbase
   sudo rm -rf /tmp/minbase/var/cache /tmp/minbase/var/log/* /tmp/minbase/var/lib/apt/ /tmp/minbase/var/lib/systemd
-  sudo mkdir -p /tmp/minbase//var/cache/apt/archives/partial
+  sudo mkdir -p /tmp/minbase/var/cache/apt/archives/partial
   cd /tmp/minbase && sudo tar -c . | docker import - 0gombi0/homelab:minbase && cd -
   docker push 0gombi0/homelab:minbase
   sudo rm -rf /tmp/minbase
 fi
 
-# not needed for iso
 if echo $TARGET | grep -w -q container; then
   docker build -t 0gombi0/homelab:latest    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-container
   docker push 0gombi0/homelab:latest

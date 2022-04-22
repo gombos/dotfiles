@@ -16,7 +16,6 @@ if [ -z "$GID" ]; then
   USR=usr
 fi
 
-
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
@@ -24,6 +23,15 @@ fi
 PATH=$SCRIPTS:$PATH
 
 cd /
+
+rm -rf etc/apt/sources.list.d/*
+
+# -- common
+echo 1
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+#apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+echo 2
 
 # Directory tree
 # Allow per-machine/per-instance /boot /etc /usr /home /var
@@ -67,7 +75,7 @@ printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 
 # todo - vmware fix
-rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
+# rm -rf etc/network/if-down.d/resolved etc/network/if-up.d/resolved
 
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
@@ -260,12 +268,6 @@ rm -rf /var/log/journal/*
 [ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
 
 # -- common
-echo 1
-apt-get update
-#apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
-apt-get -y upgrade
-echo 2
-
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 apt-get clean
