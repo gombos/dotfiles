@@ -35,7 +35,8 @@ mkdir -p /usr/local/bin
 
 # rga
 rm -rf ripgrep_all-*
-wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v0.9.6/ripgrep_all-v0.9.6-x86_64-unknown-linux-musl.tar.gz
+RIPGREP="v0.9.6"
+wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/$RIPGREP/ripgrep_all-$RIPGREP-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
 mv ripgrep_all-*/rga* /usr/local/bin/
@@ -46,8 +47,10 @@ wget --quiet -O - https://getmic.ro | GETMICRO_REGISTER=y sh
 mv micro /usr/local/bin/
 
 # rclone
-wget --quiet https://github.com/rclone/rclone/releases/download/v1.58.0/rclone-v1.58.0-linux-amd64.zip
-unzip rclone-v1.57.0-linux-amd64.zip
+rm -rf rclone-*-linux-amd64.zip
+RCLONE="v1.58.0"
+wget --quiet https://github.com/rclone/rclone/releases/download/$RCLONE/rclone-$RCLONE-linux-amd64.zip
+unzip rclone-*-linux-amd64.zip
 mv rclone-*/rclone /usr/local/bin/
 rm -rf rclone-*
 
