@@ -30,7 +30,7 @@ xz-utils
 python3-distutils
 #golang-go
 
-# devices
+# android devices
 adb
 scrcpy
 
