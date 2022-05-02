@@ -65,8 +65,12 @@ git clone https://github.com/dracutdevs/dracut.git dracutdir
 # git clone https://github.com/LaszloGombos/dracut.git dracutdir
 
 # patch dracut
-# TODO - finish
-cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
+# TODO - finish.. where is bash pointing ?
+#cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
+#1c1
+#< #!/bin/sh
+#---
+#> #!/bin/bash
 
 # build dracut from source
 cd dracutdir
@@ -175,7 +179,8 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-rm bin/bash
+# TODO
+#rm bin/bash
 rm bin/findmnt
 
 # buggy busybox libraries
