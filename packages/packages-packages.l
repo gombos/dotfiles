@@ -49,6 +49,7 @@ mutt
 tcpdump
 sshuttle
 nethogs
+wireguard-tools
 
 # tools
 bash-completion

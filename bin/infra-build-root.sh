@@ -116,4 +116,7 @@ wget --no-verbose --no-check-certificate https://github.com/caddyserver/caddy/re
 dpkg -i *.deb
 rm -rf *.deb /etc/systemd/system/multi-user.target.wants/caddy.service
 
+# tailscale
+curl -fsSL https://tailscale.com/install.sh | sh
+
 fi

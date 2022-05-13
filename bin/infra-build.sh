@@ -37,22 +37,22 @@ fi
 
 if echo $TARGET | grep -w -q container; then
   docker build -t 0gombi0/homelab:latest    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-container
-  docker push 0gombi0/homelab:latest
+  docker push     0gombi0/homelab:latest
 fi
 
 if echo $TARGET | grep -w -q base; then
   docker build -t 0gombi0/homelab-baremetal:base    ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-base
-  docker push 0gombi0/homelab-baremetal:base
+  docker push     0gombi0/homelab-baremetal:base
 fi
 
 if echo $TARGET | grep -w -q extra; then
   docker build -t 0gombi0/homelab-baremetal:extra     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-extra
-  docker push 0gombi0/homelab-baremetal:extra
+  docker push     0gombi0/homelab-baremetal:extra
 fi
 
 if echo $TARGET | grep -w -q config; then
   docker build -t 0gombi0/homelab-baremetal:latest     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-config
-  docker push 0gombi0/homelab-baremetal:latest
+  docker push     0gombi0/homelab-baremetal:latest
 fi
 
 if echo $TARGET | grep -w -q usrlocal; then
