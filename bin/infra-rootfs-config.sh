@@ -24,10 +24,7 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
-rm -rf etc/apt/sources.list.d/*
-
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-#apt-get purge -y -qq linux-*headers-* fuse libllvm11 2>/dev/null >/dev/null
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # Directory tree
@@ -228,7 +225,6 @@ sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf
 #> $R/etc/crontab
 
 rm -rf boot
-rm -rf etc/apt/sources.list.d/*
 rm -rf var/www
 find var/lib -empty -delete
 
@@ -264,6 +260,7 @@ rm -rf /var/log/journal/*
 # -- common
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
+DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
 
 # cleanup
