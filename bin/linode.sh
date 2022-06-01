@@ -2,7 +2,7 @@
 
 # Takes about 4 min to bring up a linode instance with my ISO
 # - create linode and boot into host debian os (1 min)
-# - download iso (1 min)
+# - download iso from github - see infra.sh (1 min)
 # - shut down (1 min) - can this be done faster ?
 # - boot into new iso (1 min)
 
