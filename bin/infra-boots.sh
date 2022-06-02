@@ -87,6 +87,10 @@ if [ "$HOST" = "p" ]; then
   IP=60
 fi
 
+if [ "$HOST" = "h" ]; then
+  IP=61
+fi
+
 # --- static IP is known
 
 # set static IP
