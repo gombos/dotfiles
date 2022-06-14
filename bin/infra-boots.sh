@@ -71,6 +71,8 @@ fi
 # --- HOST is known, determine networking
 # static IP is faster to assign more reliant
 
+NET=192.168.1
+
 if [ "$HOST" = "kispincer" ]; then
   IP=2
 fi
@@ -84,18 +86,20 @@ if [ "$HOST" = "kisbestia" ]; then
 fi
 
 if [ "$HOST" = "p" ]; then
-  IP=60
+  NET=192.168.0
+  IP=100
 fi
 
 if [ "$HOST" = "h" ]; then
-  IP=61
+  NET=192.168.0
+  IP=101
 fi
 
 # --- static IP is known
 
 # set static IP
 if [ -n "$IP" ]; then
-  printf "auto eth0\niface eth0 inet static\n  address 192.168.1.$IP\n  netmask 255.255.255.0\n  network 192.168.1.0\n  broadcast 192.168.1.255\n  gateway 192.168.1.1\n  dns-nameservers 192.168.1.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
+  printf "auto eth0\niface eth0 inet static\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers $NET.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 fi
 
 # updates
@@ -107,7 +111,7 @@ fi
 if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
  [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
- [ -n "$IP" ] && echo "192.168.1.$IP $HOST" >> $R/etc/hosts
+ [ -n "$IP" ] && echo "$NET.$IP $HOST" >> $R/etc/hosts
 
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
 

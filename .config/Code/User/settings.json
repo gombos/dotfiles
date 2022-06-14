@@ -19,6 +19,5 @@
     "update.mode": "none",
     "editor.copyWithSyntaxHighlighting": false,
     "workbench.editor.untitled.hint": "hidden",
-    "extensions.ignoreRecommendations": true,
-    "window.zoomLevel": 1
+    "extensions.ignoreRecommendations": true
 }
