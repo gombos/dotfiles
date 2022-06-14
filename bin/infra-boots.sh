@@ -292,6 +292,10 @@ if [ "$HOST" = "kisbestia" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
 fi
 
+if [ "$HOST" = "p" ]; then
+  echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
+fi
+
 if [ -n "$LOG" ]; then
   echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
 fi
