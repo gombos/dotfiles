@@ -99,7 +99,7 @@ fi
 
 # set static IP
 if [ -n "$IP" ]; then
-  printf "auto eth0\niface eth0 inet static\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers $NET.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
+  printf "auto eth0\niface eth0 inet static\n  ethernet-wol g\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers $NET.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 fi
 
 # updates
