@@ -176,6 +176,8 @@ rm sbin/switch_root && cp /sbin/switch_root sbin/
 # blkid bugs might be able to worked around
 rm sbin/blkid && cp /sbin/blkid sbin/
 
+rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
+
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy cpio && yes | pacman  -Scc
 elif [ "$ID" = "alpine" ]; then
@@ -187,9 +189,9 @@ fi
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 rm -rf lib/modules
 
-# Populate logs with the list of filenames
-find .
-ls -lRa .
+# Populate logs with the list of filenames inside initrd.img
+find . -type f -exec ls -la {} \;
+
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd*.img
 
