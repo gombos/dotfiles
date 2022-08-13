@@ -44,7 +44,7 @@ if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
-  apk add squashfs-tools udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev gcompat blkid util-linux-misc
+  apk add squashfs-tools udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev gcompat blkid util-linux-misc findmnt
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -59,18 +59,6 @@ unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
-#git clone --branch kernel-modules-base https://github.com/LaszloGombos/dracut.git dracutdir
-
-# swith to my branch for now
-# git clone https://github.com/LaszloGombos/dracut.git dracutdir
-
-# patch dracut
-# TODO - finish.. where is bash pointing ?
-#cp /tmp/dmsquash-live-root.sh dracutdir/modules.d/90dmsquash-live/
-#1c1
-#< #!/bin/sh
-#---
-#> #!/bin/bash
 
 # build dracut from source
 cd dracutdir
@@ -83,7 +71,6 @@ mkdir -p /tmp/dracut
 
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
-mv /usr/lib/initramfs-tools/bin/busybox /usr/bin/
 
 # release optimizations
 if [ -z "${D}" ]; then
@@ -138,7 +125,7 @@ dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --repr
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/00-init.sh \
   --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
-  --aggresive-strip \
+  --aggressive-strip \
   initrd.img $KERNEL
 
 rm initrd.img

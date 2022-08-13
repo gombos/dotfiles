@@ -174,7 +174,8 @@ sudo umount $MNT_EFI
 cd /tmp/iso
 
 # keep iso under 2GB
-sudo wget --quiet https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
+#sudo wget --quiet https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
+sudo cp /tmp/usrlocal.img /tmp/iso/usrlocal.img
 sudo chown -R 1000:1000 .
 
 # Only include files once in the iso
