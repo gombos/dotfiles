@@ -66,6 +66,7 @@ cd dracutdir
 # overlayfs hack
 git fetch origin refs/pull/1934/head:pr_1934
 git checkout pr_1934
+git show
 
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
@@ -130,6 +131,7 @@ dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --repr
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
+  --include dracutdir/modules.d/90dmsquash-live/overlayfs.sh /lib/dracut/hooks/pre-pivot/00-overlay.sh \
   --aggressive-strip \
   initrd.img $KERNEL
 
