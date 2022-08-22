@@ -59,9 +59,17 @@ unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
+#git clone -b debug https://github.com/LaszloGombos/dracut.git dracutdir
+#git show
+
 
 # build dracut from source
 cd dracutdir
+
+# overlayfs hack
+git fetch origin refs/pull/1934/head:pr_1934
+git checkout pr_1934
+
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
 make install
@@ -123,7 +131,7 @@ fi
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
-  --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/00-init.sh \
+  --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   --aggressive-strip \
   initrd.img $KERNEL
@@ -132,6 +140,8 @@ rm initrd.img
 
 cd /tmp/dracut/dracut.*/initramfs
 
+#cp sbin/overlayfs "lib/dracut/hooks/pre-pivot/00-overlay.sh"
+
 if [ -z "${D}" ]; then
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
@@ -139,7 +149,9 @@ if [ -z "${D}" ]; then
   rm -rf usr/lib/dracut/modules.txt
 
   # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-  rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+#  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+#  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-live-genrules.sh
+#  rm -rf sbin/dmsquash-live-root
 
   # todo - ideally dm dracut module is not included instead of this hack
   rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
@@ -152,7 +164,7 @@ if [ -z "${D}" ]; then
 
   # just symlinks in alpine
   rm -rf sbin/chroot
-  rm -rf bin/dmesg
+#  rm -rf bin/dmesg
 
   rm -rf var/tmp
   rm -rf root
