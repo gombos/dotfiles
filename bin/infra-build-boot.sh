@@ -59,9 +59,6 @@ unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
 git clone https://github.com/dracutdevs/dracut.git dracutdir
-#git clone -b debug https://github.com/LaszloGombos/dracut.git dracutdir
-#git show
-
 
 # build dracut from source
 cd dracutdir
@@ -140,8 +137,6 @@ rm initrd.img
 
 cd /tmp/dracut/dracut.*/initramfs
 
-#cp sbin/overlayfs "lib/dracut/hooks/pre-pivot/00-overlay.sh"
-
 if [ -z "${D}" ]; then
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
@@ -149,9 +144,7 @@ if [ -z "${D}" ]; then
   rm -rf usr/lib/dracut/modules.txt
 
   # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-#  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
-#  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-live-genrules.sh
-#  rm -rf sbin/dmsquash-live-root
+  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
   # todo - ideally dm dracut module is not included instead of this hack
   rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
@@ -164,7 +157,7 @@ if [ -z "${D}" ]; then
 
   # just symlinks in alpine
   rm -rf sbin/chroot
-#  rm -rf bin/dmesg
+  rm -rf bin/dmesg
 
   rm -rf var/tmp
   rm -rf root
