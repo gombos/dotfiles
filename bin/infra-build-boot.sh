@@ -126,12 +126,13 @@ if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
 fi
 
+# --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
-  --include dracutdir/modules.d/90dmsquash-live/overlayfs.sh /lib/dracut/hooks/pre-pivot/00-overlay.sh \
   --aggressive-strip \
   initrd.img $KERNEL
 
