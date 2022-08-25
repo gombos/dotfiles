@@ -44,7 +44,12 @@ if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
-  apk add squashfs-tools udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev gcompat blkid util-linux-misc findmnt
+  apk add git # get dracut
+  apk add build-base make # build base
+  apk add fts-dev kmod-dev pkgconfig build-base make # build dracut
+  apk add bash eudev coreutils findmnt # run dracut
+  apk add blkid util-linux-misc # run dracut busybox version is not good enough blkid and switch_root
+  apk add squashfs-tools # not for dracut
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -58,15 +63,17 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-git clone https://github.com/dracutdevs/dracut.git dracutdir
+git clone https://github.com/dracutdevs/dracut.git
 
 # build dracut from source
-cd dracutdir
+cd dracut
+
+# less is more :-), this is an extra layer to make sure systemd is not needed
+rm -rf modules.d/*systemd*
 
 # overlayfs hack
-git fetch origin refs/pull/1934/head:pr_1934
-git checkout pr_1934
-git show
+#git fetch origin refs/pull/1934/head:pr_1934
+#git checkout pr_1934
 
 bash -c "./configure --disable-documentation"
 make 2>/dev/null
@@ -128,11 +135,11 @@ fi
 
 # --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
 
-dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
-  --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/01-init.sh \
-  --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
+  --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
+  --include dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   --aggressive-strip \
   initrd.img $KERNEL
 
