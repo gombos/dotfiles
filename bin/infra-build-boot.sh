@@ -85,6 +85,10 @@ mkdir -p /tmp/dracut
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
 
+# Remove the busybox version
+# workaround to instruct dracut not to compress
+rm -rf /usr/bin/cpio
+
 # release optimizations
 if [ -z "${D}" ]; then
   # fake to satisfy mandatory dependencies
