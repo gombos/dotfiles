@@ -46,9 +46,9 @@ if [ "$ID" = "arch" ]; then
 elif [ "$ID" = "alpine" ]; then
   apk add git # get dracut
   apk add build-base make # build base
-  apk add fts-dev kmod-dev pkgconfig build-base make # build dracut
+  apk add fts-dev kmod-dev pkgconfig # build dracut
   apk add bash eudev coreutils findmnt # run dracut
-  apk add blkid util-linux-misc # run dracut busybox version is not good enough blkid and switch_root
+  apk add blkid # run dracut busybox version is not good enough blkid
   apk add squashfs-tools # not for dracut
 else
   export DEBIAN_FRONTEND=noninteractive
@@ -188,9 +188,6 @@ mv /tmp/gzip /bin/
 # TODO
 #rm bin/bash
 rm bin/findmnt
-
-# buggy busybox libraries
-rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 # blkid bugs might be able to worked around
 rm sbin/blkid && cp /sbin/blkid sbin/
