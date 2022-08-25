@@ -28,9 +28,7 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
-cd /tmp
-
-. ./infra-env.sh
+. /tmp/infra-env.sh
 
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
@@ -38,18 +36,22 @@ fi
 
 #D='--debug --verbose'
 
-mkdir -p /efi /lib
+mkdir -p /efi /lib /tmp/dracut
 
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
+  apk upgrade
+
+  apk add squashfs-tools blkid
+  #apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
+
   apk add git # get dracut
   apk add build-base make # build base
   apk add fts-dev kmod-dev pkgconfig # build dracut
   apk add bash eudev coreutils findmnt # run dracut
-  apk add blkid # run dracut busybox version is not good enough blkid
-  apk add squashfs-tools # not for dracut
+
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -63,24 +65,19 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-git clone https://github.com/dracutdevs/dracut.git
+cd /
 
 # build dracut from source
-cd dracut
-
-# less is more :-), this is an extra layer to make sure systemd is not needed
-rm -rf modules.d/*systemd*
+git clone https://github.com/dracutdevs/dracut.git
 
 # overlayfs hack
 #git fetch origin refs/pull/1934/head:pr_1934
 #git checkout pr_1934
 
-bash -c "./configure --disable-documentation"
-make 2>/dev/null
-make install
-cd ..
+cd dracut && bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
-mkdir -p /tmp/dracut
+# less is more :-), this is an extra layer to make sure systemd is not needed
+rm -rf /usr/lib/dracut/modules.d/modules.d/*systemd*
 
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
@@ -143,8 +140,7 @@ dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compres
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
-  --include dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
-  --aggressive-strip \
+  --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   initrd.img $KERNEL
 
 rm initrd.img
