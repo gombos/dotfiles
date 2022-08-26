@@ -45,11 +45,14 @@ elif [ "$ID" = "alpine" ]; then
   apk upgrade
 
   apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
-  apk add squashfs-tools git
+  apk add squashfs-tools git util-linux-misc
+
+  # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
+  # some people might not need util-linux-misc but I DO
 
   #apk add build-base make # build base
   #apk add fts-dev kmod-dev pkgconfig # build dracut
-  #apk add bash eudev coreutils findmnt # run dracut
+  #apk add bash eudev coreutils findmnt blkid util-linux-misc # run dracut
 
   # TODO
   # remove dependency on eudev coreutils findmnt
@@ -201,6 +204,7 @@ rm bin/findmnt
 
 # blkid bugs might be able to worked around
 rm sbin/blkid && cp /sbin/blkid sbin/
+rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
