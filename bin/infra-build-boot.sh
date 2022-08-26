@@ -68,13 +68,12 @@ mv squashfs-root /lib/modules
 cd /
 
 # build dracut from source
-git clone https://github.com/dracutdevs/dracut.git
+git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
-# overlayfs hack
-#git fetch origin refs/pull/1934/head:pr_1934
-#git checkout pr_1934
+# pull in a PR
+git fetch origin refs/pull/1920/head:pr && git checkout pr && git show
 
-cd dracut && bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
+bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
 rm -rf /usr/lib/dracut/modules.d/modules.d/*systemd*
@@ -136,7 +135,7 @@ fi
 
 # --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
 
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
+dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
@@ -181,9 +180,11 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-# TODO
-#rm bin/bash
+rm bin/bash
 rm bin/findmnt
+
+# TODO
+# can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
 
 # blkid bugs might be able to worked around
 rm sbin/blkid && cp /sbin/blkid sbin/
