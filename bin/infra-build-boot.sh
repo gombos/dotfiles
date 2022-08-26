@@ -87,6 +87,12 @@ rm -rf /usr/lib/dracut/modules.d/*systemd*
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
 
+# TODO
+# make module that mounts squashfs without initqueue
+#rm -rf /sbin/udevd  /bin/udevadm
+#> /sbin/udevd
+#> /bin/udevadm
+
 # Remove the busybox version
 # workaround to instruct dracut not to compress
 rm -rf /usr/bin/cpio
