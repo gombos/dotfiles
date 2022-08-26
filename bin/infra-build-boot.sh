@@ -45,7 +45,7 @@ elif [ "$ID" = "alpine" ]; then
   apk upgrade
 
   apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
-  apk add squashfs-tools blkid git # extra
+  apk add squashfs-tools git
 
   #apk add build-base make # build base
   #apk add fts-dev kmod-dev pkgconfig # build dracut
@@ -73,7 +73,7 @@ cd /
 git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
 # pull in a PR
-git fetch origin refs/pull/1920/head:pr && git checkout pr && git show
+git fetch origin refs/pull/1920/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
@@ -139,6 +139,7 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
+# busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 DRACUT_MODULES='dmsquash-live busybox'
 
 if [ -n "${D}" ]; then
@@ -147,7 +148,7 @@ fi
 
 # --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
 
-dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
