@@ -44,13 +44,15 @@ if [ "$ID" = "arch" ]; then
 elif [ "$ID" = "alpine" ]; then
   apk upgrade
 
-  apk add squashfs-tools blkid
-  #apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
+  apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
+  apk add squashfs-tools blkid git # extra
 
-  apk add git # get dracut
-  apk add build-base make # build base
-  apk add fts-dev kmod-dev pkgconfig # build dracut
-  apk add bash eudev coreutils findmnt # run dracut
+  #apk add build-base make # build base
+  #apk add fts-dev kmod-dev pkgconfig # build dracut
+  #apk add bash eudev coreutils findmnt # run dracut
+
+  # TODO
+  # remove dependency on eudev coreutils findmnt
 
 else
   export DEBIAN_FRONTEND=noninteractive
@@ -73,10 +75,14 @@ git clone https://github.com/dracutdevs/dracut.git && cd dracut
 # pull in a PR
 git fetch origin refs/pull/1920/head:pr && git checkout pr && git show
 
-bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
+# build and install upstream
+#bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
+
+# grab upstream modules only
+rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
-rm -rf /usr/lib/dracut/modules.d/modules.d/*systemd*
+rm -rf /usr/lib/dracut/modules.d/*systemd*
 
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
