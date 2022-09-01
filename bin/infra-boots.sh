@@ -253,6 +253,8 @@ if [ "$HOST" = "bestia" ]; then
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
+  ln -sf /run/initramfs/isoscan $R/go/efi
+
   # Do not bind the backup ssd by default at boot
   # This is only safe to do if not booting from this drive
   # TODO - implement safe condition

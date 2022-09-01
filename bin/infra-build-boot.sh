@@ -28,9 +28,7 @@ if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
 
-cd /tmp
-
-. ./infra-env.sh
+. /tmp/infra-env.sh
 
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
@@ -38,13 +36,27 @@ fi
 
 #D='--debug --verbose'
 
-mkdir -p /efi /lib
+mkdir -p /efi /lib /tmp/dracut
 
 if [ "$ID" = "arch" ]; then
   pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
-  apk add squashfs-tools udev coreutils wget ca-certificates git build-base bash make pkgconfig kmod-dev fts-dev gcompat blkid util-linux-misc findmnt
+  apk upgrade
+
+  apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
+  apk add squashfs-tools git util-linux-misc
+
+  # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
+  # some people might not need util-linux-misc but I DO
+
+  #apk add build-base make # build base
+  #apk add fts-dev kmod-dev pkgconfig # build dracut
+  #apk add bash eudev coreutils findmnt blkid util-linux-misc # run dracut
+
+  # TODO
+  # remove dependency on eudev coreutils findmnt
+
 else
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y -qq -o Dpkg::Use-Pty=0
@@ -58,19 +70,35 @@ fi
 unsquashfs /efi/kernel/modules
 mv squashfs-root /lib/modules
 
-git clone https://github.com/dracutdevs/dracut.git dracutdir
+cd /
 
 # build dracut from source
-cd dracutdir
-bash -c "./configure --disable-documentation"
-make 2>/dev/null
-make install
-cd ..
+git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
-mkdir -p /tmp/dracut
+# pull in a PR
+git fetch origin refs/pull/1920/head:pr && git checkout pr
+
+# build and install upstream
+#bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
+
+# grab upstream modules only
+rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/
+
+# less is more :-), this is an extra layer to make sure systemd is not needed
+rm -rf /usr/lib/dracut/modules.d/*systemd*
 
 > /usr/sbin/dmsetup
 rm -rf /usr/lib/systemd/systemd
+
+# TODO
+# make module that mounts squashfs without initqueue
+#rm -rf /sbin/udevd  /bin/udevadm
+#> /sbin/udevd
+#> /bin/udevadm
+
+# Remove the busybox version
+# workaround to instruct dracut not to compress
+rm -rf /usr/bin/cpio
 
 # release optimizations
 if [ -z "${D}" ]; then
@@ -114,18 +142,20 @@ fi
 # virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
 # ehci_pci - USB 2.0 storage devices
 
+# busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 DRACUT_MODULES='dmsquash-live busybox'
 
 if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
 fi
 
-dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
+# --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
+
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
-  --include /tmp/infra-init.sh  /lib/dracut/hooks/pre-pivot/00-init.sh \
-  --include dracutdir/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
-  --aggressive-strip \
+  --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
+  --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   initrd.img $KERNEL
 
 rm initrd.img
@@ -139,7 +169,7 @@ if [ -z "${D}" ]; then
   rm -rf usr/lib/dracut/modules.txt
 
   # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-  rm -rf usr/lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
   # todo - ideally dm dracut module is not included instead of this hack
   rm -rf usr/lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
@@ -166,15 +196,15 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-# TODO
-#rm bin/bash
+rm bin/bash
 rm bin/findmnt
 
-# buggy busybox libraries
-rm sbin/switch_root && cp /sbin/switch_root sbin/
+# TODO
+# can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
 
 # blkid bugs might be able to worked around
 rm sbin/blkid && cp /sbin/blkid sbin/
+rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
