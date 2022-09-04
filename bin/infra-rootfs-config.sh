@@ -129,6 +129,9 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 # disable pulseaudio - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/pulseaudio.service ] && rm etc/systemd/user/default.target.wants/pulseaudio.service
 
+# disable dpkg state backup
+[ -f etc/systemd/system/timers.target.wants/dpkg-db-backup.timer ] && rm etc/systemd/system/timers.target.wants/dpkg-db-backup.timer
+
 # ssh-keygen.service
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 [Unit]

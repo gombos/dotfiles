@@ -19,3 +19,6 @@ openssh-server
 
 # log
 rsyslog
+
+# time - ntp
+systemd-timesyncd
