@@ -232,7 +232,7 @@ if [ $FILES != '*.service' ]; then
   done
 fi
 
-if [ "$HOST" = "kispincer" ]; then
+if [ "$HOST" = "bestia" ]; then
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
@@ -296,10 +296,6 @@ fi
 
 if [ "$HOST" = "p" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
-fi
-
-if [ -n "$LOG" ]; then
-  echo "*.*                       @${LOG}" >> $R/etc/rsyslog.conf
 fi
 
 if [ "$HOST" = "kispincer" ] || [ "$HOST" == "bestia" ]; then
