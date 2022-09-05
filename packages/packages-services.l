@@ -16,6 +16,7 @@ nginx-light
 dnsmasq
 nfs-kernel-server
 openssh-server
+hostapd
 
 # log
 rsyslog

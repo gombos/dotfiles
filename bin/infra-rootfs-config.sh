@@ -132,6 +132,9 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 # disable dpkg state backup
 [ -f etc/systemd/system/timers.target.wants/dpkg-db-backup.timer ] && rm etc/systemd/system/timers.target.wants/dpkg-db-backup.timer
 
+# hostapd
+[ -f etc/systemd/system/multi-user.target.wants/hostapd.service ] && rm etc/systemd/system/multi-user.target.wants/hostapd.service
+
 # ssh-keygen.service
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
 [Unit]

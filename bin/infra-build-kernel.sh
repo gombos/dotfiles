@@ -14,15 +14,26 @@ mkdir -p /efi/kernel
 
 export DEBIAN_FRONTEND=noninteractive
 
+# enable getting source debs
+sed -i~orig -e 's/# deb-src/deb-src/' /etc/apt/sources.list
+
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # TODO - get kernel without apt, so that I can use any distro as a base, including alpine, do not rely on package manager
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils ca-certificates git fakeroot
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils ca-certificates git
+# Prepare to compile my own kernel
+#apt-get build-dep -y -o Dpkg::Use-Pty=0 linux-image-unsigned-$KERNEL
+#apt-get source -y -o Dpkg::Use-Pty=0 linux-image-unsigned-$KERNEL
+#cd linux-*5.15.0
+#chmod a+x debian/rules
+#chmod a+x debian/scripts/*
+#chmod a+x debian/scripts/misc/*
+#LANG=C fakeroot debian/rules clean
+#LANG=C fakeroot debian/rules binary
 
 if ! [ -z "${NVIDIA}" ]; then
   apt-get --reinstall install -y nvidia-driver-${NVIDIA}
