@@ -109,6 +109,9 @@
     <keybind key="C-backslash Mod1-backslash">
       <action name="ToggleFullscreen"/>
     </keybind>
+    <keybind key="C-h Mod1-h">
+      <action name="Lower"/>
+    </keybind>
     <!-- Keybindings for application launching -->
     <keybind key="C-space Mod1-space">
       <action name="Execute">
