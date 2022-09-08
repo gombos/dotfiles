@@ -345,7 +345,7 @@ if [ "$HOST" = "pincer" ]; then
 
   # Persistent container storage for docker on the host
   mkdir -p $R/go/efi/tmp/docker
-  ln -sf  $R/go/efi/tmp/docker $R/var/lib/docker
+  ln -sf  /go/efi/tmp/docker $R/var/lib/docker
 
   if [ -n "$USR" ]; then
     echo "AllowUsers $USR" >> $R/etc/ssh/sshd_config
