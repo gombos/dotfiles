@@ -345,7 +345,7 @@ if [ "$HOST" = "pincer" ]; then
   rm -rf $R/home
   ln -sf /run/initramfs/isoscan/home $R/home
 
-  ln -sf /run/initramfs/isoscan $R/go/host
+  ln -sf /run/initramfs/isoscan $R/go/efi
 
   if [ -n "$USR" ]; then
     echo "AllowUsers $USR" >> $R/etc/ssh/sshd_config

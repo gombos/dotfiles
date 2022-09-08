@@ -27,15 +27,6 @@ cd /
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-# Directory tree
-# Allow per-machine/per-instance /boot /etc /usr /home /var
-
-# Symlink some directories normally on / to /var to allow more per-machine/per-instance configuration
-
-# /var/tmp points to /tmp
-#rm -rf var/tmp
-#ln -sf /tmp var/tmp
-
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
 ln -sf usr/opt
@@ -215,20 +206,6 @@ echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
 # Autologin
 sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf
-
-#mkdir -p usr/bin/
-#cp $SCRIPTS/infra-boot.sh usr/bin/infra-init.sh
-#cp /tmp/boot.service usr/lib/systemd/system/
-
-#mkdir -p etc/systemd/system/path.target.wants/ usr/lib/systemd/system/
-#ln -sf /lib/systemd/system/boot.service etc/systemd/system/path.target.wants/boot.service
-
-#mkdir -p etc/systemd/system/first-boot-complete.target.wants/ usr/lib/systemd/system/
-#ln -sf /lib/systemd/system/boot.service etc/systemd/system/first-boot-complete.target.wants/boot.service
-
-#rm etc/systemd/system/basic.target.wants/boot.service
-# Disable all the preinstaled cron jobs (except cron.d/ jobs)
-#> $R/etc/crontab
 
 rm -rf boot
 rm -rf var/www
