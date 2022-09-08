@@ -40,6 +40,8 @@ if [ -n "$USR" ]; then
   chown -R 1000:1000 /home/$USR
 fi
 
+# save RAM - use disk space for root overlay
+
 dd if=/dev/zero of=/overlay.img bs=1M count=1024
 mkfs.ext4 /overlay.img
 mount /overlay.img /mnt
