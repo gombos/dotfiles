@@ -315,14 +315,6 @@ if [ "$HOST" = "kispincer" ] || [ "$HOST" == "bestia" ]; then
   fi
 fi
 
-if [ "$HOST" = "pincer" ]; then
-  rm -rf $R/etc/sudoers.d/sudoers
-
-  # Persistent container storage for docker on the host
-  mkdir -p /go/efi/tmp/docker
-  ln -sf  /go/efi/tmp/docker /var/lib/docker
-fi
-
 # Might run at first boot, services might be already running
 echo "PasswordAuthentication no" >> $R/etc/ssh/sshd_config
 echo "ChallengeResponseAuthentication no" >> $R/etc/ssh/sshd_config
@@ -351,8 +343,13 @@ if [ "$HOST" = "pincer" ]; then
 
   ln -sf /run/initramfs/isoscan $R/go/efi
 
+  # Persistent container storage for docker on the host
+  mkdir -p $R/go/efi/tmp/docker
+  ln -sf  $R/go/efi/tmp/docker $R/var/lib/docker
+
   if [ -n "$USR" ]; then
     echo "AllowUsers $USR" >> $R/etc/ssh/sshd_config
   fi
 
+  rm -rf $R/etc/sudoers.d/sudoers
 fi
