@@ -60,7 +60,7 @@ if echo $TARGET | grep -w -q usrlocal; then
   sudo rm -rf $TMPUSRLOCAL && sudo mkdir $TMPUSRLOCAL && cd $TMPUSRLOCAL
   docker run --privileged --device /dev/fuse --cap-add SYS_ADMIN -v $TMPUSRLOCAL:/usr/local -v ~/.dotfiles/bin/:/tmp/bin 0gombi0/homelab-baremetal:extra /tmp/bin/packages-usrlocal
   sudo mksquashfs $TMPUSRLOCAL /tmp/usrlocal.img -comp zstd
-  gh release upload --clobber -R gombos/dotfiles usrlocal /tmp/usrlocal.img
+  #gh release upload --clobber -R gombos/dotfiles usrlocal /tmp/usrlocal.img
 fi
 
 if echo $TARGET | grep -w -q iso; then
