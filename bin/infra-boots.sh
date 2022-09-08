@@ -315,8 +315,12 @@ if [ "$HOST" = "kispincer" ] || [ "$HOST" == "bestia" ]; then
   fi
 fi
 
-if [ "$HOST" = "kispincer" ] || [ "$HOST" = "pincer" ]; then
+if [ "$HOST" = "pincer" ]; then
   rm -rf $R/etc/sudoers.d/sudoers
+
+  # Persistent container storage for docker on the host
+  mkdir -p /go/efi/tmp/docker
+  ln -sf  /go/efi/tmp/docker /var/lib/docker
 fi
 
 # Might run at first boot, services might be already running
