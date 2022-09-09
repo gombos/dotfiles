@@ -2,6 +2,7 @@
 test -f /Volumes/data/Users/adat/.bagoly && BAGOLY=/Volumes/data/Users/adat/.bagoly
 test -f /Users/adat/.bagoly && BAGOLY=/Users/adat/.bagoly
 test -f /home/adat/.bagoly && BAGOLY=/home/adat/.bagoly
+test -f /home/bagoly && BAGOLY=/home/bagoly
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   mountpoint -q $MNTDIR/bagoly || {
