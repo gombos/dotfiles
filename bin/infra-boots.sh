@@ -245,7 +245,8 @@ if [ "$HOST" = "bestia" ]; then
   ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
   ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
 
-  echo "LABEL=home_pincer /home ext4 noauto,x-systemd.automount,x-systemd.idle-timeout=5min 0 2" >> $R/etc/fstab
+  # noauto,x-systemd.automount,x-systemd.idle-timeout=5min
+  echo "LABEL=home /home ext4 auto 0 2" >> $R/etc/fstab
 fi
 
 if [ "$HOST" = "bestia" ]; then
