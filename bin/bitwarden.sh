@@ -30,6 +30,7 @@ trap "rm -f $TEMP" exit # Remove temp file on exit
 
 # todo, maybe use this ?
 # bw list items --search github
+# https://github.com/raycast/script-commands/commit/f3f765d04093429863072fe093fbb36e118a75e6
 
 wrap_bw() {
   bw get item $ORIG_MSG_FILE
