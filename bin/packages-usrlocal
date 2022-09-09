@@ -55,7 +55,8 @@ mv rclone-*/rclone /usr/local/bin/
 rm -rf rclone-*
 
 # bitwarden
-wget --quiet -O - 'https://vault.bitwarden.com/download/?app=cli&platform=linux' > bw.zip
+BW="2022.6.2"
+wget --quiet -O - https://github.com/bitwarden/clients/releases/download/cli-v$BW/bw-linux-$BW.zip > bw.zip
 unzip bw.zip
 rm bw.zip
 chmod +x bw
