@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if ! command -v bw &> /dev/null; then
+  echo "The Bitwarden CLI is not installed."
+  exit 1
+elif ! command -v jq &> /dev/null; then
+  echo "The jq utility is not installed."
+  exit 1
+fi
+
 catch()
 {
 eval "$({
@@ -15,11 +23,13 @@ printf '( exit %q )' "$ret" >&2;
 } 2>&1 )";
 }
 
-
 ORIG_MSG_FILE="$1"  # Grab the current template
 
 TEMP=`mktemp /tmp/git-msg-XXXXX` # Create a temp file
 trap "rm -f $TEMP" exit # Remove temp file on exit
+
+# todo, maybe use this ?
+# bw list items --search github
 
 wrap_bw() {
   bw get item $ORIG_MSG_FILE
