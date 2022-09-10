@@ -6,6 +6,7 @@
 antiword
 attr
 borgbackup
+python3-llfuse
 detox
 dos2unix
 file
