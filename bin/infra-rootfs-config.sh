@@ -245,7 +245,7 @@ apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
-
+dpkg -l
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*

@@ -2,7 +2,8 @@
 
 cd /tmp
 
-#rm -rf /usr/local
+. ./bin/infra-env.sh
+
 mkdir -p /usr/local/bin
 
 # todo - separate out nix to its own script
@@ -35,8 +36,7 @@ mkdir -p /usr/local/bin
 
 # rga
 rm -rf ripgrep_all-*
-RIPGREP="v0.9.6"
-wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/$RIPGREP/ripgrep_all-$RIPGREP-x86_64-unknown-linux-musl.tar.gz
+wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-x86_64-unknown-linux-musl.tar.gz
 gzip -d ripgrep_all-*
 tar -xvf ripgrep_all-*
 mv ripgrep_all-*/rga* /usr/local/bin/
@@ -48,15 +48,13 @@ mv micro /usr/local/bin/
 
 # rclone
 rm -rf rclone-*-linux-amd64.zip
-RCLONE="v1.58.0"
-wget --quiet https://github.com/rclone/rclone/releases/download/$RCLONE/rclone-$RCLONE-linux-amd64.zip
+wget --quiet https://github.com/rclone/rclone/releases/download/v${RCLONE}/rclone-v${RCLONE}-linux-amd64.zip
 unzip rclone-*-linux-amd64.zip
 mv rclone-*/rclone /usr/local/bin/
 rm -rf rclone-*
 
 # bitwarden
-BW="2022.6.2"
-wget --quiet -O - https://github.com/bitwarden/clients/releases/download/cli-v$BW/bw-linux-$BW.zip > bw.zip
+wget --quiet -O - https://github.com/bitwarden/clients/releases/download/cli-v${BW}/bw-linux-${BW}.zip > bw.zip
 unzip bw.zip
 rm bw.zip
 chmod +x bw
@@ -64,7 +62,7 @@ mv bw /usr/local/bin/
 
 if [ -f /usr/bin/Xorg ]; then
 # appimage - digikam
-wget --quiet https://download.kde.org/stable/digikam/7.5.0/digiKam-7.5.0-x86-64.appimage -O /usr/local/bin/digikam
+wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
 # appimage - chrome
