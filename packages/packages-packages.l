@@ -77,6 +77,7 @@ sudo
 qemu-system-x86
 qemu-system-gui
 ovmf
+swtpm
 
 # arm
 qemu-user-static
