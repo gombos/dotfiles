@@ -84,3 +84,5 @@ qemu-user-static
 
 binutils
 graphicsmagick-imagemagick-compat
+udisks2
+libblockdev-crypto2
