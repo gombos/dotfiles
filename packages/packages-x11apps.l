@@ -1,7 +1,6 @@
 # Purpose: Basic desktop system
 # Non-goals: Full engineering setup
 
-udisks2
 gparted
 kitty
 mousepad

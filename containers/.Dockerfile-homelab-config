@@ -2,7 +2,9 @@ FROM 0gombi0/homelab-baremetal:extra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
+RUN true
 COPY boot/ /tmp/
+RUN true
 
 # Change the workdir to tmp
 WORKDIR /tmp

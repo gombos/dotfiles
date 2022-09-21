@@ -23,3 +23,7 @@ rsyslog
 
 # time - ntp
 systemd-timesyncd
+
+# storage
+udisks2
+libblockdev-crypto2

@@ -6,6 +6,7 @@
 antiword
 attr
 borgbackup
+python3-llfuse
 detox
 dos2unix
 file
@@ -76,6 +77,7 @@ sudo
 qemu-system-x86
 qemu-system-gui
 ovmf
+swtpm
 
 # arm
 qemu-user-static

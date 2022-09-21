@@ -1,6 +1,9 @@
 # filesystems
 fuse3
 open-vm-tools-desktop
+spice-vdagent
+spice-webdavd
+davfs2
 jmtpfs
 gdisk
 gddrescue

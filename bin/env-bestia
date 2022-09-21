@@ -115,8 +115,8 @@ borg-archive_media()  { cd $MNTDIR/archive_media && nohup borg create -e archive
 
 borg-archive_mail()   { cd $MNTDIR/archive_ice/archive && nohup borg create --noflags -s -x --list $MNTDIR/backup_pancel/borg/archive_mail::archive_mail-`date -Iseconds` archive_mail >/tmp/nohup-borg-archive_mail.out 2>&1; }
 
-borg-archive_media_image()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none --exclude-from ~/.dotfiles/doc/videoextensions-exclude -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_image-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_image.out 2>&1; }
-borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none --patterns-from ~/.dotfiles/doc/videoextensions -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_video-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_video.out 2>&1; }
+borg-archive_media_image()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_image-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_image.out 2>&1; }
+borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_video-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_video.out 2>&1; }
 
 borg-archive_ice()    { cd $MNTDIR/archive_ice && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/archive_ice::archive_ice-`date -Iseconds` archive >/tmp/nohup-borg-archive_ice.out 2>&1; }
 borg-archive_bagoly() { cd $MNTDIR/archive_bagoly && nohup borg create -s --noflags -x --list $MNTDIR/borg/borg/data::data-`date -Iseconds` . >/tmp/nohup-borg-archive_bagoly.out 2>&1; }
@@ -132,7 +132,7 @@ alias umnt-mac='sudo umount /mnt/mac'
 alias mnt-0='mkdir -p ~/.disk0 && mount ~/.disk0 && sudo cryptsetup open --type tcrypt ~/.disk0/0 0 && mkdir -p ~/0 && sudo mount /dev/mapper/0 ~/0 -o user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev'
 alias umnt-0='sudo umount ~/0 && sudo cryptsetup close 0 && sudo umount ~/.disk0 && rmdir ~/0 && rmdir ~/.disk0'
 
-borg-archive_media_image_pancel()  { cd $MNTDIR/archive_media/archive_media/p/o && nohup borg create --nobsdflags --compression none --exclude-from ~/.dotfiles/doc/videoextensions-exclude -s -x --list $MNTDIR/backup_pancel/borg::archive_media_image-`date -Iseconds` . >/tmp/nohup-borg-archive_media_image_pancel.out 2>&1; }
+borg-archive_media_image_pancel()  { cd $MNTDIR/archive_media/archive_media/p/o && nohup borg create --nobsdflags --compression none -s -x --list $MNTDIR/backup_pancel/borg/archive_media::archive_media_image-`date -Iseconds` . >/tmp/nohup-borg-archive_media_image_pancel.out 2>&1; }
 
 # Backup to disk-tape
 # tape = slow, large and reliable storage

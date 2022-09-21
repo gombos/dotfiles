@@ -45,6 +45,8 @@ fi
 ########## BASE
 
 # bootable on baremetal
+# supports https://www.freedesktop.org/software/systemd/man/systemd-sysext.html
+
 if [ "$TARGET" = "base" ]; then
 # Disable installing recommended and suggested packages by default
 mkdir -p etc/apt/apt.conf.d/
