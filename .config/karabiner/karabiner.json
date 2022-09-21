@@ -119,7 +119,11 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.vmware\\.fusion$",
-                                            "^net\\.kovidgoyal\\.kitty$"
+                                            "^net\\.kovidgoyal\\.kitty$",
+                                            "^com\\.microsoft\\.Edge",
+                                            "^com\\.google\\.Chrome$",
+                                            "^com\\.apple\\.Safari$",
+                                            "^com\\.microsoft\\.VSCode"
                                         ],
                                         "type": "frontmost_application_unless"
                                     }
