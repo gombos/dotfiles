@@ -84,7 +84,11 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.vmware\\.fusion$",
-                                            "^net\\.kovidgoyal\\.kitty$"
+                                            "^net\\.kovidgoyal\\.kitty$",
+                                            "^com\\.microsoft\\.Edge",
+                                            "^com\\.google\\.Chrome$",
+                                            "^com\\.apple\\.Safari$",
+                                            "^com\\.microsoft\\.VSCode"
                                         ],
                                         "type": "frontmost_application_unless"
                                     }
@@ -102,7 +106,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "w",
+                                        "key_code": "h",
                                         "modifiers": [
                                             "command"
                                         ]
@@ -133,7 +137,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "w",
+                                        "key_code": "h",
                                         "modifiers": [
                                             "command"
                                         ]
@@ -639,6 +643,44 @@
                                 "to": [
                                     {
                                         "key_code": "t",
+                                        "modifiers": [
+                                            "command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Ctrl+Q => Quit tab",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^com\\.microsoft\\.Edge",
+                                            "^com\\.google\\.Chrome$",
+                                            "^com\\.apple\\.Safari$",
+                                            "^com\\.microsoft\\.VSCode"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "q",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "w",
                                         "modifiers": [
                                             "command"
                                         ]
