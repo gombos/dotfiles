@@ -77,7 +77,7 @@
                         ]
                     },
                     {
-                        "description": "Ctrl+Q => Close",
+                        "description": "Ctrl+Q => Hide app",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -676,6 +676,39 @@
                                     "modifiers": {
                                         "mandatory": [
                                             "control"
+                                        ],
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "w",
+                                        "modifiers": [
+                                            "command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                               "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^com\\.microsoft\\.Edge",
+                                            "^com\\.google\\.Chrome$",
+                                            "^com\\.apple\\.Safari$",
+                                            "^com\\.microsoft\\.VSCode"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "q",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "command"
                                         ],
                                         "optional": [
                                             "any"
