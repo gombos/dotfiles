@@ -130,10 +130,10 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
 
-  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
+#  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
   chmod 444 $R/etc/resolv.conf
 else
-  printf "DNS=192.168.1.2\n" >> $R/etc/systemd/resolved.conf
+#  printf "DNS=192.168.1.2\n" >> $R/etc/systemd/resolved.conf
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
 
