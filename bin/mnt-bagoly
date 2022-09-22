@@ -3,6 +3,7 @@ test -f /Volumes/data/Users/adat/.bagoly && BAGOLY=/Volumes/data/Users/adat/.bag
 test -f /Users/adat/.bagoly && BAGOLY=/Users/adat/.bagoly
 test -f /home/adat/.bagoly && BAGOLY=/home/adat/.bagoly
 test -f /home/bagoly && BAGOLY=/home/bagoly
+test -f /Users/l.gombos/bagoly && BAGOLY=/Users/l.gombos/bagoly
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   mountpoint -q $MNTDIR/bagoly || {
