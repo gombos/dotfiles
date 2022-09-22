@@ -99,7 +99,7 @@ fi
 
 # set static IP
 if [ -n "$IP" ]; then
-  printf "auto eth0\niface eth0 inet static\n  ethernet-wol g\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers $NET.2 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
+  printf "auto eth0\niface eth0 inet static\n  ethernet-wol g\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
 fi
 
 # updates
@@ -130,10 +130,8 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
 
-#  printf "nameserver 192.168.1.2\n" > $R/etc/resolv.conf
   chmod 444 $R/etc/resolv.conf
 else
-#  printf "DNS=192.168.1.2\n" >> $R/etc/systemd/resolved.conf
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
 

@@ -84,10 +84,10 @@ TreeView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
 Update Type=0
 
 [AlbumFolderView Sidebar]
-CurrentIndex=1
-Expansion=0,1,3,4,5,6,8033,8043,8044,8046,8047,8049,8050,8051,8053,8054,8055,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066
+CurrentIndex=8072
+Expansion=0,3,4,5,6,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066,8067,8068,8069,8070,8072,8074,8076,8075,8080,8087,8088,8089,8090,-3
 RestoreChecked=false
-Selection=1
+Selection=8072
 SortColumn=0
 SortOrder=0
 
@@ -159,10 +159,10 @@ LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digikaPDCIZV/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digikaXyo8Ed/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digikaPDCIZV/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digikaXyo8Ed/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -1128,7 +1128,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwKmpqY=
+Database Encrypted Password=AwJYWFg=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -1151,18 +1151,18 @@ SortColumn=0
 SortOrder=0
 
 [Digikam Left Sidebar]
-ActiveTab=0
+ActiveTab=8
 Minimized=false
 RestoreSize=-1
 
 [Digikam Right Sidebar]
-ActiveTab=6
+ActiveTab=0
 DigikamProperties Expanded=true
 FileProperties Expanded=true
 ItemProperties Expanded=true
-Minimized=false
+Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=-1
+RestoreSize=550
 VideoProperties Expanded=true
 
 [Digikam Right Sidebar][Captions Tags Properties Tab]
@@ -1279,44 +1279,44 @@ org.kde.digikam.plugin.editor.SharpenTool=true
 org.kde.digikam.plugin.editor.ShearTool=true
 org.kde.digikam.plugin.editor.TextureTool=true
 org.kde.digikam.plugin.editor.WhiteBalanceTool=true
-org.kde.digikam.plugin.generic.Box=true
-org.kde.digikam.plugin.generic.Calendar=true
-org.kde.digikam.plugin.generic.DigitalScanner=true
-org.kde.digikam.plugin.generic.DropBox=true
-org.kde.digikam.plugin.generic.ExpoBlending=true
+org.kde.digikam.plugin.generic.Box=false
+org.kde.digikam.plugin.generic.Calendar=false
+org.kde.digikam.plugin.generic.DigitalScanner=false
+org.kde.digikam.plugin.generic.DropBox=false
+org.kde.digikam.plugin.generic.ExpoBlending=false
 org.kde.digikam.plugin.generic.FaceBook=true
-org.kde.digikam.plugin.generic.FileCopy=true
-org.kde.digikam.plugin.generic.FileTransfer=true
-org.kde.digikam.plugin.generic.Flickr=true
-org.kde.digikam.plugin.generic.GLViewer=true
-org.kde.digikam.plugin.generic.GeolocationEdit=true
-org.kde.digikam.plugin.generic.GoogleServices=true
-org.kde.digikam.plugin.generic.HtmlGallery=true
-org.kde.digikam.plugin.generic.ImageMosaicWall=true
-org.kde.digikam.plugin.generic.ImageShack=true
-org.kde.digikam.plugin.generic.ImgUr=true
+org.kde.digikam.plugin.generic.FileCopy=false
+org.kde.digikam.plugin.generic.FileTransfer=false
+org.kde.digikam.plugin.generic.Flickr=false
+org.kde.digikam.plugin.generic.GLViewer=false
+org.kde.digikam.plugin.generic.GeolocationEdit=false
+org.kde.digikam.plugin.generic.GoogleServices=false
+org.kde.digikam.plugin.generic.HtmlGallery=false
+org.kde.digikam.plugin.generic.ImageMosaicWall=false
+org.kde.digikam.plugin.generic.ImageShack=false
+org.kde.digikam.plugin.generic.ImgUr=false
 org.kde.digikam.plugin.generic.IpFs=true
-org.kde.digikam.plugin.generic.JAlbum=true
-org.kde.digikam.plugin.generic.MediaServer=true
-org.kde.digikam.plugin.generic.MediaWiki=true
-org.kde.digikam.plugin.generic.MetadataEdit=true
-org.kde.digikam.plugin.generic.MjpegStream=true
-org.kde.digikam.plugin.generic.OneDrive=true
-org.kde.digikam.plugin.generic.Panorama=true
-org.kde.digikam.plugin.generic.Pinterest=true
-org.kde.digikam.plugin.generic.Piwigo=true
-org.kde.digikam.plugin.generic.Presentation=true
-org.kde.digikam.plugin.generic.PrintCreator=true
-org.kde.digikam.plugin.generic.Rajce=true
-org.kde.digikam.plugin.generic.SendByMail=true
-org.kde.digikam.plugin.generic.SlideShow=true
-org.kde.digikam.plugin.generic.SmugMug=true
-org.kde.digikam.plugin.generic.TimeAdjust=true
-org.kde.digikam.plugin.generic.Twitter=true
+org.kde.digikam.plugin.generic.JAlbum=false
+org.kde.digikam.plugin.generic.MediaServer=false
+org.kde.digikam.plugin.generic.MediaWiki=false
+org.kde.digikam.plugin.generic.MetadataEdit=false
+org.kde.digikam.plugin.generic.MjpegStream=false
+org.kde.digikam.plugin.generic.OneDrive=false
+org.kde.digikam.plugin.generic.Panorama=false
+org.kde.digikam.plugin.generic.Pinterest=false
+org.kde.digikam.plugin.generic.Piwigo=false
+org.kde.digikam.plugin.generic.Presentation=false
+org.kde.digikam.plugin.generic.PrintCreator=false
+org.kde.digikam.plugin.generic.Rajce=false
+org.kde.digikam.plugin.generic.SendByMail=false
+org.kde.digikam.plugin.generic.SlideShow=false
+org.kde.digikam.plugin.generic.SmugMug=false
+org.kde.digikam.plugin.generic.TimeAdjust=false
+org.kde.digikam.plugin.generic.Twitter=false
 org.kde.digikam.plugin.generic.VKontakte=true
-org.kde.digikam.plugin.generic.VideoSlideShow=true
+org.kde.digikam.plugin.generic.VideoSlideShow=false
 org.kde.digikam.plugin.generic.YandexFotki=true
-org.kde.digikam.plugin.generic.iNaturalist=true
+org.kde.digikam.plugin.generic.iNaturalist=false
 
 [ExifToolFormatsSearchBar Search Text Tool]
 CaseSensitive=0
@@ -1340,15 +1340,15 @@ AlbumTypeEntry=1
 Already Scanned Handling=Merge
 Face Scan Main Task=Recognize Marked Faces
 TagComboBox-Checked=4
-TagComboBox-CurrentIndex=4
+TagComboBox-CurrentIndex=94
 TagComboBox-Expansion=
 TagComboBox-RestoreChecked=true
-TagComboBox-Selection=4
+TagComboBox-Selection=94
 TagComboBox-SortColumn=0
 TagComboBox-SortOrder=0
 Use Full CPU=true
 UseWholeAlbumsEntry=false
-UseWholeTagsEntry=false
+UseWholeTagsEntry=true
 
 [Find Duplicates View]
 AlbumComboBox-Checked=
@@ -1477,8 +1477,8 @@ HDMI-0 YPosition 1920x1080=16
 HDMI-0 YPosition 3840x2160=90
 HDMI-1 Height 3840x2160=1411
 HDMI-1 Width 3840x2160=3151
-HDMI-1 XPosition 3840x2160=253
-HDMI-1 YPosition 3840x2160=398
+HDMI-1 XPosition 3840x2160=388
+HDMI-1 YPosition 3840x2160=350
 Height 1080=1080
 Height 878=748
 Icon Theme=
@@ -1970,9 +1970,9 @@ State=AAAA/wAAAAD9AAAAAQAAAAIAAAI0AAAAwPwBAAAAAfsAAAAmAGwAaQBnAGgAdAB0AGEAYgBsAG
 ToolBarsMovable=Disabled
 
 [MainWindow]
-InitialAlbumID=1
+InitialAlbumID=134217807
 SplitterState=AAAA/wAAAAEAAAADAAACjAAABzgAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAc4AAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAABzgAAACcAP///wAABzgAAAUEAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAllAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACWUAAACcAP///wAACWUAAAUEAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [Metadata Settings]
 Album Date Source=1
@@ -2011,10 +2011,10 @@ CaseSensitive=0
 HelpBoxNotifSeen=true
 
 [People Sidebar]
-CurrentIndex=55
-Expansion=4,55,54,70,59,68,67,66,75,73,77,74,76,71,79,81,82,78,72,80,69
+CurrentIndex=79
+Expansion=4,55,54,70,59,68,67,66,75,73,77,76,74,71,79,81,82,78,72,80,69
 RestoreChecked=false
-Selection=55
+Selection=79
 SortColumn=0
 SortOrder=0
 
@@ -2036,7 +2036,7 @@ CaseSensitive=0
 HDMI-1 Height 3840x2160=1057
 HDMI-1 Width 3840x2160=1970
 Height 1080=1080
-Setup Page=1
+Setup Page=3
 Template Tab=0
 Width 1920=1920
 
@@ -2066,10 +2066,10 @@ TypeGeolocationFilter Expanded=true
 TypeMimeFilter Expanded=true
 
 [TagView Sidebar]
-CurrentIndex=69
-Expansion=0,4,55,54,70,59,67,69,62,49,51,34,46,37,44,39,32,36,38,65,42,50,41,35,47,45,33,48,61,60
+CurrentIndex=59
+Expansion=0,4,55,54,70,86,81,82,88,74,59,87,75,72,85,67,69,62,49,51,34,46,37,44,39,32,36,38,65,42,50,41,35,47,45,33,48,61,60
 RestoreChecked=false
-Selection=69
+Selection=59
 SortColumn=0
 SortOrder=0
 TagsSource=false
