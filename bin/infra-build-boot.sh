@@ -43,9 +43,33 @@ if [ "$ID" = "arch" ]; then
   pacman -Q
 elif [ "$ID" = "alpine" ]; then
   apk upgrade
+  apk update
+
+   # steps to rebuild an alpine package - takes forever to check out the git repo
+#  apk add sudo alpine-sdk
+#  adduser -D build
+#  addgroup build abuild
+#  addgroup abuild root
+#  echo 'build ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+#  su build
+#  export PATH=$PATH:/sbin/
 
   apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
   apk add squashfs-tools git util-linux-misc
+
+  # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
+  # rebuild libkmod without openssl lib
+  apk add xz alpine-sdk zstd-dev
+  wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
+  xz -v -d *.xz
+  tar -xvf *.tar
+  cd kmod-30
+  ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --with-zstd
+  make
+
+  rm -rf  /lib/libkmod.so*
+  make install
+  strip /lib/libkmod.so*
 
   # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
   # some people might not need util-linux-misc but I DO
