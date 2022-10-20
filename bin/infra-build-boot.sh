@@ -175,8 +175,6 @@ if [ -n "${D}" ]; then
   DRACUT_MODULES="$DRACUT_MODULES debug"
 fi
 
-# --include dracutdir/modules.d/90dmsquash-live/mount-overlayfs.sh /lib/dracut/hooks/mount/99-mount-overlay.sh \
-
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
@@ -224,6 +222,10 @@ mv /tmp/gzip /bin/
 
 rm bin/bash
 rm bin/findmnt
+
+# TODO - why is this needed ?
+# without this file is still does not boot
+# rm -rf sbin/dmsquash-live-root
 
 # TODO
 # can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
