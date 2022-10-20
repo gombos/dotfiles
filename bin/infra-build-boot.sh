@@ -54,7 +54,7 @@ elif [ "$ID" = "alpine" ]; then
 #  su build
 #  export PATH=$PATH:/sbin/
 
-  apk add dracut --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
+  apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
   apk add squashfs-tools git util-linux-misc
 
   # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
@@ -80,6 +80,8 @@ elif [ "$ID" = "alpine" ]; then
 
   # TODO
   # remove dependency on eudev coreutils findmnt
+
+  rm /bin/findmnt
 
 else
   export DEBIAN_FRONTEND=noninteractive
@@ -244,7 +246,7 @@ find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /
 rm -rf lib/modules
 
 # Populate logs with the list of filenames inside initrd.img
-find . -type f -exec ls -la {} \;
+find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
 
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd*.img
