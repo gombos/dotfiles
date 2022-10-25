@@ -102,7 +102,7 @@ cd /
 git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
 # pull in a PR
-git fetch origin refs/pull/1920/head:pr && git checkout pr
+#git fetch origin refs/pull/1920/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
