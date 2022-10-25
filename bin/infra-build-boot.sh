@@ -70,16 +70,17 @@ elif [ "$ID" = "alpine" ]; then
   rm -rf  /lib/libkmod.so*
   make install
   strip /lib/libkmod.so*
+  apk del xz alpine-sdk zstd-dev
 
   # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
   # some people might not need util-linux-misc but I DO
 
   #apk add build-base make # build base
   #apk add fts-dev kmod-dev pkgconfig # build dracut
-  #apk add bash eudev coreutils findmnt blkid util-linux-misc # run dracut
+  #apk add bash eudev coreutils blkid util-linux-misc # run dracut
 
   # TODO
-  # remove dependency on eudev coreutils findmnt
+  # remove dependency on eudev coreutils
 
   rm /bin/findmnt
 
@@ -186,6 +187,12 @@ rm initrd.img
 
 cd /tmp/dracut/dracut.*/initramfs
 
+# TODO
+# need to specify root by HW ID /dev/sr0 instead of label and might need to preload isofs
+#  rm -rf lib/udev/cdrom_id
+#  rm -rf lib/udev/rules.d/60-cdrom_id.rules
+
+
 if [ -z "${D}" ]; then
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
@@ -215,13 +222,12 @@ if [ -z "${D}" ]; then
   rm -rf etc/cmdline.d
   rm -rf etc/ld.so.conf.d/libc.conf
   rm -rf etc/ld.so.conf
+  rm -rf etc/group
+  rm -rf etc/mtab
 fi
 
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
-
-rm bin/bash
-rm bin/findmnt
 
 # TODO - why is this needed ?
 # without this file is still does not boot
