@@ -68,6 +68,8 @@ mkdir -p /efi /lib /tmp/dracut
   apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
   apk add squashfs-tools git util-linux-misc
 
+#  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
+
   # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
   # rebuild libkmod without openssl lib
   apk add xz alpine-sdk

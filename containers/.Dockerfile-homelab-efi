@@ -6,6 +6,11 @@ FROM alpine
 
 COPY --from=kernel /efi /efi
 
+#FROM docker.io/gentoo/portage:latest as portage
+#FROM docker.io/gentoo/stage3:musl
+#COPY --from=kernel /efi /efi
+#COPY --from=portage /var/db/repos/gentoo /var/db/repos/gentoo
+
 COPY bin/* /tmp/
 COPY boot/ /tmp/
 WORKDIR /tmp
