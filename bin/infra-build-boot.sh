@@ -36,12 +36,15 @@ fi
 
 #D='--debug --verbose'
 
+# TODO: keep libkmod, but not kmod binary itself ?
+# customize busybox - maybe on gentoo
+# https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
+# https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
+# https://git.busybox.net/busybox
+# https://gitweb.gentoo.org/repo/gentoo.git/tree/sys-apps/busybox/busybox-1.35.0.ebuild
+
 mkdir -p /efi /lib /tmp/dracut
 
-if [ "$ID" = "arch" ]; then
-  pacman --noconfirm -Sy --disable-download-timeout squashfs-tools git make pkgconf autoconf binutils gcc && yes | pacman  -Scc
-  pacman -Q
-elif [ "$ID" = "alpine" ]; then
   apk upgrade
   apk update
 
@@ -61,8 +64,8 @@ elif [ "$ID" = "alpine" ]; then
   # rebuild libkmod without openssl lib
   apk add xz alpine-sdk zstd-dev
   wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-  xz -v -d *.xz
-  tar -xvf *.tar
+  xz -d *.xz
+  tar -xf *.tar
   cd kmod-30
   ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --with-zstd
   make
@@ -70,6 +73,7 @@ elif [ "$ID" = "alpine" ]; then
   rm -rf  /lib/libkmod.so*
   make install
   strip /lib/libkmod.so*
+  # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
   apk del xz alpine-sdk zstd-dev
 
   # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
@@ -83,14 +87,6 @@ elif [ "$ID" = "alpine" ]; then
   # remove dependency on eudev coreutils
 
   rm /bin/findmnt
-
-else
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update -y -qq -o Dpkg::Use-Pty=0
-  apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools kmod udev coreutils wget ca-certificates git busybox-initramfs dash
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 libkmod-dev pkg-config mount g++ make
-fi
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
@@ -236,7 +232,9 @@ mv /tmp/gzip /bin/
 # TODO
 # can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
 
-# blkid bugs might be able to worked around
+# blkid bugs might be able to worked around, but fs-lib dracut module needs some serious look -
+# https://github.com/dracutdevs/dracut/pull/1956 .. this change might not be enough, lets debug more
+# TODO eliminate blkid, it brings in not only a new bin, but also libblkid.so.1.1.0 (almost 0.4M)
 rm sbin/blkid && cp /sbin/blkid sbin/
 rm sbin/switch_root && cp /sbin/switch_root sbin/
 
@@ -255,6 +253,9 @@ rm -rf lib/modules
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
+find . | grep blkid
+ls -la sbin/blkid
+ldd sbin/blkid
 
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd*.img
