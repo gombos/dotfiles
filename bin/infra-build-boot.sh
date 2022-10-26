@@ -49,6 +49,7 @@ fi
 #udev - 600M
 #udev-rules (lib/udev/*_id) - 300M
 # TODO: kill blkid, udev anyways have blkid built in
+# sudo udevadm test-builtin blkid
 
 mkdir -p /efi /lib /tmp/dracut
 
