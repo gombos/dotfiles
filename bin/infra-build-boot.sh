@@ -36,12 +36,19 @@ fi
 
 #D='--debug --verbose'
 
-# TODO: keep libkmod, but not kmod binary itself ?
 # customize busybox - maybe on gentoo
 # https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
 # https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
 # https://git.busybox.net/busybox
 # https://gitweb.gentoo.org/repo/gentoo.git/tree/sys-apps/busybox/busybox-1.35.0.ebuild
+
+# Sizes - compressed: 1.5M
+#busybox - 800M
+#musl - 600M
+#blkid - 400M
+#udev - 600M
+#udev-rules (lib/udev/*_id) - 300M
+# TODO: kill blkid, udev anyways have blkid built in
 
 mkdir -p /efi /lib /tmp/dracut
 
@@ -62,19 +69,19 @@ mkdir -p /efi /lib /tmp/dracut
 
   # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
   # rebuild libkmod without openssl lib
-  apk add xz alpine-sdk zstd-dev
+  apk add xz alpine-sdk
   wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
   xz -d *.xz
   tar -xf *.tar
   cd kmod-30
-  ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --with-zstd
+  ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
   make
 
   rm -rf  /lib/libkmod.so*
   make install
   strip /lib/libkmod.so*
   # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-  apk del xz alpine-sdk zstd-dev
+  apk del xz alpine-sdk
 
   # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
   # some people might not need util-linux-misc but I DO
@@ -253,9 +260,6 @@ rm -rf lib/modules
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
-find . | grep blkid
-ls -la sbin/blkid
-ldd sbin/blkid
 
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd*.img
