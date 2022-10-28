@@ -58,7 +58,7 @@ bc
 command-not-found
 debootstrap
 docker-compose
-gawk
+mawk
 gpg
 gpg-agent
 htop
