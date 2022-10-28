@@ -109,7 +109,7 @@ cd /
 git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
 # pull in a PR
-#git fetch origin refs/pull/1920/head:pr && git checkout pr
+#git fetch origin refs/pull/1934/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
@@ -234,6 +234,11 @@ fi
 
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
+
+rm -rf ./lib/dracut/hooks/shutdown/25-dm-shutdown.sh ./lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh  ./lib/udev/rules.d/75-net-description.rules  ./lib/dracut/hooks/cmdline/31-parse-iso-scan.sh  ./lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh ./lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+rm -rf ./etc/udev/rules.d/11-dm.rules ./sbin/iso-scan
+
+# echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
 # TODO - why is this needed ?
 # without this file is still does not boot
