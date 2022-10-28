@@ -211,11 +211,16 @@ if [ -z "${D}" ]; then
   # todo - ideally dm dracut module is not included instead of this hack
   rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
   rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+  rm -rf lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh
+  rm -rf lib/udev/rules.d/75-net-description.rules
+  rm -rf etc/udev/rules.d/11-dm.rules
+
   rm -rf usr/sbin/dmsetup
   rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
   # optimize - Remove empty (fake) binaries
   find usr/bin usr/sbin -type f -empty -delete -print
+  rm -rf lib/dracut/need-initqueue
 
   # just symlinks in alpine
   rm -rf sbin/chroot
@@ -235,13 +240,11 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-rm -rf ./lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh ./lib/udev/rules.d/75-net-description.rules ./etc/udev/rules.d/11-dm.rules
-
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
 # TODO - why is this needed ?
 # without this file is still does not boot
-# rm -rf sbin/dmsquash-live-root
+# dmsquash-live-root still need to mount the squashfs that is inside .iso file
 
 # TODO
 # can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
