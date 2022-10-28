@@ -235,7 +235,7 @@ fi
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
-#rm -rf ./lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh ./lib/udev/rules.d/75-net-description.rules ./etc/udev/rules.d/11-dm.rules
+rm -rf ./lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh ./lib/udev/rules.d/75-net-description.rules ./etc/udev/rules.d/11-dm.rules
 
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
