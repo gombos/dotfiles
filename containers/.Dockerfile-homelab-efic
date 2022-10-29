@@ -1,0 +1,7 @@
+# Base image could be independent from rootfs
+
+FROM 0gombi0/homelab:efi as efi
+
+FROM scratch
+
+COPY --from=efi /initramfs/ /

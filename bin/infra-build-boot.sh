@@ -72,25 +72,16 @@ apk add squashfs-tools git util-linux-misc >/dev/null
 # rebuild libkmod without openssl lib
 apk add xz alpine-sdk  >/dev/null
 wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-xz -d *.xz
-tar -xf *.tar
-cd kmod-30
+xz -d *.xz && tar -xf *.tar && cd kmod-30
 ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
 make
-
-rm -rf /lib/libkmod.so*
-make install
-make clean 2>&1 > /dev/null
+rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
 strip /lib/libkmod.so*
 # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
 apk del xz alpine-sdk  >/dev/null
 
 # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
 # some people might not need util-linux-misc but I DO
-
-#apk add build-base make # build base
-#apk add fts-dev kmod-dev pkgconfig # build dracut
-#apk add bash eudev coreutils blkid util-linux-misc # run dracut
 
 # TODO
 # remove dependency on eudev coreutils
@@ -104,7 +95,7 @@ mv squashfs-root /lib/modules
 
 cd /
 
-# build dracut from source
+# grab upstream dracut source
 git clone https://github.com/dracutdevs/dracut.git
 
 # pull in a PR
@@ -184,7 +175,8 @@ dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compres
 
 rm initrd.img
 
-cd /tmp/dracut/dracut.*/initramfs
+mv /tmp/dracut/dracut.*/initramfs /
+cd /initramfs
 
 # TODO
 # need to specify root by HW ID /dev/sr0 instead of label and might need to preload isofs
