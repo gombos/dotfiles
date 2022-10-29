@@ -63,14 +63,14 @@ mkdir -p /efi /lib /tmp/dracut
 #  su build
 #  export PATH=$PATH:/sbin/
 
-  apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
-  apk add squashfs-tools git util-linux-misc
+  apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+  apk add squashfs-tools git util-linux-misc >/dev/null
 
 #  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
 
   # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
   # rebuild libkmod without openssl lib
-  apk add xz alpine-sdk
+  apk add xz alpine-sdk  >/dev/null
   wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
   xz -d *.xz
   tar -xf *.tar
@@ -80,10 +80,10 @@ mkdir -p /efi /lib /tmp/dracut
 
   rm -rf /lib/libkmod.so*
   make install
-  make clean
+  make clean 2>&1 > /dev/null
   strip /lib/libkmod.so*
   # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-  apk del xz alpine-sdk
+  apk del xz alpine-sdk  >/dev/null
 
   # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
   # some people might not need util-linux-misc but I DO
@@ -105,10 +105,10 @@ mv squashfs-root /lib/modules
 cd /
 
 # build dracut from source
-git clone https://github.com/dracutdevs/dracut.git && cd dracut
+git clone https://github.com/dracutdevs/dracut.git
 
 # pull in a PR
-#git fetch origin refs/pull/1934/head:pr && git checkout pr
+#cd dracut && git fetch origin refs/pull/1934/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
@@ -279,6 +279,6 @@ ls -lha /efi/kernel/initrd*.img
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-apk del util-linux-misc dracut-modules squashfs-tools git util-linux-misc cpio
+apk del util-linux-misc dracut-modules squashfs-tools git util-linux-misc cpio >/dev/null
 
 rm -rf /tmp
