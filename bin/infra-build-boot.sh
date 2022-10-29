@@ -125,10 +125,8 @@ rm -rf /usr/bin/cpio
 
 # release optimizations
 # fake to satisfy mandatory dependencies
-mv /bin/tar /tmp/
 mv /bin/gzip /tmp/
 
-> /bin/tar
 > /bin/gzip
 
 # Symlinks
@@ -164,11 +162,10 @@ rm -rf /usr/sbin/rmmod
 # ehci_pci - USB 2.0 storage devices
 
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
-DRACUT_MODULES='dmsquash-live busybox'
 
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
-  --modules "$DRACUT_MODULES" \
+  --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   initrd.img $KERNEL
@@ -219,7 +216,6 @@ rm -rf etc/ld.so.conf
 rm -rf etc/group
 rm -rf etc/mtab
 
-mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
 
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
