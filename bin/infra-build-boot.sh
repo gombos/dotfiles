@@ -34,8 +34,6 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-#D='--debug --verbose'
-
 # customize busybox - maybe on gentoo
 # https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
 # https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
@@ -80,8 +78,9 @@ mkdir -p /efi /lib /tmp/dracut
   ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
   make
 
-  rm -rf  /lib/libkmod.so*
+  rm -rf /lib/libkmod.so*
   make install
+  make clean
   strip /lib/libkmod.so*
   # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
   apk del xz alpine-sdk
@@ -115,7 +114,7 @@ git clone https://github.com/dracutdevs/dracut.git && cd dracut
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
 # grab upstream modules only
-rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/
+rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ && rm -rf /dracut
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
 rm -rf /usr/lib/dracut/modules.d/*systemd*
@@ -134,7 +133,6 @@ rm -rf /usr/lib/systemd/systemd
 rm -rf /usr/bin/cpio
 
 # release optimizations
-if [ -z "${D}" ]; then
   # fake to satisfy mandatory dependencies
   mv /bin/tar /tmp/
   mv /bin/gzip /tmp/
@@ -145,7 +143,6 @@ if [ -z "${D}" ]; then
   # Symlinks
   rm -rf /usr/sbin/rmmod
   > /usr/sbin/rmmod
-fi
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
@@ -178,10 +175,6 @@ fi
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 DRACUT_MODULES='dmsquash-live busybox'
 
-if [ -n "${D}" ]; then
-  DRACUT_MODULES="$DRACUT_MODULES debug"
-fi
-
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
@@ -198,8 +191,6 @@ cd /tmp/dracut/dracut.*/initramfs
 #  rm -rf lib/udev/cdrom_id
 #  rm -rf lib/udev/rules.d/60-cdrom_id.rules
 
-
-if [ -z "${D}" ]; then
   # Clean some dracut info files
   rm -rf usr/lib/dracut/build-parameter.txt
   rm -rf usr/lib/dracut/dracut-*
@@ -235,7 +226,6 @@ if [ -z "${D}" ]; then
   rm -rf etc/ld.so.conf
   rm -rf etc/group
   rm -rf etc/mtab
-fi
 
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
@@ -257,13 +247,7 @@ rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
-if [ "$ID" = "arch" ]; then
-  pacman --noconfirm -Sy cpio && yes | pacman  -Scc
-elif [ "$ID" = "alpine" ]; then
-  apk add cpio
-else
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
-fi
+apk add cpio
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 rm -rf lib/modules
@@ -295,4 +279,6 @@ ls -lha /efi/kernel/initrd*.img
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/dracut
+apk del util-linux-misc dracut-modules squashfs-tools git util-linux-misc cpio
+
+rm -rf /tmp
