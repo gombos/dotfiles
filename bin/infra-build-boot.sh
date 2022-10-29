@@ -51,8 +51,8 @@ fi
 
 mkdir -p /efi /lib /tmp/dracut
 
-  apk upgrade
-  apk update
+apk upgrade
+apk update
 
    # steps to rebuild an alpine package - takes forever to check out the git repo
 #  apk add sudo alpine-sdk
@@ -63,39 +63,39 @@ mkdir -p /efi /lib /tmp/dracut
 #  su build
 #  export PATH=$PATH:/sbin/
 
-  apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
-  apk add squashfs-tools git util-linux-misc >/dev/null
+apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+apk add squashfs-tools git util-linux-misc >/dev/null
 
 #  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
 
-  # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
-  # rebuild libkmod without openssl lib
-  apk add xz alpine-sdk  >/dev/null
-  wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-  xz -d *.xz
-  tar -xf *.tar
-  cd kmod-30
-  ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
-  make
+# udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
+# rebuild libkmod without openssl lib
+apk add xz alpine-sdk  >/dev/null
+wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
+xz -d *.xz
+tar -xf *.tar
+cd kmod-30
+./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
+make
 
-  rm -rf /lib/libkmod.so*
-  make install
-  make clean 2>&1 > /dev/null
-  strip /lib/libkmod.so*
-  # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-  apk del xz alpine-sdk  >/dev/null
+rm -rf /lib/libkmod.so*
+make install
+make clean 2>&1 > /dev/null
+strip /lib/libkmod.so*
+# ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
+apk del xz alpine-sdk  >/dev/null
 
-  # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
-  # some people might not need util-linux-misc but I DO
+# switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
+# some people might not need util-linux-misc but I DO
 
-  #apk add build-base make # build base
-  #apk add fts-dev kmod-dev pkgconfig # build dracut
-  #apk add bash eudev coreutils blkid util-linux-misc # run dracut
+#apk add build-base make # build base
+#apk add fts-dev kmod-dev pkgconfig # build dracut
+#apk add bash eudev coreutils blkid util-linux-misc # run dracut
 
-  # TODO
-  # remove dependency on eudev coreutils
+# TODO
+# remove dependency on eudev coreutils
 
-  rm /bin/findmnt
+rm /bin/findmnt
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
@@ -133,16 +133,16 @@ rm -rf /usr/lib/systemd/systemd
 rm -rf /usr/bin/cpio
 
 # release optimizations
-  # fake to satisfy mandatory dependencies
-  mv /bin/tar /tmp/
-  mv /bin/gzip /tmp/
+# fake to satisfy mandatory dependencies
+mv /bin/tar /tmp/
+mv /bin/gzip /tmp/
 
-  > /bin/tar
-  > /bin/gzip
+> /bin/tar
+> /bin/gzip
 
-  # Symlinks
-  rm -rf /usr/sbin/rmmod
-  > /usr/sbin/rmmod
+# Symlinks
+rm -rf /usr/sbin/rmmod
+> /usr/sbin/rmmod
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
@@ -191,41 +191,41 @@ cd /tmp/dracut/dracut.*/initramfs
 #  rm -rf lib/udev/cdrom_id
 #  rm -rf lib/udev/rules.d/60-cdrom_id.rules
 
-  # Clean some dracut info files
-  rm -rf usr/lib/dracut/build-parameter.txt
-  rm -rf usr/lib/dracut/dracut-*
-  rm -rf usr/lib/dracut/modules.txt
+# Clean some dracut info files
+rm -rf usr/lib/dracut/build-parameter.txt
+rm -rf usr/lib/dracut/dracut-*
+rm -rf usr/lib/dracut/modules.txt
 
-  # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+# when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
+rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
-  # todo - ideally dm dracut module is not included instead of this hack
-  rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
-  rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
-  rm -rf lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh
-  rm -rf lib/udev/rules.d/75-net-description.rules
-  rm -rf etc/udev/rules.d/11-dm.rules
+# todo - ideally dm dracut module is not included instead of this hack
+rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+rm -rf lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh
+rm -rf lib/udev/rules.d/75-net-description.rules
+rm -rf etc/udev/rules.d/11-dm.rules
 
-  rm -rf usr/sbin/dmsetup
-  rm -rf lib/modules/$KERNEL/kernel/drivers/md
+rm -rf usr/sbin/dmsetup
+rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
-  # optimize - Remove empty (fake) binaries
-  find usr/bin usr/sbin -type f -empty -delete -print
-  rm -rf lib/dracut/need-initqueue
+# optimize - Remove empty (fake) binaries
+find usr/bin usr/sbin -type f -empty -delete -print
+rm -rf lib/dracut/need-initqueue
 
-  # just symlinks in alpine
-  rm -rf sbin/chroot
-  rm -rf bin/dmesg
+# just symlinks in alpine
+rm -rf sbin/chroot
+rm -rf bin/dmesg
 
-  rm -rf var/tmp
-  rm -rf root
+rm -rf var/tmp
+rm -rf root
 
-  rm -rf etc/fstab.empty
-  rm -rf etc/cmdline.d
-  rm -rf etc/ld.so.conf.d/libc.conf
-  rm -rf etc/ld.so.conf
-  rm -rf etc/group
-  rm -rf etc/mtab
+rm -rf etc/fstab.empty
+rm -rf etc/cmdline.d
+rm -rf etc/ld.so.conf.d/libc.conf
+rm -rf etc/ld.so.conf
+rm -rf etc/group
+rm -rf etc/mtab
 
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
