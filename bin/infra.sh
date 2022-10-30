@@ -11,7 +11,8 @@ if [ -n "$SCRIPT" ]; then
 fi
 
 if [ -n "$LOG" ]; then
-  "*.* $LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
+  echo "*.* $LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
+  logger "booting"
 fi
 
 # Elevate some files so that they are picked up by ISO
