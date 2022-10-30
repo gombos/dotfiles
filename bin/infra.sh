@@ -11,7 +11,7 @@ if [ -n "$SCRIPT" ]; then
 fi
 
 if [ -n "$LOG" ]; then
-  echo "*.* $LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
+  echo "*.* @$LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
   logger "booting"
 fi
 
