@@ -34,8 +34,6 @@ if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-#D='--debug --verbose'
-
 # customize busybox - maybe on gentoo
 # https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
 # https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
@@ -53,8 +51,8 @@ fi
 
 mkdir -p /efi /lib /tmp/dracut
 
-  apk upgrade
-  apk update
+apk upgrade
+apk update
 
    # steps to rebuild an alpine package - takes forever to check out the git repo
 #  apk add sudo alpine-sdk
@@ -65,38 +63,30 @@ mkdir -p /efi /lib /tmp/dracut
 #  su build
 #  export PATH=$PATH:/sbin/
 
-  apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted
-  apk add squashfs-tools git util-linux-misc
+apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+apk add squashfs-tools git util-linux-misc >/dev/null
 
 #  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
 
-  # udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
-  # rebuild libkmod without openssl lib
-  apk add xz alpine-sdk
-  wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-  xz -d *.xz
-  tar -xf *.tar
-  cd kmod-30
-  ./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
-  make
+# udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
+# rebuild libkmod without openssl lib
+apk add xz alpine-sdk  >/dev/null
+wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
+xz -d *.xz && tar -xf *.tar && cd kmod-30
+./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
+make
+rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
+strip /lib/libkmod.so*
+# ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
+apk del xz alpine-sdk  >/dev/null
 
-  rm -rf  /lib/libkmod.so*
-  make install
-  strip /lib/libkmod.so*
-  # ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-  apk del xz alpine-sdk
+# switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
+# some people might not need util-linux-misc but I DO
 
-  # switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
-  # some people might not need util-linux-misc but I DO
+# TODO
+# remove dependency on eudev coreutils
 
-  #apk add build-base make # build base
-  #apk add fts-dev kmod-dev pkgconfig # build dracut
-  #apk add bash eudev coreutils blkid util-linux-misc # run dracut
-
-  # TODO
-  # remove dependency on eudev coreutils
-
-  rm /bin/findmnt
+rm /bin/findmnt
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
@@ -105,17 +95,17 @@ mv squashfs-root /lib/modules
 
 cd /
 
-# build dracut from source
-git clone https://github.com/dracutdevs/dracut.git && cd dracut
+# grab upstream dracut source
+git clone https://github.com/dracutdevs/dracut.git
 
 # pull in a PR
-#git fetch origin refs/pull/1934/head:pr && git checkout pr
+#cd dracut && git fetch origin refs/pull/1934/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
 # grab upstream modules only
-rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/
+rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ && rm -rf /dracut
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
 rm -rf /usr/lib/dracut/modules.d/*systemd*
@@ -134,18 +124,16 @@ rm -rf /usr/lib/systemd/systemd
 rm -rf /usr/bin/cpio
 
 # release optimizations
-if [ -z "${D}" ]; then
-  # fake to satisfy mandatory dependencies
-  mv /bin/tar /tmp/
-  mv /bin/gzip /tmp/
+# fake to satisfy mandatory dependencies
+mv /bin/tar /tmp/
+mv /bin/gzip /tmp/
 
-  > /bin/tar
-  > /bin/gzip
+> /bin/tar
+> /bin/gzip
 
-  # Symlinks
-  rm -rf /usr/sbin/rmmod
-  > /usr/sbin/rmmod
-fi
+# Symlinks
+rm -rf /usr/sbin/rmmod
+> /usr/sbin/rmmod
 
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
@@ -178,10 +166,6 @@ fi
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 DRACUT_MODULES='dmsquash-live busybox'
 
-if [ -n "${D}" ]; then
-  DRACUT_MODULES="$DRACUT_MODULES debug"
-fi
-
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep $D \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules "$DRACUT_MODULES" \
@@ -191,57 +175,58 @@ dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compres
 
 rm initrd.img
 
-cd /tmp/dracut/dracut.*/initramfs
+mv /tmp/dracut/dracut.*/initramfs /
+cd /initramfs
 
 # TODO
 # need to specify root by HW ID /dev/sr0 instead of label and might need to preload isofs
 #  rm -rf lib/udev/cdrom_id
 #  rm -rf lib/udev/rules.d/60-cdrom_id.rules
 
+# Clean some dracut info files
+rm -rf usr/lib/dracut/build-parameter.txt
+rm -rf usr/lib/dracut/dracut-*
+rm -rf usr/lib/dracut/modules.txt
 
-if [ -z "${D}" ]; then
-  # Clean some dracut info files
-  rm -rf usr/lib/dracut/build-parameter.txt
-  rm -rf usr/lib/dracut/dracut-*
-  rm -rf usr/lib/dracut/modules.txt
+# when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
+rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
 
-  # when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-  rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
+# todo - ideally dm dracut module is not included instead of this hack
+rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
+rm -rf lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh
+rm -rf lib/udev/rules.d/75-net-description.rules
+rm -rf etc/udev/rules.d/11-dm.rules
 
-  # todo - ideally dm dracut module is not included instead of this hack
-  rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
-  rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
-  rm -rf usr/sbin/dmsetup
-  rm -rf lib/modules/$KERNEL/kernel/drivers/md
+rm -rf usr/sbin/dmsetup
+rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
-  # optimize - Remove empty (fake) binaries
-  find usr/bin usr/sbin -type f -empty -delete -print
+# optimize - Remove empty (fake) binaries
+find usr/bin usr/sbin -type f -empty -delete -print
+rm -rf lib/dracut/need-initqueue
 
-  # just symlinks in alpine
-  rm -rf sbin/chroot
-  rm -rf bin/dmesg
+# just symlinks in alpine
+rm -rf sbin/chroot
+rm -rf bin/dmesg
 
-  rm -rf var/tmp
-  rm -rf root
+rm -rf var/tmp
+rm -rf root
 
-  rm -rf etc/fstab.empty
-  rm -rf etc/cmdline.d
-  rm -rf etc/ld.so.conf.d/libc.conf
-  rm -rf etc/ld.so.conf
-  rm -rf etc/group
-  rm -rf etc/mtab
-fi
+rm -rf etc/fstab.empty
+rm -rf etc/cmdline.d
+rm -rf etc/ld.so.conf.d/libc.conf
+rm -rf etc/ld.so.conf
+rm -rf etc/group
+rm -rf etc/mtab
 
 mv /tmp/tar /bin/
 mv /tmp/gzip /bin/
-
-rm -rf ./lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh ./lib/udev/rules.d/75-net-description.rules ./etc/udev/rules.d/11-dm.rules
 
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
 # TODO - why is this needed ?
 # without this file is still does not boot
-# rm -rf sbin/dmsquash-live-root
+# dmsquash-live-root still need to mount the squashfs that is inside .iso file
 
 # TODO
 # can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
@@ -254,13 +239,7 @@ rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
-if [ "$ID" = "arch" ]; then
-  pacman --noconfirm -Sy cpio && yes | pacman  -Scc
-elif [ "$ID" = "alpine" ]; then
-  apk add cpio
-else
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
-fi
+apk add cpio
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 rm -rf lib/modules
@@ -292,4 +271,6 @@ ls -lha /efi/kernel/initrd*.img
 # todo - upstream - 00-btrfs.conf
 # https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
 
-rm -rf /tmp/initrd /tmp/cleanup /tmp/updates /tmp/dracut
+apk del util-linux-misc dracut-modules squashfs-tools git util-linux-misc cpio >/dev/null
+
+rm -rf /tmp
