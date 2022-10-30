@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # Takes about 4 min to bring up a linode instance with my ISO
 # - create linode and boot into host debian os (1 min)
 # - download iso from github - see infra.sh (1 min)
