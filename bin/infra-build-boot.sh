@@ -43,7 +43,7 @@ fi
 # Sizes - compressed: 1.5M
 #busybox - 800M
 #musl - 600M
-#blkid - 400M
+#liblkid - 300M (needed by udev)
 #udev - 600M
 #udev-rules (lib/udev/*_id) - 300M
 # TODO: kill blkid, udev anyways have blkid built in
@@ -64,7 +64,7 @@ apk update
 #  export PATH=$PATH:/sbin/
 
 apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
-apk add squashfs-tools git util-linux-misc >/dev/null
+apk add git util-linux-misc >/dev/null
 
 #  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
 
@@ -89,9 +89,6 @@ apk del xz alpine-sdk  >/dev/null
 rm /bin/findmnt
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
-
-unsquashfs /efi/kernel/modules
-mv squashfs-root /lib/modules
 
 cd /
 
@@ -149,8 +146,7 @@ rm -rf /usr/lib/dracut/modules.d/*systemd*
 # workaround to instruct dracut not to compress
 rm -rf /usr/bin/cpio
 
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
-  --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
   --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
@@ -180,7 +176,6 @@ rm -rf lib/udev/rules.d/75-net-description.rules
 rm -rf etc/udev/rules.d/11-dm.rules
 
 rm -rf usr/sbin/dmsetup
-#rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - Remove empty (fake) binaries
 find usr/bin usr/sbin -type f -empty -delete -print
@@ -200,8 +195,6 @@ rm -rf etc/ld.so.conf
 rm -rf etc/group
 rm -rf etc/mtab
 
-rm -rf sbin/blkid
-
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
 # TODO - why is this needed ?
@@ -214,15 +207,11 @@ rm -rf sbin/blkid
 # blkid bugs might be able to worked around, but fs-lib dracut module needs some serious look -
 # https://github.com/dracutdevs/dracut/pull/1956 .. this change might not be enough, lets debug more
 # TODO eliminate blkid, it brings in not only a new bin, but also libblkid.so.1.1.0 (almost 0.4M)
-rm sbin/blkid && cp /sbin/blkid sbin/
 rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
 apk add cpio
-
-#find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
-rm -rf lib/modules
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
