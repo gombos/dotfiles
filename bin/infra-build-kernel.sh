@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
@@ -23,7 +25,7 @@ apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 # TODO - get kernel without apt, so that I can use any distro as a base, including alpine, do not rely on package manager
 apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils ca-certificates git fakeroot
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils ca-certificates git fakeroot rsync gzip dracut-core
 
 # Prepare to compile my own kernel
 #apt-get build-dep -y -o Dpkg::Use-Pty=0 linux-image-unsigned-$KERNEL
@@ -55,6 +57,64 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools
 #find /usr/lib/modules/ -name '*.ko' -exec zstd {} \;
 #find /usr/lib/modules/ -name '*.ko' -delete
 # busybox depmod
+
+read -r -d '' VAR << EOM
+drivers/ata/ahci.ko
+drivers/ata/libahci.ko
+drivers/ata/pata_acpi.ko
+drivers/nvme/host/nvme.ko
+drivers/nvme/host/nvme-core.ko
+drivers/usb/host/xhci-pci.ko
+drivers/usb/host/xhci-pci-renesas.ko
+drivers/usb/storage/uas.ko
+drivers/usb/storage/usb-storage.ko
+drivers/mmc/host/sdhci-acpi.ko
+drivers/mmc/host/sdhci.ko
+drivers/mmc/core/mmc_block.ko
+drivers/scsi/virtio_scsi.ko
+lib/crc64.ko
+lib/libcrc32c.ko
+lib/raid6/raid6_pq.ko
+crypto/xor.ko
+crypto/async_tx/async_tx.ko
+crypto/async_tx/async_xor.ko
+crypto/async_tx/async_pq.ko
+crypto/async_tx/async_memcpy.ko
+crypto/async_tx/async_raid6_recov.ko
+crypto/crc32_generic.ko
+fs/dlm/dlm.ko
+fs/isofs/isofs.ko
+fs/overlayfs/overlay.ko
+fs/autofs/autofs4.ko
+fs/nls/nls_iso8859-1.ko
+fs/ntfs/ntfs.ko
+arch/x86/crypto/crc32-pclmul.ko
+EOM
+
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 cpio
+
+#mkdir /tmp/m
+#while IFS= read -r line ; do rsync -Rav /lib/modules/$KERNEL/kernel/$line /tmp/m ; done <<< "$VAR"
+while IFS= read -r line ; do ls -la  /lib/modules/$KERNEL/kernel/$line  ; done <<< "$VAR"
+#cd /tmp/m && find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img && cd -
+
+mkdir /tmp/dracut
+
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --tmpdir /tmp/dracut --keep \
+  --add-drivers 'autofs4 overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi' \
+  --modules 'rootfs-block' \
+  initrd.img $KERNEL
+
+mv /tmp/dracut/dracut.*/initramfs /
+cd /initramfs
+
+find lib/modules/
+
+find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+
+cd /tmp
+
+ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd /tmp/cleanup /tmp/updates

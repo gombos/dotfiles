@@ -96,22 +96,22 @@ mv squashfs-root /lib/modules
 cd /
 
 # grab upstream dracut source
-git clone https://github.com/dracutdevs/dracut.git
+#git clone https://github.com/dracutdevs/dracut.git
+git clone https://github.com/LaszloGombos/dracut.git
 
 # pull in a PR
-#cd dracut && git fetch origin refs/pull/1934/head:pr && git checkout pr
+cd dracut && git fetch origin refs/pull/9/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
 # grab upstream modules only
-rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ && rm -rf /dracut
+rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ # && rm -rf /dracut
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
 rm -rf /usr/lib/dracut/modules.d/*systemd*
 
 > /usr/sbin/dmsetup
-rm -rf /usr/lib/systemd/systemd
 
 # TODO
 # make module that mounts squashfs without initqueue
@@ -119,30 +119,13 @@ rm -rf /usr/lib/systemd/systemd
 #> /sbin/udevd
 #> /bin/udevadm
 
-# Remove the busybox version
-# workaround to instruct dracut not to compress
-rm -rf /usr/bin/cpio
-
-# release optimizations
-# fake to satisfy mandatory dependencies
-mv /bin/gzip /tmp/
-
-> /bin/gzip
-
-# Symlinks
-rm -rf /usr/sbin/rmmod
-> /usr/sbin/rmmod
-
 # todo - mount the modules file earlier instead of duplicating them
 # this probably need to be done on udev stage (pre-mount is too late)
 
 # to debug, add the following dracut modules
 # kernel-modules shutdown terminfo debug
 
-# dracut-systemd adds about 4MB (compressed)
-
 # bare minimium modules "base rootfs-block"
-
 #--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
 
 # filesystem kernel modules
@@ -163,14 +146,15 @@ rm -rf /usr/sbin/rmmod
 
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 
+# workaround to instruct dracut not to compress
+rm -rf /usr/bin/cpio
+
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep \
   --add-drivers 'autofs4 squashfs overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block ata_piix ata_generic pata_acpi cdrom sr_mod virtio_scsi' \
   --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
   initrd.img $KERNEL
-
-rm initrd.img
 
 mv /tmp/dracut/dracut.*/initramfs /
 cd /initramfs
@@ -196,7 +180,7 @@ rm -rf lib/udev/rules.d/75-net-description.rules
 rm -rf etc/udev/rules.d/11-dm.rules
 
 rm -rf usr/sbin/dmsetup
-rm -rf lib/modules/$KERNEL/kernel/drivers/md
+#rm -rf lib/modules/$KERNEL/kernel/drivers/md
 
 # optimize - Remove empty (fake) binaries
 find usr/bin usr/sbin -type f -empty -delete -print
@@ -216,7 +200,7 @@ rm -rf etc/ld.so.conf
 rm -rf etc/group
 rm -rf etc/mtab
 
-mv /tmp/gzip /bin/
+rm -rf sbin/blkid
 
 # echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
 
@@ -237,7 +221,7 @@ rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
 apk add cpio
 
-find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+#find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 rm -rf lib/modules
 
 # Populate logs with the list of filenames inside initrd.img
