@@ -3,11 +3,16 @@
 # Runs on image boot first and pulls the iso and boots into ISO
 # Do not assume a specific distro (or package manager) if possible
 
-mkdir -p /config/updates/etc/network /isos
+mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d /isos
 
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   echo $SCRIPT >> /config/rootfs-kulcs.cfg
+fi
+
+if [ -n "$LOG" ]; then
+  echo "*.* @$LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
+  logger "booting"
 fi
 
 # Elevate some files so that they are picked up by ISO
