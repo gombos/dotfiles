@@ -1,6 +1,7 @@
 # Base image could be independent from rootfs
 
-FROM ubuntu:kinetic as base
+FROM ubuntu:jammy as base
+#FROM ubuntu:kinetic as base
 
 COPY bin/* /tmp/
 COPY boot/ /tmp/
