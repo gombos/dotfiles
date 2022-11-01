@@ -1,11 +1,7 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  image="0gombi0/homelab:efi"
-  sudo docker pull $image
-else
-  image="$1"
-fi
+image="0gombi0/homelab:efi"
+sudo docker pull $image
 
 sudo rm -rf /tmp/efi
 cd /tmp

@@ -76,7 +76,7 @@ cd /tmp
 ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
-rm -rf /tmp/initrd /tmp/cleanup /tmp/updates
+rm -rf /tmp/initrd
 
 # Build custom kernel that has isofs built in
 #apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 build-essential libncurses5-dev gcc libssl-dev bc libncurses-dev gawk flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf fakeroot

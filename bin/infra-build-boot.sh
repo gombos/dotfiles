@@ -216,6 +216,7 @@ apk add cpio
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
 
+mkdir -p /efi/kernel/
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
 ls -lha /efi/kernel/initrd*.img
 
