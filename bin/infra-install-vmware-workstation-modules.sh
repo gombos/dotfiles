@@ -1,13 +1,9 @@
 # https://communities.vmware.com/thread/623768
 
-. ./infra-env.sh
-
-if [ -z "$KERNEL" ]; then
-  export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
-fi
+KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL build-essential
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 build-essential
 
 cd /
 

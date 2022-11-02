@@ -23,9 +23,17 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # TODO - get kernel without apt, so that I can use any distro as a base, including alpine, do not rely on package manager
-apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-headers-$KERNEL apt-utils ca-certificates git fakeroot gzip dracut-core
+# first step - just download .deb manually and install
+
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0  apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1
+
+#apt-get --reinstall install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-$KERNEL
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-modules-extra-$KERNEL linux-headers-$KERNEL
+
+wget https://raw.githubusercontent.com/pimlie/ubuntu-mainline-kernel.sh/master/ubuntu-mainline-kernel.sh && chmod +x ubuntu-mainline-kernel.sh
+
+sudo ./ubuntu-mainline-kernel.sh -nc -ns --yes -d -p . -i $KERNEL
+export KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
 
 # Prepare to compile my own kernel
 #apt-get build-dep -y -o Dpkg::Use-Pty=0 linux-image-unsigned-$KERNEL
@@ -42,6 +50,8 @@ if ! [ -z "${NVIDIA}" ]; then
 fi
 
 # kernel binary
+ls -la /boot
+
 cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
 # Make sure we have all the required modules built
