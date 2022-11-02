@@ -1,246 +1,131 @@
 #!/bin/bash
 
-# Requirements:
-# - Does not need /home
-# - Does not need /etc or /usr rw
-# - Does not need to run as root or sudo
-# - Does not use the network
-
-# initramfs and most tools generating initramfs are designed to be host specific
-
-# In general each kernel version will have to have its own initramfs
-# but with a bit of work it is possible to make initramfs generic (not HW or host SW specific)
-
-# https://fai-project.org/
-# This is also way more powerful (systemd volatile)
-
-# A read-only /etc is increasingly common on embedded devices.
-# A rarely-changing /etc is also increasingly common on desktop and server installations, with files like /etc/mtab and /etc/resolv.conf located on another filesystem and symbolically linked in /etc (so that files in /etc need to be modified when installing software or when the computer's configuration changes, but not when mounting a USB drive or connecting in a laptop to a different network).
-# The emerging standard is to have a tmpfs filesystem mounted on /run and symbolic links in /etc like
-
-# Create a temporary file called rdexec and copy it into initramfs to be executed
-# This solution only requires dropping one single hook file into initramfs
-# This argument allows calling out to EFI parition from within initramfs to execute arbitrary code
-# Future goal - instead of executing arbitrary code, try to just create additional files and drop them
-# For user management switch to homectl and portable home directories
-
-if [ -f /etc/os-release ]; then
- . /etc/os-release
-fi
-
-. /tmp/infra-env.sh
+cd /tmp
 
 if [ -z "$SCRIPTS" ]; then
   export SCRIPTS="/tmp"
 fi
 
-# customize busybox - maybe on gentoo
-# https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
-# https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
-# https://git.busybox.net/busybox
-# https://gitweb.gentoo.org/repo/gentoo.git/tree/sys-apps/busybox/busybox-1.35.0.ebuild
+export DEBIAN_FRONTEND=noninteractive
 
-# Sizes - compressed: 1.5M
-#busybox - 800M
-#musl - 600M
-#liblkid - 300M (needed by udev)
-#udev - 600M
-#udev-rules (lib/udev/*_id) - 300M
-# TODO: kill blkid, udev anyways have blkid built in
-# sudo udevadm test-builtin blkid
+apt-get update -y -qq -o Dpkg::Use-Pty=0
+apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-mkdir -p /efi /lib /tmp/dracut
+# bootloader
+# mtools - efi iso boot
 
-apk upgrade
-apk update
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+  grub-efi-amd64-bin grub-pc-bin grub2-common \
+  syslinux-common \
+  isolinux mtools dosfstools wget
 
-   # steps to rebuild an alpine package - takes forever to check out the git repo
-#  apk add sudo alpine-sdk
-#  adduser -D build
-#  addgroup build abuild
-#  addgroup abuild root
-#  echo 'build ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-#  su build
-#  export PATH=$PATH:/sbin/
+# for grub root variable is set to memdisk initially
+# grub_cmdpath is the location from which core.img was loaded as an absolute directory name
 
-apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
-apk add git util-linux-misc >/dev/null
+# grub efi binary
+mkdir -p /efi/EFI/BOOT/
+cp /tmp/grub.cfg /efi/EFI/BOOT/
 
-#  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
+# use regexp to remove path part to determine the root
+cat > /tmp/grub_efi.cfg << EOF
+regexp --set base "(.*)/" \$cmdpath
+regexp --set base "(.*)/" \$base
+set root=\$base
+configfile \$cmdpath/grub.cfg
+EOF
 
-# udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
-# rebuild libkmod without openssl lib
-apk add xz alpine-sdk  >/dev/null
-wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-xz -d *.xz && tar -xf *.tar && cd kmod-30
-./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
-make
-rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
-strip /lib/libkmod.so*
-# ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-apk del xz alpine-sdk  >/dev/null
+cat > /tmp/grub_bios.cfg << EOF
+prefix=
+root=\$cmdpath
+configfile \$cmdpath/EFI/BOOT/grub.cfg
+EOF
 
-# switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
-# some people might not need util-linux-misc but I DO
+LEGACYDIR="/efi/syslinux"
+ISODIR="/efi/isolinux"
+mkdir -p $LEGACYDIR
+mkdir -p $ISODIR
 
-# TODO
-# remove dependency on eudev coreutils
+# syslinux binary
+cp /usr/lib/syslinux/mbr/gptmbr.bin $LEGACYDIR
+cp /usr/lib/syslinux/modules/bios/ldlinux.c32 $LEGACYDIR
 
-rm /bin/findmnt
+# grub pc binary
+cp -r /usr/lib/grub/i386-pc/lnxboot.img $LEGACYDIR/
 
-# Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
+# syslinux config - chainload grub
+cat > $LEGACYDIR/syslinux.cfg <<EOF
+DEFAULT grub
+LABEL grub
+ LINUX lnxboot.img
+ INITRD core.img
+EOF
 
-cd /
+# normal - loaded by default
+# part_msdos part_gpt - mbr and gpt partition table support
+# fat ext2 ntfs iso9660 hfsplus - search by fs labels and read files from fs
+# linux - boot linux kernel
+# linux16 - boot linux kernel 16 bit for netboot-xyz
+# ntldr - boot windows
+# loadenv - read andd write grub file used for boot once configuration
+# test - conditionals in grub config file
+# regexp - regexp, used to remove path part from a variable
+# smbios - detect motherboard ID
+# loopback - boot iso files
+# chain - chain boot
+# search - find partitions (by label or uuid, but no suport for part_label)
 
-# grab upstream dracut source
-#git clone https://github.com/dracutdevs/dracut.git
-git clone https://github.com/LaszloGombos/dracut.git
+# configfile - is this really needed
 
-# pull in a PR
-cd dracut && git fetch origin refs/pull/9/head:pr && git checkout pr
+# minicmd ls cat - interactive debug in grub shell
 
-# build and install upstream
-#bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
+GRUB_MODULES="normal part_msdos part_gpt fat ext2 iso9660 ntfs hfsplus linux linux16 loadenv test regexp smbios loopback chain search configfile minicmd ls cat"
 
-# grab upstream modules only
-rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ # && rm -rf /dracut
+# for more control, consider just invoking grub-mkimage directly
+# grub-mkstandalone just a wrapper on top of grub-mkimage
 
-# less is more :-), this is an extra layer to make sure systemd is not needed
-rm -rf /usr/lib/dracut/modules.d/*systemd*
+grub-mkstandalone --format=i386-pc --output="$LEGACYDIR/core.img" --install-modules="$GRUB_MODULES biosdisk ntldr" --modules="$GRUB_MODULES biosdisk" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_bios.cfg"
+grub-mkstandalone --format=x86_64-efi --output="/efi/EFI/BOOT/bootx64.efi" --install-modules="$GRUB_MODULES linuxefi" --modules="$GRUB_MODULES linuxefi" --locales="" --themes="" --fonts="" "/boot/grub/grub.cfg=/tmp/grub_efi.cfg"
 
-> /usr/sbin/dmsetup
+cp /usr/lib/grub/i386-pc/boot_hybrid.img $ISODIR/
 
-# TODO
-# make module that mounts squashfs without initqueue
-#rm -rf /sbin/udevd  /bin/udevadm
-#> /sbin/udevd
-#> /bin/udevadm
+# bios boot for booting from a CD-ROM drive
+cat /usr/lib/grub/i386-pc/cdboot.img $LEGACYDIR/core.img > $ISODIR/bios.img
 
-# todo - mount the modules file earlier instead of duplicating them
-# this probably need to be done on udev stage (pre-mount is too late)
+# EFI boot partition - FAT16 disk image
+dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=10 && \
+mkfs.vfat $ISODIR/efiboot.img && \
+LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
+LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
 
-# to debug, add the following dracut modules
-# kernel-modules shutdown terminfo debug
+# TCE binary
+mkdir -p /efi/tce
+mkdir -p /efi/tce/optional
+wget --no-check-certificate --no-verbose https://distro.ibiblio.org/tinycorelinux/12.x/x86_64/release/CorePure64-current.iso -O tce.iso
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssl-1.1.1.tcz
+wget --no-verbose http://www.tinycorelinux.net/12.x/x86_64/tcz/openssh.tcz
+mv tce.iso /efi/tce
+mv openssh*.tcz openssl*.tcz  /efi/tce/optional/
+echo "openssl-1.1.1.tcz " >> /efi/tce/onboot.lst
+echo "openssh.tcz" >> /efi/tce/onboot.lst
+mkdir -p tce/opt
+cd tce
+echo "opt" > opt/.filetool.lst
 
-# bare minimium modules "base rootfs-block"
-#--mount "/run/media/efi/kernel/modules /usr/lib/modules squashfs ro,noexec,nosuid,nodev" \
+cat > opt/bootsync.sh << 'EOF'
+#!/bin/sh
+# runs at boot
+touch /usr/local/etc/ssh/sshd_config
+sed -ri "s/^tc:[^:]*:(.*)/tc:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
+/usr/local/etc/init.d/openssh start &
+EOF
 
-# filesystem kernel modules
-# nls_XX - to mount vfat
-# isofs - to find root within iso file
-# autofs4 - systemd will try to load this (maybe because of fstab)
+chmod +x opt/bootsync.sh
 
-# storage kernel modules
-# ahci - for SATA devices on modern AHCI controllers
-# nvme - for NVME (M.2, PCI-E) devices
-# xhci_pci, uas - usb
-# sdhci_acpi, mmc_block - mmc
+tar -czvf /efi/tce/mydata.tgz opt
+cd ..
 
-# sd_mod for all SCSI, SATA, and PATA (IDE) devices
-# ehci_pci and usb_storage for USB storage devices
-# virtio_blk and virtio_pci for QEMU/KVM VMs using VirtIO for storage
-# ehci_pci - USB 2.0 storage devices
-
-# busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
-
-# workaround to instruct dracut not to compress
-rm -rf /usr/bin/cpio
-
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
-  --modules 'dmsquash-live busybox' \
-  --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
-  --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
-  initrd.img $KERNEL
-
-mv /tmp/dracut/dracut.*/initramfs /
-cd /initramfs
-
-# TODO
-# need to specify root by HW ID /dev/sr0 instead of label and might need to preload isofs
-#  rm -rf lib/udev/cdrom_id
-#  rm -rf lib/udev/rules.d/60-cdrom_id.rules
-
-# Clean some dracut info files
-rm -rf usr/lib/dracut/build-parameter.txt
-rm -rf usr/lib/dracut/dracut-*
-rm -rf usr/lib/dracut/modules.txt
-
-# when the initrd image contains the whole CD ISO - see https://github.com/livecd-tools/livecd-tools/blob/main/tools/livecd-iso-to-pxeboot.sh
-rm -rf lib/dracut/hooks/pre-udev/30-dmsquash-liveiso-genrules.sh
-
-# todo - ideally dm dracut module is not included instead of this hack
-rm -rf lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
-rm -rf lib/dracut/hooks/shutdown/25-dm-shutdown.sh
-rm -rf lib/dracut/hooks/initqueue/timeout/99-rootfallback.sh
-rm -rf lib/udev/rules.d/75-net-description.rules
-rm -rf etc/udev/rules.d/11-dm.rules
-
-rm -rf usr/sbin/dmsetup
-
-# optimize - Remove empty (fake) binaries
-find usr/bin usr/sbin -type f -empty -delete -print
-rm -rf lib/dracut/need-initqueue
-
-# just symlinks in alpine
-rm -rf sbin/chroot
-rm -rf bin/dmesg
-
-rm -rf var/tmp
-rm -rf root
-
-rm -rf etc/fstab.empty
-rm -rf etc/cmdline.d
-rm -rf etc/ld.so.conf.d/libc.conf
-rm -rf etc/ld.so.conf
-rm -rf etc/group
-rm -rf etc/mtab
-
-# echo 'liveroot=$(getarg root=); rootok=1; wait_for_dev -n /dev/root; return 0' > lib/dracut/hooks/cmdline/30-parse-dmsquash-live.sh
-
-# TODO - why is this needed ?
-# without this file is still does not boot
-# dmsquash-live-root still need to mount the squashfs that is inside .iso file
-
-# TODO
-# can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
-
-# blkid bugs might be able to worked around, but fs-lib dracut module needs some serious look -
-# https://github.com/dracutdevs/dracut/pull/1956 .. this change might not be enough, lets debug more
-# TODO eliminate blkid, it brings in not only a new bin, but also libblkid.so.1.1.0 (almost 0.4M)
-rm sbin/switch_root && cp /sbin/switch_root sbin/
-
-rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
-
-apk add cpio
-
-# Populate logs with the list of filenames inside initrd.img
-find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
-
-mkdir -p /efi/kernel/
-find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
-ls -lha /efi/kernel/initrd*.img
-
-# Keep initramfs simple and do not require networking
-
-# todo --debug --no-early-microcode --xz --keep --verbose --no-compress --no-kernel
-# todo - interesting modules , usrmount, livenet, convertfs qemu qemu-net
-# todo - use --no-kernel and mount modules early, write a module 00mountmodules or 01mountmodules
-
-# include modules that might be reqired to find and mount modules file
-# nls_iso8859_1 - mount vfat EFI partition if modules file is in EFI
-# isofs - mount iso file if modules file is inside the iso
-# ntfs - iso file itself might be stored on the ntfs filesystem
-# ahci, uas (USB Attached SCSI), nvme - when booting on bare metal, to find the partition and filesystem
-
-# todo - idea: break up initrd into 2 files - one with modules and one without modules, look into of the modules part can be conbined with the modules file
-# find updates -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/updates.img
-
-# shutdown - to help kexec
-# terminfo - to debug
-
-# todo - upstream - 00-btrfs.conf
-# https://github.com/dracutdevs/dracut/commit/0402b3777b1c64bd716f588ff7457b905e98489d
-
-apk del util-linux-misc dracut-modules squashfs-tools git util-linux-misc cpio >/dev/null
-
-rm -rf /tmp
+# netboot-xyz
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+mkdir -p /efi/netboot
+mv netboot.xyz* /efi/netboot/
