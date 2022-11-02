@@ -7,10 +7,6 @@
 # $2 - efi directory if exists
 # $3 - rootfs directory if exists
 
-# Pulls down 2 containers
-# homelab:efi  - 166 MB
-# homelab-baremetal:latest  4.28GB --> downloading this takes most time
-
 if [ -z "$1" ]; then
   TARGET="all"
 else

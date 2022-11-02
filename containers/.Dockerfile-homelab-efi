@@ -1,7 +1,8 @@
 # Base image could be independent from rootfs
 
-FROM 0gombi0/homelab:kernel as kernel
-FROM alpine
+#FROM 0gombi0/homelab:kernel as kernel
+
+FROM alpine as base
 
 #FROM docker.io/gentoo/portage:latest as portage
 #FROM docker.io/gentoo/stage3:musl
@@ -13,4 +14,5 @@ COPY boot/ /tmp/
 WORKDIR /tmp
 RUN /bin/sh -c '. ./infra-build-boot.sh'
 
-COPY --from=kernel /efi /efi
+FROM scratch
+COPY --from=base /efi /efi

@@ -12,7 +12,7 @@ exec 1>/tmp/build-infra.log 2>&1
 if ! [ -z "$1" ]; then
   TARGET="$1"
 else
-  TARGET="kernel efi minbase base extra config usrlocal iso"
+  TARGET="kernel initrd minbase base extra config usrlocal iso"
 fi
 
 if echo $TARGET | grep -w -q kernel; then
@@ -20,9 +20,9 @@ if echo $TARGET | grep -w -q kernel; then
   docker push 0gombi0/homelab:kernel
 fi
 
-if echo $TARGET | grep -w -q efi; then
-  docker build -t 0gombi0/homelab:efi     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-efi
-  docker push 0gombi0/homelab:efi
+if echo $TARGET | grep -w -q initrd; then
+  docker build -t 0gombi0/homelab:initrd     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-initrd
+  docker push 0gombi0/homelab:initrd
 fi
 
 if echo $TARGET | grep -w -q minbase; then
