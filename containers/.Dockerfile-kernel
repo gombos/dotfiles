@@ -1,7 +1,8 @@
-# Base image could be independent from rootfs
-
-FROM ubuntu:jammy
+FROM ubuntu:jammy as base
 
 COPY bin/* /tmp/
 WORKDIR /tmp
 RUN ./testme.sh
+
+FROM scratch
+COPY --from=base /efi /efi

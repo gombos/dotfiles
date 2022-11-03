@@ -1,17 +1,79 @@
 
+set -x
+
+. ./infra-env.sh
+
+if [ -z "$SCRIPTS" ]; then
+  export SCRIPTS="/tmp"
+fi
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3
 
 cd /tmp/
 
-rm -rf linux-5.15.32*
-wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.32.tar.xz
-tar -xf linux-5.15.32.tar.xz
+rm -rf linux-*
+wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL.tar.xz
+tar -xf linux-$KERNEL.tar.xz
 
-cd linux-5.15.32
+cd linux-$KERNEL
+make defconfig
+
+wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64-config.flavour.generic
+
+mv amd64-config.flavour.generic .config
+
+cat .config
+./scripts/config --set-val CONFIG_AUTOFS4_FS m
+./scripts/config --set-val CONFIG_X86_X32 n
+./scripts/config --disable SYSTEM_TRUSTED_KEYS
+./scripts/config --disable SYSTEM_REVOCATION_KEYS
+make oldconfig
+cat .config
+
+make -j24 bzImage
+make -j24 modules
+make modules_install
+
+find /lib/modules/ arch/x86/boot
+
+mkdir -p /efi/kernel
+
+cp -r arch/x86/boot/bzImage /efi/kernel/vmlinuz
+
+# Make sure we have all the required modules built
+$SCRIPTS/infra-install-vmware-workstation-modules.sh
+
+mkdir /tmp/dracut
+
+KVERSION=$(cd /lib/modules; ls -1 | tail -1)
+
+dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --tmpdir /tmp/dracut --keep --kernel-only \
+  --add-drivers 'autofs4 overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
+  --modules 'rootfs-block' \
+  initrd.img $KVERSION
+
+cd  /tmp/dracut/dracut.*/initramfs/
+
+find lib/modules/ -name "*.ko"
+
+find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+
+cd /tmp
+
+ls -lha /efi/kernel/initrd_modules.img
+
+mksquashfs /usr/lib/modules /efi/kernel/modules
+rm -rf /tmp/initrd
+
+
+find /efi/kernel
+ls -lRa /efi/kernel
+
+exit
 
 cat > x86_64.miniconf << EOF
 # make ARCH=x86 allnoconfig KCONFIG_ALLCONFIG=x86_64.miniconf
@@ -240,16 +302,5 @@ make olddefconfig
 #./scripts/config --set-val CONFIG_LOCKD m
 #./scripts/config --set-val CONFIG_EXPORTFS m
 
-cat .config
-
 # Fix dependencies (flip some m to y)
 make oldconfig
-
-cat .config
-
-make -j24 bzImage
-make -j24 modules
-make modules_install
-
-du -h /lib/modules/5.15.32/
-ls -lha arch/x86/boot/bzImage

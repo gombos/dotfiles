@@ -26,7 +26,8 @@ if echo $TARGET | grep -w -q initrd; then
 fi
 
 if echo $TARGET | grep -w -q kernel; then
-  docker build -t 0gombi0/homelab:kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-kernel
+  docker build -t 0gombi0/homelab:kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-kernel
+  #docker build -t 0gombi0/homelab:kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-kernel
   docker push 0gombi0/homelab:kernel
 fi
 
