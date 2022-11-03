@@ -11,7 +11,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3
+apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic
 
 cd /tmp/
 
@@ -31,12 +31,16 @@ cat .config
 ./scripts/config --set-val CONFIG_X86_X32 n
 ./scripts/config --disable SYSTEM_TRUSTED_KEYS
 ./scripts/config --disable SYSTEM_REVOCATION_KEYS
+./scripts/config --disable CONFIG_DEBUG_INFO_BTF
 make oldconfig
 cat .config
 
 make -j24 bzImage
-make -j24 modules
-make modules_install
+#make -j24 modules
+#make modules_install
+make headers_install
+#make firmware_install
+make install
 
 find /lib/modules/ arch/x86/boot
 
