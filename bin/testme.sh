@@ -27,36 +27,48 @@ wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64
 mv amd64-config.flavour.generic .config
 
 cat .config
-./scripts/config --set-val CONFIG_AUTOFS4_FS m
+./scripts/config --set-val CONFIG_AUTOFS4_FS y
+./scripts/config --set-val CONFIG_NLS_ISO8859_1 y
+
+./scripts/config --set-val CONFIG_IKCONFIG y
+./scripts/config --set-val CONFIG_IKCONFIG_PROC y
+
+# fs/isofs/isofs.ko
+./scripts/config --set-val CONFIG_ISO9660_FS y
+
+# drivers/ata/ahci.ko
+./scripts/config --set-val CONFIG_SATA_AHCI y
+
+# fs/overlayfs/overlay.ko
+./scripts/config --set-val CONFIG_OVERLAY_FS y
+
 ./scripts/config --set-val CONFIG_X86_X32 n
+
 ./scripts/config --disable SYSTEM_TRUSTED_KEYS
 ./scripts/config --disable SYSTEM_REVOCATION_KEYS
 ./scripts/config --disable CONFIG_DEBUG_INFO_BTF
 make oldconfig
 cat .config
 
-make -j24 bzImage
-#make -j24 modules
-#make modules_install
+make -j16 bzImage
+make -j16 modules
+make INSTALL_MOD_STRIP=1 modules_install
 make headers_install
 #make firmware_install
 make install
 
-find /lib/modules/ arch/x86/boot
-
 mkdir -p /efi/kernel
-
 cp -r arch/x86/boot/bzImage /efi/kernel/vmlinuz
-
-# Make sure we have all the required modules built
-$SCRIPTS/infra-install-vmware-workstation-modules.sh
+make clean
 
 mkdir /tmp/dracut
 
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
+find /usr/lib | grep .ko
+
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --tmpdir /tmp/dracut --keep --kernel-only \
-  --add-drivers 'autofs4 overlay nls_iso8859_1 isofs ntfs ahci nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
+  --add-drivers 'ntfs nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
   --modules 'rootfs-block' \
   initrd.img $KVERSION
 
@@ -66,13 +78,16 @@ find lib/modules/ -name "*.ko"
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 
+
+# Make sure we have all the required modules built
+$SCRIPTS/infra-install-vmware-workstation-modules.sh
+
 cd /tmp
 
 ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd
-
 
 find /efi/kernel
 ls -lRa /efi/kernel
@@ -302,9 +317,6 @@ make olddefconfig
 ./scripts/config --set-val CONFIG_STACK_VALIDATION n
 ./scripts/config --set-val CONFIG_DRM_LEGACY n
 ./scripts/config --set-val CONFIG_QUOTA n
-
-#./scripts/config --set-val CONFIG_LOCKD m
-#./scripts/config --set-val CONFIG_EXPORTFS m
 
 # Fix dependencies (flip some m to y)
 make oldconfig

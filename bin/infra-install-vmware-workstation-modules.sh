@@ -1,11 +1,6 @@
 # https://communities.vmware.com/thread/623768
 
-KERNEL=$(dpkg -l | grep linux-modules | head -1  | cut -d\- -f3- | cut -d ' ' -f1)
-
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 build-essential
-
-cd /
+KERNEL=$(cd /lib/modules; ls -1 | tail -1)
 
 export VM_UNAME=$KERNEL
 cd /tmp/
@@ -17,6 +12,3 @@ make install VM_UNAME=$KERNEL
 make clean VM_UNAME=$KERNEL
 cd /
 rm -rf /tmp/mware-host-modules
-
-#DEBIAN_FRONTEND=noninteractive apt-get purge -y -q linux-headers-$KERNEL
-DEBIAN_FRONTEND=noninteractiv apt-get clean
