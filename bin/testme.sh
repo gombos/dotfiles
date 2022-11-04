@@ -29,6 +29,7 @@ mv amd64-config.flavour.generic .config
 cat .config
 ./scripts/config --enable CONFIG_AUTOFS4_FS
 ./scripts/config --enable CONFIG_NLS_ISO8859_1
+./scripts/config --enable CONFIG_IKCONFIG
 ./scripts/config --enable CONFIG_IKCONFIG_PROC
 ./scripts/config --enable CONFIG_ISO9660_FS
 ./scripts/config --enable CONFIG_SATA_AHCI
