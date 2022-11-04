@@ -53,6 +53,8 @@ cat .config
 
 ./scripts/config --disable CONFIG_INPUT_JOYSTICK
 
+#./scripts/config --set-str CONFIG_INITRAMFS_SOURCE="/efi/kernel/initrd.img"
+
 make oldconfig
 cat .config
 
