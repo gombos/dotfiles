@@ -27,26 +27,28 @@ wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64
 mv amd64-config.flavour.generic .config
 
 cat .config
-./scripts/config --set-val CONFIG_AUTOFS4_FS y
-./scripts/config --set-val CONFIG_NLS_ISO8859_1 y
-
-./scripts/config --set-val CONFIG_IKCONFIG y
-./scripts/config --set-val CONFIG_IKCONFIG_PROC y
-
-# fs/isofs/isofs.ko
-./scripts/config --set-val CONFIG_ISO9660_FS y
-
-# drivers/ata/ahci.ko
-./scripts/config --set-val CONFIG_SATA_AHCI y
-
-# fs/overlayfs/overlay.ko
-./scripts/config --set-val CONFIG_OVERLAY_FS y
-
-./scripts/config --set-val CONFIG_X86_X32 n
+./scripts/config --enable CONFIG_AUTOFS4_FS
+./scripts/config --enable CONFIG_NLS_ISO8859_1
+./scripts/config --enable CONFIG_IKCONFIG_PROC
+./scripts/config --enable CONFIG_ISO9660_FS
+./scripts/config --enable CONFIG_SATA_AHCI
+./scripts/config --enable CONFIG_OVERLAY_FS
+./scripts/config --enable CONFIG_SCSI_VIRTIO
 
 ./scripts/config --disable SYSTEM_TRUSTED_KEYS
 ./scripts/config --disable SYSTEM_REVOCATION_KEYS
 ./scripts/config --disable CONFIG_DEBUG_INFO_BTF
+./scripts/config --disable CONFIG_X86_X32
+
+./scripts/config --enable  CONFIG_ANDROID
+./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
+./scripts/config --enable  CONFIG_ANDROID_BINDERFS
+./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
+
+#./scripts/config --set-val CONFIG_IKCONFIG_PROC y
+#CONFIG_NVME_CORE=y
+#CONFIG_BLK_DEV_NVME=y
+
 make oldconfig
 cat .config
 
@@ -54,7 +56,6 @@ make -j16 bzImage
 make -j16 modules
 make INSTALL_MOD_STRIP=1 modules_install
 make headers_install
-#make firmware_install
 make install
 
 mkdir -p /efi/kernel
@@ -77,7 +78,6 @@ cd  /tmp/dracut/dracut.*/initramfs/
 find lib/modules/ -name "*.ko"
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
-
 
 # Make sure we have all the required modules built
 $SCRIPTS/infra-install-vmware-workstation-modules.sh
@@ -160,8 +160,6 @@ cat .config
 make -j24 bzImage
 ls -lha arch/x86/boot/bzImage
 exit
-
-
 
 make distclean
 make olddefconfig

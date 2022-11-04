@@ -1,8 +1,15 @@
-FROM ubuntu:jammy as base
+FROM debian:sid as builder
+
+RUN apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+    dracut-core \
+    bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip \
+    wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic \
+    autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod \
+    && apt-get clean
 
 COPY bin/* /tmp/
 WORKDIR /tmp
 RUN ./testme.sh
 
 FROM scratch
-COPY --from=base /efi /efi
+COPY --from=builder /efi /efi
