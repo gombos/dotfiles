@@ -218,6 +218,11 @@ sudo mv isolinux/efiboot.img /tmp/isotemp/
 # todo - to hack kernel
 #cp /tmp/kernel/tmp/linux-5.15.32/arch/x86/boot/bzImage  /tmp/iso/kernel/vmlinuz
 
+find /tmp/iso
+
+#rm -rf  /tmp/iso/kernel/initrd*
+#find /tmp/iso
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \
