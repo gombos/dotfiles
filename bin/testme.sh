@@ -39,6 +39,8 @@ cat .config
 #./scripts/config --disable SYSTEM_REVOCATION_KEYS
 #./scripts/config --disable CONFIG_DEBUG_INFO_BTF
 #./scripts/config --disable CONFIG_X86_X32
+#./scripts/config --disable CONFIG_FTRACE
+#./scripts/config --disable CONFIG_PRINTK_TIME
 
 #./scripts/config --enable  CONFIG_ANDROID
 #./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
@@ -49,14 +51,7 @@ cat .config
 #CONFIG_NVME_CORE=y
 #CONFIG_BLK_DEV_NVME=y
 
-./scripts/config --set-val CONFIG_FTRACE n
-./scripts/config --set-val CONFIG_DEBUG_KERNEL n
-./scripts/config --set-val CONFIG_PRINTK_TIME n
-./scripts/config --set-val CONFIG_DEBUG_FS n
-./scripts/config --set-val CONFIG_STACK_VALIDATION n
-./scripts/config --set-val CONFIG_DRM_LEGACY n
-./scripts/config --set-val CONFIG_QUOTA n
-
+./scripts/config --disable CONFIG_INPUT_JOYSTICK
 
 make oldconfig
 cat .config
