@@ -20,35 +20,43 @@ wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$
 tar -xf linux-$KERNEL.tar.xz
 
 cd linux-$KERNEL
-make defconfig
+#make defconfig
+#wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64-config.flavour.generic
 
-wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64-config.flavour.generic
-
-mv amd64-config.flavour.generic .config
+mv /tmp/kernelconfig .config
 
 cat .config
-./scripts/config --enable CONFIG_AUTOFS4_FS
-./scripts/config --enable CONFIG_NLS_ISO8859_1
-./scripts/config --enable CONFIG_IKCONFIG
-./scripts/config --enable CONFIG_IKCONFIG_PROC
-./scripts/config --enable CONFIG_ISO9660_FS
-./scripts/config --enable CONFIG_SATA_AHCI
-./scripts/config --enable CONFIG_OVERLAY_FS
-./scripts/config --enable CONFIG_SCSI_VIRTIO
+#./scripts/config --enable CONFIG_AUTOFS4_FS
+#./scripts/config --enable CONFIG_NLS_ISO8859_1
+#./scripts/config --enable CONFIG_IKCONFIG
+#./scripts/config --enable CONFIG_IKCONFIG_PROC
+#./scripts/config --enable CONFIG_ISO9660_FS
+#./scripts/config --enable CONFIG_SATA_AHCI
+#./scripts/config --enable CONFIG_OVERLAY_FS
+#./scripts/config --enable CONFIG_SCSI_VIRTIO
 
-./scripts/config --disable SYSTEM_TRUSTED_KEYS
-./scripts/config --disable SYSTEM_REVOCATION_KEYS
-./scripts/config --disable CONFIG_DEBUG_INFO_BTF
-./scripts/config --disable CONFIG_X86_X32
+#./scripts/config --disable SYSTEM_TRUSTED_KEYS
+#./scripts/config --disable SYSTEM_REVOCATION_KEYS
+#./scripts/config --disable CONFIG_DEBUG_INFO_BTF
+#./scripts/config --disable CONFIG_X86_X32
 
-./scripts/config --enable  CONFIG_ANDROID
-./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
-./scripts/config --enable  CONFIG_ANDROID_BINDERFS
-./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
+#./scripts/config --enable  CONFIG_ANDROID
+#./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
+#./scripts/config --enable  CONFIG_ANDROID_BINDERFS
+#./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
 
 #./scripts/config --set-val CONFIG_IKCONFIG_PROC y
 #CONFIG_NVME_CORE=y
 #CONFIG_BLK_DEV_NVME=y
+
+./scripts/config --set-val CONFIG_FTRACE n
+./scripts/config --set-val CONFIG_DEBUG_KERNEL n
+./scripts/config --set-val CONFIG_PRINTK_TIME n
+./scripts/config --set-val CONFIG_DEBUG_FS n
+./scripts/config --set-val CONFIG_STACK_VALIDATION n
+./scripts/config --set-val CONFIG_DRM_LEGACY n
+./scripts/config --set-val CONFIG_QUOTA n
+
 
 make oldconfig
 cat .config
