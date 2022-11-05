@@ -21,7 +21,11 @@ tar -xf linux-$KERNEL.tar.xz
 
 cd linux-$KERNEL
 #make defconfig
-#wget https://kernel.ubuntu.com/~kernel-ppa/config/jammy/linux/5.15.0-16.16/amd64-config.flavour.generic
+
+cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
+
+ls -la /tmp/initramfs.cpio.gz
+file /tmp/initramfs.cpio.gz
 
 mv /tmp/kernelconfig .config
 
@@ -47,25 +51,32 @@ cat .config
 #./scripts/config --enable  CONFIG_ANDROID_BINDERFS
 #./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
 
-#./scripts/config --set-val CONFIG_IKCONFIG_PROC y
-#CONFIG_NVME_CORE=y
-#CONFIG_BLK_DEV_NVME=y
-
 ./scripts/config --disable CONFIG_INPUT_JOYSTICK
+./scripts/config --enable  CONFIG_NVME_CORE
+./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
-#./scripts/config --set-str CONFIG_INITRAMFS_SOURCE="/efi/kernel/initrd.img"
+./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
+
+./scripts/config --disable CONFIG_ACPI_DEBUGGER
+./scripts/config --disable CONFIG_BT_DEBUGFS
+./scripts/config --disable CONFIG_NFC
+./scripts/config --disable CONFIG_L2TP_DEBUGFS
+
+#./scripts/config --set-str CONFIG_LOCALVERSION ""
 
 make oldconfig
 cat .config
 
 make -j16 bzImage
+mkdir -p /efi/kernel
+cp -r arch/x86/boot/bzImage /efi/kernel/vmlinuz
+
+file /efi/kernel/vmlinuz
+
 make -j16 modules
 make INSTALL_MOD_STRIP=1 modules_install
 make headers_install
-make install
 
-mkdir -p /efi/kernel
-cp -r arch/x86/boot/bzImage /efi/kernel/vmlinuz
 make clean
 
 mkdir /tmp/dracut
