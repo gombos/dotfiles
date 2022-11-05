@@ -51,16 +51,21 @@ cat .config
 #./scripts/config --enable  CONFIG_ANDROID_BINDERFS
 #./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
 
-./scripts/config --disable CONFIG_INPUT_JOYSTICK
-./scripts/config --enable  CONFIG_NVME_CORE
-./scripts/config --enable  CONFIG_BLK_DEV_NVME
+#./scripts/config --disable CONFIG_INPUT_JOYSTICK
+#./scripts/config --enable  CONFIG_NVME_CORE
+#./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
-./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
+#./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
 
-./scripts/config --disable CONFIG_ACPI_DEBUGGER
-./scripts/config --disable CONFIG_BT_DEBUGFS
-./scripts/config --disable CONFIG_NFC
-./scripts/config --disable CONFIG_L2TP_DEBUGFS
+#./scripts/config --disable CONFIG_ACPI_DEBUGGER
+#./scripts/config --disable CONFIG_BT_DEBUGFS
+#./scripts/config --disable CONFIG_NFC
+#./scripts/config --disable CONFIG_L2TP_DEBUGFS
+
+./scripts/config --disable CONFIG_NTFS_FS
+./scripts/config --disable CONFIG_REISERFS_FS
+./scripts/config --disable CONFIG_JFS_FS
+./scripts/config --disable CONFIG_CAN
 
 #./scripts/config --set-str CONFIG_LOCALVERSION ""
 
@@ -86,7 +91,7 @@ KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 find /usr/lib | grep .ko
 
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --tmpdir /tmp/dracut --keep --kernel-only \
-  --add-drivers 'ntfs nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
+  --add-drivers 'ntfs3 nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
   --modules 'rootfs-block' \
   initrd.img $KVERSION
 
