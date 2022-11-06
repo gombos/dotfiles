@@ -64,7 +64,7 @@ apk update
 #  export PATH=$PATH:/sbin/
 
 apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
-apk add git util-linux-misc >/dev/null
+apk add git curl util-linux-misc >/dev/null
 
 #  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
 
@@ -93,11 +93,18 @@ rm /bin/findmnt
 cd /
 
 # grab upstream dracut source
-#git clone https://github.com/dracutdevs/dracut.git
-git clone https://github.com/LaszloGombos/dracut.git
+git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
-# pull in a PR
-cd dracut && git fetch origin refs/pull/9/head:pr && git checkout pr
+# pull in a few PRs
+curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
+curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2033.patch | git apply
+curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/1956.patch | git apply
+
+
+git diff
+
+
+#cd dracut && git fetch origin refs/pull/9/head:pr && git checkout pr
 
 # build and install upstream
 #bash -c "./configure --disable-documentation" && make 2>/dev/null && make install

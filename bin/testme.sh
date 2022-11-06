@@ -29,38 +29,40 @@ file /tmp/initramfs.cpio.gz
 
 mv /tmp/kernelconfig .config
 
+cp .config oldconfig
+
 cat .config
-#./scripts/config --enable CONFIG_AUTOFS4_FS
-#./scripts/config --enable CONFIG_NLS_ISO8859_1
-#./scripts/config --enable CONFIG_IKCONFIG
-#./scripts/config --enable CONFIG_IKCONFIG_PROC
-#./scripts/config --enable CONFIG_ISO9660_FS
-#./scripts/config --enable CONFIG_SATA_AHCI
-#./scripts/config --enable CONFIG_OVERLAY_FS
-#./scripts/config --enable CONFIG_SCSI_VIRTIO
+./scripts/config --enable CONFIG_AUTOFS4_FS
+./scripts/config --enable CONFIG_NLS_ISO8859_1
+./scripts/config --enable CONFIG_IKCONFIG
+./scripts/config --enable CONFIG_IKCONFIG_PROC
+./scripts/config --enable CONFIG_ISO9660_FS
+./scripts/config --enable CONFIG_SATA_AHCI
+./scripts/config --enable CONFIG_OVERLAY_FS
+./scripts/config --enable CONFIG_SCSI_VIRTIO
 
-#./scripts/config --disable SYSTEM_TRUSTED_KEYS
-#./scripts/config --disable SYSTEM_REVOCATION_KEYS
-#./scripts/config --disable CONFIG_DEBUG_INFO_BTF
-#./scripts/config --disable CONFIG_X86_X32
-#./scripts/config --disable CONFIG_FTRACE
-#./scripts/config --disable CONFIG_PRINTK_TIME
+./scripts/config --disable SYSTEM_TRUSTED_KEYS
+./scripts/config --disable SYSTEM_REVOCATION_KEYS
+./scripts/config --disable CONFIG_DEBUG_INFO_BTF
+./scripts/config --disable CONFIG_X86_X32
+./scripts/config --disable CONFIG_FTRACE
+./scripts/config --disable CONFIG_PRINTK_TIME
 
-#./scripts/config --enable  CONFIG_ANDROID
-#./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
-#./scripts/config --enable  CONFIG_ANDROID_BINDERFS
-#./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
+./scripts/config --enable  CONFIG_ANDROID
+./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
+./scripts/config --enable  CONFIG_ANDROID_BINDERFS
+./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
 
-#./scripts/config --disable CONFIG_INPUT_JOYSTICK
-#./scripts/config --enable  CONFIG_NVME_CORE
-#./scripts/config --enable  CONFIG_BLK_DEV_NVME
+./scripts/config --disable CONFIG_INPUT_JOYSTICK
+./scripts/config --enable  CONFIG_NVME_CORE
+./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
-#./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
+./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
 
-#./scripts/config --disable CONFIG_ACPI_DEBUGGER
-#./scripts/config --disable CONFIG_BT_DEBUGFS
-#./scripts/config --disable CONFIG_NFC
-#./scripts/config --disable CONFIG_L2TP_DEBUGFS
+./scripts/config --disable CONFIG_ACPI_DEBUGGER
+./scripts/config --disable CONFIG_BT_DEBUGFS
+./scripts/config --disable CONFIG_NFC
+./scripts/config --disable CONFIG_L2TP_DEBUGFS
 
 ./scripts/config --disable CONFIG_NTFS_FS
 ./scripts/config --disable CONFIG_REISERFS_FS
@@ -71,6 +73,9 @@ cat .config
 
 make oldconfig
 cat .config
+
+
+diff .config oldconfig
 
 make -j16 bzImage
 mkdir -p /efi/kernel

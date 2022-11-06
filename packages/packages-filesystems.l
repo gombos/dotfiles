@@ -7,7 +7,6 @@ davfs2
 jmtpfs
 gdisk
 gddrescue
-ntfs-3g
 btrfs-progs
 squashfs-tools
 kpartx
