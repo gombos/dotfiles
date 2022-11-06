@@ -95,8 +95,8 @@ KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
 find /usr/lib | grep .ko
 
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --tmpdir /tmp/dracut --keep --kernel-only \
-  --add-drivers 'ntfs3 nvme xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
+dracut --no-hostonly --kernel-only --no-compress --keep --tmpdir /tmp/dracut \
+  --add-drivers 'ntfs3 xhci_pci uas sdhci_acpi mmc_block pata_acpi virtio_scsi usbhid hid_generic hid' \
   --modules 'rootfs-block' \
   initrd.img $KVERSION
 
