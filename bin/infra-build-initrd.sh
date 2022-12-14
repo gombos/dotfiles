@@ -24,16 +24,6 @@
 # Future goal - instead of executing arbitrary code, try to just create additional files and drop them
 # For user management switch to homectl and portable home directories
 
-if [ -f /etc/os-release ]; then
- . /etc/os-release
-fi
-
-. /tmp/infra-env.sh
-
-if [ -z "$SCRIPTS" ]; then
-  export SCRIPTS="/tmp"
-fi
-
 # customize busybox - maybe on gentoo
 # https://git.alpinelinux.org/aports/log/main/busybox/busyboxconfig
 # https://git.alpinelinux.org/aports/tree/main/busybox/APKBUILD
@@ -46,15 +36,8 @@ fi
 #liblkid - 300M (needed by udev)
 #udev - 600M
 #udev-rules (lib/udev/*_id) - 300M
-# TODO: kill blkid, udev anyways have blkid built in
-# sudo udevadm test-builtin blkid
 
-mkdir -p /efi /lib /tmp/dracut
-
-apk upgrade
-apk update
-
-   # steps to rebuild an alpine package - takes forever to check out the git repo
+# steps to rebuild an alpine package - takes forever to check out the git repo
 #  apk add sudo alpine-sdk
 #  adduser -D build
 #  addgroup build abuild
@@ -63,59 +46,68 @@ apk update
 #  su build
 #  export PATH=$PATH:/sbin/
 
-apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
-apk add git curl util-linux-misc >/dev/null
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
+fi
 
-#  emerge -v sys-apps/busybox sys-fs/squashfs-tools dev-vcs/git sys-apps/util-linux sys-kernel/dracut
+. /tmp/infra-env.sh
 
-# udev depends on libkmod, libkmod depends on crypto, crypto is biggest dependent library
-# rebuild libkmod without openssl lib
-apk add xz alpine-sdk  >/dev/null
-wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
-xz -d *.xz && tar -xf *.tar && cd kmod-30
-./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
-make
-rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
-strip /lib/libkmod.so*
-# ldd /lib/libkmod.so* --> only musl and libzstd (no libblkid)
-apk del xz alpine-sdk  >/dev/null
-
-# switch_root is buggy but it works on a basic scenario.. it does not maintain /run after switching root
-# some people might not need util-linux-misc but I DO
-
-# TODO
-# remove dependency on eudev coreutils
-
-rm /bin/findmnt
-
-# Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
+if [ -z "$SCRIPTS" ]; then
+  export SCRIPTS="/tmp"
+fi
 
 cd /
+mkdir -p /efi /lib /tmp/dracut
+
+apk upgrade
+apk update
+
+apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+
+# Temporal build dependencies
+apk add git curl xz alpine-sdk >/dev/null
+
+# Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
 # grab upstream dracut source
 git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
 # pull in a few PRs
-curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
-curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2033.patch | git apply
-curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/1956.patch | git apply
 
+# ntfs3 kernel driver
+curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
+
+# udevadm over of blkid
+curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2033.patch | git apply
 
 git diff
-
-
-#cd dracut && git fetch origin refs/pull/9/head:pr && git checkout pr
-
-# build and install upstream
-#bash -c "./configure --disable-documentation" && make 2>/dev/null && make install
 
 # grab upstream modules only
 rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ # && rm -rf /dracut
 
 # less is more :-), this is an extra layer to make sure systemd is not needed
 rm -rf /usr/lib/dracut/modules.d/*systemd*
+rm -rf /usr/lib/dracut/modules.d/*network*
 
+# udev depends on libkmod
+# rebuild libkmod without openssl lib (libkmod will be dependent on musl and libzstd)
+wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
+xz -d *.xz && tar -xf *.tar && cd kmod-30
+./configure --prefix=/usr --bindir=/bin --sysconfdir=/etc --with-rootlibdir=/lib --disable-test-modules --disable-tools --disable-manpages
+make
+rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
+strip /lib/libkmod.so*
+
+# Uninstall temporal build dependencies
+apk del xz alpine-sdk git curl >/dev/null
+
+# Remove some files that can be be uninstalled becuase of package dependencies
+rm /bin/findmnt /usr/bin/cpio
 > /usr/sbin/dmsetup
+
+cd /
+
+# Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
 # TODO
 # make module that mounts squashfs without initqueue
@@ -149,9 +141,6 @@ rm -rf /usr/lib/dracut/modules.d/*systemd*
 # ehci_pci - USB 2.0 storage devices
 
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
-
-# workaround to instruct dracut not to compress
-rm -rf /usr/bin/cpio
 
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
   --modules 'dmsquash-live busybox' \
@@ -211,9 +200,6 @@ rm -rf etc/mtab
 # TODO
 # can we get rid of /sbin/udevd /bin/udevadm and use mdev or mdevd instead on alpine
 
-# blkid bugs might be able to worked around, but fs-lib dracut module needs some serious look -
-# https://github.com/dracutdevs/dracut/pull/1956 .. this change might not be enough, lets debug more
-# TODO eliminate blkid, it brings in not only a new bin, but also libblkid.so.1.1.0 (almost 0.4M)
 rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
