@@ -75,7 +75,7 @@ git clone https://github.com/dracutdevs/dracut.git && cd dracut
 # pull in a few PRs
 
 # ntfs3 kernel driver
-curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
+#curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
 
 # udevadm over of blkid
 curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2033.patch | git apply
@@ -142,10 +142,16 @@ cd /
 
 # busybox, udev-rules, base, fs-lib, rootfs-block, img-lib, dm, dmsquash-live
 
+# ntfs3
+cat > /tmp/ntfs3.rules << 'EOF'
+SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="ntfs", ENV{ID_FS_TYPE}="ntfs3"
+EOF
+
 dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
   --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
+  --include /tmp/ntfs3.rules /lib/udev/rules.d/ntfs3.rules \
   initrd.img $KERNEL
 
 mv /tmp/dracut/dracut.*/initramfs /
