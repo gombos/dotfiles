@@ -118,6 +118,9 @@ apk del xz bzip2 alpine-sdk git curl >/dev/null
 rm /bin/findmnt /usr/bin/cpio
 > /usr/sbin/dmsetup
 
+# workaround - img-lib requires tar
+> /bin/tar
+
 cd /
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
@@ -223,7 +226,11 @@ rm sbin/switch_root && cp /sbin/switch_root sbin/
 
 rm -rf lib/dracut/modules.txt lib/dracut/build-parameter.txt lib/dracut/dracut-*
 
-apk add cpio
+apk add cpio gzip
+
+rm -rf ./bin/busybox
+rm -rf ./bin/gzip
+rm -rf ./bin/tar
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
