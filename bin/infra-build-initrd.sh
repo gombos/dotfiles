@@ -65,7 +65,7 @@ apk update
 apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
 
 # Temporal build dependencies
-apk add git curl xz alpine-sdk >/dev/null
+apk add git curl xz bzip2 alpine-sdk linux-headers >/dev/null
 
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
@@ -73,9 +73,6 @@ apk add git curl xz alpine-sdk >/dev/null
 git clone https://github.com/dracutdevs/dracut.git && cd dracut
 
 # pull in a few PRs
-
-# ntfs3 kernel driver
-#curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2038.patch | git apply
 
 # udevadm over of blkid
 curl https://patch-diff.githubusercontent.com/raw/dracutdevs/dracut/pull/2033.patch | git apply
@@ -89,6 +86,18 @@ rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ # && r
 rm -rf /usr/lib/dracut/modules.d/*systemd*
 rm -rf /usr/lib/dracut/modules.d/*network*
 
+wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
+bzip2 -d busybox-*.tar.bz2 && tar -xf busybox-*.tar && cd busybox-*
+cp /tmp/busyboxconfig .config
+make oldconfig
+diff .config /tmp/busyboxconfig
+make
+ls -la busybox /bin/busybox
+./busybox
+cd /
+busybox
+exit
+
 # udev depends on libkmod
 # rebuild libkmod without openssl lib (libkmod will be dependent on musl and libzstd)
 wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
@@ -99,7 +108,7 @@ rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
 strip /lib/libkmod.so*
 
 # Uninstall temporal build dependencies
-apk del xz alpine-sdk git curl >/dev/null
+apk del xz bzip2 alpine-sdk git curl >/dev/null
 
 # Remove some files that can be be uninstalled becuase of package dependencies
 rm /bin/findmnt /usr/bin/cpio
