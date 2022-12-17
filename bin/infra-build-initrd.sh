@@ -86,16 +86,6 @@ rm -rf /usr/lib/dracut/modules.d && mv /dracut/modules.d /usr/lib/dracut/ # && r
 rm -rf /usr/lib/dracut/modules.d/*systemd*
 rm -rf /usr/lib/dracut/modules.d/*network*
 
-wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
-bzip2 -d busybox-*.tar.bz2 && tar -xf busybox-*.tar && cd busybox-*
-cp /tmp/busyboxconfig .config
-make oldconfig
-diff .config /tmp/busyboxconfig
-make
-mv ./busybox /bin/busybox
-cd /
-rm -rf busybox*
-
 # udev depends on libkmod
 # rebuild libkmod without openssl lib (libkmod will be dependent on musl and libzstd)
 wget https://mirrors.edge.kernel.org/pub/linux/utils/kernel/kmod/kmod-30.tar.xz
@@ -104,6 +94,22 @@ xz -d *.xz && tar -xf *.tar && cd kmod-30
 make
 rm -rf /lib/libkmod.so* && make install && make clean 2>&1 > /dev/null
 strip /lib/libkmod.so*
+
+cd /
+
+wget https://busybox.net/downloads/busybox-1.35.0.tar.bz2
+bzip2 -d busybox-*.tar.bz2 && tar -xf busybox-*.tar && cd busybox-*
+cp /tmp/busyboxconfig .config
+make oldconfig
+diff /tmp/busyboxconfig .config
+make
+strip ./busybox
+mv ./busybox /bin/busybox
+cd /
+rm -rf busybox*
+
+ls -la /bin/busybox
+/bin/busybox
 
 # Uninstall temporal build dependencies
 apk del xz bzip2 alpine-sdk git curl >/dev/null
@@ -221,6 +227,8 @@ apk add cpio
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
+
+find .
 
 mkdir -p /efi/kernel/
 find . -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd.img
