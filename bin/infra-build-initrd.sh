@@ -92,11 +92,9 @@ cp /tmp/busyboxconfig .config
 make oldconfig
 diff .config /tmp/busyboxconfig
 make
-ls -la busybox /bin/busybox
-./busybox
+mv ./busybox /bin/busybox
 cd /
-busybox
-exit
+rm -rf busybox*
 
 # udev depends on libkmod
 # rebuild libkmod without openssl lib (libkmod will be dependent on musl and libzstd)
