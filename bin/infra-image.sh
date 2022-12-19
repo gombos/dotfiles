@@ -218,10 +218,10 @@ sudo mv isolinux/efiboot.img /tmp/isotemp/
 # todo - to hack kernel
 #cp /tmp/kernel/tmp/linux-5.15.32/arch/x86/boot/bzImage  /tmp/iso/kernel/vmlinuz
 
-find /tmp/iso
+# now this is linked into the kernel
+# rm -rf /tmp/iso/kernel/initrd.img
 
-#rm -rf  /tmp/iso/kernel/initrd*
-#find /tmp/iso
+find /tmp/iso
 
 xorriso \
    -as mkisofs \
