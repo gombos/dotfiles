@@ -117,6 +117,7 @@ apk del xz bzip2 alpine-sdk git curl >/dev/null
 # Remove some files that can be be uninstalled becuase of package dependencies
 rm /bin/findmnt /usr/bin/cpio
 > /usr/sbin/dmsetup
+> /bin/dmesg
 
 # workaround - img-lib requires tar
 > /bin/tar
@@ -163,7 +164,7 @@ cat > /tmp/ntfs3.rules << 'EOF'
 SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="ntfs", ENV{ID_FS_TYPE}="ntfs3"
 EOF
 
-dracut --quiet --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
+dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
   --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
   --include /usr/lib/dracut/modules.d/90kernel-modules/parse-kernel.sh /lib/dracut/hooks/cmdline/01-parse-kernel.sh \
@@ -231,6 +232,8 @@ apk add cpio gzip
 rm -rf ./bin/busybox
 rm -rf ./bin/gzip
 rm -rf ./bin/tar
+rm -rf ./bin/dmesg
+rm -rf ./sbin/blkid
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r
