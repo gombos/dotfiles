@@ -1,0 +1,24 @@
+FROM ubuntu
+
+COPY bin/* /tmp/
+WORKDIR /tmp
+RUN ./infra-build-kernelinitramfs.sh
+
+
+#FROM registry.fedoraproject.org/fedora:latest
+
+#FROM 0gombi0/homelab:initrd as initrd
+
+#FROM 0gombi0/homelab:kernel as kernel
+
+# grab /efi/kernel/initrd.img
+#COPY --from=initrd /efi /efi
+
+#COPY --from=kernel /efi /efi
+
+#COPY bin/* /tmp/
+#WORKDIR /tmp
+#RUN ./infra-build-kernelinitramfs.sh
+
+#FROM scratch
+#COPY --from=builder /efi /efi
