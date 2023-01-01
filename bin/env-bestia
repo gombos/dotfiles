@@ -33,6 +33,7 @@ my-luks-mount backup_pacsa
 my-luks-mount archive_media
 my-luks-mount archive_ice
 my-luks-mount borg
+my-luks-mount pancel
 
 ## -- NO-LUKS
 
