@@ -164,6 +164,8 @@ cat > /tmp/ntfs3.rules << 'EOF'
 SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="ntfs", ENV{ID_FS_TYPE}="ntfs3"
 EOF
 
+# "sd_mod scsi_mod ahci libahci libata"
+
 dracut --nofscks --force --no-hostonly --no-early-microcode --no-compress --reproducible --tmpdir /tmp/dracut --keep --no-kernel \
   --modules 'dmsquash-live busybox' \
   --include /tmp/infra-init.sh /lib/dracut/hooks/pre-pivot/01-init.sh \
