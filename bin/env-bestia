@@ -122,7 +122,8 @@ borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --no
 borg-archive_ice()    { cd $MNTDIR/archive_ice && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/archive_ice::archive_ice-`date -Iseconds` archive >/tmp/nohup-borg-archive_ice.out 2>&1; }
 borg-archive_bagoly() { cd $MNTDIR/archive_bagoly && nohup borg create -s --noflags -x --list $MNTDIR/borg/borg/data::data-`date -Iseconds` . >/tmp/nohup-borg-archive_bagoly.out 2>&1; }
 borg-bagoly()         { cd $MNTDIR/bagoly && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/data::bagoly-`date -Iseconds` . >/tmp/nohup-borg-bagoly.out 2>&1; }
-borg-bestia()    { cd $MNTDIR/mail && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/mail::mail-`date -Iseconds` . >/tmp/nohup-borg-mail.out 2>&1; }
+#borg-bestia()    { cd $MNTDIR/mail && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/mail::mail-`date -Iseconds` . >/tmp/nohup-borg-mail.out 2>&1; }
+borg-bestia-home()    { cd /home && nohup borg create --noflags -s -x --list $MNTDIR/backup_bestia/borg/home::home-`date -Iseconds` . >/tmp/nohup-borg-home.out 2>&1; }
 
 borg-archive_media_longterm()  { cd $MNTDIR/archive_media && nohup borg create --noflags -s -x --list $MNTDIR/backup_borg/borg/repo::backup_archive_media-`date -Iseconds` archive_media >/tmp/nohup-borg-backup_archive_media.out 2>&1; }
 borg-archive_ice_longterm()    { cd $MNTDIR/archive_ice && nohup borg create --noflags -s -x --list $MNTDIR/backup_borg/borg/repo::longterm_archive_ice-`date -Iseconds` archive >/tmp/nohup-borg-longterm_archive_ice.out 2>&1; }
