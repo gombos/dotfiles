@@ -247,6 +247,12 @@ if [ "$HOST" = "bestia" ]; then
   echo "LABEL=home /home ext4 auto 0 2" >> $R/etc/fstab
 fi
 
+if [ "$HOST" = "nagybestia" ]; then
+  #nx
+  # todo - do not hardcode id in several places
+  chown -R 401:401 $R/usr/NX/etc
+fi
+
 if [ "$HOST" = "bestia" ]; then
   echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
 
