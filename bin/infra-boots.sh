@@ -81,7 +81,7 @@ if [ "$HOST" = "bestia" ]; then
   IP=3
 fi
 
-if [ "$HOST" = "nagybestia" ]; then
+if [ "$HOST" = "kisbestia" ]; then
   IP=5
 fi
 
@@ -247,32 +247,8 @@ if [ "$HOST" = "bestia" ]; then
   echo "LABEL=home /home ext4 auto 0 2" >> $R/etc/fstab
 fi
 
-if [ "$HOST" = "nagybestia" ]; then
-  #nx
-  # todo - do not hardcode id in several places
-  chown -R 401:401 $R/usr/NX/etc
-
-  echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
-
-  sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
-
-  # NFS
-  mkdir -p $R/var/lib/nfs/sm
-  > $R/var/lib/nfs/rmtab
-  cp $R/etc/exports $R/var/lib/nfs/etab
-  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-  ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
-
-  # todo - maybe also rpc-statd-notify.service
-
-  # Persistent container storage for docker
-  mkdir -p /var/lib/docker
-  echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
-fi
-
 if [ "$HOST" = "bestia" ]; then
-  echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /run/media/shared btrfs nofail,subvol=/ 0 2' >> $R/etc/fstab
 
   sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
 
@@ -304,9 +280,9 @@ if [ "$HOST" = "bestia" ]; then
   # todo - maybe also rpc-statd-notify.service
 
   # Persistent container storage for docker
-  mkdir -p /var/lib/docker
-  echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
+  mkdir -p /var/lib/docker /tmp
+  echo 'LABEL=linux /var/lib/docker btrfs nofail,subvol=containers 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /tmp btrfs nofail,subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
 if [ "$HOST" = "kispincer" ]; then
