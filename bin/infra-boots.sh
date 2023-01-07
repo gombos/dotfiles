@@ -305,8 +305,8 @@ if [ "$HOST" = "bestia" ]; then
 
   # Persistent container storage for docker
   mkdir -p /var/lib/docker
-  echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
-  echo 'LABEL=linux /tmp btrfs subvol=tmp 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /var/lib/docker btrfs nofail,subvol=containers 0 2' >> $R/etc/fstab
+  echo 'LABEL=linux /tmp btrfs nofail,subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
 if [ "$HOST" = "kispincer" ]; then
