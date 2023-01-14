@@ -17,8 +17,8 @@ jobs:
             fail-fast: false
             matrix:
                 config:
-                     - { tag: boot }
-#                     - { tag: kernel    }
+#                     - { tag: boot }
+                     - { tag: kernel    }
 #                     - { tag: alpine-initramfs-kernel }
 
         steps:
