@@ -1,7 +1,0 @@
-ARG BASE=docker.io/alpine
-
-FROM $BASE
-
-ENV REPO=/_tmp
-
-RUN --mount=target=$REPO $REPO/containers/packages.sh
