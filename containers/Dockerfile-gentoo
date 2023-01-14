@@ -1,0 +1,37 @@
+FROM docker.io/gentoo/portage as portage
+
+# kernel and its dependencies in a separate builder
+FROM docker.io/gentoo/stage3 as kernel
+COPY --from=portage /var/db/repos/gentoo /var/db/repos/gentoo
+RUN emerge -qv sys-kernel/gentoo-kernel-bin
+
+FROM docker.io/gentoo/stage3
+COPY --from=portage /var/db/repos/gentoo /var/db/repos/gentoo
+COPY --from=kernel /boot /boot
+COPY --from=kernel /lib/modules /lib/modules
+
+# Only install `dmsetup`: attempting to install all of lvm2 fails due to missing kernel headers.
+RUN echo 'sys-fs/lvm2 device-mapper-only -thin' > /etc/portage/package.use/lvm2
+
+# workaround for https://bugs.gentoo.org/734022 whereby Gentoo does not support NFS4 with musl
+# RUN echo 'net-fs/nfs-utils -nfsv4' > /etc/portage/package.use/nfs-utils
+
+RUN echo 'app-emulation/qemu QEMU_SOFTMMU_TARGETS: x86_64 QEMU_USER_TARGETS: x86_64' > /etc/portage/package.use/qemu
+
+# dracut
+RUN emerge -qv sys-kernel/dracut
+
+# common
+RUN emerge -qv \
+    sys-fs/btrfs-progs sys-fs/cryptsetup app-shells/dash sys-fs/dmraid sys-fs/mdadm sys-fs/lvm2 sys-devel/make app-admin/sudo sys-fs/e2fsprogs sys-block/parted app-arch/bzip2 app-arch/pigz sys-process/procps sys-apps/kbd sys-apps/busybox dev-vcs/git sys-apps/grep sys-devel/binutils
+
+# common - but distro specific name
+RUN emerge -qv sys-fs/squashfs-tools sys-fs/multipath-tools app-emulation/qemu sys-fs/ntfs3g sys-block/thin-provisioning-tools app-arch/xz-utils
+
+# networking
+RUN emerge -qv \
+    net-fs/nfs-utils \
+    net-misc/dhcp \
+    sys-block/nbd \
+    sys-block/tgt \
+    && rm -rf /var/cache/* /usr/share/doc/* /usr/share/man/*

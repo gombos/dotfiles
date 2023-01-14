@@ -1,0 +1,23 @@
+ARG BASE=docker.io/debian:sid
+
+FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
+
+FROM $BASE as builder
+
+COPY --from=initrd /efi /efi
+
+ENV REPO=/_tmp
+
+RUN apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+    dracut-core \
+    bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip \
+    wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic \
+    autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod file \
+    && apt-get clean && rm -rf /usr/lib/modules/*
+
+RUN --mount=target=$REPO $REPO/container/kernel.sh
+
+FROM scratch
+COPY --from=builder /boot /boot
+COPY --from=builder /lib/modules /lib/modules
+

@@ -1,0 +1,28 @@
+FROM registry.fedoraproject.org/fedora:latest
+
+# kernel
+RUN dnf -y install --setopt=install_weak_deps=False kernel
+
+# dracut
+RUN dnf -y install --setopt=install_weak_deps=False dracut
+
+# common
+RUN dnf -y install --setopt=install_weak_deps=False \
+    btrfs-progs cryptsetup dash dmraid mdadm sed lvm2 make sudo e2fsprogs parted bzip2 pigz procps kbd busybox git grep binutils
+
+RUN dnf -y install --setopt=install_weak_deps=False squashfs-tools qemu-system-x86-core ntfsprogs xz edk2-ovmf
+
+# networking
+RUN dnf -y install --setopt=install_weak_deps=False \
+    nfs-utils \
+    nbd \
+    dhcp-server \
+    iscsi-initiator-utils \
+    dhcp-client \
+    iproute \
+    iputils \
+    scsi-target-utils \
+    dbus-daemon
+
+RUN dnf clean all
+

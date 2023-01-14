@@ -4,7 +4,7 @@ debian
 debian:unstable
 debian:unstable-slim - test packages
 
-# distors - rpm
+# distros - rpm
 amazonlinux2 - by Amazon
 fedora - latest packages
 opensuse/tumbleweed - latest packages
@@ -47,3 +47,4 @@ gcr.io/google.com/cloudsdktool/cloud-sdk # gcloud
 
 # mine
 0gombi0/homelab
+ghcr.io/initramfs-modules/initramfs

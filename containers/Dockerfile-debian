@@ -1,0 +1,20 @@
+FROM docker.io/debian:sid
+
+RUN apt-get update -y -qq && apt-get upgrade -y -qq
+
+# kernel, init, dracut
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 linux-image-generic sysvinit-core dracut-live dracut-network ca-certificates
+
+# common
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+    btrfs-progs cryptsetup dash dmraid mdadm sed lvm2 make sudo e2fsprogs parted bzip2 pigz procps kbd busybox git grep binutils
+
+# common - but distro specific name
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+    openssh-client multipath-tools squashfs-tools qemu-system-x86 ntfs-3g fdisk thin-provisioning-tools xz-utils
+
+# networking
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
+    iputils-arping iputils-ping isc-dhcp-client isc-dhcp-server nbd-client nbd-server nfs-kernel-server open-iscsi curl tgt
+
+RUN apt-get clean

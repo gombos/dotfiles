@@ -1,0 +1,10 @@
+ARG BASE=docker.io/alpine
+
+FROM $BASE as builder
+
+ENV REPO=/_tmp
+
+RUN --mount=target=$REPO $REPO/container/initramfs.sh
+
+FROM scratch
+COPY --from=builder /efi /efi
