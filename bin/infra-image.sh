@@ -7,6 +7,11 @@
 # $2 - efi directory if exists
 # $3 - rootfs directory if exists
 
+if ! [ -z "$REPO" ]; then
+  cp $REPO/bin/* /tmp/
+  cd /tmp
+fi
+
 if [ -z "$1" ]; then
   TARGET="all"
 else

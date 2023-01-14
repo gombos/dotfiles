@@ -5,14 +5,11 @@
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
-cp $REPO/bin/* /tmp/
-cp $REPO/packages/* /tmp/
-
-cd /tmp
-
-
-pwd
-ls -lRa
+if ! [ -z "$REPO" ]; then
+  cp $REPO/bin/* /tmp/
+  cp $REPO/packages/* /tmp/
+  cd /tmp
+fi
 
 . ./infra-env.sh
 
