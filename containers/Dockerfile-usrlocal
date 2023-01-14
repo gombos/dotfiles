@@ -1,11 +1,11 @@
 ARG BASE=0gombi0/homelab-baremetal:extra
 
-FROM $BASE
+FROM $BASE as builder
 
 ENV REPO=/_tmp
 
 RUN --mount=target=$REPO $REPO/bin/infra-usrlocal.sh
 
-#FROM busybox
-#COPY --from=builder /boot /boot
-
+FROM busybox
+COPY --from=builder /tmp /tmp
+COPY --from=builder /usr/local /usr/local
