@@ -4,7 +4,7 @@ set -x
 
 cd /tmp
 
-. ./bin/infra-env.sh
+. ./infra-env.sh
 
 mkdir -p /usr/local/bin
 
