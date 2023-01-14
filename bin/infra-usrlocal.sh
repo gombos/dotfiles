@@ -10,3 +10,4 @@ TMPUSRLOCAL=/tmp/usrlocal
 rm -rf $TMPUSRLOCAL && mkdir $TMPUSRLOCAL && cd $TMPUSRLOCAL
 /tmp/packages-usrlocal
 mksquashfs $TMPUSRLOCAL /tmp/usrlocal.img -comp zstd
+find /tmp

@@ -4,10 +4,6 @@ FROM $BASE
 
 ENV REPO=/_tmp
 
-RUN apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
-    docker \
-    && apt-get clean
-
 RUN --mount=target=$REPO $REPO/bin/infra-usrlocal.sh
 
 #FROM busybox
