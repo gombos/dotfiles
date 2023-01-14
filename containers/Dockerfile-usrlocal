@@ -6,6 +6,5 @@ ENV REPO=/_tmp
 
 RUN --mount=target=$REPO $REPO/bin/infra-usrlocal.sh
 
-FROM busybox
-COPY --from=builder /tmp /tmp
-COPY --from=builder /usr/local /usr/local
+FROM scratch
+COPY --from=builder /tmp/usrlocal.img /iso
