@@ -8,7 +8,7 @@ COPY --from=initrd /efi /efi
 
 ENV REPO=/_tmp
 
-RUN --mount=target=$REPO $REPO/container/kernel-tiny.sh
+RUN --mount=target=$REPO $REPO/containers/kernel-tiny.sh
 
 FROM scratch
 COPY --from=builder /boot /boot
