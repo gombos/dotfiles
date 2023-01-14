@@ -5,8 +5,11 @@
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
-cd $REPO/bin
-cp $REPO/packages/* .
+cp $REPO/bin/* /tmp/
+cp $REPO/packages/* /tmp/
+
+cd /tmp
+
 
 pwd
 ls -lRa
