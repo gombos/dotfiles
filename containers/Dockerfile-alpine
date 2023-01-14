@@ -4,4 +4,4 @@ FROM $BASE
 
 ENV REPO=/_tmp
 
-RUN --mount=target=$REPO $REPO/container/packages.sh
+RUN --mount=target=$REPO $REPO/containers/packages.sh

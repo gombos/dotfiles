@@ -4,7 +4,7 @@ FROM $BASE as base
 
 ENV REPO=/_tmp
 
-RUN --mount=target=$REPO $REPO/container/infra-build-boot.sh
+RUN --mount=target=$REPO $REPO/containers/infra-build-boot.sh
 
 FROM scratch
 COPY --from=base /efi /efi

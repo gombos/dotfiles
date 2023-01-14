@@ -25,7 +25,7 @@ cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
 ls -la /tmp/initramfs.cpio.gz
 file /tmp/initramfs.cpio.gz
 
-cp $REPO/container/kernelconfig .config
+cp $REPO/containers/kernelconfig .config
 
 cp .config oldconfig
 

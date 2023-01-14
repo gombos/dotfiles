@@ -6,7 +6,7 @@ FROM docker.io/alpine
 
 ENV REPO=/_tmp
 
-RUN --mount=target=$REPO $REPO/container/packages.sh
+RUN --mount=target=$REPO $REPO/containers/packages.sh
 
 COPY --from=initrd /efi /efi
 COPY --from=kernel /boot /boot
