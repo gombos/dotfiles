@@ -1,4 +1,6 @@
-FROM 0gombi0/homelab:initrd as initrd
+#FROM 0gombi0/homelab:initrd as initrd
+
+FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
 
 FROM debian:sid as builder
 

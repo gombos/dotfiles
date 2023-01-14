@@ -1,0 +1,11 @@
+#ARG BASE=docker.io/debian:sid
+ARG BASE=docker.io/0gombi0/homelab:minbase
+
+FROM $BASE
+
+ENV REPO=/_tmp
+
+# Takes about 2 hours
+RUN --mount=target=$REPO $REPO/bin/infra-build-root.sh base
+RUN --mount=target=$REPO $REPO/bin/infra-build-root.sh extra
+

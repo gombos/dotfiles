@@ -18,7 +18,8 @@ jobs:
             matrix:
                 config:
 #                     - { tag: boot }
-                     - { tag: kernel    }
+#                     - { tag: kernel    }
+                     - { tag: rootfs    }
 #                     - { tag: alpine-initramfs-kernel }
 
         steps:
