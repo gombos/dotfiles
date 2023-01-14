@@ -7,6 +7,11 @@
 
 cd $REPO
 
+pwd
+ls -lRa
+
+cd /_tmp
+
 . ./infra-env.sh
 
 # Find out the OS running on
