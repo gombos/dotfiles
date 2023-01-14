@@ -5,12 +5,10 @@
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
-cd $REPO
+cd $REPO/bin
 
 pwd
 ls -lRa
-
-cd /_tmp
 
 . ./infra-env.sh
 
