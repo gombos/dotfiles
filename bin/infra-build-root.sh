@@ -5,6 +5,8 @@
 
 # Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
 
+cd $REPO
+
 . ./infra-env.sh
 
 # Find out the OS running on
