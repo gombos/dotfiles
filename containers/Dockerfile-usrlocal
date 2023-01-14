@@ -1,4 +1,4 @@
-ARG BASE=docker.io/debian:sid
+ARG BASE=0gombi0/homelab-baremetal:extra
 
 FROM $BASE
 
