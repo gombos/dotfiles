@@ -47,6 +47,6 @@ jobs:
                 uses: docker/build-push-action@v3
                 with:
                     context: .
-                    file: container/Dockerfile-${{ matrix.config.tag }}
+                    file: containers/Dockerfile-${{ matrix.config.tag }}
                     tags: ghcr.io/${{env.repository_owner}}/${{ matrix.config.tag }}
                     push: true
