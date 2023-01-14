@@ -28,12 +28,13 @@ my-luks-mount backup_pancel
 my-luks-mount backup_large
 my-luks-mount backup_all
 my-luks-mount backup_pacsa
+my-luks-mount pancel
+my-luks-mount kisbestia
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
 my-luks-mount archive_ice
 my-luks-mount borg
-my-luks-mount pancel
 
 ## -- NO-LUKS
 
