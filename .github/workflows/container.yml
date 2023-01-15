@@ -21,7 +21,7 @@ jobs:
 #                     - { tag: kernel    }
 #                     - { tag: rootfs    }
 #                     - { tag: usrlocal    }
-                       - { tag: infra-image }
+                       - { tag: iso }
 #                     - { tag: alpine-initramfs-kernel }
 
         steps:
