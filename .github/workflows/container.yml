@@ -20,7 +20,8 @@ jobs:
 #                     - { tag: boot }
 #                     - { tag: kernel    }
 #                     - { tag: rootfs    }
-                     - { tag: usrlocal    }
+#                     - { tag: usrlocal    }
+                       - { tag: infra-image }
 #                     - { tag: alpine-initramfs-kernel }
 
         steps:
