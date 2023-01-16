@@ -68,8 +68,8 @@ export -f umnt-linux
 
 ## SPEACIAL
 
-mnt-archive_bagoly()    { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o user,user_xattr,noexec,nosuid,nodev,noatime; } }
-mnt-archive_bagoly_ro() { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o ro,user,user_xattr,noexec,nosuid,nodev,noatime; } }
+mnt-archive_bagoly()    { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o user,user_xattr,noexec,nosuid,nodev,noatime; } }
+mnt-archive_bagoly_ro() { mountpoint -q $MNTDIR/archive_bagoly || { mkdir -p $MNTDIR/archive_bagoly && sudo cryptsetup open /home/archive_bagoly.img archive_bagoly && sudo mount /dev/mapper/archive_bagoly $MNTDIR/archive_bagoly -o ro,user,user_xattr,noexec,nosuid,nodev,noatime; } }
 umnt-archive_bagoly()   { sudo umount $MNTDIR/archive_bagoly; sudo cryptsetup close archive_bagoly; }
 
 # Online only on-request drives (by controlling the usb relay)
