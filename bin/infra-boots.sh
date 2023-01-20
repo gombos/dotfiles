@@ -235,8 +235,6 @@ if [ "$HOST" = "bestia" ]; then
   rm -rf $R/etc/network/interfaces.d/*
   rm -rf $R/usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
   chmod -R 600 $R/etc/NetworkManager/system-connections/*
-  #rm -rf $R/etc/network/if-up.d/resolved
-  #rm -rf $R/etc/network/if-down.d/resolved
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
