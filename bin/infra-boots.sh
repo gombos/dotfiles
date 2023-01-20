@@ -233,8 +233,9 @@ fi
 if [ "$HOST" = "bestia" ]; then
   # Manage networking with NetworkManager
   rm -rf $R/etc/network/interfaces.d/*
-  rm -rf $R/usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
   chmod -R 600 $R/etc/NetworkManager/system-connections/*
+
+  mkdir $R/var/lib/bluetooth
 
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
