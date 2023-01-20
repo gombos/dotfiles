@@ -99,7 +99,7 @@ fi
 
 # set static IP
 if [ -n "$IP" ]; then
-  printf "auto eth0\niface eth0 inet static\n  ethernet-wol g\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers 1.1.1.1\n" > $R/etc/network/interfaces.d/eth0
+  printf "allow-hotplug eth0\niface eth0 inet static\n  ethernet-wol g\n  address $NET.$IP\n  netmask 255.255.255.0\n  network $NET.0\n  broadcast $NET.255\n  gateway $NET.1\n  dns-nameservers 1.1.1.1\n   up sleep 5; ethtool -s eth0 speed 1000 duplex full\n" > $R/etc/network/interfaces.d/eth0
 fi
 
 # updates
@@ -231,6 +231,13 @@ if [ $FILES != '*.service' ]; then
 fi
 
 if [ "$HOST" = "bestia" ]; then
+  # Manage networking with NetworkManager
+  rm -rf $R/etc/network/interfaces.d/*
+  rm -rf $R/usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
+  chmod -R 600 $R/etc/NetworkManager/system-connections/*
+  #rm -rf $R/etc/network/if-up.d/resolved
+  #rm -rf $R/etc/network/if-down.d/resolved
+
   # Patch apcupsd config to connect it via usb
   sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
