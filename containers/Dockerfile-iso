@@ -7,7 +7,7 @@ FROM $BASE as base
 #                     - { tag: usrlocal    }
 
 #FROM ghcr.io/gombos/rootfs as rootfs
-FROM rootfs as rootfs
+FROM gombos/rootfs as rootfs
 
 ENV REPO=/_tmp
 
