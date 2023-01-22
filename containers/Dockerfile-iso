@@ -6,7 +6,7 @@ FROM ghcr.io/gombos/usrlocal as l
 
 FROM $BASE
 COPY --from=e /efi /efi
-#COPY --from=r /iso/squashfs.img /iso/squashfs.img
-#COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
+COPY --from=r /iso/squashfs.img /iso/squashfs.img
+COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
 ENV REPO=/_tmp
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh

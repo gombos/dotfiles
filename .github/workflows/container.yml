@@ -15,10 +15,10 @@ jobs:
             max-parallel: 1
             matrix:
                 config:
-#                     - { tag: boot }
-#                     - { tag: kernel    }
-                      - { tag: efi }
-#                     - { tag: rootfs    }
+#                      - { tag: boot }
+#                      - { tag: kernel    }
+#                      - { tag: efi }
+#                      - { tag: rootfs    }
 #                      - { tag: package-rootfs }
 #                      - { tag: usrlocal    }
                       - { tag: iso }
