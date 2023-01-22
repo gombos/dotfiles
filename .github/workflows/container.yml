@@ -17,11 +17,12 @@ jobs:
                 config:
 #                      - { tag: boot }
 #                      - { tag: kernel    }
+                      - { tag: initrd    }
 #                      - { tag: efi }
 #                      - { tag: rootfs    }
 #                      - { tag: package-rootfs }
 #                      - { tag: usrlocal    }
-                      - { tag: iso }
+#                      - { tag: iso }
 
         steps:
             -   name: Checkout
