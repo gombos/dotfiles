@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exit
+
 # kernel binary
 ls -la /boot
 
