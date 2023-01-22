@@ -7,11 +7,7 @@
 # $2 - efi directory if exists
 # $3 - rootfs directory if exists
 
-find /iso
-ls -lRa /iso
-
-ls -la /iso/usrlocal.img
-
+find /efi
 
 exit
 
