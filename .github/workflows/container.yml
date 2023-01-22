@@ -10,9 +10,10 @@ jobs:
     push_to_registry:
         name: container
         runs-on: ubuntu-latest
-#        concurrency:
-#            group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.config.tag }}
-#            cancel-in-progress: true
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.config.tag }}
+            cancel-in-progress: true
+            max-parallel: 1
         strategy:
             fail-fast: false
             matrix:
