@@ -16,3 +16,5 @@ COPY --from=kernel /lib/modules /lib/modules
 COPY --from=boot /efi /efi
 
 RUN find /lib/modules/ /boot/ /efi/
+
+RUN --mount=target=$REPO $REPO/containers/infra-build-kernel.sh
