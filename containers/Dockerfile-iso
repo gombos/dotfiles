@@ -5,7 +5,7 @@ FROM ghcr.io/gombos/rootfs as gr
 FROM ghcr.io/gombos/usrlocal as gl
 
 FROM $BASE
-COPY --from=gl /tmp/usrlocal.img /tmp
+#COPY --from=gl /tmp/usrlocal.img /tmp
 COPY --from=gr /usr /tmp
 ENV REPO=/_tmp
 
