@@ -10,10 +10,6 @@ jobs:
     push_to_registry:
         name: container
         runs-on: ubuntu-latest
-#        concurrency:
-#            group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.config.tag }}
-#            cancel-in-progress: true
-#            max-parallel: 1
         strategy:
             fail-fast: false
             max-parallel: 1
@@ -21,11 +17,11 @@ jobs:
                 config:
 #                     - { tag: boot }
 #                     - { tag: kernel    }
+#                     - { tag: efi }
 #                     - { tag: rootfs    }
-#                      - { tag: package-rootfs }
-                      - { tag: usrlocal    }
+                      - { tag: package-rootfs }
+#                      - { tag: usrlocal    }
                       - { tag: iso }
-#                     - { tag: alpine-initramfs-kernel }
 
         steps:
             -   name: Checkout
