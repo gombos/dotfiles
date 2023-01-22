@@ -2,13 +2,11 @@ ARG BASE=docker.io/ubuntu:jammy
 
 FROM $BASE as base
 
-    - { tag: kernel    }
+#    - { tag: kernel    }
 #                     - { tag: rootfs    }
 #                     - { tag: usrlocal    }
 
-
 FROM ghcr.io/gombos/rootfs as rootfs
-
 
 ENV REPO=/_tmp
 
