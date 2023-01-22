@@ -1,11 +1,15 @@
 #!/bin/bash
 
+apt update
+apt install xorriso
+
 OUT_DIR=${OUT_DIR:=/tmp}
 
 find /efi
 find /boot
 
 mv /iso /tmp/
+mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 cp /boot/vmlinuz* /tmp/iso/kernel
