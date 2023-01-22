@@ -1,7 +1,6 @@
 #!/bin/bash
 
-apt update
-apt install xorriso
+apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
@@ -50,5 +49,3 @@ xorriso \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
-
-rm -rf /tmp/efi /tmp/iso /tmp/isotemp
