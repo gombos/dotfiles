@@ -8,4 +8,4 @@ COPY --from=r / /rootfs
 RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
 FROM scratch
-COPY --from=builder /tmp/squashfs.img /iso
+COPY --from=builder /tmp/squashfs.img /iso/squashfs.img

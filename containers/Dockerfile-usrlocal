@@ -7,4 +7,4 @@ ENV REPO=/_tmp
 RUN --mount=target=$REPO $REPO/bin/infra-usrlocal.sh
 
 FROM scratch
-COPY --from=builder /tmp/usrlocal.img /iso/
+COPY --from=builder /tmp/usrlocal.img /iso/usrlocal.img
