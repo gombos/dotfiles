@@ -4,15 +4,14 @@ FROM ghcr.io/initramfs-modules/boot as boot
 
 FROM docker.io/alpine
 
-#RUN --mount=target=$REPO $REPO/containers/packages.sh
 #FROM ghcr.io/initramfs-modules/initramfs as initrd
-#COPY --from=initrd /efi /efi
 
 COPY --from=kernel /boot /boot
 COPY --from=kernel /lib/modules /lib/modules
 #COPY --from=kernel /efi /efi
 COPY --from=boot /efi /efi
 
-RUN find /lib/modules/ /boot/ /efi/
 ENV REPO=/_tmp
 RUN --mount=target=$REPO $REPO/containers/infra-build-kernel.sh
+
+# output - /lib/modules /boot /efi
