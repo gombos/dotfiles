@@ -7,8 +7,8 @@
 # $2 - efi directory if exists
 # $3 - rootfs directory if exists
 
-find /
-ls -lRa /
+find /iso
+ls -lRa /iso
 
 exit
 
