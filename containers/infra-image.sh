@@ -10,6 +10,9 @@
 find /iso
 ls -lRa /iso
 
+ls -la /iso/usrlocal.img
+
+
 exit
 
 
