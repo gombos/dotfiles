@@ -6,7 +6,7 @@ FROM ghcr.io/gombos/usrlocal as l
 
 FROM $BASE
 COPY --from=r /usr /rootfs
-COPY --from=l /tmp/usrlocal.img /usrlocal
+COPY --from=l /tmp /usrlocal
 #COPY --from=k /tmp/kernel /tmp/kernel
 ENV REPO=/_tmp
 
