@@ -26,5 +26,6 @@ ls -lha /efi/kernel/initrd_modules.img
 
 cd /tmp
 
+mv /lib/modules /usr/lib/
 mksquashfs /usr/lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd
