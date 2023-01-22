@@ -1,0 +1,5 @@
+FROM ghcr.io/gombos/rootfs as r
+FROM alpine
+
+COPY --from=r / /rootfs
+RUN apk add squashfs-tools && mksquashfs /rootfs /iso/squashfs.img -comp zstd
