@@ -1,11 +1,11 @@
 ARG BASE=docker.io/ubuntu:jammy
 
 #FROM ghcr.io/gombos/kernel as kernel
-#FROM ghcr.io/gombos/rootfs as rootfs
-FROM ghcr.io/gombos/usrlocal as usrlocal
+#FROM ghcr.io/gombos/rootfs
+FROM ghcr.io/gombos/usrlocal as _usrlocal
 
 ENV REPO=/_tmp
 
 FROM $BASE
-COPY --from=usrlocal /tmp/usrlocal.img /tmp
+COPY --from=_usrlocal /tmp/usrlocal.img /tmp
 #RUN --mount=target=$REPO $REPO/containers/infra-image.sh
