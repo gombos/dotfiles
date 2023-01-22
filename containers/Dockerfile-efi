@@ -12,8 +12,6 @@ COPY --from=kernel /lib/modules /lib/modules
 COPY --from=boot /efi /efi
 
 ENV REPO=/_tmp
-RUN find $REPO
-
 RUN --mount=target=$REPO $REPO/containers/infra-build-kernel.sh
 
 # output - /lib/modules /boot /efi

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+find /_tmp
+
+
 exit
 
 # kernel binary
