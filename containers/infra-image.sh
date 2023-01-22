@@ -9,8 +9,6 @@ mkdir -p /tmp/iso/LiveOS
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 find /tmp/iso
 
-exit
-
 ls -la /tmp/efi/kernel
 ls -la /tmp/iso/kernel
 
