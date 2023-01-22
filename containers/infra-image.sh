@@ -23,17 +23,17 @@ MNT_DIR=${MNT_DIR:=$OUT_DIR/mnt}
 MNT=$MNT_DIR/root
 MNT_EFI=$MNT_DIR/efi
 
-sudo rm -rf $MNT $MNT_EFI $MNT_DIR
+rm -rf $MNT $MNT_EFI $MNT_DIR
 
-sudo mkdir -p $MNT $MNT_EFI
+mkdir -p $MNT $MNT_EFI
 
-sudo mkdir /tmp/iso/
+mkdir /tmp/iso/
 
 if [ -z $2 ]; then
   infra-get-efi.sh
-  sudo rsync -r /tmp/efi/ /tmp/iso
+  rsync -r /tmp/efi/ /tmp/iso
 else
-  sudo rsync -r $2 /tmp/iso
+  rsync -r $2 /tmp/iso
 fi
 
 ls -la /tmp/efi/kernel
@@ -41,23 +41,23 @@ ls -la /tmp/iso/kernel
 
 # rootfs squashfs
 #infra-get-squash.sh
-sudo mkdir -p /tmp/iso/LiveOS
+mkdir -p /tmp/iso/LiveOS
 
-sudo rm -rf /tmp/laptop
-sudo mkdir -p /tmp/laptop
+rm -rf /tmp/laptop
+mkdir -p /tmp/laptop
 infra-get-rootfs.sh /tmp/laptop
-sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
-sudo rm -rf /tmp/laptop/lib/firmware
+mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
+rm -rf /tmp/laptop/lib/firmware
 
-sudo mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
-sudo rm -rf /tmp/laptop
+mksquashfs /tmp/laptop /tmp/iso/LiveOS/squashfs.img -comp zstd
+rm -rf /tmp/laptop
 
 ls -la /tmp/iso/kernel
 
 # home
 FILE=/tmp/iso/home.img
-sudo dd if=/dev/zero of=$FILE bs=1M count=4
-sudo mkfs.ext4 -L "home_iso" $FILE
+dd if=/dev/zero of=$FILE bs=1M count=4
+mkfs.ext4 -L "home_iso" $FILE
 
 # Find an empty loopback device
 DISK=""
@@ -72,27 +72,27 @@ do
 done
 [ "$DISK" == "" ] && fail "no loop device available"
 
-sudo mount $DISK $MNT_EFI
+mount $DISK $MNT_EFI
 
 cd $MNT_EFI
-sudo git clone https://github.com/gombos/dotfiles.git .dotfiles
-sudo cp .dotfiles/boot/grub.cfg /tmp/iso/EFI/BOOT/
-sudo HOME=$MNT_EFI .dotfiles/bin/infra-provision-user.sh
-sudo chown -R 99:4 .
+git clone https://github.com/gombos/dotfiles.git .dotfiles
+cp .dotfiles/boot/grub.cfg /tmp/iso/EFI/BOOT/
+HOME=$MNT_EFI .dotfiles/bin/infra-provision-user.sh
+chown -R 99:4 .
 cd /
-sudo umount $MNT_EFI
+umount $MNT_EFI
 
 cd /tmp/iso
 
 # keep iso under 2GB
 #sudo wget --quiet https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
-sudo cp /tmp/usrlocal.img /tmp/iso/usrlocal.img
-sudo chown -R 1000:1000 .
+cp /tmp/usrlocal.img /tmp/iso/usrlocal.img
+chown -R 1000:1000 .
 
 # Only include files once in the iso
-sudo mkdir /tmp/isotemp
-sudo mv isolinux/bios.img /tmp/isotemp/
-sudo mv isolinux/efiboot.img /tmp/isotemp/
+mkdir /tmp/isotemp
+mv isolinux/bios.img /tmp/isotemp/
+mv isolinux/efiboot.img /tmp/isotemp/
 
 find /tmp/iso
 
@@ -119,5 +119,5 @@ xorriso \
 
 #sudo umount $MNT
 #sudo losetup -d $DISK
-sudo rm -rf $MNT $MNT_EFI $MNT_DIR
-sudo rm -rf /tmp/efi /tmp/iso /tmp/isotemp
+rm -rf $MNT $MNT_EFI $MNT_DIR
+rm -rf /tmp/efi /tmp/iso /tmp/isotemp
