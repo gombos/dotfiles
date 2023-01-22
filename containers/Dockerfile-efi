@@ -12,7 +12,7 @@ ENV REPO=/_tmp
 
 COPY --from=kernel /boot /boot
 COPY --from=kernel /lib/modules /lib/modules
-COPY --from=kernel /efi /efi
+#COPY --from=kernel /efi /efi
 COPY --from=boot /efi /efi
 
 RUN find /lib/modules/ /boot/ /efi/
