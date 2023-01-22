@@ -2,6 +2,7 @@ FROM ghcr.io/gombos/rootfs as r
 ENV REPO=/_tmp
 RUN --mount=target=$REPO $REPO/bin/infra-rootfs-config.sh
 
+# compression takes 10 min
 FROM alpine as builder
 COPY --from=r / /rootfs
 RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd

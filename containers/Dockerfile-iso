@@ -1,11 +1,11 @@
 ARG BASE=docker.io/ubuntu:jammy
 
 FROM ghcr.io/gombos/kernel as k
-FROM ghcr.io/gombos/rootfs as r
+FROM ghcr.io/gombos/package-rootfs as r
 FROM ghcr.io/gombos/usrlocal as l
 
 FROM $BASE
-COPY --from=r /usr /rootfs
+COPY --from=r /iso /rootfs
 COPY --from=l /iso /usrlocal
 #COPY --from=k /tmp/kernel /tmp/kernel
 ENV REPO=/_tmp
