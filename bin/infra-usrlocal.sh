@@ -12,3 +12,5 @@ rm -rf $TMPUSRLOCAL && mkdir $TMPUSRLOCAL && cd $TMPUSRLOCAL
 mksquashfs $TMPUSRLOCAL /tmp/usrlocal.img -comp zstd
 find /tmp
 find $TMPUSRLOCAL
+
+ls -la /tmp/usrlocal.img
