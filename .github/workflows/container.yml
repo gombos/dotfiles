@@ -19,8 +19,8 @@ jobs:
                 config:
 #                     - { tag: boot }
 #                     - { tag: kernel    }
-#                     - { tag: rootfs    }
-                     - { tag: usrlocal    }
+                     - { tag: rootfs    }
+#                     - { tag: usrlocal    }
 #                       - { tag: iso }
 #                     - { tag: alpine-initramfs-kernel }
 
