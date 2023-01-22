@@ -6,6 +6,7 @@ FROM ghcr.io/gombos/usrlocal as l
 
 FROM $BASE
 COPY --from=e /efi /efi
+COPY --from=e /boot /boot
 COPY --from=r /iso/squashfs.img /iso/squashfs.img
 COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
 ENV REPO=/_tmp
