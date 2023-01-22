@@ -9,9 +9,9 @@ find /boot
 
 mv /iso /tmp/
 mv /efi/* /tmp/iso/
-mkdir -p /tmp/iso/LiveOS
+mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
-cp /boot/vmlinuz* /tmp/iso/kernel
+cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
