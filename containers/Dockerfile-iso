@@ -1,0 +1,7 @@
+ARG BASE=docker.io/ubuntu:jammy
+
+FROM $BASE as base
+
+ENV REPO=/_tmp
+
+RUN --mount=target=$REPO $REPO/containers/infra-image.sh
