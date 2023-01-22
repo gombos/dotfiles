@@ -8,5 +8,5 @@ FROM ghcr.io/gombos/usrlocal as usrlocal
 
 ENV REPO=/_tmp
 
-#COPY --from=usrlocal /tmp/usrlocal.img /tmp
-RUN --mount=target=$REPO $REPO/containers/infra-image.sh
+COPY --from=usrlocal /tmp/usrlocal.img /tmp
+#RUN --mount=target=$REPO $REPO/containers/infra-image.sh
