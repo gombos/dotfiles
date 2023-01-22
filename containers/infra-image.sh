@@ -7,15 +7,12 @@
 # $2 - efi directory if exists
 # $3 - rootfs directory if exists
 
+find /tmp/
+ls -lRa /tmp/
+
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
   cd /tmp
-fi
-
-if [ -z "$1" ]; then
-  TARGET="all"
-else
-  TARGET="$1"
 fi
 
 OUT_DIR=${OUT_DIR:=/tmp}
