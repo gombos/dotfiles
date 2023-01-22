@@ -5,8 +5,8 @@ FROM ghcr.io/gombos/rootfs as gr
 FROM ghcr.io/gombos/usrlocal as gl
 
 FROM $BASE
-#COPY --from=gl /tmp/usrlocal.img /tmp
-COPY --from=gr /usr /tmp
+#COPY --from=gl /tmp/usrlocal.img /tmp/1
+COPY --from=gr /usr /tmp/2
 ENV REPO=/_tmp
 
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh
