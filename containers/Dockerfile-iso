@@ -6,6 +6,7 @@ FROM ghcr.io/gombos/usrlocal as gl
 
 FROM $BASE
 COPY --from=gl /tmp/usrlocal.img /tmp
+COPY --from=gr / /tmp
 ENV REPO=/_tmp
 
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh
