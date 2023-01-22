@@ -1,7 +1,6 @@
 #!/bin/sh
 
-find /_tmp
-
+mkdir -p /efi/kernel
 
 # kernel binary
 ls -la /boot
