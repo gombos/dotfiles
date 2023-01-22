@@ -13,7 +13,7 @@ mkdir -p /tmp/iso/LiveOS
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 cp /boot/vmlinuz* /tmp/iso/kernel
 
-sudo cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
+cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 #rm -rf /tmp/laptop
 #mkdir -p /tmp/laptop
