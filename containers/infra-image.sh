@@ -10,6 +10,9 @@
 find /tmp/
 ls -lRa /tmp/
 
+exit
+
+
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
   cd /tmp
