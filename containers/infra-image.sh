@@ -8,18 +8,13 @@ find /boot
 mv /iso /tmp/
 mkdir -p /tmp/iso/LiveOS
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
-find /tmp/iso
-
-ls -la /tmp/efi/kernel
-ls -la /tmp/iso/kernel
+cp /boot/vmlinuz* /tmp/iso/kernel
 
 #rm -rf /tmp/laptop
 #mkdir -p /tmp/laptop
 #infra-get-rootfs.sh /tmp/laptop
 #mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
 #rm -rf /tmp/laptop/lib/firmware
-
-ls -la /tmp/iso/kernel
 
 cd /tmp/iso
 chown -R 1000:1000 .
