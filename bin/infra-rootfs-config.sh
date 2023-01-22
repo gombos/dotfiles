@@ -2,6 +2,11 @@
 
 # rootfs customizations - both for base and full
 
+if ! [ -z "$REPO" ]; then
+  cp $REPO/bin/* /tmp/
+  cd /tmp
+fi
+
 if [ -f /etc/os-release ]; then
  . /etc/os-release
 fi
