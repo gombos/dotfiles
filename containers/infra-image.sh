@@ -14,21 +14,15 @@ exit
 ls -la /tmp/efi/kernel
 ls -la /tmp/iso/kernel
 
-rm -rf /tmp/laptop
-mkdir -p /tmp/laptop
-infra-get-rootfs.sh /tmp/laptop
-mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
-rm -rf /tmp/laptop/lib/firmware
+#rm -rf /tmp/laptop
+#mkdir -p /tmp/laptop
+#infra-get-rootfs.sh /tmp/laptop
+#mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
+#rm -rf /tmp/laptop/lib/firmware
 
 ls -la /tmp/iso/kernel
 
-exit
-
 cd /tmp/iso
-
-# keep iso under 2GB
-#sudo wget --quiet https://github.com/gombos/dotfiles/releases/download/usrlocal/usrlocal.img -O /tmp/iso/usrlocal.img
-cp /tmp/usrlocal.img /tmp/iso/usrlocal.img
 chown -R 1000:1000 .
 
 # Only include files once in the iso
