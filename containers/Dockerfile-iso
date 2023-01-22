@@ -5,8 +5,8 @@ FROM ghcr.io/gombos/package-rootfs as r
 FROM ghcr.io/gombos/usrlocal as l
 
 FROM $BASE
-COPY --from=r /iso /iso
-COPY --from=l /iso/usrlocal.img /iso
+COPY --from=r /iso /iso/
+COPY --from=l /iso/usrlocal.img /iso/
 #COPY --from=k /tmp/kernel /tmp/kernel
 ENV REPO=/_tmp
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh
