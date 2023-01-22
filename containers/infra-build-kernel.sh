@@ -3,8 +3,6 @@
 find /_tmp
 
 
-exit
-
 # kernel binary
 ls -la /boot
 
