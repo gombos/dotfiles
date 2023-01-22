@@ -5,9 +5,10 @@ mkdir -p /efi/kernel
 # kernel binary
 ls -la /boot
 
-cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
+#cp -r /boot/vmlinuz-$KERNEL /efi/kernel/vmlinuz
 
-apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools  cpio
+#apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 squashfs-tools  cpio
+apk add squashfs-tools  cpio
 
 mkdir /tmp/dracut
 
@@ -21,10 +22,9 @@ mkdir /tmp/dracut
 #find lib/modules/ -name "*.ko"
 
 #find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+ls -lha /efi/kernel/initrd_modules.img
 
 cd /tmp
-
-ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /usr/lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd
