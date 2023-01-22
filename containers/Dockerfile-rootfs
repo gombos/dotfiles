@@ -6,7 +6,7 @@ FROM $BASE as builder
 ENV REPO=/_tmp
 
 RUN --mount=target=$REPO $REPO/bin/infra-build-root.sh base
-RUN --mount=target=$REPO $REPO/bin/infra-build-root.sh extra
+#RUN --mount=target=$REPO $REPO/bin/infra-build-root.sh extra
 
 RUN mksquashfs / /tmp/squashfs.img -comp zstd
 RUN ls -la /tmp/squashfs.img
