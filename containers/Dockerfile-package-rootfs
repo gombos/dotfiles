@@ -1,5 +1,10 @@
 FROM ghcr.io/gombos/rootfs as r
-FROM alpine
+ENV REPO=/_tmp
+RUN --mount=target=$REPO $REPO/bin/infra-rootfs-config.sh
 
+FROM alpine as builder
 COPY --from=r / /rootfs
 RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
+
+FROM scratch
+COPY --from=builder /tmp/squashfs.img /iso
