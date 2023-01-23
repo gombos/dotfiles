@@ -69,6 +69,8 @@ apk add dracut-modules --update-cache --repository https://dl-cdn.alpinelinux.or
 # Temporal build dependencies
 apk add git curl xz bzip2 alpine-sdk linux-headers >/dev/null
 
+apk add perl >/dev/null
+
 # Idea: instead of just going with the alpine default busybox, maybe build it from source, only the modules I need, might be able to save about 0.5M
 
 # grab upstream dracut source
