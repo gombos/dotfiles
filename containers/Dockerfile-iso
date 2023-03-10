@@ -1,16 +1,31 @@
-ARG BASE=docker.io/ubuntu:jammy
+#ARG BASE=docker.io/ubuntu:jammy
 
-FROM ghcr.io/gombos/efi as e
-FROM ghcr.io/gombos/package-rootfs as r
-FROM ghcr.io/gombos/usrlocal as l
+#FROM ghcr.io/gombos/efi as e
+#FROM ghcr.io/gombos/package-rootfs as r
+#FROM ghcr.io/gombos/usrlocal as l
+
+#FROM $BASE as builder
+#COPY --from=e /efi /efi
+#COPY --from=e /boot /boot
+#COPY --from=r /iso/squashfs.img /iso/squashfs.img
+#COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
+#ENV REPO=/_tmp
+#RUN --mount=target=$REPO $REPO/containers/infra-image.sh
+#TODO - broken initramfs, figure out why.. possibly beacuse of blkid
+
+
+
+#FROM scratch
+#COPY --from=builder /tmp/linux.iso /tmp/linux.iso
+
+
+ARG BASE=0gombi0/homelab-baremetal:extra
 
 FROM $BASE as builder
-COPY --from=e /efi /efi
-COPY --from=e /boot /boot
-COPY --from=r /iso/squashfs.img /iso/squashfs.img
-COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
+
 ENV REPO=/_tmp
+
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh
 
-FROM scratch
-COPY --from=builder /tmp/linux.iso /tmp/linux.iso
+FROM busybox
+COPY --from=builder /tmp/usrlocal.img /iso

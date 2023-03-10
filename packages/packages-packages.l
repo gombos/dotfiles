@@ -53,6 +53,7 @@ nethogs
 wireguard-tools
 
 # tools
+podman
 bash-completion
 bc
 command-not-found
