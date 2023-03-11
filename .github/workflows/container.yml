@@ -46,7 +46,6 @@ jobs:
             -   name: Build and Push Container
                 uses: docker/build-push-action@v3
                 with:
-                    context: .
                     file: containers/Dockerfile-${{ matrix.config.tag }}
                     tags: ghcr.io/${{env.repository_owner}}/${{ matrix.config.tag }}
                     push: true
