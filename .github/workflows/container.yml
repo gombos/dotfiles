@@ -32,21 +32,18 @@ jobs:
                 with:
                     file: containers/.Dockerfile-homelab-config
                     tags: ghcr.io/${{env.repository_owner}}/rootfs
-                    push: true
 
             -   name: Build and Push Container - package-rootfs
                 uses: docker/build-push-action@v3
                 with:
                     file: containers/Dockerfile-package-rootfs
                     tags: ghcr.io/${{env.repository_owner}}/package-rootfs
-                    push: true
 
             -   name: Build and Push Container - usrlocal
                 uses: docker/build-push-action@v3
                 with:
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
-                    push: true
 
             -   name: Build and Push Container - iso
                 uses: docker/build-push-action@v3
