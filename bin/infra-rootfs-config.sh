@@ -39,6 +39,9 @@ sudo apt-get update
 sudo apt-get install google-chrome-stable
 
 
+dpkg -l
+find /opt/
+
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
 ln -sf usr/opt
