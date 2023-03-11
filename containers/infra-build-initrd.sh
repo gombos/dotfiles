@@ -239,7 +239,7 @@ rm -rf ./bin/busybox
 rm -rf ./bin/gzip
 rm -rf ./bin/tar
 rm -rf ./bin/dmesg
-rm -rf ./sbin/blkid
+#rm -rf ./sbin/blkid
 
 # Populate logs with the list of filenames inside initrd.img
 find . -type f -exec ls -la {} \; | sort -k 5,5  -n -r

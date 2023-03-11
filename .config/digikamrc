@@ -84,10 +84,10 @@ TreeView Font=Sans Serif,9,-1,5,50,0,0,0,0,0
 Update Type=0
 
 [AlbumFolderView Sidebar]
-CurrentIndex=8072
-Expansion=0,3,4,5,6,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066,8067,8068,8069,8070,8072,8074,8076,8075,8080,8087,8088,8089,8090,-3
+CurrentIndex=8081
+Expansion=0,3,4,5,6,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066,8067,8068,8069,8070,8071,8072,8073,8074,8076,8077,8075,8078,8080,8081,8087,8088,8089,8090,-3
 RestoreChecked=false
-Selection=8072
+Selection=8081
 SortColumn=0
 SortOrder=0
 
@@ -111,6 +111,9 @@ Sync Digikam to Baloo=false
 BqmBottomSplitter=AAAA/wAAAAEAAAACAAAA0gAAALkB/////wEAAAABAA==
 BqmTopSplitter=AAAA/wAAAAEAAAADAAAAoQAAAMkAAAD6Af////8BAAAAAQA=
 BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAA8gAAAN8B/////wEAAAACAA==
+DP-1=DP-1
+DP-1 XPosition 1920x1080 DP-1=0
+DP-1 YPosition 1920x1080 DP-1=0
 DP-5 XPosition=0
 DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
@@ -154,15 +157,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile=
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digikaXyo8Ed/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digikaXyo8Ed/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -1128,7 +1131,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwJYWFg=
+Database Encrypted Password=AwJGRkY=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -1151,7 +1154,7 @@ SortColumn=0
 SortOrder=0
 
 [Digikam Left Sidebar]
-ActiveTab=8
+ActiveTab=0
 Minimized=false
 RestoreSize=-1
 
@@ -1162,7 +1165,7 @@ FileProperties Expanded=true
 ItemProperties Expanded=true
 Minimized=true
 PhotographProperties Expanded=true
-RestoreSize=550
+RestoreSize=208
 VideoProperties Expanded=true
 
 [Digikam Right Sidebar][Captions Tags Properties Tab]
@@ -1444,6 +1447,11 @@ Application Font=Sans Serif,9,-1,5,50,0,0,0,0,0
 Application Style=fusion
 Apply Sidebar Changes Directly=true
 Clean core DB At Start=false
+DP-1=DP-1
+DP-1 Height 1920x1080 DP-1=1080
+DP-1 Width 1920x1080 DP-1=1920
+DP-1 XPosition 1920x1080 DP-1=1
+DP-1 YPosition 1920x1080 DP-1=26
 DP-5 Height 1080=1080
 DP-5 Width 1920=1920
 DP-5 Window-Maximized 1920x1080=true
@@ -1488,7 +1496,7 @@ Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAADE8AAAUEAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB4AAAAO5AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1541,6 +1549,9 @@ Black Point=0
 Brightness Multiplier=1
 Custom White Balance=6500
 Custom White Balance Green=1
+DP-1=DP-1
+DP-1 XPosition 1920x1080 DP-1=0
+DP-1 YPosition 1920x1080 DP-1=0
 DP-5 XPosition=0
 DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
@@ -1784,6 +1795,9 @@ RatingSelection=
 Auto Load Right Panel=true
 Auto Sync Preview=true
 Clear On Close=false
+DP-1=DP-1
+DP-1 XPosition 1920x1080 DP-1=0
+DP-1 YPosition 1920x1080 DP-1=0
 DP-5 XPosition=0
 DP-5 XPosition 1920x1080=0
 DP-5 YPosition=0
@@ -1970,9 +1984,9 @@ State=AAAA/wAAAAD9AAAAAQAAAAIAAAI0AAAAwPwBAAAAAfsAAAAmAGwAaQBnAGgAdAB0AGEAYgBsAG
 ToolBarsMovable=Disabled
 
 [MainWindow]
-InitialAlbumID=134217807
+InitialAlbumID=8081
 SplitterState=AAAA/wAAAAEAAAADAAACjAAABzgAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAAllAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAACWUAAACcAP///wAACWUAAAUEAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAASWAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAABJYAAACcAP///wAABJYAAAKRAAAABAAAAAQAAAAIAAAACPwAAAAA
 
 [Metadata Settings]
 Album Date Source=1
@@ -2012,7 +2026,7 @@ HelpBoxNotifSeen=true
 
 [People Sidebar]
 CurrentIndex=79
-Expansion=4,55,54,70,59,68,67,66,75,73,77,76,74,71,79,81,82,78,72,80,69
+Expansion=55,54,70,59,68,67,66,75,73,77,76,74,71,79,81,82,78,72,80,69
 RestoreChecked=false
 Selection=79
 SortColumn=0
