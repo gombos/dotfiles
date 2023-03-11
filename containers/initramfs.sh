@@ -1,3 +1,9 @@
+if ! [ -z "$REPO" ]; then
+  cp $REPO/bin/* /tmp/
+  cp $REPO/packages/* /tmp/
+  cd /tmp
+fi
+
 mkdir /tmp/dracut
 
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)

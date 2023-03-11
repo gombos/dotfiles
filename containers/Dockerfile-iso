@@ -19,6 +19,11 @@ COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=usrlocal /iso /iso
 
+# TODO
+# replace kernel here
+FROM ghcr.io/gombos/kernel as kernel
+RUN find /efi /boot /lib/modules
+
 ENV REPO=/_tmp
 COPY . $REPO/
 RUN --mount=target=$REPO $REPO/containers/infra-image.sh

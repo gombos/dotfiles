@@ -20,6 +20,12 @@ if echo $TARGET | grep -w -q kernel; then
   docker push     ghcr.io/gombos/kernel
 fi
 
+
+if echo $TARGET | grep -w -q kernelinitramfs; then
+  docker build -t ghcr.io/gombos/kernelinitramfs     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-kernelinitramfs
+  docker push ghcr.io/gombos/kernelinitramfs
+fi
+
 if echo $TARGET | grep -w -q extra; then
   docker build -t ghcr.io/gombos/rootfs-extra     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-extra
   docker push     ghcr.io/gombos/rootfs-extra

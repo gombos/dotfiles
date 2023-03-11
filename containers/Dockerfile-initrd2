@@ -1,0 +1,12 @@
+FROM ghcr.io/gombos/kernel as kernel
+
+FROM alpine as base
+
+# TODO get kernel
+
+ENV REPO=/_tmp
+COPY . $REPO/
+RUN --mount=target=$REPO $REPO/containers/initramfs.sh
+
+FROM scratch
+COPY --from=base /efi /efi
