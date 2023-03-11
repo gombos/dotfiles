@@ -68,6 +68,7 @@ chmod +x /usr/local/bin/digikam
 
 # appimage - chrome
 # pkg2appimage depends on dpkg
+modprobe fuse
 rm -rf out google-chrome chrome.yml
 wget --quiet -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
