@@ -1,8 +1,9 @@
-ARG BASE=0gombi0/homelab-baremetal:extra
+ARG BASE=ghcr.io/gombos/rootfs
 
 FROM $BASE as builder
 
-ENV REPO=/_tmp
+ENV REPO=/tmp_
+COPY . $REPO/
 
 RUN --mount=target=$REPO $REPO/bin/infra-usrlocal.sh
 
