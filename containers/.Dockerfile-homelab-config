@@ -1,4 +1,4 @@
-FROM ghcr.io/gombos/rootfs-extra
+FROM ghcr.io/gombos/rootfsextra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
