@@ -7,8 +7,7 @@ permissions:
     contents: read
 
 jobs:
-    push_to_registry:
-        name: container
+    iso:
         runs-on: ubuntu-latest
 
         steps:
