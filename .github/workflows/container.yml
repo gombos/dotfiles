@@ -1,4 +1,4 @@
-name: Container
+name: iso
 on:
     workflow_dispatch:
 
