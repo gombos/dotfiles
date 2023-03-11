@@ -1,18 +1,15 @@
-#ARG BASE=docker.io/ubuntu:jammy
+ARG BASE=ghcr.io/gombos/rootfs
 
-#FROM ghcr.io/gombos/efi as e
-#FROM ghcr.io/gombos/package-rootfs as r
-#FROM ghcr.io/gombos/usrlocal as l
+FROM ghcr.io/gombos/rootfs as r
 
-#FROM $BASE as builder
-#COPY --from=e /efi /efi
-#COPY --from=e /boot /boot
-#COPY --from=r /iso/squashfs.img /iso/squashfs.img
-#COPY --from=l /iso/usrlocal.img /iso/usrlocal.img
+# compression takes 10 min
+FROM alpine as pr
+COPY --from=r / /rootfs
+RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
-ARG BASE=0gombi0/homelab-baremetal:extra
+FROM scratch
+COPY --from=pr /tmp/squashfs.img /iso/squashfs.img
 
-FROM ghcr.io/gombos/package-rootfs as pr
 FROM ghcr.io/gombos/efi as efi
 FROM ghcr.io/gombos/usrlocal as usrlocal
 
