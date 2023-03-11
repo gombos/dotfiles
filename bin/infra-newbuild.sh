@@ -15,6 +15,11 @@ else
   TARGET="iso"
 fi
 
+if echo $TARGET | grep -w -q kernel; then
+  docker build -t ghcr.io/gombos/kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-kernel
+  docker push     ghcr.io/gombos/kernel
+fi
+
 if echo $TARGET | grep -w -q extra; then
   docker build -t ghcr.io/gombos/rootfs-extra     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-extra
   docker push     ghcr.io/gombos/rootfs-extra
