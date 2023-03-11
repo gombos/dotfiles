@@ -68,13 +68,12 @@ chmod +x /usr/local/bin/digikam
 
 # appimage - chrome
 # pkg2appimage depends on dpkg
-modprobe fuse
-rm -rf out google-chrome chrome.yml
-wget --quiet -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
-wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
-bash -ex pkg2appimage chrome.yml
-mv out/*.AppImage /usr/local/bin/google-chrome-stable
-rm -rf out google-chrome chrome.yml
+#rm -rf out google-chrome chrome.yml
+#wget --quiet -c "https://github.com/AppImage/pkg2appimage/raw/master/pkg2appimage"
+#wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/infra/chrome.yml
+#bash -ex pkg2appimage chrome.yml
+#mv out/*.AppImage /usr/local/bin/google-chrome-stable
+#rm -rf out google-chrome chrome.yml
 
 # pip
 wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
