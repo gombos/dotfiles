@@ -16,7 +16,7 @@ else
 fi
 
 if echo $TARGET | grep -w -q kernel; then
-  docker build -t ghcr.io/gombos/kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-kernel
+  DOCKER_BUILDKIT=1 docker build -t ghcr.io/gombos/kernel     ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-kernel
   docker push     ghcr.io/gombos/kernel
 fi
 

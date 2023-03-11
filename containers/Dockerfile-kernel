@@ -7,7 +7,7 @@ FROM $BASE as builder
 COPY --from=initrd /efi /efi
 
 ENV REPO=/_tmp
-
+COPY . $REPO/
 RUN apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 \
     dracut-core \
     bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip \
