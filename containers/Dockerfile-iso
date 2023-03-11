@@ -3,12 +3,12 @@ ARG BASE=ghcr.io/gombos/rootfs
 FROM ghcr.io/gombos/rootfs as r
 
 # compression takes 10 min
-FROM alpine as pr
+FROM alpine as pra
 COPY --from=r / /rootfs
 RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
-FROM scratch
-COPY --from=pr /tmp/squashfs.img /iso/squashfs.img
+FROM scratch as pr
+COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
 
 FROM ghcr.io/gombos/efi as efi
 FROM ghcr.io/gombos/usrlocal as usrlocal
