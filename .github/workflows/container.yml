@@ -43,9 +43,9 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
-            -   name: Build and Push Container
+            -   name: Build and Push Container - iso
                 uses: docker/build-push-action@v3
                 with:
-                    file: containers/Dockerfile-${{ matrix.config.tag }}
-                    tags: ghcr.io/${{env.repository_owner}}/${{ matrix.config.tag }}
+                    file: containers/Dockerfile-iso
+                    tags: ghcr.io/${{env.repository_owner}}/iso
                     push: true
