@@ -27,7 +27,14 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
-            -   name: rootfs push
+            -   name: rootfs-extra
+                uses: docker/build-push-action@v3
+                with:
+                    push: true
+                    file: containers/.Dockerfile-homelab-extra
+                    tags: ghcr.io/${{env.repository_owner}}/rootfs-extra
+
+            -   name: rootfs
                 uses: docker/build-push-action@v3
                 with:
                     push: true
@@ -41,7 +48,7 @@ jobs:
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
 
-            -   name: iso push
+            -   name: iso
                 uses: docker/build-push-action@v3
                 with:
                     push: true

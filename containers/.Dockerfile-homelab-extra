@@ -7,6 +7,7 @@ COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 
 # Run
+RUN ./infra-build-root.sh base
 RUN ./infra-build-root.sh extra
 
 CMD ["/bin/bash"]

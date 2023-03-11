@@ -54,6 +54,7 @@ wireguard-tools
 
 # tools
 podman
+flatpak
 bash-completion
 bc
 command-not-found

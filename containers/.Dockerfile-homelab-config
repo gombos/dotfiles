@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-baremetal:extra
+FROM ghcr.io/gombos/rootfs-extra
 
 # Setup tmp
 COPY bin/* packages/* /tmp/
