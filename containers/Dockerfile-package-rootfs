@@ -1,9 +1,0 @@
-FROM ghcr.io/gombos/rootfs as r
-
-# compression takes 10 min
-FROM alpine as builder
-COPY --from=r / /rootfs
-RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
-
-FROM scratch
-COPY --from=builder /tmp/squashfs.img /iso/squashfs.img

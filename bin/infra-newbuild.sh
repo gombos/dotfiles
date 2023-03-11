@@ -20,11 +20,6 @@ if echo $TARGET | grep -w -q config; then
   docker push     ghcr.io/gombos/rootfs
 fi
 
-if echo $TARGET | grep -w -q package-rootfs; then
-  DOCKER_BUILDKIT=1 docker build -t ghcr.io/gombos/package-rootfs             ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-package-rootfs
-  docker push     ghcr.io/gombos/package-rootfs
-fi
-
 if echo $TARGET | grep -w -q usrlocal; then
   DOCKER_BUILDKIT=1 docker build --tag ghcr.io/gombos/usrlocal --file ~/.dotfiles/containers/Dockerfile-usrlocal             ~/.dotfiles/
   docker push     ghcr.io/gombos/usrlocal
