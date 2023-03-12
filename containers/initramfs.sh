@@ -9,7 +9,7 @@ mkdir /tmp/dracut
 apk upgrade
 apk update
 
-apk add dracut-modules
+apk add dracut-modules squashfs-tools
 
 # --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
 
@@ -26,13 +26,15 @@ cd  /tmp/dracut/dracut.*/initramfs/
 
 find lib/modules/ -name "*.ko"
 
+mkdir -p /efi/kernel
+
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
 
 cd /tmp
 
 ls -lha /efi/kernel/initrd_modules.img
 
-mksquashfs /usr/lib/modules /efi/kernel/modules
+mksquashfs /lib/modules /efi/kernel/modules
 rm -rf /tmp/initrd
 
 find /efi/kernel

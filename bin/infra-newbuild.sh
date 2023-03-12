@@ -20,7 +20,6 @@ if echo $TARGET | grep -w -q kernel; then
   docker push     ghcr.io/gombos/kernel
 fi
 
-
 if echo $TARGET | grep -w -q kernelinitramfs; then
   docker build -t ghcr.io/gombos/kernelinitramfs     ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-initrd2
   docker push ghcr.io/gombos/kernelinitramfs
