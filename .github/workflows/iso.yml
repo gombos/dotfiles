@@ -1,6 +1,6 @@
 name: iso
 
-# 17 min
+# 18 min
 
 on:
     workflow_dispatch:
@@ -39,7 +39,6 @@ jobs:
             -   name: usrlocal
                 uses: docker/build-push-action@v3
                 with:
-                    push: true
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
                     cache-from: type=gha
