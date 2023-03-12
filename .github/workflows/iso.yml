@@ -1,4 +1,7 @@
 name: iso
+
+# 17 min
+
 on:
     workflow_dispatch:
 
@@ -28,7 +31,7 @@ jobs:
                 uses: docker/build-push-action@v3
                 with:
                     push: true
-                    file: containers/.Dockerfile-homelab-config
+                    file: containers/Dockerfile-homelab-config
                     tags: ghcr.io/${{env.repository_owner}}/rootfs
 
             -   name: usrlocal
