@@ -33,6 +33,8 @@ jobs:
                     push: true
                     file: containers/Dockerfile-homelab-config
                     tags: ghcr.io/${{env.repository_owner}}/rootfs
+                    cache-from: type=gha
+                    cache-to: type=gha,mode=max
 
             -   name: usrlocal
                 uses: docker/build-push-action@v3
@@ -40,13 +42,16 @@ jobs:
                     push: true
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
+                    cache-from: type=gha
+                    cache-to: type=gha,mode=max
 
             -   name: kernelinitramfs
                 uses: docker/build-push-action@v3
                 with:
-                    push: true
                     file: containers/Dockerfile-initrd2
                     tags: ghcr.io/${{env.repository_owner}}/kernelinitramfs
+                    cache-from: type=gha
+                    cache-to: type=gha,mode=max
 
             -   name: iso
                 uses: docker/build-push-action@v3
