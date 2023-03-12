@@ -22,7 +22,7 @@ fi
 
 
 if echo $TARGET | grep -w -q kernelinitramfs; then
-  docker build -t ghcr.io/gombos/kernelinitramfs     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-kernelinitramfs
+  docker build -t ghcr.io/gombos/kernelinitramfs     ~/.dotfiles/ -f ~/.dotfiles/containers/Dockerfile-initrd2
   docker push ghcr.io/gombos/kernelinitramfs
 fi
 
@@ -42,7 +42,7 @@ if echo $TARGET | grep -w -q usrlocal; then
 fi
 
 if echo $TARGET | grep -w -q iso; then
-  DOCKER_BUILDKIT=1 docker build --tag ghcr.io/gombos/iso --file ~/.dotfiles/containers/Dockerfile-iso             ~/.dotfiles/
+  docker build --tag ghcr.io/gombos/iso --file ~/.dotfiles/containers/Dockerfile-iso             ~/.dotfiles/
   docker push     ghcr.io/gombos/iso
 fi
 

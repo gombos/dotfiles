@@ -12,21 +12,18 @@ COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
 
 FROM ghcr.io/gombos/efi as efi
 FROM ghcr.io/gombos/usrlocal as usrlocal
+FROM ghcr.io/gombos/kernel as kernel
 
 FROM $BASE as builder
 
 COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=usrlocal /iso /iso
-
-# TODO
-# replace kernel here
-FROM ghcr.io/gombos/kernel as kernel
-RUN find /efi /boot /lib/modules
+COPY --from=kernel /boot /boot
 
 ENV REPO=/_tmp
 COPY . $REPO/
-RUN --mount=target=$REPO $REPO/containers/infra-image.sh
+RUN $REPO/containers/infra-image.sh
 
 FROM scratch
 COPY --from=builder /tmp/linux.iso /tmp/linux.iso

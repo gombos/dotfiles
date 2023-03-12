@@ -6,6 +6,13 @@ fi
 
 mkdir /tmp/dracut
 
+apk upgrade
+apk update
+
+apk add dracut-modules
+
+# --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
 find /usr/lib | grep .ko
@@ -20,9 +27,6 @@ cd  /tmp/dracut/dracut.*/initramfs/
 find lib/modules/ -name "*.ko"
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
-
-# Make sure we have all the required modules built
-$SCRIPTS/infra-install-vmware-workstation-modules.sh
 
 cd /tmp
 

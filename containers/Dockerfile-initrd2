@@ -1,12 +1,13 @@
 FROM ghcr.io/gombos/kernel as kernel
 
-FROM alpine as base
-
-# TODO get kernel
+FROM alpine:edge as base
+COPY --from=kernel /boot /boot
+RUN find /boot
+COPY --from=kernel /lib/modules /lib/modules
 
 ENV REPO=/_tmp
 COPY . $REPO/
-RUN --mount=target=$REPO $REPO/containers/initramfs.sh
+RUN $REPO/containers/initramfs.sh
 
 FROM scratch
 COPY --from=base /efi /efi
