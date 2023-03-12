@@ -1,4 +1,4 @@
-export KERNEL='5.15.76'
+export KERNEL='5.15.101'
 export RELEASE="jammy"
 export RIPGREP="0.9.6"
 export RCLONE="1.58.0"

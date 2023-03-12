@@ -2,7 +2,7 @@
 
 set -x
 
-export KERNEL='5.15.76'
+export KERNEL='5.15.101'
 
 export DEBIAN_FRONTEND=noninteractive
 
