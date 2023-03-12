@@ -29,6 +29,7 @@ jobs:
 
             -   name: rootfs
                 uses: docker/build-push-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
                     push: true
                     file: containers/Dockerfile-homelab-config
@@ -38,6 +39,7 @@ jobs:
 
             -   name: usrlocal
                 uses: docker/build-push-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
@@ -46,6 +48,7 @@ jobs:
 
             -   name: kernelinitramfs
                 uses: docker/build-push-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
                     file: containers/Dockerfile-initrd2
                     tags: ghcr.io/${{env.repository_owner}}/kernelinitramfs
@@ -54,7 +57,9 @@ jobs:
 
             -   name: iso
                 uses: docker/build-push-action@v3
+                uses: docker/setup-buildx-action@v2
                 with:
+                    load: true
                     push: true
                     file: containers/Dockerfile-iso
                     tags: ghcr.io/${{env.repository_owner}}/iso

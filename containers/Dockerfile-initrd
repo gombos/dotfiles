@@ -1,7 +1,0 @@
-FROM alpine as base
-
-ENV REPO=/_tmp
-RUN --mount=target=$REPO $REPO/containers/infra-build-initrd.sh
-
-FROM scratch
-COPY --from=base /efi /efi

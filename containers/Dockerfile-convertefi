@@ -1,8 +1,0 @@
-FROM 0gombi0/homelab:boot as a
-FROM 0gombi0/homelab:initrd as b
-FROM 0gombi0/homelab:kernel as c
-
-FROM scratch
-COPY --from=a /efi /efi
-COPY --from=b /efi /efi
-COPY --from=c /efi /efi
