@@ -21,7 +21,7 @@ COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=usrlocal /iso /iso
 COPY --from=kernel /boot /boot
-COPY --from=kernelinitramfs /boot /boot
+COPY --from=kernelinitramfs /efi /efi
 
 ENV REPO=/_tmp
 COPY . $REPO/

@@ -18,19 +18,7 @@ rm -rf /tmp/iso/kernel/initrd.img
 rm -rf /tmp/iso/netboot
 rm -rf /tmp/iso/tce
 
-ls -la /tmp/iso/kernel/
-
-cp /boot/initrd* /tmp/iso/kernel/
-
-ls -la /tmp/iso/kernel/
-
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
-
-#rm -rf /tmp/laptop
-#mkdir -p /tmp/laptop
-#infra-get-rootfs.sh /tmp/laptop
-#mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
-#rm -rf /tmp/laptop/lib/firmware
 
 cd /tmp/iso
 chown -R 1000:1000 .
