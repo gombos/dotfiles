@@ -10,7 +10,11 @@ RUN apk add squashfs-tools && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 FROM scratch as pr
 COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
 
-FROM ghcr.io/gombos/efi as efi
+#FROM ghcr.io/gombos/efi as efi
+
+
+FROM ghcr.io/gombos/boot as efi
+
 FROM ghcr.io/gombos/usrlocal as usrlocal
 FROM ghcr.io/gombos/kernel as kernel
 FROM ghcr.io/gombos/kernelinitramfs as kernelinitramfs
