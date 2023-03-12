@@ -4,10 +4,6 @@ apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractiv
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
-# EFI/BOOT
-# isolinux/bios.img
-# isolinux/efiboot.img
-
 find /efi
 find /boot
 
