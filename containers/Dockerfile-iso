@@ -13,6 +13,7 @@ COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
 FROM ghcr.io/gombos/efi as efi
 FROM ghcr.io/gombos/usrlocal as usrlocal
 FROM ghcr.io/gombos/kernel as kernel
+FROM ghcr.io/gombos/kernelinitramfs as kernelinitramfs
 
 FROM $BASE as builder
 
@@ -20,6 +21,7 @@ COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=usrlocal /iso /iso
 COPY --from=kernel /boot /boot
+COPY --from=kernelinitramfs /boot /boot
 
 ENV REPO=/_tmp
 COPY . $REPO/

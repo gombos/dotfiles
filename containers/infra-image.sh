@@ -18,6 +18,12 @@ rm -rf /tmp/iso/kernel/initrd.img
 rm -rf /tmp/iso/netboot
 rm -rf /tmp/iso/tce
 
+ls -la /tmp/iso/kernel/
+
+cp /boot/initrd* /tmp/iso/kernel/
+
+ls -la /tmp/iso/kernel/
+
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 #rm -rf /tmp/laptop
