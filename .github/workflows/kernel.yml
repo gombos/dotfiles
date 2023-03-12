@@ -29,7 +29,7 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-kernel
-                    tags: ghcr.io/${{env.repository_owner}}/rootfsextra
+                    tags: ghcr.io/${{env.repository_owner}}/kernel
 
             -   name: initrd
                 uses: docker/build-push-action@v3

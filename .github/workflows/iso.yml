@@ -38,6 +38,13 @@ jobs:
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
 
+            -   name: boot
+                uses: docker/build-push-action@v3
+                with:
+                    push: true
+                    file: containers/Dockerfile-boot
+                    tags: ghcr.io/${{env.repository_owner}}/boot
+
             -   name: iso
                 uses: docker/build-push-action@v3
                 with:
