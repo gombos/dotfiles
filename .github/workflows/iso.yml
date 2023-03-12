@@ -38,12 +38,12 @@ jobs:
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
 
-            -   name: initrd
+            -   name: kernelinitramfs
                 uses: docker/build-push-action@v3
                 with:
                     push: true
                     file: containers/Dockerfile-initrd2
-                    tags: ghcr.io/${{env.repository_owner}}/initrd
+                    tags: ghcr.io/${{env.repository_owner}}/kernelinitramfs
 
             -   name: iso
                 uses: docker/build-push-action@v3
