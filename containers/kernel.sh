@@ -1,8 +1,8 @@
 # builds for abpout 2:30 hours on GA
 
-cd /tmp/
+. $REPO/bin/infra-env.sh
 
-. ./infra-env.sh
+cd /tmp
 
 set -x
 

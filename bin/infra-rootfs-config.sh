@@ -29,13 +29,13 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+#wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+#sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+#DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
 
 dpkg -l
 find /opt/
