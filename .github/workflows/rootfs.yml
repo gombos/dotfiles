@@ -1,4 +1,6 @@
 name: rootfs
+# runs for 10 min
+
 on:
     workflow_dispatch:
 
