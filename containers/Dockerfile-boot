@@ -1,7 +1,6 @@
 ARG BASE=docker.io/ubuntu:jammy
 
 FROM $BASE as base
-
 ENV REPO=/_tmp
 COPY . $REPO/
 RUN $REPO/containers/infra-build-boot.sh

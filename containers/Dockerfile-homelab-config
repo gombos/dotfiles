@@ -11,5 +11,3 @@ WORKDIR /tmp
 
 # Run
 RUN ./infra-rootfs-config.sh
-
-CMD ["/bin/bash"]

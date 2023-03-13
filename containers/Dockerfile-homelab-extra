@@ -1,13 +1,5 @@
 FROM 0gombi0/homelab-baremetal:base
-
-# Setup tmp
 COPY bin/* packages/* /tmp/
-
-# Change the workdir to tmp
 WORKDIR /tmp
-
-# Run
 RUN ./infra-build-root.sh base
 RUN ./infra-build-root.sh extra
-
-CMD ["/bin/bash"]
