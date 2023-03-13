@@ -27,6 +27,13 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
+            -   name: ki
+                uses: docker/build-push-action@v4
+                with:
+                    push: true
+                    file: containers/Dockerfile-initrd2
+                    tags: ghcr.io/${{env.repository_owner}}/ki
+
             -   name: rootfs
                 uses: docker/build-push-action@v4
                 with:
@@ -42,15 +49,6 @@ jobs:
                     push: true
                     file: containers/Dockerfile-usrlocal
                     tags: ghcr.io/${{env.repository_owner}}/usrlocal
-                    cache-from: type=gha
-                    cache-to: type=gha,mode=max
-
-            -   name: ki
-                uses: docker/build-push-action@v4
-                with:
-                    push: true
-                    file: containers/Dockerfile-initrd2
-                    tags: ghcr.io/${{env.repository_owner}}/ki
                     cache-from: type=gha
                     cache-to: type=gha,mode=max
 
