@@ -28,13 +28,148 @@ cp $REPO/containers/kernelconfig .config
 cp .config oldconfig
 
 cat .config
-./scripts/config --enable CONFIG_AUTOFS4_FS
+./scripts/config --enable CONFIG_BINFMT_ELF
+./scripts/config --enable CONFIG_BINFMT_SCRIPT
+./scripts/config --enable CONFIG_NO_HZ
+./scripts/config --enable CONFIG_HIGH_RES_TIMERS
+./scripts/config --enable CONFIG_BLK_DEV
+./scripts/config --enable CONFIG_BLK_DEV_INITRD
+./scripts/config --enable CONFIG_RD_GZIP
+./scripts/config --enable CONFIG_MISC_FILESYSTEMS
+./scripts/config --enable CONFIG_TMPFS
+./scripts/config --enable CONFIG_COMPAT_32BIT_TIME
+./scripts/config --enable CONFIG_PCI
+./scripts/config --enable CONFIG_RTC_CLASS
+
+# x86 specific
+./scripts/config --enable CONFIG_64BIT
+
+# udev
+./scripts/config --enable CONFIG_SIGNALFD
+./scripts/config --enable CONFIG_BLK_DEV_BSG
+./scripts/config --enable CONFIG_NET
+./scripts/config --enable CONFIG_DEVTMPFS
+./scripts/config --enable CONFIG_DEVTMPFS_MOUNT
+./scripts/config --enable CONFIG_INOTIFY_USER
+./scripts/config --enable CONFIG_PROC_FS
+./scripts/config --enable CONFIG_SYSFS
+
+# reboot
+./scripts/config --enable CONFIG_ACPI
+
+# microcode
+./scripts/config --enable CONFIG_MICROCODE
+./scripts/config --enable CONFIG_MICROCODE_AMD
+./scripts/config --enable CONFIG_MICROCODE_INTEL
+
+# EFI
+ ./scripts/config --enable CONFIG_EFI
+ ./scripts/config --enable CONFIG_EFI_STUB
+
+# module
+./scripts/config --enable CONFIG_MODULES
+
+# staring here are optionals (can be modules)
+
+# unix - for udev
+./scripts/config --enable CONFIG_UNIX
+
+# ahci, libahci
+./scripts/config --enable CONFIG_SATA_AHCI
+
+# libata
+./scripts/config --enable CONFIG_ATA
+./scripts/config --enable CONFIG_ATA_SFF
+
+# scsi_mod
+./scripts/config --enable CONFIG_SCSI
+
+# sd_mod
+./scripts/config --enable CONFIG_BLK_DEV_SD
+
+# loop
+./scripts/config --enable CONFIG_BLK_DEV_LOOP
+
+# squashfs
+./scripts/config --enable CONFIG_SQUASHFS
+./scripts/config --enable CONFIG_SQUASHFS_ZLIB
+
+# overlay
+./scripts/config --enable CONFIG_OVERLAY_FS
+
+# ext4
+./scripts/config --enable CONFIG_EXT4_FS
+./scripts/config --enable CONFIG_EXT4_USE_FOR_EXT2
+
+# 8250
+./scripts/config --enable CONFIG_SERIAL_8250
+./scripts/config --enable CONFIG_SERIAL_8250_CONSOLE
+
+# nls_cp437
+./scripts/config --enable CONFIG_NLS_CODEPAGE_437
+
+# nls_iso8859-1
 ./scripts/config --enable CONFIG_NLS_ISO8859_1
+
+# fat
+./scripts/config --enable CONFIG_FAT_FS
+./scripts/config --enable CONFIG_MSDOS_PARTITION
+./scripts/config --set-str CONFIG_FAT_DEFAULT_CODEPAGE 437
+./scripts/config --set-str CONFIG_FAT_DEFAULT_IOCHARSET "iso8859-1"
+./scripts/config --enable CONFIG_NCPFS_SMALLDOS
+
+# vfat
+./scripts/config --enableCONFIG_VFAT_FS
+
+# cdrom
+./scripts/config --enable CONFIG_BLK_DEV_SR
+
+# autofs4
+./scripts/config --enable CONFIG_AUTOFS4_FS
+
+# isofs
+./scripts/config --enable CONFIG_ISO9660_FS
+
+# modules
+
+# ntfs3
+#CONFIG_NTFS3_FS=m
+
+# exfat
+#CONFIG_EXFAT_FS=m
+#CONFIG_EXFAT_DEFAULT_IOCHARSET="iso8859-1"
+
+# nvme_core
+#CONFIG_NVME_CORE=m
+
+# nvme
+#CONFIG_BLK_DEV_NVME=m
+
+# mmc_core
+#CONFIG_MMC=m
+
+# mmc_block
+#CONFIG_MMC_BLOCK=m
+
+# uas
+#CONFIG_USB_UAS=m
+
+# fuse
+#CONFIG_FUSE_FS=m
+
+# btrfs
+#CONFIG_BTRFS_FS=m
+
+# device mapper
+#CONFIG_BLK_DEV_DM=m
+
+# CONFIG_INITRAMFS_SOURCE="/tmp/initramfs.cpio.gz"
+
+# msdos
+#CONFIG_MSDOS_FS=m
+
 ./scripts/config --enable CONFIG_IKCONFIG
 ./scripts/config --enable CONFIG_IKCONFIG_PROC
-./scripts/config --enable CONFIG_ISO9660_FS
-./scripts/config --enable CONFIG_SATA_AHCI
-./scripts/config --enable CONFIG_OVERLAY_FS
 ./scripts/config --enable CONFIG_SCSI_VIRTIO
 
 ./scripts/config --disable SYSTEM_TRUSTED_KEYS
@@ -44,7 +179,6 @@ cat .config
 ./scripts/config --disable CONFIG_FTRACE
 ./scripts/config --disable CONFIG_PRINTK_TIME
 
-./scripts/config --enable  CONFIG_ANDROID
 ./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
 ./scripts/config --enable  CONFIG_ANDROID_BINDERFS
 ./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
