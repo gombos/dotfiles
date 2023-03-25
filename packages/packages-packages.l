@@ -74,6 +74,7 @@ psmisc
 strace
 time
 sudo
+make
 
 # virtualization
 qemu-system-x86
