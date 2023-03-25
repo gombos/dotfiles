@@ -82,7 +82,7 @@ if [ "$TARGET" = "extra" ]; then
 #echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > etc/apt/sources.list.d/github-cli.list
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list'
+sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 if ! [ -z "${NVIDIA}" ]; then
   # Install nvidea driver - this is the only package from restricted source
