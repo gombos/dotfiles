@@ -1,8 +1,8 @@
 i=$1
 
-if [ -z "$i" ]; then
-  i="0gombi0/homelab"
-fi
+#if [ -z "$i" ]; then
+#  i="0gombi0/homelab"
+#fi
 
 b=$(docker run $i sh -c "test -f /bin/bash && echo bash")
 

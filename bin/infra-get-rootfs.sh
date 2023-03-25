@@ -10,11 +10,11 @@ DIR=$1
 
 [ -z "$DIR" ] && exit
 
-if [ -z "$2" ]; then
-  image="0gombi0/homelab-baremetal"
-else
+#if [ -z "$2" ]; then
+#  image="0gombi0/homelab-baremetal"
+#else
   image="$2"
-fi
+#fi
 
 docker pull $image
 container_id=$(sudo docker create $image /)
