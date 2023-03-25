@@ -90,7 +90,7 @@ key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:
 sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
 
 echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
-curl -fsSL $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
+wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
 
 if ! [ -z "${NVIDIA}" ]; then
   # Install nvidea driver - this is the only package from restricted source
