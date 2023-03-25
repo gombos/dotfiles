@@ -1,4 +1,4 @@
-FROM 0gombi0/homelab-baremetal:base
+FROM ghcr.io/gombos/base
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh base
