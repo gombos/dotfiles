@@ -54,6 +54,7 @@ wireguard-tools
 
 # tools
 podman
+uidmap
 flatpak
 bash-completion
 bc
