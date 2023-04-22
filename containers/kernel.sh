@@ -13,6 +13,8 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic
 
 rm -rf linux-*
+rm -rf /boot/* /lib/modules/*
+
 wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$KERNEL.tar.xz
 tar -xf linux-$KERNEL.tar.xz
 
@@ -206,8 +208,6 @@ diff .config oldconfig
 
 make -j$(nproc) bzImage
 make -j$(nproc) modules
-
-rm -rf /boot/* /lib/modules/*
 
 make install
 make INSTALL_MOD_STRIP=1 modules_install
