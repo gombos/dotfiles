@@ -31,4 +31,4 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-kernel
-                    tags: ghcr.io/${{env.repository_owner}}/ki
+                    tags: ghcr.io/${{env.repository_owner}}/kernel
