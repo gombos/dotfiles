@@ -49,11 +49,11 @@ wget --quiet -O - https://getmic.ro | GETMICRO_REGISTER=y sh
 mv micro /usr/local/bin/
 
 # rclone
-rm -rf rclone-*-linux-amd64.zip
-wget --quiet https://github.com/rclone/rclone/releases/download/v${RCLONE}/rclone-v${RCLONE}-linux-amd64.zip
-unzip rclone-*-linux-amd64.zip
-mv rclone-*/rclone /usr/local/bin/
-rm -rf rclone-*
+#rm -rf rclone-*-linux-amd64.zip
+#wget --quiet https://github.com/rclone/rclone/releases/download/v${RCLONE}/rclone-v${RCLONE}-linux-amd64.zip
+#unzip rclone-*-linux-amd64.zip
+#mv rclone-*/rclone /usr/local/bin/
+#rm -rf rclone-*
 
 # bitwarden
 wget --quiet -O - https://github.com/bitwarden/clients/releases/download/cli-v${BW}/bw-linux-${BW}.zip > bw.zip
