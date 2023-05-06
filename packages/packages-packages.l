@@ -90,3 +90,4 @@ qemu-user-static
 binutils
 graphicsmagick-imagemagick-compat
 python3-pip
+python3-rich
