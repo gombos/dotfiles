@@ -238,11 +238,13 @@ if [ "$HOST" = "bestia" ]; then
   mkdir $R/var/lib/bluetooth
 
   # Patch apcupsd config to connect it via usb
-  sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  #sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
+  #echo "WALL=logger" >> $R/etc/apcupsd/apccontrol
+
   ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
 
   # NFS
-  mkdir -p $R/var/lib/nfs/sm
+ mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
   cp $R/etc/exports $R/var/lib/nfs/etab
   ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
@@ -323,6 +325,14 @@ echo "PermitRootLogin no" >> $R/etc/ssh/sshd_config
 
 if [ -n "$SSHD_PORT" ]; then
   echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
+
+mkdir -p $R/etc/systemd/system/ssh.socket.d
+cat >$R/etc/systemd/system/ssh.socket.d/listen.conf <<EOF
+[Socket]
+ListenStream=
+ListenStream=$SSHD_PORT
+EOF
+
 fi
 
 if [ -e /dev/disk/by-partlabel/swap ]; then
