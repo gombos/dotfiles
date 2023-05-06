@@ -400,7 +400,6 @@ pinentry-gnome3
 pi-package
 plymouth
 pm-utils
-podman
 poppler-data
 powermgmt-base
 pprompt

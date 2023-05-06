@@ -76,7 +76,7 @@ chmod +x /usr/local/bin/digikam
 #rm -rf out google-chrome chrome.yml
 
 # distrobox
-wget -qO- https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
+#wget -qO- https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
 
 # pip
 wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
