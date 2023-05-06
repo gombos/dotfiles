@@ -79,10 +79,10 @@ chmod +x /usr/local/bin/digikam
 #wget -qO- https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
 
 # pip
-wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
+#wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
 
-pip3 install castero
-pip3 install linode-cli
+#pip3 install castero
+pip3 install --break-system-packages --prefix /usr/local linode-cli
 
 # dev tools
 # pip3 install networkx
