@@ -4,9 +4,6 @@ apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractiv
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
-find /efi
-find /boot
-
 mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel

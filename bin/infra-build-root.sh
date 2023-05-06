@@ -127,15 +127,16 @@ infra-install-vmware-workstation.sh
 echo "nx:x:401:nobody" >> /etc/group
 adduser --disabled-password --uid 401 --gid 401 --shell "/etc/NX/nxserver" --home "/var/NX/nx" --gecos "" nx
 
+# see https://downloads.nomachine.com/linux/?id=1
 wget --no-verbose --no-check-certificate https://download.nomachine.com/download/8.4/Linux/nomachine_8.4.2_1_amd64.deb
 
 dpkg -i *.deb
 rm -rf *.deb /usr/NX/etc/keys /usr/NX/etc/sshstatus /usr/NX/etc/usb.db* /usr/NX/etc/*.lic /usr/NX/etc/nxdb /usr/NX/etc/uuid /usr/NX/etc/node.cfg /usr/NX/etc/server.cfg /var/NX/nx/.ssh
 
 # caddy
-wget --no-verbose --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v2.4.6/caddy_2.4.6_linux_amd64.deb
-dpkg -i *.deb
-rm -rf *.deb /etc/systemd/system/multi-user.target.wants/caddy.service
+#wget --no-verbose --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v2.4.6/caddy_2.4.6_linux_amd64.deb
+#dpkg -i *.deb
+#rm -rf *.deb /etc/systemd/system/multi-user.target.wants/caddy.service
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh

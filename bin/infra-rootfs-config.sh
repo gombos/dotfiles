@@ -126,6 +126,7 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 [ -f etc/systemd/system/multi-user.target.wants/nfs-client.target ] && rm etc/systemd/system/multi-user.target.wants/nfs-client.target
 
 [ -f etc/systemd/system/multi-user.target.wants/nginx.service ] && rm etc/systemd/system/multi-user.target.wants/nginx.service
+[ -f etc/systemd/system/multi-user.target.wants/caddy.service ] && rm etc/systemd/system/multi-user.target.wants/caddy.service
 
 # disable dunst - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service
