@@ -222,3 +222,16 @@ find /boot/ /lib/modules/
 #/usr/include/
 #make headers_install
 #make clean
+
+
+# todo - add a stp to generate unified kernel
+#echo "Signing unified kernel"
+
+#objcopy \
+#    --add-section .osrel=/usr/lib/os-release --change-section-vma .osrel=0x20000 \
+#    --add-section .cmdline=cmdline --change-section-vma .cmdline=0x30000 \
+#    --add-section .linux=/boot/vmlinuz --change-section-vma .linux=0x2000000 \
+#    --add-section .initrd=/boot/initrd.img --change-section-vma .initrd=0x3000000 \
+#    /usr/lib/systemd/boot/efi/linuxx64.efi.stub \
+#    vmlinuz.unsigned.efi
+# see https://github.com/pop-os/core/blob/master/res/image.sh
