@@ -1,0 +1,15 @@
+rm -rf /tmp/gh-cli-cache
+cd /tmp
+rm -rf dracut/
+git clone git@github.com:dracutdevs/dracut.git
+cd dracut
+git branch -m origin
+git remote set-url origin git@github.com:dracutdevs-extra/dracut-canary.git
+git push origin HEAD
+git branch -m master
+git push -f origin HEAD
+gh pr list --limit 1000 --repo dracutdevs/dracut --search "milestone:dracut-060 is:open" | cut -f1 | sort -r | uniq > list
+while read p; do gh pr checkout --repo dracutdevs/dracut $p && git branch -m $p ;done <list
+git checkout master
+while read p; do git rebase $p && git pull ;done <list
+git push origin HEAD
