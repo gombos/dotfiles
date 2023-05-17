@@ -1,15 +1,36 @@
-rm -rf /tmp/gh-cli-cache
 cd /tmp
+
+rm -rf /tmp/gh-cli-cache
 rm -rf dracut/
 git clone git@github.com:dracutdevs/dracut.git
 cd dracut
+
+# new origin
 git branch -m origin
 git remote set-url origin git@github.com:dracutdevs-extra/dracut-canary.git
 git push origin HEAD
+
+# reset master
+git branch -m master
+git push -f origin HEAD
+
+# reset originprs
 git branch -m originprs
 git push -f origin HEAD
-gh pr list --limit 1000 --repo dracutdevs/dracut --search "milestone:dracut-060 is:open" | cut -f1 | sort -r | uniq > list
-while read p; do gh pr checkout --repo dracutdevs/dracut $p && git branch -m $p ;done <list
+
+curl https://patch-diff.githubusercontent.com/raw/LaszloGombos/dracut/pull/38.patch | git apply --verbose
+
+gh pr list --limit 1000 --repo dracutdevs/dracut --search "milestone:dracut-060 is:open" | cut -f1 | sort -r | uniq > /tmp/list
+
+cat /tmp/list prlist | sort | uniq > list
+mv list prlist
+
+while read p; do gh pr checkout --repo dracutdevs/dracut $p && git branch -m $p ;done <prlist
 git checkout originprs
 while read p; do git rebase $p && git pull ;done <list
+
+git add prlist
+git commit -m "dracut upstream list of PRs"
+
 git push origin HEAD
+
