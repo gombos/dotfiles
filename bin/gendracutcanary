@@ -27,7 +27,7 @@ mv list prlist
 
 while read p; do gh pr checkout --repo dracutdevs/dracut $p && git branch -m $p ;done <prlist
 git checkout originprs
-while read p; do git rebase $p && git pull ;done <list
+while read p; do git rebase $p && git pull ;done <prlist
 
 git add prlist
 git commit -m "dracut upstream list of PRs"
