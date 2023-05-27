@@ -21,9 +21,8 @@ git push -f origin HEAD
 curl https://patch-diff.githubusercontent.com/raw/LaszloGombos/dracut/pull/38.patch | git apply --verbose
 
 # gh pr list --limit 1000 --repo dracutdevs/dracut --search "milestone:dracut-060 is:open" | cut -f1 | sort -r | uniq > /tmp/list
-
-cat /tmp/list prlist | sort | uniq > list
-mv list prlist
+#cat /tmp/list prlist | sort | uniq > list
+#mv list prlist
 
 while read p; do gh pr checkout --repo dracutdevs/dracut $p && git branch -m $p ;done <prlist
 git checkout originprs
