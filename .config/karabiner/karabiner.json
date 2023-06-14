@@ -77,81 +77,6 @@
                         ]
                     },
                     {
-                        "description": "Ctrl+Q => Hide app",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.vmware\\.fusion$",
-                                            "^net\\.kovidgoyal\\.kitty$",
-                                            "^com\\.microsoft\\.Edge",
-                                            "^com\\.google\\.Chrome$",
-                                            "^com\\.apple\\.Safari$",
-                                            "^com\\.microsoft\\.VSCode"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "q",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": [
-                                            "command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.vmware\\.fusion$",
-                                            "^net\\.kovidgoyal\\.kitty$",
-                                            "^com\\.microsoft\\.Edge",
-                                            "^com\\.google\\.Chrome$",
-                                            "^com\\.apple\\.Safari$",
-                                            "^com\\.microsoft\\.VSCode"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "q",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "command"
-                                        ],
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": [
-                                            "command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
                         "description": "Ctrl+C,V => Copy and Paste",
                         "manipulators": [
                             {
@@ -666,7 +591,8 @@
                                             "^com\\.microsoft\\.Edge",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$",
-                                            "^com\\.microsoft\\.VSCode"
+                                            "^com\\.microsoft\\.VSCode",
+                                            "^com\\.microsoft\\.Outlook"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -699,7 +625,8 @@
                                             "^com\\.microsoft\\.Edge",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$",
-                                            "^com\\.microsoft\\.VSCode"
+                                            "^com\\.microsoft\\.VSCode",
+                                            "^com\\.microsoft\\.Outlook"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
