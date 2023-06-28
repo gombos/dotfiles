@@ -6,7 +6,9 @@ i=$1
 
 b=$(docker run $i sh -c "test -f /bin/bash && echo bash")
 
-if [ "$b" = "bash" ]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  docker run --net=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/sh
+elif [ "$b" = "bash" ]; then
   sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/bash
 else
   sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/sh
