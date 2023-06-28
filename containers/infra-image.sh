@@ -47,3 +47,6 @@ xorriso \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
+
+rm -rf /tmp/iso
+rm -rf /boot
