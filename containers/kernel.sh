@@ -23,7 +23,6 @@ cd linux-$KERNEL
 cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
 
 ls -la /tmp/initramfs.cpio.gz
-file /tmp/initramfs.cpio.gz
 
 cp $REPO/containers/kernelconfig .config
 
