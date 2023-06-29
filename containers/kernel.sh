@@ -66,6 +66,7 @@ cat .config
 # EFI
  ./scripts/config --enable CONFIG_EFI
  ./scripts/config --enable CONFIG_EFI_STUB
+ ./scripts/config --enable CONFIG_EFI_HANDOVER_PROTOCOL
 
 # module
 ./scripts/config --enable CONFIG_MODULES
@@ -120,7 +121,7 @@ cat .config
 ./scripts/config --enable CONFIG_NCPFS_SMALLDOS
 
 # vfat
-./scripts/config --enableCONFIG_VFAT_FS
+./scripts/config --enable CONFIG_VFAT_FS
 
 # cdrom
 ./scripts/config --enable CONFIG_BLK_DEV_SR
@@ -134,7 +135,7 @@ cat .config
 # modules
 
 # ntfs3
-#CONFIG_NTFS3_FS=m
+./scripts/config --module CONFIG_NTFS3_FS
 
 # exfat
 #CONFIG_EXFAT_FS=m
