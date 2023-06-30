@@ -33,7 +33,7 @@ python3-distutils
 
 # android devices
 adb
-scrcpy
+#scrcpy
 
 # networking
 rclone

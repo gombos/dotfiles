@@ -1,7 +1,7 @@
 # Full HW support
 # All productivity tools
 
-# devices
+# device firmware
 linux-firmware
 
 # wireless

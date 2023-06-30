@@ -12,7 +12,7 @@ squashfs-tools
 kpartx
 bindfs
 dosfstools
-hfsprogs
+#hfsprogs
 partclone
 parted
 sshfs
