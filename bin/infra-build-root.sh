@@ -78,9 +78,6 @@ if [ "$TARGET" = "extra" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
 
-#wget --no-check-certificate -q -O - https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-#echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > etc/apt/sources.list.d/github-cli.list
-
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
@@ -92,21 +89,7 @@ sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontain
 echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
 wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
 
-if ! [ -z "${NVIDIA}" ]; then
-  # Install nvidea driver - this is the only package from restricted source
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} restricted" > etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security restricted" >> etc/apt/sources.list.d/restricted.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates restricted" >> etc/apt/sources.list.d/restricted.list
-fi
-
 packages_update_db.sh
-
-if ! [ -z "${NVIDIA}" ]; then
-  install_my_package.sh xserver-xorg-video-nvidia-${NVIDIA}
-
-  # Make sure that only restricted package installed is nvidia
-  rm etc/apt/sources.list.d/restricted.list
-fi
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
 
@@ -132,11 +115,6 @@ wget --no-verbose --no-check-certificate https://download.nomachine.com/download
 
 dpkg -i *.deb
 rm -rf *.deb /usr/NX/etc/keys /usr/NX/etc/sshstatus /usr/NX/etc/usb.db* /usr/NX/etc/*.lic /usr/NX/etc/nxdb /usr/NX/etc/uuid /usr/NX/etc/node.cfg /usr/NX/etc/server.cfg /var/NX/nx/.ssh
-
-# caddy
-#wget --no-verbose --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v2.4.6/caddy_2.4.6_linux_amd64.deb
-#dpkg -i *.deb
-#rm -rf *.deb /etc/systemd/system/multi-user.target.wants/caddy.service
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
