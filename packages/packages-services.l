@@ -18,6 +18,7 @@ dnsmasq
 nfs-kernel-server
 openssh-server
 hostapd
+systemd-resolved
 
 # log
 rsyslog
