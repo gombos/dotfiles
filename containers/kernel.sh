@@ -138,37 +138,30 @@ cat .config
 ./scripts/config --module CONFIG_NTFS3_FS
 
 # exfat
-#CONFIG_EXFAT_FS=m
-#CONFIG_EXFAT_DEFAULT_IOCHARSET="iso8859-1"
+./scripts/config --module CONFIG_EXFAT_FS
 
-# nvme_core
-#CONFIG_NVME_CORE=m
-
-# nvme
-#CONFIG_BLK_DEV_NVME=m
+./scripts/config --set-str CONFIG_EXFAT_DEFAULT_IOCHARSET "iso8859-1"
 
 # mmc_core
-#CONFIG_MMC=m
+./scripts/config --module CONFIG_MMC
 
 # mmc_block
-#CONFIG_MMC_BLOCK=m
+./scripts/config --module CONFIG_MMC_BLOCK
 
 # uas
-#CONFIG_USB_UAS=m
+./scripts/config --module CONFIG_USB_UAS
 
 # fuse
-#CONFIG_FUSE_FS=m
+./scripts/config --module CONFIG_FUSE_FS
 
 # btrfs
-#CONFIG_BTRFS_FS=m
+./scripts/config --module CONFIG_BTRFS_FS
 
 # device mapper
-#CONFIG_BLK_DEV_DM=m
-
-# CONFIG_INITRAMFS_SOURCE="/tmp/initramfs.cpio.gz"
+./scripts/config --module CONFIG_BLK_DEV_DM
 
 # msdos
-#CONFIG_MSDOS_FS=m
+./scripts/config --module CONFIG_MSDOS_FS
 
 ./scripts/config --enable CONFIG_IKCONFIG
 ./scripts/config --enable CONFIG_IKCONFIG_PROC
@@ -186,7 +179,11 @@ cat .config
 ./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
 
 ./scripts/config --disable CONFIG_INPUT_JOYSTICK
+
+# nvme_core
 ./scripts/config --enable  CONFIG_NVME_CORE
+
+# nvme
 ./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
 ./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
@@ -200,6 +197,7 @@ cat .config
 ./scripts/config --disable CONFIG_REISERFS_FS
 ./scripts/config --disable CONFIG_JFS_FS
 ./scripts/config --disable CONFIG_CAN
+./scripts/config --disable CONFIG_INPUT_EVBUG
 
 make oldconfig
 cat .config
