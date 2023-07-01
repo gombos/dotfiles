@@ -64,8 +64,9 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" > etc/apt/sources.list.d/updates.list
 
 # debian - non-free-firmware
-echo "deb https://deb.debian.org/debian ${RELEASE}-security main" > etc/apt/sources.list.d/security.list
-echo "deb https://deb.debian.org/debian ${RELEASE}-updates main" > etc/apt/sources.list.d/updates.list
+echo "deb https://deb.debian.org/debian ${RELEASE} main non-free-firmware" > etc/apt/sources.list
+echo "deb https://deb.debian.org/debian ${RELEASE}-security main non-free-firmware" > etc/apt/sources.list.d/security.list
+echo "deb https://deb.debian.org/debian ${RELEASE}-updates main non-free-firmware" > etc/apt/sources.list.d/updates.list
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -81,7 +82,7 @@ if [ "$TARGET" = "extra" ]; then
 # Does not need to be bootable
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-sh -c 'echo "deb [arch=$(dpkg --print-architecture) https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 # I need the updated podman
 #ubuntu_version='22.04'
