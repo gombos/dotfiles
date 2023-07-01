@@ -4,6 +4,7 @@
 # device firmware
 #linux-firmware
 firmware-linux
+firmware-iwlwifi
 
 # wireless
 rfkill
