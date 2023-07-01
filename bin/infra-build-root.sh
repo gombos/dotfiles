@@ -59,11 +59,16 @@ mkdir -p etc/apt/apt.conf.d/
 printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
 
 # Enable package updates before installing rest of packages
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
 
-mkdir -p etc/apt/sources.list.d
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" > etc/apt/sources.list.d/security.list
-echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" > etc/apt/sources.list.d/updates.list
+#mkdir -p etc/apt/sources.list.d
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" > etc/apt/sources.list.d/security.list
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" > etc/apt/sources.list.d/updates.list
+
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" > etc/apt/sources.list.d/security.list
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" > etc/apt/sources.list.d/updates.list
+
+#echo "deb https://deb.debian.org/debian bookworm main
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -82,12 +87,12 @@ wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 # I need the updated podman
-ubuntu_version='22.04'
-key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}/Release.key"
-sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
+#ubuntu_version='22.04'
+#key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}/Release.key"
+#sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
 
-echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
-wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
+#echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
+#wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
 
 packages_update_db.sh
 
