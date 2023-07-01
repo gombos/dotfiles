@@ -3,6 +3,7 @@
 
 # device firmware
 linux-firmware
+firmware-linux
 
 # wireless
 rfkill
