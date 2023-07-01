@@ -65,7 +65,7 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 
 # debian - non-free-firmware
 echo "deb https://deb.debian.org/debian ${RELEASE} main non-free-firmware" > etc/apt/sources.list
-echo "deb https://deb.debian.org/debian ${RELEASE}-security main non-free-firmware" > etc/apt/sources.list.d/security.list
+#echo "deb https://deb.debian.org/debian ${RELEASE}-security main non-free-firmware" > etc/apt/sources.list.d/security.list
 echo "deb https://deb.debian.org/debian ${RELEASE}-updates main non-free-firmware" > etc/apt/sources.list.d/updates.list
 
 packages_update_db.sh
