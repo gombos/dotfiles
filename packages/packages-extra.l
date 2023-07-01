@@ -2,7 +2,7 @@
 # All productivity tools
 
 # device firmware
-linux-firmware
+#linux-firmware
 firmware-linux
 
 # wireless
