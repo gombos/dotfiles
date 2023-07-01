@@ -53,7 +53,7 @@ nethogs
 wireguard-tools
 
 # tools
-podman
+#podman
 distrobox
 uidmap
 flatpak

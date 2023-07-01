@@ -81,29 +81,20 @@ if [ "$TARGET" = "extra" ]; then
 # Does not need to be bootable
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+sh -c 'echo "deb [arch=$(dpkg --print-architecture) https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 # I need the updated podman
 #ubuntu_version='22.04'
 #key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}/Release.key"
 #sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
 
-sudo mkdir -p /etc/apt/keyrings
+#sudo mkdir -p /etc/apt/keyrings
 
-key_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key"
-sources_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/"
+#key_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key"
+#sources_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/"
 
-echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
-wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
-
-# Debian Testing/Bookworm
-#curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key \
-#  | gpg --dearmor \
-#  | sudo tee /etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg > /dev/null
-#echo \
-#  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg]\
-#    https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/ /" \
-#  | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
+#echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
+#wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
 
 packages_update_db.sh
 
