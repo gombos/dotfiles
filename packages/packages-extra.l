@@ -1,10 +1,4 @@
-# Full HW support
 # All productivity tools
-
-# device firmware
-#linux-firmware
-firmware-linux
-firmware-iwlwifi
 
 # wireless
 rfkill

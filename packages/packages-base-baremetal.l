@@ -13,6 +13,12 @@ wget
 gpg
 gpg-agent
 
+# Full HW support
+# device firmware
+#linux-firmware
+firmware-linux
+firmware-iwlwifi
+
 # boot
 grub-common
 efibootmgr

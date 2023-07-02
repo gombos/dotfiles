@@ -1,0 +1,4 @@
+FROM debian
+COPY bin/* packages/* /tmp/
+WORKDIR /tmp
+RUN ./infra-build-root2.sh
