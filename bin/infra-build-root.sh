@@ -65,7 +65,7 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 
 # debian - non-free-firmware
 echo "deb https://deb.debian.org/debian ${RELEASE} main non-free-firmware" > etc/apt/sources.list
-#echo "deb https://deb.debian.org/debian ${RELEASE}-security main non-free-firmware" > etc/apt/sources.list.d/security.list
+echo "deb https://deb.debian.org/debian/debian-security/ ${RELEASE}-security main non-free-firmware" > etc/apt/sources.list.d/security.list
 echo "deb https://deb.debian.org/debian ${RELEASE}-updates main non-free-firmware" > etc/apt/sources.list.d/updates.list
 
 packages_update_db.sh
@@ -119,7 +119,7 @@ echo "nx:x:401:nobody" >> /etc/group
 adduser --disabled-password --uid 401 --gid 401 --shell "/etc/NX/nxserver" --home "/var/NX/nx" --gecos "" nx
 
 # see https://downloads.nomachine.com/linux/?id=1
-wget --no-verbose --no-check-certificate https://download.nomachine.com/download/8.4/Linux/nomachine_8.4.2_1_amd64.deb
+wget --no-verbose --no-check-certificate https://download.nomachine.com/download/8.6/Linux/nomachine_8.6.1_3_amd64.deb
 
 dpkg -i *.deb
 rm -rf *.deb /usr/NX/etc/keys /usr/NX/etc/sshstatus /usr/NX/etc/usb.db* /usr/NX/etc/*.lic /usr/NX/etc/nxdb /usr/NX/etc/uuid /usr/NX/etc/node.cfg /usr/NX/etc/server.cfg /var/NX/nx/.ssh
