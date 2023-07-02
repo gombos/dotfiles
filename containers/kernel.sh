@@ -168,8 +168,8 @@ cat .config
 ./scripts/config --enable CONFIG_IKCONFIG
 ./scripts/config --enable CONFIG_IKCONFIG_PROC
 
-./scripts/config --module  CONFIG_ANDROID_BINDER_IPC
-./scripts/config --enable  CONFIG_ANDROID_BINDERFS
+./scripts/config --set-val CONFIG_ANDROID_BINDER_IPC y
+./scripts/config --set-val CONFIG_ANDROID_BINDERFS y
 ./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES "binder,hwbinder,vndbinder"
 
 # nvme_core
