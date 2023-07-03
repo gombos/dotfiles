@@ -13,12 +13,8 @@ fi
 
 . ./infra-env.sh
 
-# Find out the OS running on
-if [ -z "$RELEASE" ]; then
-
-  if [ -f /etc/os-release ]; then
-   . /etc/os-release
-  fi
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
 
   RELEASE=$VERSION_CODENAME
   if [ -z "$RELEASE" ]; then
@@ -40,7 +36,7 @@ else
   TARGET="extra"
 fi
 
-echo "Building $RELEASE $TARGET"
+echo "Building $RELEASE $TARGET on $ID"
 
 if [ "$TARGET" = "container" ]; then
   packages_update_db.sh
@@ -111,6 +107,8 @@ install_my_packages.sh packages-x11apps.l
 install_my_packages.sh packages-filesystems.l
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-extra.l
+
+install_my_packages.sh "packages*-$ID.l"
 
 infra-install-vmware-workstation.sh
 
