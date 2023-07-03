@@ -104,13 +104,13 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-core*.l
-install_my_packages.sh packages-services*.l
-install_my_packages.sh packages-x11core*.l
-install_my_packages.sh packages-x11apps*.l
-install_my_packages.sh packages-filesystems*.l
-install_my_packages.sh packages-packages*.l
-install_my_packages.sh packages-extra*.l
+install_my_packages.sh packages-core.l
+install_my_packages.sh packages-services.l
+install_my_packages.sh packages-x11core.l
+install_my_packages.sh packages-x11apps.l
+install_my_packages.sh packages-filesystems.l
+install_my_packages.sh packages-packages.l
+install_my_packages.sh packages-extra.l
 
 infra-install-vmware-workstation.sh
 

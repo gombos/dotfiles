@@ -1,5 +1,5 @@
 # filesystems
-#open-vm-tools-desktop
-#spice-webdavd
-#gddrescue
-#kpartx
+open-vm-tools-desktop
+spice-webdavd
+gddrescue
+kpartx

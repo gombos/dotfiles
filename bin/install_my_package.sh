@@ -1,11 +1,11 @@
 if [ -f /usr/bin/apt-get ]; then
   apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@"
-  return
+  exit 0
 fi
 
-if [ -f /usr/bin/paru ]; then
-  /usr/bin/paru /usr/local/bin/pacapt -Sy --noconfirm "$@"
-  return
+if [ -f /usr/sbin/aur-install ]; then
+  /usr/sbin/aur-install "$@"
+  exit 0
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
