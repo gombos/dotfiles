@@ -69,3 +69,6 @@ qemu-user-static
 
 binutils
 graphicsmagick-imagemagick-compat
+
+gh
+jq

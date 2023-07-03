@@ -32,4 +32,3 @@ install_my_packages.sh  "packages*-$ID.l"
 #install_my_packages.sh packages-services.l
 #install_my_packages.sh packages-x11core.l
 #install_my_packages.sh packages-x11apps.l
-#install_my_packages.sh packages-extra.l
