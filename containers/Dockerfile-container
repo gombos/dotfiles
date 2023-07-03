@@ -2,5 +2,9 @@
 FROM debian
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
-RUN curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
+RUN useradd -m build
+#RUN pacman --noconfirm -Syu base-devel git sudo cargo
+#RUN su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
+#RUN pacman -U --noconfirm ~build/paru/*.pkg.tar.*
+#RUN curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
 RUN ./infra-build-root2.sh
