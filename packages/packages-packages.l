@@ -55,7 +55,7 @@ wireguard-tools
 # tools
 #podman
 distrobox
-uidmap
+#uidmap
 flatpak
 bash-completion
 bc
