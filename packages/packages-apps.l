@@ -1,5 +1,4 @@
-# Purpose: Basic desktop system
-# Non-goals: Full engineering setup
+# Purpose: Basic desktop GUI apps
 
 gparted
 kitty
@@ -14,4 +13,4 @@ vlc
 libreoffice-calc
 libreoffice-writer
 #thunderbird
-#google-chrome-stable
+google-chrome

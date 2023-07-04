@@ -1,4 +1,40 @@
-# All productivity tools
+## Linux services
+## ==============
+
+# container services
+containerd
+docker.io
+systemd-container
+
+# power management
+apcupsd
+autosuspend
+upower
+
+# compute
+cron
+
+# networking
+#nginx-light
+caddy
+dnsmasq
+nfs-kernel-server
+openssh-server
+hostapd
+systemd-resolved
+
+# log
+rsyslog
+
+# time - ntp
+systemd-timesyncd
+
+# storage
+udisks2
+libblockdev-crypto2
+
+## Linux tools
+## ===========
 
 # wireless
 rfkill
@@ -16,7 +52,8 @@ network-manager
 # x11
 lxpanel
 
-# filesystems
+## Linux filesystems
+## =================
 fuse3
 spice-vdagent
 davfs2

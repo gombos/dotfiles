@@ -3,6 +3,13 @@
 # The idea is that these pacages are always available
 # ideally these packages are even available via brew on MacOS
 
+
+# core tools
+sudo
+git
+less
+unzip
+
 # files
 antiword
 attr
