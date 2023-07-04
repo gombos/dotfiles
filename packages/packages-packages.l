@@ -3,7 +3,6 @@
 # The idea is that these pacages are always available
 # ideally these packages are even available via brew on MacOS
 
-
 # core tools
 sudo
 git
@@ -13,7 +12,7 @@ unzip
 # files
 antiword
 attr
-borgbackup
+borgbackup # pip
 detox
 dos2unix
 file
@@ -21,7 +20,7 @@ micro
 pass
 rename
 ripgrep
-ripgrep-all
+ripgrep-all # not on debian
 rmlint
 rsync
 pass
@@ -43,10 +42,12 @@ net-tools
 nmap
 mutt
 tcpdump
-sshuttle
+sshuttle # pip
 nethogs
 rclone
-tailscale
+bitwarden-cli # not on debian
+tailscale     # not on debian
+linode-cli    # not on debian
 
 # tools
 distrobox
@@ -81,4 +82,3 @@ graphicsmagick-imagemagick-compat
 
 gh
 jq
-bitwarden-cli
