@@ -15,6 +15,10 @@ echo "Using $ID"
 
 PATH=$PATH:.
 
+echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+echo 'Server = https://mirror.leaseweb.net/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+
 #if [ $ID == "arch" ]; then
 #  useradd -m build
 #  pacman --noconfirm -Syu base-devel git sudo cargo

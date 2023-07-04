@@ -44,10 +44,6 @@ tar -xvf ripgrep_all-*
 mv ripgrep_all-*/rga* /usr/local/bin/
 rm -rf ripgrep_all-*
 
-# micro
-wget --quiet -O - https://getmic.ro | GETMICRO_REGISTER=y sh
-mv micro /usr/local/bin/
-
 # rclone
 #rm -rf rclone-*-linux-amd64.zip
 #wget --quiet https://github.com/rclone/rclone/releases/download/v${RCLONE}/rclone-v${RCLONE}-linux-amd64.zip
@@ -65,9 +61,6 @@ mv bw /usr/local/bin/
 # appimage - digikam
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
-
-# distrobox
-#wget -qO- https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
 
 # pip
 #wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
