@@ -3,6 +3,10 @@ name: linux
 
 on:
     workflow_dispatch:
+        inputs:
+            container:
+                description: 'container'
+                default: 'greyltc/archlinux-aur:paru'
 
 permissions:
     packages: write
@@ -31,4 +35,5 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-container
+                    build-args: TAG=${{ inputs.container }}
                     tags: ghcr.io/${{env.repository_owner}}/linux
