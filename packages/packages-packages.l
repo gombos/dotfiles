@@ -21,6 +21,7 @@ micro
 pass
 rename
 ripgrep
+ripgrep-all
 rmlint
 rsync
 pass
@@ -44,7 +45,8 @@ mutt
 tcpdump
 sshuttle
 nethogs
-wireguard-tools
+rclone
+tailscale
 
 # tools
 distrobox
@@ -79,3 +81,4 @@ graphicsmagick-imagemagick-compat
 
 gh
 jq
+bitwarden-cli

@@ -10,8 +10,10 @@ then
   case "$1" in
     google-chrome)
       echo "google-chrome-stable";;
+    ripgrep-all|tailscale|bitwarden-cli)
+      ;;
     *)
-      echo "$1"
+      echo "$1" ;;
   esac
 else
   echo "$1"
