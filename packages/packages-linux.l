@@ -4,6 +4,8 @@
 # container services
 containerd
 docker.io
+uidmap
+apparmor-utils
 systemd-container
 
 # power management
