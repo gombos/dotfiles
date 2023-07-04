@@ -37,7 +37,7 @@ function pshostname {
   fi
 }
 
-PS1='\[\033[01;32m\]$(psusername)\[\033[01;34m\]$(pshostname)\w\[\033[00m\] '
+PS1='\[\033[01;32m\]$(psusername)\[\033[01;34m\]\w\[\033[00m\] '
 
 # -- Configure the environment for childs
 
