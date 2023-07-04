@@ -22,5 +22,5 @@ fi
 cat /tmp/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
 do
   Q=$(filterpackage "$in")
-  install_my_package.sh "$Q"
+  i "$Q"
 done

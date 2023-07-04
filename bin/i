@@ -8,6 +8,12 @@ if [ -f /usr/sbin/aur-install ]; then
   exit 0
 fi
 
+if [ -f /usr/sbin/paru ]; then
+  /usr/sbin/paru "$@"
+  exit 0
+fi
+
+
 if [ -f /usr/local/bin/pacapt ]; then
   if [ "$ID" = "alpine" ]; then
     /usr/local/bin/pacapt -Sy "$@"
