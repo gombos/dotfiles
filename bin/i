@@ -9,7 +9,7 @@ if [ -f /usr/sbin/aur-install ]; then
 fi
 
 if [ -f /usr/sbin/paru ]; then
-  /usr/sbin/paru "$@"
+  /usr/sbin/paru --sync --skipreview --removemake --needed --noconfirm --noprogressbar  "$@"
   exit 0
 fi
 
