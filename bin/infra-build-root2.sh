@@ -30,3 +30,5 @@ install_my_packages.sh packages-apps.l
 install_my_packages.sh packages-*linux.l
 install_my_packages.sh "packages*-$ID.l"
 
+# use this install script only during initial container creation
+rm -rf /usr/sbin/aur-install
