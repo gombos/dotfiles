@@ -1,1 +1,1 @@
-ssh bestia -t distrobox enter my-distrobox
+ssh bestia -t distrobox enter linux
