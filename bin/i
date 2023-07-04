@@ -13,6 +13,12 @@ if [ -f /usr/sbin/paru ]; then
   exit 0
 fi
 
+if [ -f /usr/sbin/pacman ]; then
+  /usr/sbin/pacman -Sy --needed --noconfirm "$@"
+  exit 0
+fi
+
+
 
 if [ -f /usr/local/bin/pacapt ]; then
   if [ "$ID" = "alpine" ]; then
