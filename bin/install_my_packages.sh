@@ -18,9 +18,11 @@ else
 fi
 }
 
-# install packages one by one
-cat /tmp/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
+# install packages all at once for better dependency management and to avoid that order of packages is significant
+P=`cat /tmp/$1 | cut -d\# -f 1 | cut -d\; -f 1 | sed '/^$/d' | awk '{print $1;}' | while read in;
 do
   Q=$(filterpackage "$in")
-  i "$Q"
-done
+  echo -n " $Q "
+done`
+
+i $P
