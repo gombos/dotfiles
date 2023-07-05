@@ -91,6 +91,7 @@ gh
 jq
 openssh
 caddy
+inetutils
 
 # power management
 apcupsd
