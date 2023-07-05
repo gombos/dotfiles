@@ -16,13 +16,13 @@ then
       echo network-manager ;;
     openssh)
       echo openssh-server ;;
-   nfs-utils)
+    nfs-utils)
       echo nfs-kernel-server ;;
-   apparmor)
+    apparmor)
       echo apparmor-utils ;;
-   docker)
+    docker)
       echo docker.io ;;
-   systemd)
+    systemd)
       echo systemd-timesyncd systemd-resolved systemd-container ;;
     ripgrep-all|tailscale|bitwarden-cli|linode-cli)
       ;;
