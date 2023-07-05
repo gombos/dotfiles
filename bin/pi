@@ -25,7 +25,7 @@ if [ -f /usr/bin/apt-get ]; then
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
-  installpackage() { /usr/local/bin/pacapt -Sy --noconfirm "$@" ;}
+  installpackage() { /usr/local/bin/pacapt -Sy --noconfirm --needed "$@" ;}
 fi
 
 installpackage "$@"

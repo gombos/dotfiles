@@ -168,3 +168,7 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 
 # TODO
 #. "$HOME/.cargo/env"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias docker="lima nerdctl"
+fi
