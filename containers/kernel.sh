@@ -188,20 +188,20 @@ cat .config
 # kvm-intel
 ./scripts/config --set-val CONFIG_KVM_INTEL m
 
-# virtio
-./scripts/config --set-val CONFIG_VIRTIO m
+# virtio - linode
+./scripts/config --set-val CONFIG_VIRTIO y
 
-# virtio_pci
-./scripts/config --set-val CONFIG_VIRTIO_PCI m
+# virtio_pci - linode
+./scripts/config --set-val CONFIG_VIRTIO_PCI y
 
-# virtio_scsi
-./scripts/config --set-val CONFIG_SCSI_VIRTIO m
+# virtio_scsi - linode
+./scripts/config --set-val CONFIG_SCSI_VIRTIO y
 
-# virtio_net
-./scripts/config --set-val CONFIG_VIRTIO_NET m
+# virtio_net - linode
+./scripts/config --set-val CONFIG_VIRTIO_NET y
 
-# virtiofs
-./scripts/config --set-val CONFIG_VIRTIO_FS m
+# virtiofs - linode
+./scripts/config --set-val CONFIG_VIRTIO_FS y
 
 # Disable features
 ./scripts/config --set-val CONFIG_FTRACE n
@@ -210,7 +210,6 @@ cat .config
 ./scripts/config --set-val CONFIG_DEBUG_FS n
 ./scripts/config --set-val CONFIG_STACK_VALIDATION n
 ./scripts/config --set-val CONFIG_DRM_LEGACY n
-./scripts/config --set-val CONFIG_QUOTA n
 ./scripts/config --set-val CONFIG_ACPI_DEBUGGER n
 ./scripts/config --set-val CONFIG_BT_DEBUGFS n
 ./scripts/config --set-val CONFIG_NFC n
