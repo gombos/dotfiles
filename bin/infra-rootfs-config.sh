@@ -53,8 +53,10 @@ ln -sf /home Users
 # ---- Configure etc
 
 # Make etc/default/locale deterministic between runs
-locale-gen --purge en_US.UTF-8
-update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+#/sbin/locale-gen --purge en_US.UTF-8
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+/sbin/locale-gen
+/sbin/update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
 sort -o etc/default/locale etc/default/locale
 
 echo "nixbld:x:402:nobody" >> etc/group

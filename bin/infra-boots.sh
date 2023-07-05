@@ -131,6 +131,8 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
   ln -sf /home/log/journal $R/var/log/journal
 
   chmod 444 $R/etc/resolv.conf
+
+  rm -rf $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service $R/etc/systemd/system/sysinit.target.wants/systemd-resolved.service
 else
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi

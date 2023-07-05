@@ -3,6 +3,7 @@ cd /tmp/
 rm -rf dracut-canary
 git clone -b originprs git@github.com:dracutdevs-extra/dracut-canary.git
 cd dracut-canary
+git config advice.skippedCherryPicks false
 git branch -m master
 git push -f origin HEAD
 gh pr list --limit 1000 --repo laszlogombos/dracut --search "milestone:milestone" | cut -f1 | sort -r | uniq > list

@@ -17,13 +17,12 @@ if echo $TARGET | grep -w -q kernel; then
   docker push     ghcr.io/gombos/kernel
 fi
 
-
 if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
-  sudo LANG=C debootstrap --variant=minbase --components=main,universe --exclude=procps,libprocps8,usrmerge,sensible-utils $RELEASE /tmp/minbase
+  sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
   sudo rm -rf /tmp/minbase/var/cache /tmp/minbase/var/log/* /tmp/minbase/var/lib/apt/ /tmp/minbase/var/lib/systemd
   sudo mkdir -p /tmp/minbase/var/cache/apt/archives/partial
-  cd /tmp/minbase && sudo tar -c . | docker import - ghcr.io/gombos/base && cd -
-  docker push ghcr.io/gombos/base
+  cd /tmp/minbase && sudo tar -c . | docker import - ghcr.io/gombos/base:$RELEASE && cd -
+  docker push ghcr.io/gombos/base:$RELEASE
   sudo rm -rf /tmp/minbase
 fi

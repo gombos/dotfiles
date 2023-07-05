@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ -f /usr/sbin/pacman ]; then
+  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
+fi
+
+if [ -f /usr/local/bin/brew ]; then
+  installpackage() { /usr/local/bin/brew install "$@" ;}
+fi
+
+if [ -f /usr/sbin/pacman ]; then
+  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
+fi
+
+if [ -f /usr/sbin/paru ]; then
+  installpackage() { /usr/sbin/paru --sync --removemake --needed --noconfirm "$@" ;}
+fi
+
+if [ -f /usr/sbin/aur-install ]; then
+  installpackage() { /usr/sbin/aur-install "$@" ;}
+fi
+
+if [ -f /usr/bin/apt-get ]; then
+  installpackage() { apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@" ;}
+fi
+
+if [ -f /usr/local/bin/pacapt ]; then
+  installpackage() { /usr/local/bin/pacapt -Sy --noconfirm "$@" ;}
+fi
+
+installpackage "$@"

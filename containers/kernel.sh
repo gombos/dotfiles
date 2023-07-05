@@ -23,95 +23,98 @@ cd linux-$KERNEL
 cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
 
 ls -la /tmp/initramfs.cpio.gz
-file /tmp/initramfs.cpio.gz
 
 cp $REPO/containers/kernelconfig .config
 
 cp .config oldconfig
 
 cat .config
-./scripts/config --enable CONFIG_BINFMT_ELF
-./scripts/config --enable CONFIG_BINFMT_SCRIPT
-./scripts/config --enable CONFIG_NO_HZ
-./scripts/config --enable CONFIG_HIGH_RES_TIMERS
-./scripts/config --enable CONFIG_BLK_DEV
-./scripts/config --enable CONFIG_BLK_DEV_INITRD
-./scripts/config --enable CONFIG_RD_GZIP
-./scripts/config --enable CONFIG_MISC_FILESYSTEMS
-./scripts/config --enable CONFIG_TMPFS
-./scripts/config --enable CONFIG_COMPAT_32BIT_TIME
-./scripts/config --enable CONFIG_PCI
-./scripts/config --enable CONFIG_RTC_CLASS
+./scripts/config --set-val CONFIG_BINFMT_ELF y
+./scripts/config --set-val CONFIG_BINFMT_SCRIPT y
+./scripts/config --set-val CONFIG_NO_HZ y
+./scripts/config --set-val CONFIG_HIGH_RES_TIMERS y
+./scripts/config --set-val CONFIG_BLK_DEV y
+./scripts/config --set-val CONFIG_BLK_DEV_INITRD y
+./scripts/config --set-val CONFIG_RD_GZIP y
+./scripts/config --set-val CONFIG_MISC_FILESYSTEMS y
+./scripts/config --set-val CONFIG_TMPFS y
+./scripts/config --set-val CONFIG_COMPAT_32BIT_TIME y
+./scripts/config --set-val CONFIG_PCI y
+./scripts/config --set-val CONFIG_RTC_CLASS y
 
-# x86 specific
-./scripts/config --enable CONFIG_64BIT
+# x86_64 bit
+./scripts/config --set-val CONFIG_64BIT y
 
 # udev
-./scripts/config --enable CONFIG_SIGNALFD
-./scripts/config --enable CONFIG_BLK_DEV_BSG
-./scripts/config --enable CONFIG_NET
-./scripts/config --enable CONFIG_DEVTMPFS
-./scripts/config --enable CONFIG_DEVTMPFS_MOUNT
-./scripts/config --enable CONFIG_INOTIFY_USER
-./scripts/config --enable CONFIG_PROC_FS
-./scripts/config --enable CONFIG_SYSFS
+./scripts/config --set-val CONFIG_SIGNALFD y
+./scripts/config --set-val CONFIG_BLK_DEV_BSG y
+./scripts/config --set-val CONFIG_NET y
+./scripts/config --set-val CONFIG_DEVTMPFS y
+./scripts/config --set-val CONFIG_DEVTMPFS_MOUNT y
+./scripts/config --set-val CONFIG_INOTIFY_USER y
+./scripts/config --set-val CONFIG_PROC_FS y
+./scripts/config --set-val CONFIG_SYSFS y
 
 # reboot
-./scripts/config --enable CONFIG_ACPI
+./scripts/config --set-val CONFIG_ACPI y
 
-# microcode
-./scripts/config --enable CONFIG_MICROCODE
-./scripts/config --enable CONFIG_MICROCODE_AMD
-./scripts/config --enable CONFIG_MICROCODE_INTEL
+# CPU microcode
+./scripts/config --set-val CONFIG_MICROCODE y
+./scripts/config --set-val CONFIG_MICROCODE_AMD y
+./scripts/config --set-val CONFIG_MICROCODE_INTEL y
 
 # EFI
- ./scripts/config --enable CONFIG_EFI
- ./scripts/config --enable CONFIG_EFI_STUB
+ ./scripts/config --set-val CONFIG_EFI y
+ ./scripts/config --set-val CONFIG_EFI_STUB y
+ ./scripts/config --set-val CONFIG_EFI_HANDOVER_PROTOCOL y
 
-# module
-./scripts/config --enable CONFIG_MODULES
-
-# staring here are optionals (can be modules)
+# modules
+./scripts/config --set-val CONFIG_MODULES y
 
 # unix - for udev
-./scripts/config --enable CONFIG_UNIX
+./scripts/config --set-val CONFIG_UNIX y
 
+# Allows to boot with noinitrd in qemu
 # ahci, libahci
-./scripts/config --enable CONFIG_SATA_AHCI
+./scripts/config --set-val CONFIG_SATA_AHCI y
 
+# Allows to boot with noinitrd in qemu
 # libata
-./scripts/config --enable CONFIG_ATA
-./scripts/config --enable CONFIG_ATA_SFF
+./scripts/config --set-val CONFIG_ATA y
+./scripts/config --set-val CONFIG_ATA_SFF y
 
+# Allows to boot with noinitrd in qemu
 # scsi_mod
-./scripts/config --enable CONFIG_SCSI
+./scripts/config --set-val CONFIG_SCSI y
 
+# Allows to boot with noinitrd in qemu
 # sd_mod
-./scripts/config --enable CONFIG_BLK_DEV_SD
+./scripts/config --set-val CONFIG_BLK_DEV_SD y
 
 # loop
-./scripts/config --enable CONFIG_BLK_DEV_LOOP
+./scripts/config --set-val CONFIG_BLK_DEV_LOOP y
 
 # squashfs
-./scripts/config --enable CONFIG_SQUASHFS
-./scripts/config --enable CONFIG_SQUASHFS_ZLIB
+./scripts/config --set-val CONFIG_SQUASHFS y
+./scripts/config --set-val CONFIG_SQUASHFS_ZLIB y
 
 # overlay
-./scripts/config --enable CONFIG_OVERLAY_FS
+./scripts/config --set-val CONFIG_OVERLAY_FS y
 
+# Allows to boot with noinitrd in qemu
 # ext4
-./scripts/config --enable CONFIG_EXT4_FS
-./scripts/config --enable CONFIG_EXT4_USE_FOR_EXT2
+./scripts/config --set-val CONFIG_EXT4_FS y
+./scripts/config --set-val CONFIG_EXT4_USE_FOR_EXT2 y
 
 # 8250
-./scripts/config --enable CONFIG_SERIAL_8250
-./scripts/config --enable CONFIG_SERIAL_8250_CONSOLE
+./scripts/config --set-val CONFIG_SERIAL_8250 y
+./scripts/config --set-val CONFIG_SERIAL_8250_CONSOLE y
 
 # nls_cp437
-./scripts/config --enable CONFIG_NLS_CODEPAGE_437
+./scripts/config --set-val CONFIG_NLS_CODEPAGE_437 y
 
 # nls_iso8859-1
-./scripts/config --enable CONFIG_NLS_ISO8859_1
+./scripts/config --set-val CONFIG_NLS_ISO8859_1 y
 
 # fat
 ./scripts/config --enable CONFIG_FAT_FS
@@ -121,7 +124,7 @@ cat .config
 ./scripts/config --enable CONFIG_NCPFS_SMALLDOS
 
 # vfat
-./scripts/config --enableCONFIG_VFAT_FS
+./scripts/config --enable CONFIG_VFAT_FS
 
 # cdrom
 ./scripts/config --enable CONFIG_BLK_DEV_SR
@@ -135,71 +138,93 @@ cat .config
 # modules
 
 # ntfs3
-#CONFIG_NTFS3_FS=m
+./scripts/config --module CONFIG_NTFS3_FS
 
 # exfat
-#CONFIG_EXFAT_FS=m
-#CONFIG_EXFAT_DEFAULT_IOCHARSET="iso8859-1"
-
-# nvme_core
-#CONFIG_NVME_CORE=m
-
-# nvme
-#CONFIG_BLK_DEV_NVME=m
+./scripts/config --module CONFIG_EXFAT_FS
+./scripts/config --set-str CONFIG_EXFAT_DEFAULT_IOCHARSET "iso8859-1"
 
 # mmc_core
-#CONFIG_MMC=m
+./scripts/config --set-val CONFIG_MMC m
 
 # mmc_block
-#CONFIG_MMC_BLOCK=m
+./scripts/config --set-val CONFIG_MMC_BLOCK m
 
 # uas
-#CONFIG_USB_UAS=m
+./scripts/config --set-val CONFIG_USB_UAS m
 
 # fuse
-#CONFIG_FUSE_FS=m
+./scripts/config --set-val CONFIG_FUSE_FS m
 
 # btrfs
-#CONFIG_BTRFS_FS=m
+./scripts/config --set-val CONFIG_BTRFS_FS m
 
 # device mapper
-#CONFIG_BLK_DEV_DM=m
-
-# CONFIG_INITRAMFS_SOURCE="/tmp/initramfs.cpio.gz"
+./scripts/config --set-val CONFIG_BLK_DEV_DM m
 
 # msdos
-#CONFIG_MSDOS_FS=m
+./scripts/config --set-val CONFIG_MSDOS_FS m
 
 ./scripts/config --enable CONFIG_IKCONFIG
 ./scripts/config --enable CONFIG_IKCONFIG_PROC
-./scripts/config --enable CONFIG_SCSI_VIRTIO
 
-./scripts/config --disable SYSTEM_TRUSTED_KEYS
-./scripts/config --disable SYSTEM_REVOCATION_KEYS
-./scripts/config --disable CONFIG_DEBUG_INFO_BTF
-./scripts/config --disable CONFIG_X86_X32
-./scripts/config --disable CONFIG_FTRACE
-./scripts/config --disable CONFIG_PRINTK_TIME
+./scripts/config --set-val CONFIG_ANDROID_BINDER_IPC y
+./scripts/config --set-val CONFIG_ANDROID_BINDERFS y
+./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES "binder,hwbinder,vndbinder"
 
-./scripts/config --enable  CONFIG_ANDROID_BINDER_IPC
-./scripts/config --enable  CONFIG_ANDROID_BINDERFS
-./scripts/config --set-str CONFIG_ANDROID_BINDER_DEVICES ""
-
-./scripts/config --disable CONFIG_INPUT_JOYSTICK
+# nvme_core
 ./scripts/config --enable  CONFIG_NVME_CORE
+
+# nvme
 ./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
 ./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
 
-./scripts/config --disable CONFIG_ACPI_DEBUGGER
-./scripts/config --disable CONFIG_BT_DEBUGFS
-./scripts/config --disable CONFIG_NFC
-./scripts/config --disable CONFIG_L2TP_DEBUGFS
+# virtualization
 
-./scripts/config --disable CONFIG_NTFS_FS
-./scripts/config --disable CONFIG_REISERFS_FS
-./scripts/config --disable CONFIG_JFS_FS
-./scripts/config --disable CONFIG_CAN
+# kvm
+./scripts/config --set-val CONFIG_KVM m
+
+# kvm-intel
+./scripts/config --set-val CONFIG_KVM_INTEL m
+
+# virtio - linode
+./scripts/config --set-val CONFIG_VIRTIO y
+
+# virtio_pci - linode
+./scripts/config --set-val CONFIG_VIRTIO_PCI y
+
+# virtio_scsi - linode
+./scripts/config --set-val CONFIG_SCSI_VIRTIO y
+
+# virtio_net - linode
+./scripts/config --set-val CONFIG_VIRTIO_NET y
+
+# virtiofs - linode
+./scripts/config --set-val CONFIG_VIRTIO_FS y
+
+# Disable features
+./scripts/config --set-val CONFIG_FTRACE n
+./scripts/config --set-val CONFIG_DEBUG_KERNEL n
+./scripts/config --set-val CONFIG_PRINTK_TIME n
+./scripts/config --set-val CONFIG_DEBUG_FS n
+./scripts/config --set-val CONFIG_STACK_VALIDATION n
+./scripts/config --set-val CONFIG_DRM_LEGACY n
+./scripts/config --set-val CONFIG_ACPI_DEBUGGER n
+./scripts/config --set-val CONFIG_BT_DEBUGFS n
+./scripts/config --set-val CONFIG_NFC n
+./scripts/config --set-val CONFIG_L2TP_DEBUGFS n
+./scripts/config --set-val CONFIG_NTFS_FS n
+./scripts/config --set-val CONFIG_REISERFS_FS n
+./scripts/config --set-val CONFIG_JFS_FS n
+./scripts/config --set-val CONFIG_CAN n
+./scripts/config --set-val CONFIG_INPUT_EVBUG n
+./scripts/config --set-val CONFIG_INPUT_JOYSTICK n
+./scripts/config --set-val SYSTEM_TRUSTED_KEYS n
+./scripts/config --set-val SYSTEM_REVOCATION_KEYS n
+./scripts/config --set-val CONFIG_DEBUG_INFO_BTF n
+./scripts/config --set-val CONFIG_X86_X32 n
+./scripts/config --set-val CONFIG_FTRACE n
 
 make oldconfig
 cat .config

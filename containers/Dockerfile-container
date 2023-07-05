@@ -1,0 +1,8 @@
+ARG TAG=debian
+#FROM archlinux
+#FROM greyltc/archlinux-aur:paru
+FROM $TAG
+ARG TAG
+COPY bin/* packages/* /tmp/
+WORKDIR /tmp
+RUN ./infra-build-root2.sh

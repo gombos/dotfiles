@@ -1,12 +1,20 @@
 # avoid HW packages
 # avoid distro specific packages
 # The idea is that these pacages are always available
+# ideally these packages are even available via brew on MacOS
+# use the brew name
+
+
+# core tools
+sudo
+git
+less
+unzip
 
 # files
 antiword
 attr
-borgbackup
-python3-llfuse
+borgbackup # pip
 detox
 dos2unix
 file
@@ -14,61 +22,47 @@ micro
 pass
 rename
 ripgrep
+ripgrep-all # not on debian
 rmlint
 rsync
 pass
 sqlite3
-tesseract-ocr
 pandoc
-poppler-utils
 zip
-xattr
 hashdeep
-libimage-exiftool-perl
-xz-utils
-
-# languages
-python3-distutils
-#golang-go
+#xz-utils
 
 # android devices
 adb
-scrcpy
+#scrcpy
 
 # networking
-rclone
-#lastpass-cli
 wget
 curl
 iperf3
-iputils-ping
-iputils-tracepath
 net-tools
 nmap
-bind9-dnsutils
 mutt
 tcpdump
-sshuttle
+sshuttle # pip
 nethogs
-wireguard-tools
+rclone
+bitwarden-cli # not on debian
+tailscale     # not on debian
+linode-cli    # not on debian
 
 # tools
-podman
 distrobox
-uidmap
 flatpak
 bash-completion
 bc
-command-not-found
 debootstrap
+docker
 docker-compose
-mawk
-gpg
-gpg-agent
+gnupg
+gawk
 htop
 iotop
-libnotify-bin
-locales
 lsof
 man-db
 powertop
@@ -78,9 +72,12 @@ time
 sudo
 make
 
+# filesystems
+xorriso
+dosfstools
+
 # virtualization
 qemu-system-x86
-qemu-system-gui
 ovmf
 swtpm
 
@@ -89,5 +86,15 @@ qemu-user-static
 
 binutils
 graphicsmagick-imagemagick-compat
-python3-pip
-python3-rich
+
+gh
+jq
+openssh
+caddy
+inetutils
+
+# power management
+apcupsd
+
+# log
+rsyslog
