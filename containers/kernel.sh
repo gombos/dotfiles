@@ -203,6 +203,36 @@ cat .config
 # virtiofs - linode
 ./scripts/config --set-val CONFIG_VIRTIO_FS y
 
+# from https://docs.getutm.app/guest-support/linux/#drivers
+./scripts/config --set-val CONFIG_VIRTIO y
+
+./scripts/config --set-val CONFIG_VIRTIO_RING y
+
+./scripts/config --set-val CONFIG_VIRTIO_PCI y
+
+./scripts/config --set-val CONFIG_VIRTIO_BALLOON y
+
+# for storage devices
+./scripts/config --set-val CONFIG_VIRTIO_BLK y
+
+# for console devices
+./scripts/config --set-val CONFIG_VIRTIO_CONSOLE y
+
+# for networking
+./scripts/config --set-val CONFIG_VIRTIO_NET y
+
+# for graphical output
+./scripts/config --set-val CONFIG_DRM_VIRTIO_GPU y
+
+# for VirtFS directory sharing
+./scripts/config --set-val CONFIG_NET_9P y
+./scripts/config --set-val CONFIG_NET_9P_VIRTIO y
+./scripts/config --set-val CONFIG_9P_FS y
+./scripts/config --set-val CONFIG_9P_FS_POSIX_ACL y
+
+# for VirtioFS directory sharing
+./scripts/config --set-val CONFIG_VIRTIO_FS y
+
 # Disable features
 ./scripts/config --set-val CONFIG_FTRACE n
 ./scripts/config --set-val CONFIG_DEBUG_KERNEL n
