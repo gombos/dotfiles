@@ -1,5 +1,11 @@
 # brew
 
+# macos only
+utm
+
+# cross-platform
+lima
+
 #linux
 binutils
 bitwarden-cli
