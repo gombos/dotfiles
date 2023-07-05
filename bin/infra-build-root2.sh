@@ -17,7 +17,6 @@ PATH=$PATH:.
 if [ $ID == "arch" ]; then
   echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
   pacman -Syyu
-  curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
 #  useradd -m build
 #  pacman --noconfirm -Syu base-devel git sudo cargo
 #  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
