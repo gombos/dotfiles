@@ -1,15 +1,7 @@
-i=$1
-
-#if [ -z "$i" ]; then
-#  i="0gombi0/homelab"
-#fi
-
-b=$(docker run $i sh -c "test -f /bin/bash && echo bash")
+#!/bin/sh
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  docker run --net=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/sh
-elif [ "$b" = "bash" ]; then
-  sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/bash
+  lima nerdctl run --net=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
 else
-  sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $i /bin/sh
+  sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
 fi
