@@ -1,29 +1,30 @@
-if [ -f /usr/bin/apt-get ]; then
-  apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@"
-  exit 0
+if [ -f /usr/sbin/pacman ]; then
+  alias install-package='/usr/sbin/pacman -Sy --noconfirm --needed'
 fi
 
-if [ -f /usr/sbin/aur-install ]; then
-  /usr/sbin/aur-install "$@"
-  exit 0
+if [ -f /usr/local/bin/brew ]; then
+  alias install-package='/usr/local/bin/brew install'
+fi
+
+
+if [ -f /usr/sbin/pacman ]; then
+  alias install-package='/usr/sbin/pacman -Sy --noconfirm --needed'
+fi
+
+if [ -f /usr/local/bin/pacapt ]; then
+  alias install-package='/usr/local/bin/pacapt -Sy --noconfirm'
 fi
 
 if [ -f /usr/sbin/paru ]; then
-  /usr/sbin/paru --sync --skipreview --removemake --needed --noconfirm --noprogressbar  "$@"
-  exit 0
+  alias install-package='/usr/sbin/paru --sync --removemake -Sy --needed --noconfirm'
 fi
 
-if [ -f /usr/sbin/pacman ]; then
-  /usr/sbin/pacman -Sy --needed --noconfirm "$@"
-  exit 0
+if [ -f /usr/sbin/aur-install ]; then
+  alias install-package='/usr/sbin/aur-install'
 fi
 
-
-
-if [ -f /usr/local/bin/pacapt ]; then
-  if [ "$ID" = "alpine" ]; then
-    /usr/local/bin/pacapt -Sy "$@"
-  else
-    /usr/local/bin/pacapt -Sy --noconfirm "$@"
-  fi
+if [ -f /usr/bin/apt-get ]; then
+  alias install-package='apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0'
 fi
+
+install-package "$@"
