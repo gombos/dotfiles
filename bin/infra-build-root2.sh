@@ -31,8 +31,8 @@ install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "pa
 rm -rf /usr/sbin/aur-install
 
 # python venv
-python3 -m venv  /usr/local/
-python3 -m pip install --upgrade pip
+/usr/sbin/python3 -m venv  /usr/local/
+/usr/sbin/python3 -m pip install --upgrade pip
 /usr/local/bin/pip install --upgrade pip
 
 # pipx
