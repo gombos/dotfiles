@@ -16,8 +16,8 @@ echo "Using $ID"
 PATH=$PATH:.
 
 if [ $ID == "arch" ]; then
-echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-pacman -Syyu
+  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+  pacman -Syyu
 #  useradd -m build
 #  pacman --noconfirm -Syu base-devel git sudo cargo
 #  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
@@ -37,5 +37,8 @@ rm -rf /usr/sbin/aur-install
 
 # pipx
 /usr/local/bin/pip3 install pipx
+
+rm -r /var/lib/flatpak/repo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # borgbackup sshuttle linode-cli
