@@ -53,4 +53,4 @@ do
   echo -n " $Q "
 done`
 
-i $P
+pi $P
