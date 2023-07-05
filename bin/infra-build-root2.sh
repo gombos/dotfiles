@@ -1,16 +1,13 @@
 . ./infra-env.sh
 
 # Find out the OS running on
+if [ -f /etc/os-release ]; then
+ . /etc/os-release
+fi
+
+RELEASE=$VERSION_CODENAME
 if [ -z "$RELEASE" ]; then
-
-  if [ -f /etc/os-release ]; then
-   . /etc/os-release
-  fi
-
-  RELEASE=$VERSION_CODENAME
-  if [ -z "$RELEASE" ]; then
-    RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
-  fi
+  RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
 fi
 
 echo "Using $ID"
@@ -40,11 +37,12 @@ rm -rf /usr/sbin/aur-install
 # pipx
 /usr/local/bin/pip3 install pipx
 
-rm -r /var/lib/flatpak/repo
+rm -rf /var/lib/flatpak/repo
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # borgbackup sshuttle linode-cli
 
 # appimage - digikam
+mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
