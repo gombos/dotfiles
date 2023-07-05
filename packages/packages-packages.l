@@ -71,6 +71,10 @@ time
 sudo
 make
 
+# filesystems
+xorriso
+dosfstools
+
 # virtualization
 qemu-system-x86
 ovmf
@@ -86,3 +90,9 @@ gh
 jq
 openssh
 caddy
+
+# power management
+apcupsd
+
+# log
+rsyslog

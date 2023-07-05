@@ -5,10 +5,8 @@
 containerd
 uidmap
 apparmor
-systemd-container
 
 # power management
-apcupsd
 autosuspend
 upower
 
@@ -20,14 +18,6 @@ dnsmasq
 nfs-utils
 hostapd
 systemd
-
-systemd-resolved
-
-# log
-rsyslog
-
-# time - ntp
-systemd-timesyncd
 
 # storage
 udisks2
@@ -49,9 +39,6 @@ tlp-rdw # kernel power management, disable radio (wifi, bluetooth) triggered by 
 # network
 networkmanager
 
-# x11
-lxpanel
-
 ## Linux filesystems
 ## =================
 fuse3
@@ -60,12 +47,13 @@ davfs2
 jmtpfs
 gdisk
 btrfs-progs
-squashfs-tools
 bindfs
-dosfstools
 partclone
 parted
 sshfs
 cryptsetup
 zerofree
+squashfs-tools
+
 xorriso
+dosfstools

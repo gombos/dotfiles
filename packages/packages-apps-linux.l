@@ -4,3 +4,4 @@ mousepad
 pcmanfm
 qiv
 rofi
+lxpanel
