@@ -1,30 +1,31 @@
+#!/bin/sh
+
 if [ -f /usr/sbin/pacman ]; then
-  alias install-package='/usr/sbin/pacman -Sy --noconfirm --needed'
+  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
 fi
 
 if [ -f /usr/local/bin/brew ]; then
-  alias install-package='/usr/local/bin/brew install'
+  installpackage() { /usr/local/bin/brew install "$@" ;}
 fi
 
-
 if [ -f /usr/sbin/pacman ]; then
-  alias install-package='/usr/sbin/pacman -Sy --noconfirm --needed'
+  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
-  alias install-package='/usr/local/bin/pacapt -Sy --noconfirm'
+  installpackage() { /usr/local/bin/pacapt -Sy --noconfirm "$@" ;}
 fi
 
 if [ -f /usr/sbin/paru ]; then
-  alias install-package='/usr/sbin/paru --sync --removemake -Sy --needed --noconfirm'
+  installpackage() { /usr/sbin/paru --sync --removemake --needed --noconfirm "$@" ;}
 fi
 
 if [ -f /usr/sbin/aur-install ]; then
-  alias install-package='/usr/sbin/aur-install'
+  installpackage() { /usr/sbin/aur-install "$@" ;}
 fi
 
 if [ -f /usr/bin/apt-get ]; then
-  alias install-package='apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0'
+  installpackage() { sudo apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@" ;}
 fi
 
-install-package "$@"
+installpackage "$@"

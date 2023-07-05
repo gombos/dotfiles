@@ -2,6 +2,8 @@
 # avoid distro specific packages
 # The idea is that these pacages are always available
 # ideally these packages are even available via brew on MacOS
+# use the brew name
+
 
 # core tools
 sudo

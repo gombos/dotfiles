@@ -16,7 +16,14 @@ then
       echo "$1" ;;
   esac
 else
-  echo "$1"
+ case "$1" in
+    gh)
+      echo "github-cli";;
+    ripgrep-all|tailscale|bitwarden-cli)
+      ;;
+    *)
+      echo "$1" ;;
+  esac
 fi
 }
 
