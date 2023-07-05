@@ -17,6 +17,7 @@ PATH=$PATH:.
 if [ $ID == "arch" ]; then
   echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
   pacman -Syyu
+  curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
 #  useradd -m build
 #  pacman --noconfirm -Syu base-devel git sudo cargo
 #  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
@@ -46,3 +47,8 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
+
+# make i point to pacapt
+curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
+mv /usr/bin/pacman /usr/local/bin/
+mv /usr/bin/paru /usr/bin/pacman
