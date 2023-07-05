@@ -57,6 +57,7 @@ flatpak
 bash-completion
 bc
 debootstrap
+docker
 docker-compose
 gnupg
 gawk

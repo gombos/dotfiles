@@ -20,6 +20,8 @@ then
       echo nfs-kernel-server ;;
    apparmor)
       echo apparmor-utils ;;
+   docker)
+      echo docker.io ;;
    systemd)
       echo systemd-timesyncd systemd-resolved systemd-container ;;
     ripgrep-all|tailscale|bitwarden-cli)
