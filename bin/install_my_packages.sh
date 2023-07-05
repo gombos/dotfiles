@@ -24,7 +24,7 @@ then
       echo docker.io ;;
    systemd)
       echo systemd-timesyncd systemd-resolved systemd-container ;;
-    ripgrep-all|tailscale|bitwarden-cli)
+    ripgrep-all|tailscale|bitwarden-cli|linode-cli)
       ;;
     *)
       echo "$1" ;;
