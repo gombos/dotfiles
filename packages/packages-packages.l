@@ -84,3 +84,5 @@ graphicsmagick-imagemagick-compat
 
 gh
 jq
+openssh
+caddy

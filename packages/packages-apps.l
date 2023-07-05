@@ -1,16 +1,10 @@
-# Purpose: Basic desktop GUI apps
+# Purpose: Basic cross-platform desktop GUI apps
 
-gparted
 kitty
-mousepad
-pcmanfm
-qiv
-rofi
 sqlitebrowser
 xterm
-zathura
 vlc
-libreoffice-calc
-libreoffice-writer
-#thunderbird
+libreoffice
 google-chrome
+
+#thunderbird

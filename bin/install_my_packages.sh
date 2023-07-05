@@ -9,7 +9,19 @@ if [ "$ID" = "debian" ]
 then
   case "$1" in
     google-chrome)
-      echo "google-chrome-stable";;
+      echo google-chrome-stable ;;
+    wpa_supplicant)
+      echo wpasupplicant ;;
+    networkmanager)
+      echo network-manager ;;
+    openssh)
+      echo openssh-server ;;
+   nfs-utils)
+      echo nfs-kernel-server ;;
+   apparmor)
+      echo apparmor-utils ;;
+   systemd)
+      echo systemd-timesyncd systemd-resolved systemd-container ;;
     ripgrep-all|tailscale|bitwarden-cli)
       ;;
     *)
@@ -18,8 +30,10 @@ then
 else
  case "$1" in
     gh)
-      echo "github-cli";;
-    ripgrep-all|tailscale|bitwarden-cli)
+      echo github-cli ;;
+    wireless-tools)
+      echo wireless_tools ;;
+    libblockdev-crypto2|uidmap)
       ;;
     *)
       echo "$1" ;;

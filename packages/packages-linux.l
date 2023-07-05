@@ -4,7 +4,7 @@
 # container services
 containerd
 uidmap
-apparmor-utils
+apparmor
 systemd-container
 
 # power management
@@ -16,12 +16,11 @@ upower
 cron
 
 # networking
-#nginx-light
-caddy
 dnsmasq
-nfs-kernel-server
-openssh-server
+nfs-utils
 hostapd
+systemd
+
 systemd-resolved
 
 # log
@@ -41,14 +40,14 @@ libblockdev-crypto2
 rfkill
 wireless-tools
 bluez
-wpasupplicant
+wpa_supplicant
 
 # laptop
 thermald # monitors and controls temperature in laptops
 tlp-rdw # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network
-network-manager
+networkmanager
 
 # x11
 lxpanel
