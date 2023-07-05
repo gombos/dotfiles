@@ -43,6 +43,8 @@ networkmanager
 ## =================
 fuse3
 spice-vdagent
+qemu-guest-agent
+spice-webdavd
 davfs2
 jmtpfs
 gdisk

@@ -35,6 +35,8 @@ else
       echo github-cli ;;
     wireless-tools)
       echo wireless_tools ;;
+    spice-webdavd)
+      echo phodav ;;
     libblockdev-crypto2|uidmap)
       ;;
     *)
