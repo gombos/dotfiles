@@ -1,3 +1,5 @@
+. ./infra-env.sh
+
 # Find out the OS running on
 if [ -z "$RELEASE" ]; then
 
@@ -42,3 +44,7 @@ rm -r /var/lib/flatpak/repo
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # borgbackup sshuttle linode-cli
+
+# appimage - digikam
+wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
+chmod +x /usr/local/bin/digikam
