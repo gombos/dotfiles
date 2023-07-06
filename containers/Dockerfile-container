@@ -5,4 +5,4 @@ FROM $TAG
 ARG TAG
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
-RUN ./infra-build-root2.sh
+RUN ./infra-build-root.sh container

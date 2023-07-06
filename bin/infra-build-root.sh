@@ -80,23 +80,6 @@ if [ "$TARGET" = "extra" ]; then
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
-# I need the updated podman
-#ubuntu_version='22.04'
-#key_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}/Release.key"
-#sources_url="https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_${ubuntu_version}"
-
-#sudo mkdir -p /etc/apt/keyrings
-
-#key_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/Release.key"
-#sources_url="https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/Debian_Testing/"
-
-#echo "deb $sources_url/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
-#wget -q -O - $key_url | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
-
-# packages_update_db.sh
-
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
-
 packages_update_db.sh
 packages_upgrade.sh
 
@@ -107,14 +90,50 @@ infra-install-vmware-workstation.sh
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-## nxmachine - needs rw to /usr
-#echo "nx:x:401:nobody" >> /etc/group
-#adduser --disabled-password --uid 401 --gid 401 --shell "/etc/NX/nxserver" --home "/var/NX/nx" --gecos "" nx
-#
-## see https://downloads.nomachine.com/linux/?id=1
-#wget --no-verbose --no-check-certificate https://download.nomachine.com/download/8.6/Linux/nomachine_8.6.1_3_amd64.deb
-#
-#dpkg -i *.deb
-#rm -rf *.deb /usr/NX/etc/keys /usr/NX/etc/sshstatus /usr/NX/etc/usb.db* /usr/NX/etc/*.lic /usr/NX/etc/nxdb /usr/NX/etc/uuid /usr/NX/etc/node.cfg /usr/NX/etc/server.cfg /var/NX/nx/.ssh
+fi
+
+if [ "$TARGET" = "container" ]; then
+
+echo "Using $ID"
+
+PATH=$PATH:.
+
+if [ $ID == "arch" ]; then
+  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+  pacman -Syyu
+#  useradd -m build
+#  pacman --noconfirm -Syu base-devel git sudo cargo
+#  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
+#  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
+fi
+
+packages_update_db.sh
+install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l"
+
+# use this install script only during initial container creation
+rm -rf /usr/sbin/aur-install
+
+# python venv
+/usr/sbin/python3 -m venv  /usr/local/
+/usr/sbin/python3 -m pip install --upgrade pip
+/usr/local/bin/pip install --upgrade pip
+
+# pipx
+/usr/local/bin/pip3 install pipx
+
+rm -rf /var/lib/flatpak/repo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# borgbackup sshuttle linode-cli
+
+# appimage - digikam
+mkdir -p /usr/local/bin/
+wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
+chmod +x /usr/local/bin/digikam
+
+# make i point to pacapt
+curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
+mv /usr/bin/pacman /usr/local/bin/
+mv /usr/bin/paru /usr/bin/pacman
 
 fi
