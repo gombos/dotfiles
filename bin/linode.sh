@@ -10,9 +10,9 @@ set -x
 
 [ -z "$LABEL" ] && LABEL="pincer"
 
-# debian11 (0.9GB) ubuntu21.10 (2.1GB) alpine3.15 (0.2 GB) centos-stream9 (1.2 GB) arch (2.1GB)
+# debian (1 GB) ubuntu (2 GB) arch (2GB) alpine (0.2GB)
 # linode-cli images list
-[ -z "$DISTRO" ] && DISTRO="debian11"
+[ -z "$DISTRO" ] && DISTRO="debian12"
 
 # todo - remove path
 Key=$(cat /Volumes/bagoly/k.git/k_public)
