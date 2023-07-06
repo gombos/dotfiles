@@ -1,12 +1,12 @@
-cd $DOTFILES/ && git pull
+#cd $DOTFILES/ && git pull
 
 # for pincer
-mnt efi && cd $MNTDIR/efi/dotfiles && git pull
+#mnt efi && cd $MNTDIR/efi/dotfiles && git pull
 
 # for bestia
-mnt-efi_bestia && cd $MNTDIR/efi_bestia/dotfiles && git pull
+#mnt-efi_bestia && cd $MNTDIR/efi_bestia/dotfiles && git pull
 
-infra-provision-mac
+#infra-provision-mac
 
 # pip
 python3 -m pip install --upgrade pip
@@ -28,14 +28,14 @@ pip3 list --user --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | x
 #fi
 
 # docker
-sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
-sudo docker ps -q | xargs sudo docker restart
+#sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
+#sudo docker ps -q | xargs sudo docker restart
 
 cd $DOTFILES/infra
-sudo docker-compose up -d --force-recreate --remove-orphans
+#sudo docker-compose up -d --force-recreate --remove-orphans
 
 # aws
-if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
-  sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-fi
+#if [ -L /dev/disk/by-label/cloudimg-rootfs ]; then
+#  sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+#  sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+#fi
