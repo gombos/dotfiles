@@ -1,7 +1,8 @@
 # brew
 
 # macos only
-utm
+utm # requires macos 11.3, big sur
+
 
 # cross-platform
 lima
