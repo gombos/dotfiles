@@ -98,3 +98,6 @@ apcupsd
 
 # log
 rsyslog
+
+Install on-demand
+# visidata # pip
