@@ -100,4 +100,4 @@ rsyslog
 
 Install on-demand
 # visidata # pip
-
+# EdgeGPT.EdgeGPT # pip only
