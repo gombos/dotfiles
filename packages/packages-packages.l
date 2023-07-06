@@ -4,7 +4,6 @@
 # ideally these packages are even available via brew on MacOS
 # use the brew name
 
-
 # core tools
 sudo
 git
@@ -101,3 +100,4 @@ rsyslog
 
 Install on-demand
 # visidata # pip
+

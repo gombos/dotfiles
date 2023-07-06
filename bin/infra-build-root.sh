@@ -124,8 +124,6 @@ rm -rf /usr/sbin/aur-install
 rm -rf /var/lib/flatpak/repo
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-# borgbackup sshuttle linode-cli
-
 # appimage - digikam
 mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
