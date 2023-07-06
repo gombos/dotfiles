@@ -6,6 +6,10 @@ if [ -d "$DOTFILES/bin" ] ; then
   export PATH="$DOTFILES/bin:$PATH"
 fi
 
+if [ -d "/usr/local/sbin" ] ; then
+  export PATH="$PATH:/usr/local/sbin"
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;

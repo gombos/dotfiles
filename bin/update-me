@@ -6,7 +6,7 @@ if [ -f /usr/local/bin/pacapt ]; then
   /usr/local/bin/pacapt -Su --noconfirm
 fi
 
-#cd $DOTFILES/ && git pull
+cd "$DOTFILES" && git pull && cd -
 
 # for pincer
 #mnt efi && cd $MNTDIR/efi/dotfiles && git pull
@@ -17,12 +17,12 @@ fi
 #infra-provision-mac
 
 # brew
-#if [ -n "$HOMEBREW_PREFIX" ]; then
-#  brew update
-#  brew upgrade
-#  brew cleanup --prune=all
-#  brew doctor
-#fi
+if [ -f /usr/local/bin/brew ]; then
+  brew update
+  brew upgrade
+  brew cleanup --prune=all
+  brew doctor
+fi
 
 #brew install fio micro rclone ripgrep ripgrep-all
 
