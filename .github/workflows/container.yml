@@ -5,9 +5,13 @@ on:
     workflow_dispatch:
         inputs:
             container:
+                type: choice
                 description: 'container'
                 default: 'greyltc/archlinux-aur:paru'
-
+                options:
+                    - "greyltc/archlinux-aur:paru"
+                    - "debian:stable"
+                    - "debian:sid"
 permissions:
     packages: write
     contents: read
