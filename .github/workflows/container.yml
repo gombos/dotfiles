@@ -12,6 +12,7 @@ on:
                     - "greyltc/archlinux-aur:paru"
                     - "debian:stable"
                     - "debian:sid"
+                    - "homebrew/brew"
 permissions:
     packages: write
     contents: read
