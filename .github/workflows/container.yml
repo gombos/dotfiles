@@ -4,6 +4,13 @@ name: container
 on:
     workflow_dispatch:
         inputs:
+            tag:
+                type: choice
+                description: 'tag'
+                default: 'test'
+                options:
+                    - "latest"
+                    - "test"
             container:
                 type: choice
                 description: 'container'
@@ -13,6 +20,7 @@ on:
                     - "debian:stable"
                     - "debian:sid"
                     - "homebrew/brew"
+                    - "alpine"
 permissions:
     packages: write
     contents: read
@@ -41,4 +49,4 @@ jobs:
                     push: true
                     file: containers/Dockerfile-container
                     build-args: TAG=${{ inputs.container }}
-                    tags: ghcr.io/${{env.repository_owner}}/linux
+                    tags: ghcr.io/${{env.repository_owner}}/${{ inputs.tag }}
