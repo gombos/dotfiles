@@ -16,12 +16,16 @@ if [ -f /usr/sbin/paru ]; then
   installpackage() { /usr/sbin/paru --sync --removemake --needed --noconfirm "$@" ;}
 fi
 
+if [ -f /usr/bin/apt-get ]; then
+  installpackage() { apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@" ;}
+fi
+
 if [ -f /usr/sbin/aur-install ]; then
   installpackage() { /usr/sbin/aur-install "$@" ;}
 fi
 
-if [ -f /usr/bin/apt-get ]; then
-  installpackage() { apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 "$@" ;}
+if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  installpackage() { brew install "$@" ;}
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
