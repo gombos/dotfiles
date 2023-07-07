@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Option to run this when rootfs gets instantiated/initalized/booted
 # Todo - maybe I can invoke rootfsoverlay at the end of this script to share some logic between the two scrips
