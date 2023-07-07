@@ -1,4 +1,4 @@
-name: linux
+name: container
 # runs for 10 min
 
 on:
