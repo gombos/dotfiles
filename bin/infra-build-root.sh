@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Option to run this when rootfs gets instantiated/initalized/booted
 # Todo - maybe I can invoke rootfsoverlay at the end of this script to share some logic between the two scrips
@@ -98,7 +98,7 @@ echo "Using $ID"
 
 PATH=$PATH:.
 
-if [ $ID == "arch" ]; then
+if [ "$ID" == "arch" ]; then
   echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
   pacman -Syyu
 #  useradd -m build
@@ -129,7 +129,7 @@ mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
-if [ $ID == "arch" ]; then
+if [ "$ID" == "arch" ]; then
   # make i point to pacapt
   curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
   mv /usr/bin/pacman /usr/local/bin/
