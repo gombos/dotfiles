@@ -5,7 +5,6 @@
 # use the brew name
 
 # core tools
-sudo
 git
 less
 unzip
@@ -29,10 +28,8 @@ sqlite3
 pandoc
 zip
 hashdeep
-#xz-utils
 
 # android devices
-adb
 #scrcpy
 
 # networking
@@ -52,23 +49,16 @@ linode-cli    # not on debian
 
 # tools
 distrobox
-flatpak
 bash-completion
 bc
-debootstrap
 docker
 docker-compose
 gnupg
 gawk
 htop
-iotop
 lsof
 man-db
-powertop
-psmisc
 strace
-time
-sudo
 make
 
 # filesystems
@@ -76,15 +66,11 @@ xorriso
 dosfstools
 
 # virtualization
-qemu-system-x86
-ovmf
+qemu
 swtpm
 
-# arm
-qemu-user-static
-
 binutils
-graphicsmagick-imagemagick-compat
+graphicsmagick
 
 gh
 jq

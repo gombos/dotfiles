@@ -59,3 +59,15 @@ squashfs-tools
 
 xorriso
 dosfstools
+
+sudo
+adb
+flatpak
+debootstrap
+iotop
+powertop
+psmisc
+time
+ovmf
+qemu-user-static
+graphicsmagick-imagemagick-compat

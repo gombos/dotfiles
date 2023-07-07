@@ -22,6 +22,8 @@ then
       echo apparmor-utils ;;
     docker)
       echo docker.io ;;
+    qemu)
+      echo qemu-system-x86 ;;
     systemd)
       echo systemd-timesyncd systemd-resolved systemd-container ;;
     ripgrep-all|tailscale|bitwarden-cli|linode-cli|inetutils)
@@ -29,10 +31,13 @@ then
     *)
       echo "$1" ;;
   esac
-else
+elif  [ "$ID" = "arch" ]
+then
  case "$1" in
     gh)
       echo github-cli ;;
+    qemu)
+      echo qemu-system-x86 ;;
     wireless-tools)
       echo wireless_tools ;;
     spice-webdavd)
