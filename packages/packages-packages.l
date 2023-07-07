@@ -98,6 +98,6 @@ apcupsd
 # log
 rsyslog
 
-Install on-demand
+# Install on-demand
 # visidata # pip
 # EdgeGPT.EdgeGPT # pip only
