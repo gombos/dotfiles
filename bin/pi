@@ -1,19 +1,19 @@
 #!/bin/sh
 
 if [ -f /usr/sbin/pacman ]; then
-  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
+  installpackage() { pacman -Sy --noconfirm --needed "$@" ;}
 fi
 
 if [ -f /usr/local/bin/brew ]; then
-  installpackage() { /usr/local/bin/brew install "$@" ;}
+  installpackage() { brew install "$@" ;}
 fi
 
 if [ -f /usr/sbin/pacman ]; then
-  installpackage() { /usr/sbin/pacman -Sy --noconfirm --needed "$@" ;}
+  installpackage() { pacman -Sy --noconfirm --needed "$@" ;}
 fi
 
 if [ -f /usr/sbin/paru ]; then
-  installpackage() { /usr/sbin/paru --sync --removemake --needed --noconfirm "$@" ;}
+  installpackage() { paru --sync --removemake --needed --noconfirm "$@" ;}
 fi
 
 if [ -f /usr/bin/apt-get ]; then
@@ -29,7 +29,7 @@ if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
-  installpackage() { /usr/local/bin/pacapt -Sy --noconfirm --needed "$@" ;}
+  installpackage() { pacapt -Sy --noconfirm --needed "$@" ;}
 fi
 
 installpackage "$@"

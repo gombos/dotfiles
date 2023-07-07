@@ -47,6 +47,8 @@ then
     *)
       echo "$1" ;;
   esac
+else
+  echo "$1"
 fi
 }
 
