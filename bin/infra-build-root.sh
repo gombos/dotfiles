@@ -114,8 +114,8 @@ install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "pa
 rm -rf /usr/sbin/aur-install
 
 # python venv
-/usr/sbin/python3 -m venv  /usr/local/
-/usr/sbin/python3 -m pip install --upgrade pip
+/usr/bin/python3 -m venv  /usr/local/
+/usr/bin/python3 -m pip install --upgrade pip
 /usr/local/bin/pip install --upgrade pip
 
 # pipx
@@ -129,9 +129,11 @@ mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
-# make i point to pacapt
-curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
-mv /usr/bin/pacman /usr/local/bin/
-mv /usr/bin/paru /usr/bin/pacman
+if [ $ID == "arch" ]; then
+  # make i point to pacapt
+  curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
+  mv /usr/bin/pacman /usr/local/bin/
+  mv /usr/bin/paru /usr/bin/pacman
+fi
 
 fi
