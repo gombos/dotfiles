@@ -16,6 +16,7 @@ Default Icon Size=256
 Default Tree Face Size=48
 Default Tree Icon Size=22
 Icon Show Aspect Ratio=false
+Icon Show Color Label=true
 Icon Show Comments=true
 Icon Show Coordinates=true
 Icon Show Date=false
@@ -24,6 +25,7 @@ Icon Show Image Format=true
 Icon Show Modification Date=false
 Icon Show Name=false
 Icon Show Overlays=true
+Icon Show Pick Label=true
 Icon Show Rating=true
 Icon Show Resolution=false
 Icon Show Size=false
@@ -85,7 +87,7 @@ Update Type=0
 
 [AlbumFolderView Sidebar]
 CurrentIndex=8081
-Expansion=0,3,4,5,6,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066,8067,8068,8069,8070,8071,8072,8073,8074,8076,8077,8075,8078,8080,8081,8087,8088,8089,8090,-3
+Expansion=0,3,4,5,6,8057,8058,8059,8060,8061,8062,8063,8064,8065,8066,8067,8069,8070,8071,8072,8073,8074,8076,8077,8075,8078,8080,8081,8087,8088,8089,8090,-3
 RestoreChecked=false
 Selection=8081
 SortColumn=0
@@ -108,9 +110,11 @@ Sync Baloo to Digikam=false
 Sync Digikam to Baloo=false
 
 [Batch Queue Manager Settings]
+1920x1080 screen: XPosition=0
+1920x1080 screen: YPosition=0
 BqmBottomSplitter=AAAA/wAAAAEAAAACAAAA0gAAALkB/////wEAAAABAA==
 BqmTopSplitter=AAAA/wAAAAEAAAADAAAAoQAAAMkAAAD6Af////8BAAAAAQA=
-BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAA8gAAAN8B/////wEAAAACAA==
+BqmVerticalSplitter=AAAA/wAAAAEAAAACAAAA9AAAAOMB/////wEAAAACAA==
 DP-1=DP-1
 DP-1 XPosition 1920x1080 DP-1=0
 DP-1 YPosition 1920x1080 DP-1=0
@@ -134,6 +138,7 @@ ToolBarsMovable=Disabled
 Width 1920=640
 default XPosition=0
 default YPosition=0
+rdp0=rdp0
 
 [Camera Settings]
 DefaultTargetAlbumId=0
@@ -157,15 +162,15 @@ EnableCM=true
 GamutCheckMaskColor=126,255,255
 LastMismatchBehavior=2049
 LastMissingProfileBehavior=2050
-LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/
+LastSpecifiedAssignProfile[$e]=/tmp/.mount_digikanBnSER/usr/share/digikam/profiles/
 LastSpecifiedInputProfile=
 LastUncalibratedBehavior=2080
 ManagedPreviews=true
 ManagedView=true
-MonitorProfileFile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/srgb-d65.icm
+MonitorProfileFile[$e]=/tmp/.mount_digikanBnSER/usr/share/digikam/profiles/srgb-d65.icm
 ProofingRenderingIntent=3
 RenderingIntent=0
-WorkProfileFile[$e]=/tmp/.mount_digikavPwKAE/usr/share/digikam/profiles/srgb-d65.icm
+WorkProfileFile[$e]=/tmp/.mount_digikanBnSER/usr/share/digikam/profiles/srgb-d65.icm
 
 [Copy To Folder Settings]
 Last Copy To Folder Path=/home/user/graduation
@@ -1131,7 +1136,7 @@ tagPaths=1
 
 [Database Settings]
 Database Connectoptions=
-Database Encrypted Password=AwJGRkY=
+Database Encrypted Password=AwLs7Ow=
 Database Hostname=
 Database Name=/home/mediadb/digikam/
 Database Name Face=/home/mediadb/digikam/
@@ -1140,6 +1145,7 @@ Database Name Thumbnails=/home/mediadb/digikam/
 Database Port=-1
 Database Type=QSQLITE
 Database Username=
+Database WAL Mode=false
 Internal Database Server=false
 Internal Database Server Mysql Admin Command=
 Internal Database Server Mysql Init Command=
@@ -1340,7 +1346,7 @@ AlbumComboBox-Selection=
 AlbumComboBox-SortColumn=0
 AlbumComboBox-SortOrder=0
 AlbumTypeEntry=1
-Already Scanned Handling=Merge
+Already Scanned Handling=0
 Face Scan Main Task=Recognize Marked Faces
 TagComboBox-Checked=4
 TagComboBox-CurrentIndex=94
@@ -1414,7 +1420,7 @@ Selection=
 Sort Order=0
 SortColumn=0
 SortOrder=0
-SplitterState=AAAA/wAAAAEAAAACAAAByQAAALEB/////wEAAAACAA==
+SplitterState=AAAA/wAAAAEAAAACAAABzQAAALMB/////wEAAAACAA==
 
 [GPS Search Sidebar][GPSSearch Map Widget]
 Backend=marble
@@ -1443,6 +1449,10 @@ Zoom=marble:900
 CaseSensitive=0
 
 [General Settings]
+1920x1080 screen: Height=1080
+1920x1080 screen: Width=1920
+1920x1080 screen: XPosition=1
+1920x1080 screen: YPosition=24
 Application Font=Sans Serif,9,-1,5,50,0,0,0,0,0
 Application Style=fusion
 Apply Sidebar Changes Directly=true
@@ -1496,7 +1506,7 @@ Show Only Face Tags For Assigning Name=true
 Show Permanent Delete Dialog=true
 Show Splash=true
 Show Trash Delete Dialog=true
-State=AAAA/wAAAAD9AAAAAAAAB4AAAAO5AAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
+State=AAAA/wAAAAD9AAAAAAAAB4AAAAOzAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgEAAAAA/////wAAAAAAAAAA
 String Comparison Type=0
 ToolBarsMovable=Disabled
 Use Large Thumbs=false
@@ -1510,6 +1520,7 @@ default Height 878=748
 default Width 1440=1361
 default XPosition=0
 default YPosition=23
+rdp0=rdp0
 
 [Grouping Behaviour]
 Do BQM operations on all=2
@@ -1542,6 +1553,8 @@ Rejected Threshold=10
 Speed=1
 
 [ImageViewer Settings]
+1920x1080 screen: XPosition=0
+1920x1080 screen: YPosition=0
 AutoBrightness=true
 AutoZoom=true
 BackgroundColor=0,0,0
@@ -1618,6 +1631,7 @@ corrections Expanded=false
 default XPosition=0
 default YPosition=0
 demosaicing Expanded=true
+rdp0=rdp0
 whitebalance Expanded=true
 
 [ImageViewer Settings][Right Sidebar]
@@ -1792,6 +1806,8 @@ PickSelection=
 RatingSelection=
 
 [LightTable Settings]
+1920x1080 screen: XPosition=0
+1920x1080 screen: YPosition=0
 Auto Load Right Panel=true
 Auto Sync Preview=true
 Clear On Close=false
@@ -1820,6 +1836,7 @@ State=AAAA/wAAAAD9AAAAAAAAAoAAAAFeAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG
 ToolBarsMovable=Disabled
 default XPosition=0
 default YPosition=0
+rdp0=rdp0
 
 [LightTable Settings][Left Sidebar]
 ActiveTab=0
@@ -1986,7 +2003,73 @@ ToolBarsMovable=Disabled
 [MainWindow]
 InitialAlbumID=8081
 SplitterState=AAAA/wAAAAEAAAADAAACjAAABzgAAAImAf////8AAAAAAQE=
-ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAASWAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAABJYAAACcAP///wAABJYAAAKRAAAABAAAAAQAAAAIAAAACPwAAAAA
+ThumbbarState=AAAA/wAAAAD9AAAAAQAAAAIAAASWAAABHfwBAAAAAfsAAAAmAG0AYQBpAG4AdwBpAG4AZABvAHcAXwB0AGgAdQBtAGIAYgBhAHIAAAAAAAAABJYAAACcAP///wAABJIAAAOzAAAABAAAAAQAAAAIAAAACPwAAAAA
+
+[MediaPlayer AVFilterAudio]
+enable=true
+options=
+
+[MediaPlayer AVFilterVideo]
+enable=true
+options=
+
+[MediaPlayer AVFormat]
+analyzeduration=5000000
+avioflags=0
+enable=false
+extra=
+probesize=5000000
+
+[MediaPlayer Ass]
+font_file=
+fonts_dir=
+force_font_file=false
+
+[MediaPlayer Buffer]
+value=-1
+
+[MediaPlayer Capture]
+dir=/home/usr/Pictures
+format=png
+quality=100
+
+[MediaPlayer Decoder Video]
+priority=FFmpeg,HW FFmpeg
+zeroCopy=true
+
+[MediaPlayer General]
+abort_timeout=true
+force_fps=0
+last_file=
+timeout=30
+
+[MediaPlayer OpenGL]
+angle_platform=d3d9
+egl=false
+type=OpenGLES
+
+[MediaPlayer Preview]
+enabled=true
+height=90
+width=160
+
+[MediaPlayer Shader]
+enable=false
+fbo=false
+fragHeader=
+fragPostProcess=//negate color effect\ngl_FragColor.rgb = vec3(1.0-gl_FragColor.r, 1.0-gl_FragColor.g, 1.0-gl_FragColor.b);
+fragSample=// horizontal mirror effect\nvec4 sample2d(sampler2D tex, vec2 pos, int p) {\n    return texture(tex, vec2(1.0-pos.x, pos.y));\n}
+
+[MediaPlayer Subtitle]
+autoLoad=true
+bottom margin=8
+color=255,255,255
+delay=0
+enabled=true
+engines=FFmpeg,LibASS
+font=Sans Serif,20,-1,5,75,0,0,0,0,0
+outline=true
+outline_color=0,0,255
 
 [Metadata Settings]
 Album Date Source=1
@@ -2026,7 +2109,7 @@ HelpBoxNotifSeen=true
 
 [People Sidebar]
 CurrentIndex=79
-Expansion=55,54,70,59,68,67,66,75,73,77,76,74,71,79,81,82,78,72,80,69
+Expansion=4,55,54,70,59,68,67,66,75,73,77,76,74,71,79,81,82,78,72,80,69
 RestoreChecked=false
 Selection=79
 SortColumn=0
