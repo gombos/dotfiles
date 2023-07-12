@@ -1,6 +1,6 @@
 # pip
 python3 -m pip install --upgrade pip
-python3 -m pip list --outdated --format=json | jq -r '.[] | "\(.name)==\(.latest_version)"' | xargs -n1 sudo pip3 install -U 2>/dev/null
+#python3 -m pip list --outdated --format=json | jq -r '.[] | "\(.name)==\(.latest_version)"' | xargs -n1 sudo pip3 install -U 2>/dev/null
 
 if [ -f /usr/local/bin/pacapt ]; then
   /usr/local/bin/pacapt -Su --noconfirm

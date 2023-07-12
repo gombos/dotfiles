@@ -1,11 +1,35 @@
 # brew
 
-# macos only
-utm # requires macos 11.3, big sur
-
-
 # cross-platform
+bash
+jq
 lima
+micro
+pandoc
+poppler
+python@3.11
+rclone
+ripgrep-all
+rmlint
+tesseract
+wakeonlan
+wget
+
+
+# cask
+alt-tab
+karabiner-elements
+macfuse
+slack
+veracrypt
+virtualbox
+#xquartz
+brave-browser
+kitty
+skype
+utm
+viber
+visual-studio-code
 
 #linux
 binutils
