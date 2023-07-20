@@ -64,6 +64,7 @@ echo "nixbld:x:402:nobody" >> etc/group
 # rootfs customizations
 
 # networking - hostname
+rm -rf etc/hosts
 printf "127.0.0.1 localhost linux\n" > etc/hosts
 
 # networking - IP
