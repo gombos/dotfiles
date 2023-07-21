@@ -29,17 +29,6 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
-#wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-#sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-
-#DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
-
-dpkg -l
-find /opt/
-
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
 ln -sf usr/opt
@@ -62,10 +51,6 @@ sort -o etc/default/locale etc/default/locale
 echo "nixbld:x:402:nobody" >> etc/group
 
 # rootfs customizations
-
-# networking - hostname
-rm -rf etc/hosts
-printf "127.0.0.1 localhost linux\n" > etc/hosts
 
 # networking - IP
 mkdir -p etc/network/interfaces.d
@@ -262,7 +247,7 @@ apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
-dpkg -l
+
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*

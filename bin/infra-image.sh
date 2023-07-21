@@ -136,8 +136,6 @@ sudo mkdir -p /tmp/iso/LiveOS
 sudo rm -rf /tmp/laptop
 sudo mkdir -p /tmp/laptop
 infra-get-rootfs.sh /tmp/laptop
-touch /tmp/laptop/etc/hosts
-ls -la /tmp/laptop/etc/
 sudo mksquashfs /tmp/laptop/lib/firmware /tmp/iso/kernel/firmware -comp zstd
 sudo rm -rf /tmp/laptop/lib/firmware
 
