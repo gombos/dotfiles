@@ -34,6 +34,8 @@ mv opt usr
 ln -sf usr/opt
 
 # For convinience
+# todo - remove nix from here and install it inside container instead
+
 mkdir -p nix
 ln -sf /run/media go
 ln -sf /run/media Volumes
