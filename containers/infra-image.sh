@@ -12,8 +12,6 @@ cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 # optionals
 rm -rf /tmp/iso/kernel/initrd.img
-rm -rf /tmp/iso/netboot
-rm -rf /tmp/iso/tce
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
