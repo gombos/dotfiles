@@ -46,7 +46,6 @@ rclone
 bitwarden-cli # not on debian
 tailscale     # not on debian
 linode-cli    # not on debian
-nix           # not on debian
 nomachine     # not on debian
 
 # tools
