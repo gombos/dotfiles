@@ -40,13 +40,6 @@ jobs:
                     file: containers/Dockerfile-homelab-config
                     tags: ghcr.io/${{env.repository_owner}}/rootfs
 
-            -   name: usrlocal
-                uses: docker/build-push-action@v4
-                with:
-                    push: true
-                    file: containers/Dockerfile-usrlocal
-                    tags: ghcr.io/${{env.repository_owner}}/usrlocal
-
             -   name: iso
                 uses: docker/build-push-action@v4
                 with:
