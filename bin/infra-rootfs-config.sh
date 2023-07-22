@@ -253,3 +253,4 @@ apt-get clean
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
+rm -rf usr/local/*
