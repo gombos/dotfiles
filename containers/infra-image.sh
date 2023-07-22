@@ -10,6 +10,12 @@ mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
+# netboot-xyz
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
+wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+mkdir -p /tmp/iso/efi/netboot
+mv netboot.xyz* /tmp/iso/efi/netboot/
+
 # optionals
 rm -rf /tmp/iso/kernel/initrd.img
 
