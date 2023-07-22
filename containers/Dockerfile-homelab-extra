@@ -3,4 +3,3 @@ COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh base
 RUN ./infra-build-root.sh extra
-RUN ./infra-rootfs-config.sh
