@@ -36,10 +36,10 @@ ln -sf usr/opt
 # For convinience
 # todo - remove nix from here and install it inside container instead
 
-mkdir -p nix
+#mkdir -p nix
 ln -sf /run/media go
-ln -sf /run/media Volumes
-ln -sf /home Users
+#ln -sf /run/media Volumes
+#ln -sf /home Users
 
 # ---- Configure etc
 
@@ -185,26 +185,26 @@ mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
 
 # nix.service
-cat > /lib/systemd/system/nix.service << 'EOF'
+#cat > /lib/systemd/system/nix.service << 'EOF'
 
-[Unit]
-Description=Mount usrlocal.img file if exists
-ConditionPathExists=/run/initramfs/live/usrlocal.img
+#[Unit]
+#Description=Mount usrlocal.img file if exists
+#ConditionPathExists=/run/initramfs/live/usrlocal.img
 
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/bin/sh -c \
- 'rm -rf /usr/local && \
-  mkdir -p /usr/local && \
-  mount /run/initramfs/live/usrlocal.img /usr/local'
+#[Service]
+#Type=oneshot
+#RemainAfterExit=yes
+#ExecStart=/bin/sh -c \
+# 'rm -rf /usr/local && \
+#  mkdir -p /usr/local && \
+#  mount /run/initramfs/live/usrlocal.img /usr/local'
+#
+#[Install]
+#WantedBy=local-fs.target
+#EOF
 
-[Install]
-WantedBy=local-fs.target
-EOF
-
-mkdir -p etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
+#mkdir -p etc/systemd/system/local-fs.target.wants
+#ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
