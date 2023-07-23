@@ -1,1 +1,2 @@
-ssh -o "StrictHostKeyChecking no" l
+ssh -o "StrictHostKeyChecking no" l -t 'distrobox enter'
+#ssh -o "StrictHostKeyChecking no" l
