@@ -21,7 +21,7 @@ git branch -m originprs
 git push -f origin HEAD
 
 git clone https://github.com/dracutdevs-extra/dracut-canary.wiki.git /tmp/wiki
-cat /tmp/wiki/prlist.md | tr '\*' ' ' | sed '/^[[:blank:]]*#/d;s/#.*//' | sed 's/^[ \t]*//'  > prlist
+cat /tmp/wiki/prlist.* | tr '\*' ' ' | sed '/^[[:blank:]]*#/d;s/#.*//' | sed 's/^[ \t]*//' | grep '[0-9]' | sed '/^$/d' | sort > prlist
 
 while read p;
     do gh pr checkout --repo dracutdevs/dracut $p
