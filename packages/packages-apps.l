@@ -4,7 +4,7 @@ kitty
 sqlitebrowser
 xterm
 vlc
-libreoffice
+#libreoffice
 google-chrome
 
 #thunderbird

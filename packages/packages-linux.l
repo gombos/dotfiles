@@ -4,10 +4,8 @@
 # container services
 containerd
 uidmap
-apparmor
 
 # power management
-autosuspend
 upower
 
 # compute
@@ -64,7 +62,6 @@ sudo
 adb
 flatpak
 debootstrap
-iotop
 powertop
 psmisc
 time

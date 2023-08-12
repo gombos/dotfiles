@@ -1,17 +1,14 @@
 autocutsel
-autokey-qt
 desktop-file-utils
 dunst
 fonts-freefont-ttf
 fonts-inconsolata
-fonts-wqy-zenhei
 lxdm
 lxpolkit
 lxrandr
 openbox
 pavucontrol
 pulseaudio
-python3-xdg
 rtkit
 wmctrl
 xdotool

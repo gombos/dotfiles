@@ -12,7 +12,6 @@ unzip
 # files
 antiword
 attr
-borgbackup # pip
 detox
 dos2unix
 file
@@ -40,7 +39,6 @@ net-tools
 nmap
 mutt
 tcpdump
-sshuttle # pip
 nethogs
 rclone
 bitwarden-cli # not on debian
@@ -53,7 +51,6 @@ distrobox
 bash-completion
 bc
 docker
-docker-compose
 gnupg
 gawk
 htop
