@@ -7,7 +7,6 @@ gddrescue
 tesseract-ocr
 poppler-utils
 libimage-exiftool-perl
-python3-distutils
 gpg
 gpg-agent
 libnotify-bin
