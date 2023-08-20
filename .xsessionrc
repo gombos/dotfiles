@@ -31,4 +31,6 @@ fi
 
 
 # todo - properly implement
+# only start if inside vmware virtualization
+
 vmware-user-suid-wrapper
