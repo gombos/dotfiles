@@ -28,3 +28,7 @@ fi
   # Set background
   [ -f ~/.config/.bg.jpg ] && (sleep 2 && qiv -z ~/.config/.bg.jpg)
 ) &
+
+
+# todo - properly implement
+vmware-user-suid-wrapper
