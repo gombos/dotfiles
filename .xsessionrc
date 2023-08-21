@@ -28,5 +28,6 @@ fi
 # todo - properly implement
 # only start if inside vmware virtualization
 # see https://github.com/systemd/systemd/issues/27919
+# see xdg-desktop-autostart.target
 # maybe use systemd to start this
 vmware-user-suid-wrapper
