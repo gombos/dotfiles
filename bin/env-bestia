@@ -22,6 +22,7 @@ my-luks-mount backup_bestia
 # Manual swtich drives
 my-luks-mount backup_bestia_aged
 my-luks-mount backup_archive_media
+my-luks-mount archive_media_nagybestia
 my-luks-mount backup_archive_ice
 my-luks-mount backup_borg
 my-luks-mount backup_pancel
