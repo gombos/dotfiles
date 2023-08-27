@@ -242,6 +242,10 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 rm -rf /etc/ssh/ssh_host*
 rm -rf /var/log/journal/*
+
+rm -rf /var/lib/flatpak
+mkdir -p /var/lib/flatpak
+
 [ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
 
 # -- common

@@ -3,7 +3,7 @@
 #wget https://bootstrap.pypa.io/get-pip.py
 #python3 get-pip.py --user --break-system-packages
 
-pip install --user --break-system-packages --upgrade pip setuptools wheel virtualenv linode-cli borgbackup
+pip install --user --break-system-packages --upgrade pip setuptools wheel virtualenv linode-cli borgbackup yt-dlp
 
 # dev tools
 # pip3 install networkx
