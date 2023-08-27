@@ -1,10 +1,10 @@
 # Purpose: baremetal only packages
 
 # debian system
-apt-file
-apt-transport-https
-apt-utils
-ca-certificates
+#apt-file
+#apt-transport-https
+#apt-utils
+#ca-certificates
 
 # tools - should be first
 locales
@@ -25,6 +25,7 @@ efibootmgr
 kexec-tools #soft reboot (without bootloader)
 
 # networking
+ca-certificates
 dnsmasq-base
 ifupdown
 isc-dhcp-client

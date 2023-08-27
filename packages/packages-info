@@ -81,7 +81,7 @@ mercurial
 moreutils
 mysql-apt-config
 nftables
-openjdk-11-jdk
+openjdk-17-jdk
 php7.2-bcmath
 php7.2-cgi
 php7.2-dev
@@ -377,8 +377,6 @@ ocrfeeder
 ocrmypdf
 omxplayer
 openbox-menu
-openjdk-8-jdk
-openjdk-8-jre
 openoffice.org-hyphenation
 openshot
 oracle-java10-set-default

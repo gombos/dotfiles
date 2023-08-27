@@ -4,6 +4,11 @@
 # ideally these packages are even available via brew on MacOS
 # use the brew name
 
+# core runtimes
+bash
+perl
+python3
+
 # core tools
 git
 less
