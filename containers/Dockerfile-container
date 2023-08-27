@@ -6,4 +6,3 @@ ARG TAG
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh container
-#RUN ./infra-rootfs-config.sh container

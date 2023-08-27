@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # rootfs customizations - both for base and full
+# only runs for iso and not for container
 
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
@@ -38,13 +39,10 @@ ln -sf usr/opt
 
 #mkdir -p nix
 ln -sf /run/media go
-#ln -sf /run/media Volumes
-#ln -sf /home Users
 
 # ---- Configure etc
 
 # Make etc/default/locale deterministic between runs
-#/sbin/locale-gen --purge en_US.UTF-8
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 /sbin/locale-gen
 /sbin/update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
@@ -243,12 +241,11 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 rm -rf /etc/ssh/ssh_host*
 rm -rf /var/log/journal/*
 
-rm -rf /var/lib/flatpak
-mkdir -p /var/lib/flatpak
-
 [ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
 
 # -- common
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending

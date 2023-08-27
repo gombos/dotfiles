@@ -90,7 +90,13 @@ infra-install-vmware-workstation.sh
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
+# configure flatpack
+rm -rf /var/lib/flatpak/repo
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
 fi
+
+# container only....
 
 if [ "$TARGET" = "container" ]; then
 
@@ -121,15 +127,13 @@ rm -rf /usr/sbin/aur-install
 # pipx
 /usr/local/bin/pip3 install pipx
 
-rm -rf /var/lib/flatpak/repo
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
 # appimage - digikam
 mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
 if [ "$ID" == "arch" ]; then
+
   # make i point to pacapt
   curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
   mv /usr/bin/pacman /usr/local/bin/
