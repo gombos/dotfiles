@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#wget https://bootstrap.pypa.io/get-pip.py
+#python3 get-pip.py --user --break-system-packages
+
+pip install --user --break-system-packages --upgrade pip setuptools wheel virtualenv linode-cli borgbackup
+
+# dev tools
+# pip3 install networkx
+# pip3 install python-apt
+# pip3 install awscli PyYAML
+# pip3 install pyusb temperusb
