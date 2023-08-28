@@ -1,2 +1,2 @@
-ssh bestia -t distrobox enter
+ssh bestia -t distrobox enter linux
 #ssh -X usr@bestia -t distrobox enter linux
