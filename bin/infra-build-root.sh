@@ -133,13 +133,12 @@ wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKA
 chmod +x /usr/local/bin/digikam
 
 if [ "$ID" == "arch" ]; then
-  /usr/bin/pacman --noconfirm -Syyu
+  /usr/bin/pacman --noconfirm -Syu
 
   # make i point to pacapt
   curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
   mv /usr/bin/pacman /usr/local/bin/
   mv /usr/bin/paru /usr/bin/pacman
-  pacman -Syu
 fi
 
 fi
