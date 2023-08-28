@@ -138,6 +138,7 @@ if [ "$ID" == "arch" ]; then
   curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
   mv /usr/bin/pacman /usr/local/bin/
   mv /usr/bin/paru /usr/bin/pacman
+  pacman -Syu
 fi
 
 fi
