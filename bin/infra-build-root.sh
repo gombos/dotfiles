@@ -39,6 +39,7 @@ fi
 echo "Building $RELEASE $TARGET on $ID"
 
 if [ "$TARGET" = "container" ]; then
+   /usr/bin/pacman --noconfirm -Syu
   packages_update_db.sh
   packages_upgrade.sh
   install_my_packages.sh packages-packages.l
