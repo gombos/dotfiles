@@ -66,14 +66,8 @@ kitty
 laptop-detect
 less
 libblockdev-crypto2
-libbluetooth3
 libimage-exiftool-perl
-libmm-glib0
-libndp0
-libnewt0.52
-libnm0
 libnotify-bin
-libteamdctl0
 lm-sensors
 locales
 login
