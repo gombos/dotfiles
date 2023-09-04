@@ -43,6 +43,10 @@
 # Network - DHCP
 # rootfs version
 
+
+# TODO
+# move enabling/disabling systemd services out of this file into a kernel command line
+
 if [ -z "$NEWROOT" ]; then
   NEWROOT="/"
 fi
