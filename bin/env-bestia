@@ -31,6 +31,7 @@ my-luks-mount backup_all
 my-luks-mount backup_pacsa
 my-luks-mount pancel
 my-luks-mount kisbestia
+my-luks-mount archive_family
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
