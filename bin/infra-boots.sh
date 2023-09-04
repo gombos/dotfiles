@@ -368,3 +368,9 @@ if [ "$HOST" = "pincer" ]; then
 
   rm -rf $R/etc/sudoers.d/sudoers
 fi
+
+# update /run
+cd /run/initramfs/isoscan/config/updates/run
+find . -depth -type d -exec mkdir -p "/run/{}" \;
+find . -depth \! -type d -exec cp -a "{}" "/run/{}" \;
+cd -
