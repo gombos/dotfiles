@@ -125,9 +125,10 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+  rm -rf $R/etc/systemd/system/dbus-org.freedesktop.resolve1.service
   mkdir -p $R/var/lib/misc
   rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
-  chmod -R 444 $R/etc/systemd/network/*
+#  chmod -R 444 /run/systemd/network/*
 
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
