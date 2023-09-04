@@ -107,10 +107,11 @@ if [ -d "$UPDATES" ]; then
   cp -a $UPDATES/* $R/
 fi
 
+[ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+
 # DHCP
 if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
- [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
  [ -n "$IP" ] && echo "$NET.$IP $HOST" >> $R/etc/hosts
 
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
@@ -126,6 +127,7 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
   mkdir -p $R/var/lib/misc
   rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
+  chmod -R 444 $R/etc/systemd/network/*
 
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
@@ -233,10 +235,11 @@ if [ $FILES != '*.service' ]; then
 fi
 
 if [ "$HOST" = "bestia" ]; then
-  # Manage networking with NetworkManager
-  rm -rf $R/etc/network/interfaces.d/*
-  chmod -R 600 $R/etc/NetworkManager/system-connections/*
-
+  ln -sf /lib/systemd/system/systemd-networkd.service $R/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+  ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
+  rm -rf $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  rm -rf $R/etc/systemd/system/dbus-fi.w1.wpa_supplicant1.service
+  ln -sf /dev/null $R/etc/systemd/system/wpa_supplicant.service
   mkdir $R/var/lib/bluetooth
 
   # Patch apcupsd config to connect it via usb
