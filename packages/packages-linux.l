@@ -32,7 +32,7 @@ wpa_supplicant
 
 # laptop
 thermald # monitors and controls temperature in laptops
-tlp-rdw # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
+tlp # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network
 networkmanager
