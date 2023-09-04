@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# apt install python3-networkx python3-apt
+# apt update && apt install python3-networkx python3-apt
 
 import argparse, sys
 import apt
