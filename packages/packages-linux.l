@@ -35,7 +35,7 @@ thermald # monitors and controls temperature in laptops
 tlp # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network
-networkmanager
+# networkmanager - make it container only
 
 ## Linux filesystems
 ## =================
