@@ -30,7 +30,6 @@ bsdutils
 btrfs-progs
 bubblewrap
 ca-certificates
-caddy
 containerd
 coreutils
 cpp
@@ -94,7 +93,6 @@ gcc-12-base
 gddrescue
 gdisk
 gettext-base
-gh
 git
 git-man
 gnupg
@@ -186,7 +184,6 @@ libavformat59
 libavutil57
 libb2-1
 libbinutils
-libblas3
 libblkid1
 libblockdev-crypto2
 libblockdev-fs2
@@ -393,7 +390,6 @@ liblcms2-2
 libldap-2.5-0
 liblept5
 liblerc4
-liblinear4
 liblirc-client0
 libllvm15
 liblmdb0
@@ -401,7 +397,6 @@ liblocale-gettext-perl
 liblognorm5
 libltdl7
 liblua5.2-0
-liblua5.3-0
 liblz4-1
 liblzma5
 liblzo2-2
@@ -453,7 +448,6 @@ libnpth0
 libnsl2
 libnspr4
 libnss3
-libnss3-tools
 libntfs-3g89
 libntlm0
 libnuma1
@@ -486,7 +480,6 @@ libpci3
 libpciaccess0
 libpcre2-16-0
 libpcre2-8-0
-libpcre3
 libpcsclite1
 libperl5.36
 libpgm-5.3-0
@@ -743,7 +736,6 @@ login
 logsave
 lsb-release
 lsof
-lua-lpeg
 lxdm
 lxmenu-data
 lxpanel
@@ -766,8 +758,6 @@ netbase
 nethogs
 nfs-common
 nfs-kernel-server
-nmap
-nmap-common
 ocl-icd-libopencl1
 open-vm-tools
 open-vm-tools-desktop
@@ -777,8 +767,6 @@ openssh-server
 openssh-sftp-server
 openssl
 ovmf
-pandoc
-pandoc-data
 partclone
 parted
 pass
@@ -810,7 +798,6 @@ qemu-system-common
 qemu-system-data
 qemu-system-gui
 qemu-system-x86
-qemu-user-static
 qiv
 rclone
 readline-common
