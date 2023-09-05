@@ -78,11 +78,8 @@ ethtool
 fdisk
 file
 findutils
-firmware-amd-graphics
 firmware-iwlwifi
-firmware-linux
 firmware-linux-free
-firmware-linux-nonfree
 firmware-misc-nonfree
 flatpak
 fontconfig

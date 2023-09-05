@@ -36,7 +36,8 @@ ethtool
 file
 findutils
 firmware-iwlwifi
-firmware-linux
+firmware-linux-free
+firmware-misc-nonfree
 flatpak
 fonts-freefont-ttf
 fonts-inconsolata
