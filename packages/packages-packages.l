@@ -41,7 +41,7 @@ wget
 curl
 iperf3
 net-tools
-nmap
+#nmap
 mutt
 tcpdump
 nethogs
@@ -75,10 +75,10 @@ swtpm
 binutils
 graphicsmagick
 
-gh
+#gh
 jq
 openssh
-caddy
+#caddy
 inetutils
 
 # power management

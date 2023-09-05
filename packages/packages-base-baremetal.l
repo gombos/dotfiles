@@ -17,7 +17,7 @@ gpg-agent
 # device firmware
 firmware-linux-free
 firmware-misc-nonfree  # i916 and nvidea
-firmware-iwlwifi       #Intel Wireless cards
+firmware-iwlwifi       # Intel Wireless cards
 
 # boot
 grub-common
