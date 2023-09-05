@@ -29,7 +29,7 @@ rmlint
 rsync
 pass
 sqlite3
-pandoc
+# pandoc - large package
 zip
 hashdeep
 
