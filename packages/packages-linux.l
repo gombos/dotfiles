@@ -66,5 +66,5 @@ powertop
 psmisc
 time
 ovmf
-qemu-user-static
+# qemu-user-static - large package
 graphicsmagick-imagemagick-compat

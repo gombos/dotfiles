@@ -5,6 +5,7 @@
 
 mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d /isos
 
+# TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   echo $SCRIPT >> /config/rootfs-kulcs.cfg
