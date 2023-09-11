@@ -17,6 +17,8 @@ rm -rf /boot/* /lib/modules/*
 
 wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$KERNEL.tar.xz
 tar -xf linux-$KERNEL.tar.xz
+rm -rf linux-$KERNEL.tar.xz
+rm -rf /var/lib/apt /var/cache
 
 cd linux-$KERNEL
 
