@@ -1,5 +1,5 @@
-ARG BASE=docker.io/debian:sid
-#ARG BASE=docker.io/debian-slim:sid
+#ARG BASE=docker.io/debian:sid
+ARG BASE=docker.io/debian-slim:stable
 
 FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
 
