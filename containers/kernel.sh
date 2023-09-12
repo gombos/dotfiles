@@ -331,11 +331,11 @@ cat .config
 
 diff .config oldconfig
 
-make -j$(nproc) bzImage
-make -j$(nproc) modules
+make -j$(nproc) bzImage 2>&1 > /dev/null
+make -j$(nproc) modules 2>&1 > /dev/null
 
 make install
-make INSTALL_MOD_STRIP=1 modules_install
+make INSTALL_MOD_STRIP=1 modules_install 2>&1 > /dev/null
 
 # Make sure we have all the required modules built
 $REPO/bin/infra-install-vmware-workstation-modules.sh
