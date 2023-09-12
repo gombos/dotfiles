@@ -360,3 +360,5 @@ find /boot/ /lib/modules/
 #    /usr/lib/systemd/boot/efi/linuxx64.efi.stub \
 #    vmlinuz.unsigned.efi
 # see https://github.com/pop-os/core/blob/master/res/image.sh
+
+df -h
