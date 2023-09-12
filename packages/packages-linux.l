@@ -4,10 +4,8 @@
 # container services
 containerd
 uidmap
-apparmor
 
 # power management
-autosuspend
 upower
 
 # compute
@@ -34,10 +32,10 @@ wpa_supplicant
 
 # laptop
 thermald # monitors and controls temperature in laptops
-tlp-rdw # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
+tlp # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network
-networkmanager
+# networkmanager - make it container only
 
 ## Linux filesystems
 ## =================
@@ -64,10 +62,9 @@ sudo
 adb
 flatpak
 debootstrap
-iotop
 powertop
 psmisc
 time
 ovmf
-qemu-user-static
+# qemu-user-static - large package
 graphicsmagick-imagemagick-compat

@@ -108,29 +108,7 @@ ls -la /tmp/iso/kernel
 
 #sudo partprobe $DISK
 
-#echo "Creating filesystems..."
-#sudo mkfs.btrfs -L "linux" -U 10000000-0000-0000-0000-000000000000 ${DISK}p2 || fail "cannot create root"
-
-#sudo mount -o compress=zstd ${DISK}p2 $MNT || fail "cannot mount"
-#sudo chmod g+w  $MNT
-#sudo btrfs subvolume create $MNT/linux
-#sudo chmod g+w  $MNT/linux
-
-#cd $MNT/linux
-#sudo btrfs subvolume set-default .
-
-#if [ -z $3 ]; then
-#  infra-get-rootfs.sh $MNT/linux
-#else
-#  sudo rsync -av $3 $MNT/linux/
-#fi
-
-# Make it read-only
-#sudo btrfs property set -ts $MNT/linux ro true
-#cd /
-
 # rootfs squashfs
-#infra-get-squash.sh
 sudo mkdir -p /tmp/iso/LiveOS
 
 sudo rm -rf /tmp/laptop

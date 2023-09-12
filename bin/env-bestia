@@ -22,6 +22,7 @@ my-luks-mount backup_bestia
 # Manual swtich drives
 my-luks-mount backup_bestia_aged
 my-luks-mount backup_archive_media
+my-luks-mount archive_media_nagybestia
 my-luks-mount backup_archive_ice
 my-luks-mount backup_borg
 my-luks-mount backup_pancel
@@ -30,6 +31,7 @@ my-luks-mount backup_all
 my-luks-mount backup_pacsa
 my-luks-mount pancel
 my-luks-mount kisbestia
+my-luks-mount archive_family
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
@@ -118,7 +120,7 @@ borg-archive_media()  { cd $MNTDIR/archive_media && nohup borg create -e archive
 borg-archive_mail()   { cd $MNTDIR/archive_ice/archive && nohup borg create --noflags -s -x --list $MNTDIR/backup_pancel/borg/archive_mail::archive_mail-`date -Iseconds` archive_mail >/tmp/nohup-borg-archive_mail.out 2>&1; }
 
 borg-archive_media_image()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_image-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_image.out 2>&1; }
-borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_video-`date -Iseconds` archive_media/p/o >/tmp/nohup-borg-archive_media_video.out 2>&1; }
+borg-archive_media_video()  { cd $MNTDIR/archive_media && nohup borg create --noflags --compression none -s -x --list $MNTDIR/borg/borg/archive_media::archive_media_video-`date -Iseconds` archive_media/videos >/tmp/nohup-borg-archive_media_video.out 2>&1; }
 
 borg-archive_ice()    { cd $MNTDIR/archive_ice && nohup borg create --noflags -s -x --list $MNTDIR/borg/borg/archive_ice::archive_ice-`date -Iseconds` archive >/tmp/nohup-borg-archive_ice.out 2>&1; }
 borg-archive_bagoly() { cd $MNTDIR/archive_bagoly && nohup borg create -s --noflags -x --list $MNTDIR/borg/borg/data::data-`date -Iseconds` . >/tmp/nohup-borg-archive_bagoly.out 2>&1; }

@@ -43,6 +43,10 @@
 # Network - DHCP
 # rootfs version
 
+
+# TODO
+# move enabling/disabling systemd services out of this file into a kernel command line
+
 if [ -z "$NEWROOT" ]; then
   NEWROOT="/"
 fi
@@ -107,10 +111,11 @@ if [ -d "$UPDATES" ]; then
   cp -a $UPDATES/* $R/
 fi
 
+[ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
+
 # DHCP
 if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
  [ -n "$HOST" ] && echo "$HOST" > $R/etc/hostname
- [ -n "$HOST" ] && echo "127.0.0.1 $HOST" >> $R/etc/hosts
  [ -n "$IP" ] && echo "$NET.$IP $HOST" >> $R/etc/hosts
 
   chmod 444 $R/etc/dnsmasq.d/dhcp.conf
@@ -124,8 +129,10 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
   ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+#  rm -rf $R/etc/systemd/system/dbus-org.freedesktop.resolve1.service
   mkdir -p $R/var/lib/misc
   rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
+#  chmod -R 444 /run/systemd/network/*
 
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
@@ -233,10 +240,11 @@ if [ $FILES != '*.service' ]; then
 fi
 
 if [ "$HOST" = "bestia" ]; then
-  # Manage networking with NetworkManager
-  rm -rf $R/etc/network/interfaces.d/*
-  chmod -R 600 $R/etc/NetworkManager/system-connections/*
-
+  ln -sf /lib/systemd/system/systemd-networkd.service $R/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+  ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
+  rm -rf $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  rm -rf $R/etc/systemd/system/dbus-fi.w1.wpa_supplicant1.service
+  ln -sf /dev/null $R/etc/systemd/system/wpa_supplicant.service
   mkdir $R/var/lib/bluetooth
 
   # Patch apcupsd config to connect it via usb
@@ -365,3 +373,9 @@ if [ "$HOST" = "pincer" ]; then
 
   rm -rf $R/etc/sudoers.d/sudoers
 fi
+
+# update /run
+cd /run/initramfs/isoscan/config/updates/run
+find . -depth -type d -exec mkdir -p "/run/{}" \;
+find . -depth \! -type d -exec cp -a "{}" "/run/{}" \;
+cd -

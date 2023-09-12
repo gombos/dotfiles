@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # rootfs customizations - both for base and full
+# only runs for iso and not for container
 
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
@@ -29,31 +30,19 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
-#wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-#sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-
-#DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-#DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 google-chrome-stable
-
-dpkg -l
-find /opt/
-
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
 ln -sf usr/opt
 
 # For convinience
-mkdir -p nix
+# todo - remove nix from here and install it inside container instead
+
+#mkdir -p nix
 ln -sf /run/media go
-ln -sf /run/media Volumes
-ln -sf /home Users
 
 # ---- Configure etc
 
 # Make etc/default/locale deterministic between runs
-#/sbin/locale-gen --purge en_US.UTF-8
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 /sbin/locale-gen
 /sbin/update-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
@@ -62,9 +51,6 @@ sort -o etc/default/locale etc/default/locale
 echo "nixbld:x:402:nobody" >> etc/group
 
 # rootfs customizations
-
-# networking - hostname
-printf "127.0.0.1 localhost linux\n" > etc/hosts
 
 # networking - IP
 mkdir -p etc/network/interfaces.d
@@ -129,6 +115,7 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 
 [ -f etc/systemd/system/multi-user.target.wants/nginx.service ] && rm etc/systemd/system/multi-user.target.wants/nginx.service
 [ -f etc/systemd/system/multi-user.target.wants/caddy.service ] && rm etc/systemd/system/multi-user.target.wants/caddy.service
+[ -f etc/systemd/system/multi-user.target.wants/smartmontools.service ] rm etc/systemd/system/multi-user.target.wants/smartmontools.service
 
 # disable dunst - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service
@@ -197,26 +184,26 @@ mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
 
 # nix.service
-cat > /lib/systemd/system/nix.service << 'EOF'
+#cat > /lib/systemd/system/nix.service << 'EOF'
 
-[Unit]
-Description=Mount usrlocal.img file if exists
-ConditionPathExists=/run/initramfs/live/usrlocal.img
+#[Unit]
+#Description=Mount usrlocal.img file if exists
+#ConditionPathExists=/run/initramfs/live/usrlocal.img
 
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/bin/sh -c \
- 'rm -rf /usr/local && \
-  mkdir -p /usr/local && \
-  mount /run/initramfs/live/usrlocal.img /usr/local'
+#[Service]
+#Type=oneshot
+#RemainAfterExit=yes
+#ExecStart=/bin/sh -c \
+# 'rm -rf /usr/local && \
+#  mkdir -p /usr/local && \
+#  mount /run/initramfs/live/usrlocal.img /usr/local'
+#
+#[Install]
+#WantedBy=local-fs.target
+#EOF
 
-[Install]
-WantedBy=local-fs.target
-EOF
-
-mkdir -p etc/systemd/system/local-fs.target.wants
-ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
+#mkdir -p etc/systemd/system/local-fs.target.wants
+#ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
@@ -254,14 +241,21 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 
 rm -rf /etc/ssh/ssh_host*
 rm -rf /var/log/journal/*
+
 [ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
 
 # -- common
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+
+# Todo - this should not be required
+DEBIAN_FRONTEND=noninteractive apt purge network-manager libbluetooth* libmm-glib* libndp* libnewt* libnm* libteamdctl* -y -qq -o Dpkg::Use-Pty=0
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
-dpkg -l
+
 # cleanup
 infra-clean-linux.sh /
 rm -rf tmp/*
+rm -rf usr/local/*

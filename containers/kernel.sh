@@ -17,6 +17,8 @@ rm -rf /boot/* /lib/modules/*
 
 wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$KERNEL.tar.xz
 tar -xf linux-$KERNEL.tar.xz
+rm -rf linux-$KERNEL.tar.xz
+rm -rf /var/lib/apt /var/cache
 
 cd linux-$KERNEL
 
@@ -358,3 +360,5 @@ find /boot/ /lib/modules/
 #    /usr/lib/systemd/boot/efi/linuxx64.efi.stub \
 #    vmlinuz.unsigned.efi
 # see https://github.com/pop-os/core/blob/master/res/image.sh
+
+df -h

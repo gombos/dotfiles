@@ -5,6 +5,7 @@
 
 mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d /isos
 
+# TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   echo $SCRIPT >> /config/rootfs-kulcs.cfg
@@ -24,7 +25,7 @@ wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso 
 
 cat > /config/grub.cfg << EOF
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home systemd.mask=NetworkManager systemd.mask=NetworkManager-wait-online noquiet rd.debug"
+OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home noquiet rd.debug"
 EOF
 
 #noquiet rd.debug rd.live.overlay=/dev/sda:/overlay.img"

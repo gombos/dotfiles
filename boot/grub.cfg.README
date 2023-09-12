@@ -1,0 +1,45 @@
+# dracut arguments
+# rd.debug - set -x for dracut
+# rd.break=[cmdline|pre-udev|pre-trigger|initqueue|pre-mount|mount|pre-pivot|cleanup]
+# rd.hostonly=0 - removes all compiled in configuration of the host system
+# rd.shell - drop to a shell, if the initramfs fails.
+# rd.udev.info - set udev to loglevel info
+# rd.udev.debug - set udev to loglevel debug
+# rd.modules_load=
+# systemd.volatile=overlay - overlay root and all the subfolders with tmpfs, requires systemd inside initrd
+# systemd.volatile=yes  - requires systemd inside initrd
+# systemd.volatile=state - requires systemd inside initrd, empty /var
+# rd.live.ram=1 - copy root to RAM (boot media can be removed after booting, requires more system ram)
+# rd.writable.fsimg=1 - enables writable filesystem support. The system will boot with a fully writable (but non-persistent) filesystem without snapshots
+# rd.live.overlay.overlayfs=1 - enables the use of the OverlayFS kernel module, if available, to provide a copy-on-write union directory for the root filesystem.
+# rd.live.overlay.readonly=1 - boot with a normally read-write persistent overlay in a read-only mode
+# rd.live.dir=Live rd.live.squashimg=squashfs.img rootfstype=iso9660
+# rd.live.image rd.live.overlay.overlayfs=1
+# rd.info
+
+# kernel arguments
+# root=LABEL=linux - boot form the partition with "linux" label
+# rootflags=subvol=/linux - boot from /linux btrfs subvolume (and not the default filesystem subvolume)
+# ro - mount root read-only
+# quiet - do not log to console during boot
+# noquiet
+# net.ifnames=0 - disable consistent network device naming, udevd
+# nomodeset
+# modules_load=
+# init=/bin/bash
+
+# systemd arguments
+# systemd.wants
+# systemd.mask
+# systemd.hostname
+# systemd.unit=multi-user.target
+
+# ds=nocloud;s=/run/media/efi/config
+# systemd.wants=ssh-keygen
+# rd.exec=/dev/null
+# systemd.mask=NetworkManager.service systemd.mask=NetworkManager-wait-online.service
+
+# Disable services trying to write to /var/log or /var
+# set RO="$CONSOLE systemd.mask=dmesg systemd.mask=systemd-update-utmp systemd.mask=systemd-update-utmp-runlevel"
+
+# bios might not be able to boot from nvme, so grub might need to be installed on a non-nvme drive

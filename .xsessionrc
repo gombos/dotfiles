@@ -8,9 +8,7 @@ xsetroot -solid black
 # two monitor setup if needed
 # xrandr --output DP-2 --mode 3840x2160 --output HDMI-1 --mode 1920x1080 --rate 60.00 --left-of DP-2
 
-if test "$USER" = 'bagoly'; then
-  eval $(gpg-agent --daemon)
-fi
+# eval $(gpg-agent --daemon)
 
 # change the speed of scrolling if needed
 # xinput --set-prop 14 "libinput Accel Speed" -0.6
@@ -24,7 +22,12 @@ fi
 (
   # Set X resources
   xrdb -merge ~/.Xresources-*
-
-  # Set background
-  [ -f ~/.config/.bg.jpg ] && (sleep 2 && qiv -z ~/.config/.bg.jpg)
 ) &
+
+
+# todo - properly implement
+# only start if inside vmware virtualization
+# see https://github.com/systemd/systemd/issues/27919
+# see xdg-desktop-autostart.target
+# maybe use systemd to start this
+vmware-user-suid-wrapper

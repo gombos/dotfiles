@@ -8,6 +8,10 @@ set -x
 # - shut down (1 min) - can this be done faster ?
 # - boot into new iso (1 min)
 
+#Rebuild feature performs the following two actions:
+# - The current disks are removed.
+# - A new set of disks is provisioned from one of the Cloud Manager’s built-in Linux images, or from one of the saved images.
+
 [ -z "$LABEL" ] && LABEL="pincer"
 
 # debian (1 GB) ubuntu (2 GB) arch (2GB) alpine (0.2GB)

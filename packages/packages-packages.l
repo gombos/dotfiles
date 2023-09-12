@@ -4,6 +4,11 @@
 # ideally these packages are even available via brew on MacOS
 # use the brew name
 
+# core runtimes
+bash
+perl
+python3
+
 # core tools
 git
 less
@@ -12,7 +17,6 @@ unzip
 # files
 antiword
 attr
-borgbackup # pip
 detox
 dos2unix
 file
@@ -25,7 +29,7 @@ rmlint
 rsync
 pass
 sqlite3
-pandoc
+# pandoc - large package
 zip
 hashdeep
 
@@ -37,22 +41,21 @@ wget
 curl
 iperf3
 net-tools
-nmap
+#nmap
 mutt
 tcpdump
-sshuttle # pip
 nethogs
 rclone
 bitwarden-cli # not on debian
 tailscale     # not on debian
 linode-cli    # not on debian
+#nomachine     # not on debian
 
 # tools
 distrobox
 bash-completion
 bc
 docker
-docker-compose
 gnupg
 gawk
 htop
@@ -72,10 +75,10 @@ swtpm
 binutils
 graphicsmagick
 
-gh
+#gh
 jq
 openssh
-caddy
+#caddy
 inetutils
 
 # power management

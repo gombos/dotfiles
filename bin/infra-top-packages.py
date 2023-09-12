@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# apt install python3-networkx python3-apt
+# sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0 && sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-apt -y -qq -o Dpkg::Use-Pty=0
 
 import argparse, sys
 import apt

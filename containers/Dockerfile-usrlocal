@@ -1,9 +1,0 @@
-ARG BASE=ghcr.io/gombos/rootfs
-
-FROM $BASE as builder
-ENV REPO=/tmp_
-COPY . $REPO/
-RUN $REPO/bin/infra-usrlocal.sh
-
-FROM scratch
-COPY --from=builder /tmp/usrlocal.img /iso/usrlocal.img
