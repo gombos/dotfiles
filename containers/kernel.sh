@@ -30,7 +30,7 @@ cp $REPO/containers/kernelconfig .config
 
 cp .config oldconfig
 
-cat .config
+#cat .config
 ./scripts/config --set-val CONFIG_BINFMT_ELF y
 ./scripts/config --set-val CONFIG_BINFMT_SCRIPT y
 ./scripts/config --set-val CONFIG_NO_HZ y
@@ -327,7 +327,7 @@ cat .config
 #  92 -e CONFIG_PAGE_TABLE_ISOLATION
 
 make oldconfig
-cat .config
+#cat .config
 
 diff .config oldconfig
 
@@ -342,7 +342,7 @@ $REPO/bin/infra-install-vmware-workstation-modules.sh
 
 #make headers_install
 
-find /boot/ /lib/modules/
+#find /boot/ /lib/modules/
 
 #/usr/include/
 #make headers_install
