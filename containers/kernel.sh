@@ -15,7 +15,7 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build
 rm -rf linux-*
 rm -rf /boot/* /lib/modules/*
 
-wget --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$KERNEL.tar.xz
+wget -q --no-check-certificate https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-$KERNEL.tar.xz
 tar -xf linux-$KERNEL.tar.xz
 rm -rf linux-$KERNEL.tar.xz
 rm -rf /var/lib/apt /var/cache
@@ -30,7 +30,7 @@ cp $REPO/containers/kernelconfig .config
 
 cp .config oldconfig
 
-cat .config
+#cat .config
 ./scripts/config --set-val CONFIG_BINFMT_ELF y
 ./scripts/config --set-val CONFIG_BINFMT_SCRIPT y
 ./scripts/config --set-val CONFIG_NO_HZ y
@@ -327,22 +327,22 @@ cat .config
 #  92 -e CONFIG_PAGE_TABLE_ISOLATION
 
 make oldconfig
-cat .config
+#cat .config
 
 diff .config oldconfig
 
-make -j$(nproc) bzImage
-make -j$(nproc) modules
+make -j$(nproc) bzImage 2>&1 > /dev/null
+make -j$(nproc) modules 2>&1 > /dev/null
 
 make install
-make INSTALL_MOD_STRIP=1 modules_install
+make INSTALL_MOD_STRIP=1 modules_install 2>&1 > /dev/null
 
 # Make sure we have all the required modules built
 $REPO/bin/infra-install-vmware-workstation-modules.sh
 
 #make headers_install
 
-find /boot/ /lib/modules/
+#find /boot/ /lib/modules/
 
 #/usr/include/
 #make headers_install
