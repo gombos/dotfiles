@@ -8,6 +8,7 @@ set -x
 
 export DEBIAN_FRONTEND=noninteractive
 
+rm -rf /etc/apt/sources.list.d/debian.sources
 echo "deb https://deb.debian.org/debian ${RELEASE} main non-free-firmware" >> /etc/apt/sources.list
 apt-get update -y -qq -o Dpkg::Use-Pty=0
 
