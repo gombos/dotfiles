@@ -1,4 +1,3 @@
-#ARG BASE=docker.io/debian:sid
 ARG BASE=docker.io/debian:stable-slim
 
 FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
@@ -14,3 +13,4 @@ RUN $REPO/containers/kernel.sh
 FROM scratch
 COPY --from=builder /boot /boot
 COPY --from=builder /lib/modules /lib/modules
+COPY --from=builder /lib/firmware /lib/firmware
