@@ -35,6 +35,7 @@ cd /tmp
 ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /lib/modules /efi/kernel/modules
+mksquashfs /lib/firmware /efi/kernel/firmware
 rm -rf /tmp/initrd
 
 find /efi/kernel

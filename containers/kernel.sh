@@ -21,8 +21,6 @@ apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 firmware-linux
 
 find /lib/firmware
 
-exit
-
 rm -rf linux-*
 rm -rf /boot/* /lib/modules/*
 
