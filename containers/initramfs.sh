@@ -36,7 +36,12 @@ ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /lib/modules /efi/kernel/modules
 
-rm -rf /lib/firmware/nvidia
+# todo - move this step later in the iso generation process
+# as it is changes here requires rebuilding kernel
+
+rm -rf /lib/firmware/rockchip
+rm -rf /lib/firmware/mediatek
+
 mksquashfs /lib/firmware /efi/kernel/firmware
 rm -rf /tmp/initrd
 
