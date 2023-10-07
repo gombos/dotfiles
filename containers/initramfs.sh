@@ -38,8 +38,9 @@ mksquashfs /lib/modules /efi/kernel/modules
 
 mv /lib/firmware /tmp/
 mkdir -p /lib/firmware
-rsync -av /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
-rsync -av /tmp/firmware/intel /lib/firmware/
+cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
+cp -a /tmp/firmware/intel /lib/firmware/
+find /lib/firmware/
 
 mksquashfs /lib/firmware /efi/kernel/firmware
 rm -rf /tmp/initrd
