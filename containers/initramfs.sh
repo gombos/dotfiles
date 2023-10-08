@@ -39,7 +39,7 @@ mksquashfs /lib/modules /efi/kernel/modules
 mv /lib/firmware /tmp/
 mkdir -p /lib/firmware
 cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
-cp -a /tmp/firmware/intel /lib/firmware/
+cp -a /tmp/firmware/i915 /lib/firmware/
 find /lib/firmware/
 
 mksquashfs /lib/firmware /efi/kernel/firmware
