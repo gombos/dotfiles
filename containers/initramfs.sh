@@ -9,9 +9,7 @@ mkdir /tmp/dracut
 apk upgrade
 apk update
 
-apk add dracut-modules squashfs-tools
-
-# --update-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/testing --allow-untrusted  >/dev/null
+apk add dracut-modules squashfs-tools wget tar
 
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
@@ -36,6 +34,8 @@ ls -lha /efi/kernel/initrd_modules.img
 
 mksquashfs /lib/modules /efi/kernel/modules
 
+# FIRMWARE
+
 mv /lib/firmware /tmp/
 mkdir -p /lib/firmware
 cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
@@ -45,6 +45,15 @@ find /lib/firmware/
 mksquashfs /lib/firmware /efi/kernel/firmware
 rm -rf /tmp/initrd
 
-find /efi/kernel
-ls -lRa /efi/kernel
+# this is a large file.. 0.5G
+wget --quiet -O - https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20230919.tar.gz > /tmp/firmware.tar.gz
+rm -rf /tmp/linux-firmware-*
+cd /tmp
+tar -xf firmware.tar.gz
+cd /tmp/linux-firmware-*
 
+rm -rf /lib/firmware
+mkdir -p /lib/firmware
+cp -a iwlwifi-*-72.ucode /lib/firmware/
+cp -a i915 /lib/firmware/
+find /lib/firmware/
