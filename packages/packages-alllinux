@@ -77,9 +77,6 @@ ethtool
 fdisk
 file
 findutils
-firmware-iwlwifi
-firmware-linux-free
-firmware-misc-nonfree
 flatpak
 fontconfig
 fontconfig-config
@@ -839,7 +836,6 @@ systemd-sysv
 systemd-timesyncd
 sysvinit-utils
 tailscale
-tailscale-archive-keyring
 tar
 tcpdump
 tesseract-ocr
