@@ -36,11 +36,11 @@ mksquashfs /lib/modules /efi/kernel/modules
 
 # FIRMWARE
 
-mv /lib/firmware /tmp/
-mkdir -p /lib/firmware
-cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
-cp -a /tmp/firmware/i915 /lib/firmware/
-find /lib/firmware/
+#mv /lib/firmware /tmp/
+#mkdir -p /lib/firmware
+#cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
+#cp -a /tmp/firmware/i915 /lib/firmware/
+#find /lib/firmware/
 
 mksquashfs /lib/firmware /efi/kernel/firmware
 rm -rf /tmp/initrd
@@ -57,3 +57,4 @@ mkdir -p /lib/firmware
 cp -a iwlwifi-*-72.ucode /lib/firmware/
 cp -a i915 /lib/firmware/
 find /lib/firmware/
+mksquashfs /lib/firmware /efi/kernel/firmware
