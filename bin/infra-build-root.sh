@@ -57,11 +57,11 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 
 # ubuntu - universe
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
-#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" > etc/apt/sources.list.d/security.list
+#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
 
-# debian
+# debian security updates
 echo "deb https://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
-echo "deb https://security.debian.org/debian-security stable-security/updates main" > etc/apt/sources.list.d/security.list
+echo "deb https://security.debian.org/debian-security stable-security/updates main" >> etc/apt/sources.list
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -92,11 +92,6 @@ curl -fsSL https://tailscale.com/install.sh | sh
 # configure flatpack
 rm -rf /var/lib/flatpak/repo
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
-
-find /usr/lib/firmware
-find /lib/firmware
-
 
 fi
 

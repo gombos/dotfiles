@@ -249,11 +249,12 @@ DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 # Todo - this should not be required
-DEBIAN_FRONTEND=noninteractive apt purge network-manager libbluetooth* libmm-glib* libndp* libnewt* libnm* libteamdctl* -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt purge network-manager libbluetooth* libmm-glib* libndp* libnewt* libnm* libteamdctl* tailscale-archive-keyring -y -qq -o Dpkg::Use-Pty=0
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
+rm -rf etc/apt/sources.list.d
 
 # cleanup
 infra-clean-linux.sh /
