@@ -36,6 +36,6 @@ sudo rm -rf .dockerenv
 printf "127.0.0.1 localhost\n" | sudo tee etc/hosts
 
 # Check before doing it readlink -- "/etc/resolv.conf"
-cd $DIR/etc
-sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
+#cd $DIR/etc
+#sudo ln -sf ../run/systemd/resolve/stub-resolv.conf resolv.conf
 
