@@ -4,7 +4,6 @@ FROM alpine:edge as base
 COPY --from=kernel /boot /boot
 RUN find /boot
 COPY --from=kernel /lib/modules /lib/modules
-COPY --from=kernel /lib/firmware /lib/firmware
 ENV REPO=/_tmp
 COPY . $REPO/
 RUN $REPO/containers/initramfs.sh
