@@ -125,21 +125,13 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
 #  chmod 444 $R/etc/hosts
 
 # temporary workaround for bestia
-  echo "192.168.1.3 bestia" >> $R/etc/hosts
+  echo "192.168.1.7 bestia" >> $R/etc/hosts
 
   ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-  ln -sf /dev/null $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
-#  rm -rf $R/etc/systemd/system/dbus-org.freedesktop.resolve1.service
   mkdir -p $R/var/lib/misc
-  rm -rf $R/etc/resolv.conf $R/var/log/dnsmasq.log
-#  chmod -R 444 /run/systemd/network/*
 
   rm -rf $R/var/log/journal
   ln -sf /home/log/journal $R/var/log/journal
-
-  chmod 444 $R/etc/resolv.conf
-
-  rm -rf $R/etc/systemd/system/multi-user.target.wants/systemd-resolved.service $R/etc/systemd/system/sysinit.target.wants/systemd-resolved.service
 else
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
