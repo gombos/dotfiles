@@ -13,4 +13,3 @@ RUN $REPO/containers/kernel.sh
 FROM scratch
 COPY --from=builder /boot /boot
 COPY --from=builder /lib/modules /lib/modules
-COPY --from=builder /lib/firmware /lib/firmware
