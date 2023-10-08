@@ -13,11 +13,11 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic
 
-echo "deb https://deb.debian.org/debian bookworm non-free-firmware" >> /etc/apt/sources.list
-apt-get update -y -qq -o Dpkg::Use-Pty=0
+#echo "deb https://deb.debian.org/debian bookworm non-free-firmware" >> /etc/apt/sources.list
+#apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 # device firmware - i916 and nvidea, Intel Wireless cards
-apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 firmware-linux-free firmware-misc-nonfree firmware-iwlwifi
+#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 firmware-linux-free firmware-misc-nonfree firmware-iwlwifi
 
 find /lib/firmware
 
