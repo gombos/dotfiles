@@ -58,12 +58,10 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 # ubuntu - universe
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" > etc/apt/sources.list.d/security.list
-#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-updates main universe" > etc/apt/sources.list.d/updates.list
 
-# debian - non-free-firmware
-#echo "deb https://deb.debian.org/debian ${RELEASE} main non-free-firmware" > etc/apt/sources.list
+# debian
+echo "deb https://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
 echo "deb https://security.debian.org/debian-security stable-security/updates main" > etc/apt/sources.list.d/security.list
-#echo "deb https://deb.debian.org/debian ${RELEASE}-updates main non-free-firmware" > etc/apt/sources.list.d/updates.list
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -143,3 +141,7 @@ if [ "$ID" == "arch" ]; then
 fi
 
 fi
+
+
+find /usr/lib/firmware
+find /lib/firmware

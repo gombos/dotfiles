@@ -13,12 +13,6 @@ wget
 gpg
 gpg-agent
 
-# Full HW support
-# device firmware
-#firmware-linux-free
-#firmware-misc-nonfree  # i916 and nvidea
-#firmware-iwlwifi       # Intel Wireless cards
-
 # boot
 grub-common
 efibootmgr
