@@ -9,7 +9,7 @@ mkdir /tmp/dracut
 apk upgrade
 apk update
 
-apk add dracut-modules squashfs-tools wget tar
+apk add dracut-modules squashfs-tools wget tar rsync
 
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
@@ -42,8 +42,8 @@ mksquashfs /lib/modules /efi/kernel/modules
 #cp -a /tmp/firmware/i915 /lib/firmware/
 #find /lib/firmware/
 
-mksquashfs /lib/firmware /efi/kernel/firmware
-rm -rf /tmp/initrd
+#mksquashfs /lib/firmware /efi/kernel/firmware
+
 
 # this is a large file.. 0.5G
 wget --quiet -O - https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20230919.tar.gz > /tmp/firmware.tar.gz
@@ -52,9 +52,11 @@ cd /tmp
 tar -xf firmware.tar.gz
 cd /tmp/linux-firmware-*
 
-rm -rf /lib/firmware
-mkdir -p /lib/firmware
-cp -a iwlwifi-*-72.ucode /lib/firmware/
-cp -a i915 /lib/firmware/
+mv /lib/firmware /tmp/
+mkdir -p /lib/firmware/i915
+rsync -av iwlwifi-*-72.ucode /lib/firmware/
+rsync -av i915/icl_dmc_ver1_09.bin /lib/firmware/i915/
 find /lib/firmware/
 mksquashfs /lib/firmware /efi/kernel/firmware
+
+rm -rf /tmp/initrd
