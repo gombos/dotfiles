@@ -93,6 +93,11 @@ curl -fsSL https://tailscale.com/install.sh | sh
 rm -rf /var/lib/flatpak/repo
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+
+find /usr/lib/firmware
+find /lib/firmware
+
+
 fi
 
 # container only....
@@ -141,7 +146,3 @@ if [ "$ID" == "arch" ]; then
 fi
 
 fi
-
-
-find /usr/lib/firmware
-find /lib/firmware
