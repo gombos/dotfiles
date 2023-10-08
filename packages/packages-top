@@ -14,7 +14,6 @@ binutils
 bluez
 bsdutils
 btrfs-progs
-caddy
 cpufrequtils
 cron
 cryptsetup
@@ -35,15 +34,11 @@ eject
 ethtool
 file
 findutils
-firmware-iwlwifi
-firmware-linux-free
-firmware-misc-nonfree
 flatpak
 fonts-freefont-ttf
 fonts-inconsolata
 gawk
 gddrescue
-gh
 git
 google-chrome-stable
 gparted
@@ -87,12 +82,10 @@ ncurses-bin
 nethogs
 net-tools
 nfs-kernel-server
-nmap
 openbox
 openssh-server
 open-vm-tools-desktop
 ovmf
-pandoc
 partclone
 pass
 pavucontrol
@@ -103,7 +96,6 @@ psmisc
 pulseaudio
 qemu-guest-agent
 qemu-system-gui
-qemu-user-static
 qiv
 rclone
 rename
@@ -129,7 +121,6 @@ systemd-resolved
 systemd-timesyncd
 sysvinit-utils
 tailscale
-tailscale-archive-keyring
 tcpdump
 tesseract-ocr
 thermald
