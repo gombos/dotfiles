@@ -127,11 +127,10 @@ if [ -f "$R/etc/dnsmasq.d/dhcp.conf" ]; then
 # temporary workaround for bestia
   echo "192.168.1.7 bestia" >> $R/etc/hosts
 
-  ln -sf /lib/systemd/system/dnsmasq.service $R/etc/systemd/system/multi-user.target.wants/dnsmasq.service
-  mkdir -p $R/var/lib/misc
+  echo "nameserver 127.0.0.53" > $R/etc/resolv.conf
+  echo "options edns0 trust-ad" >> $R/etc/resolv.conf
 
-  rm -rf $R/var/log/journal
-  ln -sf /home/log/journal $R/var/log/journal
+  mkdir -p $R/var/lib/misc
 else
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
