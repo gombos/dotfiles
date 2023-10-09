@@ -220,16 +220,6 @@ then
   sed -i "/^$USR:/d" $R/etc/shadow
 fi
 
-# .service files
-FILES="*.service"
-if [ $FILES != '*.service' ]; then
-  for f in *.service; do
-    cp $f $R/etc/systemd/system/
-    chmod 444 $R/etc/systemd/system/$f
-    ln -sf /etc/systemd/system/$f $R/etc/systemd/system/multi-user.target.wants/$f
-  done
-fi
-
 if [ "$HOST" = "bestia" ]; then
   ln -sf /lib/systemd/system/systemd-networkd.service $R/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
   ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
@@ -238,19 +228,10 @@ if [ "$HOST" = "bestia" ]; then
   ln -sf /dev/null $R/etc/systemd/system/wpa_supplicant.service
   mkdir $R/var/lib/bluetooth
 
-  # Patch apcupsd config to connect it via usb
-  #sed -i "s|^DEVICE.*|DEVICE|g" $R/etc/apcupsd/apcupsd.conf
-  #echo "WALL=logger" >> $R/etc/apcupsd/apccontrol
-
-  ln -sf /lib/systemd/system/apcupsd.service $R/etc/systemd/system/multi-user.target.wants/apcupsd.service
-
   # NFS
- mkdir -p $R/var/lib/nfs/sm
+  mkdir -p $R/var/lib/nfs/sm
   > $R/var/lib/nfs/rmtab
   cp $R/etc/exports $R/var/lib/nfs/etab
-  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-  ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
 
   echo 'LABEL=linux /run/media/shared btrfs nofail,subvol=/ 0 2' >> $R/etc/fstab
 
@@ -272,16 +253,6 @@ if [ "$HOST" = "bestia" ]; then
   #nx
   # todo - do not hardcode id in several places
   chown -R 401:401 $R/usr/NX/etc
-
-  # NFS
-  mkdir -p $R/var/lib/nfs/sm
-  > $R/var/lib/nfs/rmtab
-  cp $R/etc/exports $R/var/lib/nfs/etab
-  ln -sf /lib/systemd/system/rpcbind.service $R/etc/systemd/system/multi-user.target.wants/rpcbind.service
-  ln -sf /lib/systemd/system/nfs-server.service $R/etc/systemd/system/multi-user.target.wants/nfs-server.service
-  ln -sf /lib/systemd/system/rpc-statd.service $R/etc/systemd/system/multi-user.target.wants/rpc-statd.service
-
-  # todo - maybe also rpc-statd-notify.service
 
   # Persistent container storage for docker
   mkdir -p /var/lib/docker /tmp
