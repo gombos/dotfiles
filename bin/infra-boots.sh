@@ -85,7 +85,7 @@ if [ "$HOST" = "bestia" ]; then
   IP=3
 fi
 
-if [ "$HOST" = "kisbestia" ]; then
+if [ "$HOST" = "nagybestia" ]; then
   IP=5
 fi
 
@@ -220,6 +220,15 @@ then
   sed -i "/^$USR:/d" $R/etc/shadow
 fi
 
+if [ "$HOST" = "nagybestia" ]; then
+  printf "nameserver 8.8.8.8\n" >> $R/etc/resolv.conf
+  echo 'LABEL=linux /run/media/shared btrfs subvol=/ 0 2' >> $R/etc/fstab
+  sed -i 's|\#user_allow_other|user_allow_other|g' $R/etc/fuse.conf
+  # Persistent container storage for docker
+  mkdir -p /var/lib/docker
+  echo 'LABEL=linux /var/lib/docker btrfs subvol=containers 0 2' >> $R/etc/fstab
+fi
+
 if [ "$HOST" = "bestia" ]; then
   ln -sf /lib/systemd/system/systemd-networkd.service $R/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
   ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
@@ -260,19 +269,11 @@ if [ "$HOST" = "bestia" ]; then
   echo 'LABEL=linux /tmp btrfs nofail,subvol=tmp 0 2' >> $R/etc/fstab
 fi
 
-if [ "$HOST" = "kispincer" ]; then
-  ln -sf /home/containers $R/var/lib/docker
-fi
-
-if [ "$HOST" = "kisbestia" ]; then
-  echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
-fi
-
 if [ "$HOST" = "p" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
 fi
 
-if [ "$HOST" = "kispincer" ] || [ "$HOST" == "bestia" ]; then
+if [ "$HOST" == "bestia" ]; then
   ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 
   # Make a rw copy
