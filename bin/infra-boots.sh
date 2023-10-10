@@ -116,9 +116,6 @@ if [ -d "vmware" ]; then
   sed -i 's/^installerDefaults.dataCollectionEnabled.initialized .*/installerDefaults.dataCollectionEnabled.initialized = "yes"/' $R/etc/vmware/config
 fi
 
-# Disable all the preinstaled cron jobs (except cron.d/ jobs)
-> $R/etc/crontab
-
 # USR user
 if [ -n "$USRPWD" ]
 then
