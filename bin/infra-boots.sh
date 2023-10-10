@@ -267,27 +267,12 @@ if [ "$HOST" = "bestia" ]; then
   mkdir -p /var/lib/docker /tmp
   echo 'LABEL=linux /var/lib/docker btrfs nofail,subvol=containers 0 2' >> $R/etc/fstab
   echo 'LABEL=linux /tmp btrfs nofail,subvol=tmp 0 2' >> $R/etc/fstab
+
+  ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
 fi
 
 if [ "$HOST" = "p" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
-fi
-
-if [ "$HOST" == "bestia" ]; then
-  ln -sf /lib/systemd/system/docker.service $R/etc/systemd/system/multi-user.target.wants/docker.service
-
-  # Make a rw copy
-  if [ -e /run/media/efi/config/letsencrypt ]; then
-    mkdir -p /run/media/letsencrypt
-    cp -r /run/media/efi/config/letsencrypt /run/media/
-  fi
-
-  # todo - switch to caddy
-
-  if [ -f "nginx.conf" ]; then
-    mkdir -p $R/var/lib/nginx
-    cp nginx.conf $R/etc/nginx/
-  fi
 fi
 
 # Might run at first boot, services might be already running

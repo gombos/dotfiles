@@ -8,9 +8,6 @@ uidmap
 # power management
 upower
 
-# compute
-cron
-
 # networking
 dnsmasq
 nfs-utils
