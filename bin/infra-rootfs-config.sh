@@ -183,19 +183,21 @@ mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
 
 # swap
-cat > /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap << 'EOF'
+cat > /lib/systemd/system/swap.service << 'EOF'
 [Unit]
 Description=Mount swap
 After=blockdev@dev-disk-by\x2dlabel-swap.target
-ConditionPathExists=/dev/disk/by-label/swap
 
-[Swap]
-What=/dev/disk/by-label/swap
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c \
+ 'if [[ -e /dev/disk/by-label/swap ]]; then \
+    /sbin/swapon /dev/disk/by-label/swap; \
+  fi;'
 EOF
 
-#ln -sf /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap /etc/systemd/system/local-fs.target.wants/
-
-# After=blockdev@dev-disk-by\x2dlabel-swap.target
+ln -sf /lib/systemd/system/swap.service /etc/systemd/system/local-fs.target.wants/
 
 echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
