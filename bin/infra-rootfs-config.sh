@@ -193,7 +193,7 @@ ConditionPathExists=/dev/disk/by-label/swap
 What=/dev/disk/by-label/swap
 EOF
 
-ln -sf /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap /etc/systemd/system/local-fs.target.wants/
+#ln -sf /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap /etc/systemd/system/local-fs.target.wants/
 
 # After=blockdev@dev-disk-by\x2dlabel-swap.target
 
