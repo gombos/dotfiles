@@ -237,6 +237,7 @@ EOF
 
 fi
 
+# todo - move this logic to rootfs
 if [ -e /dev/disk/by-partlabel/swap ]; then
   echo "/dev/disk/by-partlabel/swap   none  swap defaults           0  0" >> $R/etc/fstab
 fi
@@ -247,7 +248,6 @@ if [ "$HOST" = "pincer" ]; then
   rm $R/etc/network/interfaces.d/*
 
   # filesystem
-  echo "/dev/sdb  none  swap defaults           0  0" >> $R/etc/fstab
   mount /run/initramfs/isoscan -o remount,rw
 
   rm -rf $R/home
@@ -262,8 +262,6 @@ if [ "$HOST" = "pincer" ]; then
   if [ -n "$USR" ]; then
     echo "AllowUsers $USR" >> $R/etc/ssh/sshd_config
   fi
-
-  rm -rf $R/etc/sudoers.d/sudoers
 fi
 
 # update /run
