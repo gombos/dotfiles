@@ -161,27 +161,38 @@ After=sys-fs-fuse-connections.mount
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/bin/bash -c \
-  'virt=$(systemd-detect-virt); \
-  if [[ -e /dev/disk/by-label/home ]]; then \
+ 'if [[ -e /dev/disk/by-label/home ]]; then \
     mount /dev/disk/by-label/home /home; \
-  else \
-    if [[ "$virt" == "vmware" ]]; then \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
-      mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
-    else \
-      mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
-      mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
-      mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home && \
-      chown -R 1000:0 /home; \
-    fi; \
+    exit \
+  fi \
+  virt=$(systemd-detect-virt); \
+  if [[ "$virt" == "vmware" ]]; then \
+    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
+    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
+    exit \
+  fi \
+  if [[ -e /run/initramfs/live/home.img  ]]; then \
+    mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
+    mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
+    mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home && \
+    chown -R 1000:0 /home \
   fi'
-
-[Install]
-WantedBy=local-fs.target
 EOF
 
 mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
+
+# swap
+cat > /lib/systemd/system/dev-disk-by\x2dpartlabel-swap.swap << 'EOF'
+[Unit]
+Description=Mount swap
+After=blockdev@dev-disk-by\x2dpartlabel-swap.target
+
+[Swap]
+What=/dev/disk/by-partlabel/swap
+EOF
+
+ln -sf /lib/systemd/system/dev-disk-by\x2dpartlabel-swap.swap /etc/systemd/system/local-fs.target.wants/
 
 # nix.service
 #cat > /lib/systemd/system/nix.service << 'EOF'
