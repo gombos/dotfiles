@@ -205,7 +205,7 @@ ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.want
 #mkdir -p etc/systemd/system/local-fs.target.wants
 #ln -sf /lib/systemd/system/nix.service /etc/systemd/system/local-fs.target.wants/
 
-echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
+#echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
 
 # Autologin
 sed -i "s|\#\ autologin=.*|autologin=$USR|g" etc/lxdm/lxdm.conf
@@ -242,7 +242,7 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 rm -rf /etc/ssh/ssh_host*
 rm -rf /var/log/journal/*
 
-[ -f etc/hostname ] && sudo rm -f etc/hostname 2>/dev/null || true
+[ -f etc/hostname ] && rm -f etc/hostname 2>/dev/null || true
 
 # -- common
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
