@@ -237,11 +237,6 @@ EOF
 
 fi
 
-# todo - move this logic to rootfs
-if [ -e /dev/disk/by-label/swap ]; then
-  echo "/dev/disk/by-label/swap   none  swap defaults           0  0" >> $R/etc/fstab
-fi
-
 if [ "$HOST" = "pincer" ]; then
   # networking
   printf "DNS=97.107.133.4\n" >> $R/etc/systemd/resolved.conf
