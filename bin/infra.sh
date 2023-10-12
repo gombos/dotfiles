@@ -5,6 +5,8 @@
 
 mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d
 
+# TODO - find a more generic way to pass secrets
+
 # TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
@@ -25,7 +27,7 @@ wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso 
 
 cat > /config/grub.cfg << EOF
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.wants=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.wants=dev-sdb.swap"
+OVERRIDE="systemd.unit=multi-user.target systemd.wants=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.wants=dev-disk-by\x2dlabel-swap systemd.machine_id=99a1f8fc81314877bcf464fc33951494"
 EOF
 
 # rd.live.overlay=/dev/sda:/overlay.img
