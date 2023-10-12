@@ -3,7 +3,7 @@
 # Runs on image boot first and pulls the iso and boots into ISO
 # Do not assume a specific distro (or package manager) if possible
 
-mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d /isos
+mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d
 
 # TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
@@ -21,14 +21,14 @@ cp /etc/network/interfaces /config/updates/etc/network
 
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/boot/grub.cfg -O /boot/grub/custom.cfg
 wget --quiet https://raw.githubusercontent.com/gombos/dotfiles/main/bin/infra-boots.sh -O /config/infra-boots.sh
-wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /isos/linux.iso
+wget --quiet https://github.com/gombos/dotfiles/releases/download/iso/linux.iso -O /linux.iso
 
 cat > /config/grub.cfg << EOF
 isolabel=linode-root
-OVERRIDE="systemd.unit=multi-user.target systemd.want=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.mask=home noquiet rd.debug"
+OVERRIDE="systemd.unit=multi-user.target systemd.wants=getty@tty1.service console=ttyS0,19200n8 systemd.hostname=$LABEL systemd.wants=dev-sdb.swap"
 EOF
 
-#noquiet rd.debug rd.live.overlay=/dev/sda:/overlay.img"
+# rd.live.overlay=/dev/sda:/overlay.img
 
 # Take password from root
 echo -n "USRPWD='" >> /config/rootfs-kulcs.cfg
@@ -47,7 +47,6 @@ if [ -n "$USR" ]; then
 fi
 
 # save RAM - use disk space for root overlay
-
 dd if=/dev/zero of=/overlay.img bs=1M count=1024
 mkfs.ext4 /overlay.img
 mount /overlay.img /mnt
@@ -57,6 +56,10 @@ umount /mnt
 # Disable root login
 rm -rf /root/.ssh
 usermod -p '*' root
+
+# Add a well-known label to swap
+swapoff -a
+swaplabel -L swap /dev/sdb
 
 # reboot into ISO
 reboot
