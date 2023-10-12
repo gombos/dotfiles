@@ -187,6 +187,7 @@ cat > /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap << 'EOF'
 [Unit]
 Description=Mount swap
 After=blockdev@dev-disk-by\x2dlabel-swap.target
+ConditionPathExists=/dev/disk/by-label/swap
 
 [Swap]
 What=/dev/disk/by-label/swap
