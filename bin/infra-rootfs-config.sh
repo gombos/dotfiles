@@ -196,7 +196,9 @@ ln -sf /lib/systemd/system/dev-disk-by\\x2dlabel-swap.swap /etc/systemd/system/l
 
 # After=blockdev@dev-disk-by\x2dlabel-swap.target
 
-# nix.service
+echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> etc/sudoers.d/sudoers
+
+# usrlocal.service
 #cat > /lib/systemd/system/nix.service << 'EOF'
 
 #[Unit]
