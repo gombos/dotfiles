@@ -237,9 +237,9 @@ EOF
 
 fi
 
-# todo - move this logic to rootfs, sadly this does not work when there is no partition
-if [ -e /dev/disk/by-partlabel/swap ]; then
-  echo "/dev/disk/by-partlabel/swap   none  swap defaults           0  0" >> $R/etc/fstab
+# todo - move this logic to rootfs
+if [ -e /dev/disk/by-label/swap ]; then
+  echo "/dev/disk/by-label/swap   none  swap defaults           0  0" >> $R/etc/fstab
 fi
 
 if [ "$HOST" = "pincer" ]; then
