@@ -163,20 +163,20 @@ RemainAfterExit=yes
 ExecStart=/bin/bash -c \
  'if [[ -e /dev/disk/by-label/home ]]; then \
     mount /dev/disk/by-label/home /home; \
-    exit \
-  fi \
+    exit; \
+  fi; \
   virt=$(systemd-detect-virt); \
   if [[ "$virt" == "vmware" ]]; then \
     mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
     mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
-    exit \
-  fi \
-  if [[ -e /run/initramfs/live/home.img  ]]; then \
+    exit; \
+  fi; \
+  if [[ -e /run/initramfs/live/home.img ]]; then \
     mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
     mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
     mount -t overlay overlay -o lowerdir=/run/initramfs/home/lower,upperdir=/run/initramfs/home/upper,workdir=/run/initramfs/home/work /home && \
-    chown -R 1000:0 /home \
-  fi'
+    chown -R 1000:0 /home; \
+  fi;'
 EOF
 
 mkdir -p etc/systemd/system/local-fs.target.wants
