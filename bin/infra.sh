@@ -5,6 +5,8 @@
 
 mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d
 
+# TODO - find a more generic way to pass secrets
+
 # TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
