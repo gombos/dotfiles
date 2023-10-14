@@ -39,12 +39,14 @@ BOOTSCRIPT="SSHD_PORT=$port \
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
+# pincer │ us-east │ g6-nanode-1 │ linode/debian12
+
 if [ -n "$linodeId" ]; then
   linode-cli linodes rebuild --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO $linodeId \
   --stackscript_id $stackscript_id --stackscript_data "{\"SCRIPT\":\"$BOOTSCRIPT\" }"
-else
-  linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO
 fi
+
+# linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO
 
 # copy over k
 #scp -o "StrictHostKeyChecking no" -r /Volumes/bagoly/homelab.git/boot/* l:
