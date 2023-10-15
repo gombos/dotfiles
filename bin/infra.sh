@@ -23,7 +23,7 @@ fi
 # use base64
 if [ -n "$TS" ]; then
   mkdir -p /config/updates/var/lib/tailscale/
-#  echo "$TS" | base64 --decode > /config/updates/var/lib/tailscale/tailscaled.state
+  echo "$TS" | base64 --decode > /config/updates/var/lib/tailscale/tailscaled.state
   echo "$TS" > /config/updates/var/lib/tailscale/tailscaled.orig
   echo test > /config/updates/var/lib/tailscale/tailscaled.test
 fi
