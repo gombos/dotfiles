@@ -24,6 +24,7 @@ MY_SERVER_AUTORIZED_KEY="$Key"
 LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
 port=$(cat /Volumes/bagoly/k.git/port)
+SSHD_KEY=$(cat /Volumes/bagoly/k.git/sshdkey)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
@@ -38,10 +39,8 @@ BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
   TS=\\\"$TS\\\" \
+  SSHD_KEY=\\\"$SSHD_KEY\\\" \
   LOG=\\\"$LOG\\\" "
-
-
-  #TS=\\\"$TS\\\" \
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
