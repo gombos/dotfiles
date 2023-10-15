@@ -221,12 +221,21 @@ echo "PermitRootLogin no" >> $R/etc/ssh/sshd_config
 if [ -n "$SSHD_PORT" ]; then
   echo "Port $SSHD_PORT" >> $R/etc/ssh/sshd_config
 
-mkdir -p $R/etc/systemd/system/ssh.socket.d
-cat >$R/etc/systemd/system/ssh.socket.d/listen.conf <<EOF
+#mkdir -p $R/etc/systemd/system/ssh.socket.d
+#cat >$R/etc/systemd/system/ssh.socket.d/listen.conf <<EOF
+#[Socket]
+#ListenStream=
+#ListenStream=$SSHD_PORT
+#EOF
+
+
+mkdir -p /run/systemd/system/ssh.socket.d
+cat > /run/systemd/system/ssh.socket.d/listen.conf <<EOF
 [Socket]
 ListenStream=
 ListenStream=$SSHD_PORT
 EOF
+
 
 fi
 
