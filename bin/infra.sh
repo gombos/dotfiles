@@ -24,16 +24,12 @@ fi
 if [ -n "$TS" ]; then
   mkdir -p /config/updates/var/lib/tailscale/
   echo "$TS" | base64 --decode > /config/updates/var/lib/tailscale/tailscaled.state
-  echo "$TS" > /config/updates/var/lib/tailscale/tailscaled.orig
-  echo test > /config/updates/var/lib/tailscale/tailscaled.test
 fi
-
-#export > /config/updates/debug
 
 # use base64
 if [ -n "$XSSHD" ]; then
   mkdir -p /config/updates/etc/ssh/
-#  echo "$SSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
+  echo "$SSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
   echo "$XSSHD" > /config/updates/etc/ssh_host_ed25519_key.orig
   echo test > /config/updates/etc/ssh/ssh_host_ed25519_key.test
 fi
