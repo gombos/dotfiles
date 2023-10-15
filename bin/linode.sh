@@ -23,12 +23,13 @@ Key=$(cat /Volumes/bagoly/k.git/k_public)
 MY_SERVER_AUTORIZED_KEY="$Key"
 LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
+port=$(cat /Volumes/bagoly/k.git/port)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
 
 # Use linode infra to manage open ports
-port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq -r '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
+#port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq -r '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
 
 stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers --format id)
 
