@@ -36,8 +36,10 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
-  TS=\\\"$TS\\\" "
   LOG=\\\"$LOG\\\" "
+
+
+  #TS=\\\"$TS\\\" \
 
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
 
