@@ -25,7 +25,7 @@ LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
 port=$(cat /Volumes/bagoly/k.git/port)
 XSSHD=$(cat /Volumes/bagoly/k.git/sshdkey-pincer)
-#SSHD_KEY_PUB='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEcfrj/nT5WjUf9atsVxK6wT0QJsMh2vmyveF7NC9sIV root@localhost'
+XSSHDP=$(/Volumes/bagoly/k.git/sshdkeyp-pincer)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
@@ -41,6 +41,7 @@ BOOTSCRIPT="SSHD_PORT=$port \
   USR=usr \
   TS=\\\"$TS\\\" \
   XSSHD=\\\"$XSSHD\\\" \
+  XSSHDP=\\\"$XSSHDP\\\" \
   LOG=\\\"$LOG\\\" "
 
  # SSHD_KEY_PUB=\\\"$SSHD_KEY_PUB\\\" \
