@@ -29,12 +29,12 @@ fi
 # use base64
 if [ -n "$XSSHD" ]; then
   mkdir -p /config/updates/etc/ssh/
-  echo "$XSSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
+  echo "$XSSHD" | base64 --decode > /config/updates/etc/ssh_host_ed25519_key
 fi
 
 if [ -n "$XSSHDP" ]; then
   mkdir -p /config/updates/etc/ssh/
-  echo "$XSSHDP" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key.pub
+  echo "$XSSHDP" | base64 --decode > /config/updates/etc/ssh_host_ed25519_key.pub
 fi
 
 # Elevate some files so that they are picked up by ISO
