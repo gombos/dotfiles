@@ -36,6 +36,7 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
+  TS=\\\"$TS\\\" \
   LOG=\\\"$LOG\\\" "
 
 

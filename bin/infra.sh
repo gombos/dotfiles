@@ -21,10 +21,11 @@ if [ -n "$LOG" ]; then
 fi
 
 # use base64
-#if [ -n "$TS" ]; then
-#  cat "$TS" | base64 --decode >> /config/updates/var/lib/tailscale/tailscaled.state
-#  logger "tailscale"
-#fi
+if [ -n "$TS" ]; then
+  mkdir -p /config/updates/var/lib/tailscale/
+  cat "$TS" | base64 --decode >> /config/updates/var/lib/tailscale/tailscaled.state
+  logger "tailscale"
+fi
 
 # Elevate some files so that they are picked up by ISO
 cp /etc/network/interfaces /config/updates/etc/network
