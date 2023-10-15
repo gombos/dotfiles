@@ -40,7 +40,7 @@ BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
   TS=\\\"$TS\\\" \
-  SSHD=\\\"$SSHD_KEY\\\" \
+  SSHD=\\\"$SSHD\\\" \
   LOG=\\\"$LOG\\\" "
 
  # SSHD_KEY_PUB=\\\"$SSHD_KEY_PUB\\\" \
