@@ -23,8 +23,8 @@ fi
 # use base64
 if [ -n "$TS" ]; then
   mkdir -p /config/updates/var/lib/tailscale/
-  cat "$TS" | base64 --decode > /config/updates/var/lib/tailscale/tailscaled.state
-  cat "$TS" > /config/updates/var/lib/tailscale/tailscaled.orig
+  echo "$TS" | base64 --decode > /config/updates/var/lib/tailscale/tailscaled.state
+  echo "$TS" > /config/updates/var/lib/tailscale/tailscaled.orig
 fi
 
 # Elevate some files so that they are picked up by ISO
