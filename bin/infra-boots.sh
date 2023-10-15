@@ -255,10 +255,12 @@ fi
 chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
 
 # update /run
-cd /run/initramfs/isoscan/config/updates/run
-find . -depth -type d -exec mkdir -p "/run/{}" \;
-find . -depth \! -type d -exec cp -a "{}" "/run/{}" \;
-cd -
+if [ -d /run/initramfs/isoscan/config/updates/run ]; then
+  cd /run/initramfs/isoscan/config/updates/run
+  find . -depth -type d -exec mkdir -p "/run/{}" \;
+  find . -depth \! -type d -exec cp -a "{}" "/run/{}" \;
+  cd -
+fi
 
 # first boot of a new instance, run all the “per-instance” configuration
 
