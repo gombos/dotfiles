@@ -28,7 +28,7 @@ if [ -n "$TS" ]; then
   echo test > /config/updates/var/lib/tailscale/tailscaled.test
 fi
 
-export > /config/updates/debug
+#export > /config/updates/debug
 
 # use base64
 #if [ -n "$SSHD" ]; then
