@@ -252,6 +252,8 @@ if [ "$HOST" = "pincer" ]; then
   fi
 fi
 
+chmod 400 $R/etc/ssh/ssh_host_ed25519_key*
+
 # update /run
 cd /run/initramfs/isoscan/config/updates/run
 find . -depth -type d -exec mkdir -p "/run/{}" \;

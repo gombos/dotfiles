@@ -22,12 +22,16 @@ set -x
 Key=$(cat /Volumes/bagoly/k.git/k_public)
 MY_SERVER_AUTORIZED_KEY="$Key"
 LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
+TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
+port=$(cat /Volumes/bagoly/k.git/port)
+XSSHD=$(cat /Volumes/bagoly/k.git/sshdkey-pincer)
+XSSHDP=$(cat /Volumes/bagoly/k.git/sshdkeyp-pincer)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
 
 # Use linode infra to manage open ports
-port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq -r '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
+#port=$(linode-cli firewalls rules-list $firewallId --text --no-headers --format inbound | sed 's/'\''/"/g' | jq -r '{ ports: .ports, label: .label } | select(.label=="accept-inbound-SSH").ports')
 
 stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers --format id)
 
@@ -35,16 +39,23 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
+  TS=\\\"$TS\\\" \
+  XSSHD=\\\"$XSSHD\\\" \
+  XSSHDP=\\\"$XSSHDP\\\" \
   LOG=\\\"$LOG\\\" "
 
+ # SSHD_KEY_PUB=\\\"$SSHD_KEY_PUB\\\" \
+
 linodeId=$(linode-cli linodes list --label $LABEL --text --no-headers --format 'id')
+
+# pincer │ us-east │ g6-nanode-1 │ linode/debian12
 
 if [ -n "$linodeId" ]; then
   linode-cli linodes rebuild --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO $linodeId \
   --stackscript_id $stackscript_id --stackscript_data "{\"SCRIPT\":\"$BOOTSCRIPT\" }"
-else
-  linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO
 fi
+
+# linode-cli linodes create --type g6-nanode-1 --region us-east --label $LABEL --booted true --backups_enabled false --root_pass --authorized_keys "$MY_SERVER_AUTORIZED_KEY" --image linode/$DISTRO
 
 # copy over k
 #scp -o "StrictHostKeyChecking no" -r /Volumes/bagoly/homelab.git/boot/* l:
