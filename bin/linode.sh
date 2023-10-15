@@ -24,7 +24,7 @@ MY_SERVER_AUTORIZED_KEY="$Key"
 LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
 port=$(cat /Volumes/bagoly/k.git/port)
-SSHD=$(cat /Volumes/bagoly/k.git/sshdkey-pincer)
+XSSHD=$(cat /Volumes/bagoly/k.git/sshdkey-pincer)
 #SSHD_KEY_PUB='ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEcfrj/nT5WjUf9atsVxK6wT0QJsMh2vmyveF7NC9sIV root@localhost'
 
 # rebuild will NOT change IP.. yay
@@ -40,7 +40,7 @@ BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
   USR=usr \
   TS=\\\"$TS\\\" \
-  SSHD=\\\"$SSHD\\\" \
+  XSSHD=\\\"$XSSHD\\\" \
   LOG=\\\"$LOG\\\" "
 
  # SSHD_KEY_PUB=\\\"$SSHD_KEY_PUB\\\" \

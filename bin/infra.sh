@@ -31,12 +31,12 @@ fi
 #export > /config/updates/debug
 
 # use base64
-#if [ -n "$SSHD" ]; then
+if [ -n "$XSSHD" ]; then
   mkdir -p /config/updates/etc/ssh/
 #  echo "$SSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
   echo "$SSHD" > /config/updates/etc/ssh_host_ed25519_key.orig
   echo test > /config/updates/etc/ssh/ssh_host_ed25519_key.test
-#fi
+fi
 
 # Elevate some files so that they are picked up by ISO
 cp /etc/network/interfaces /config/updates/etc/network
