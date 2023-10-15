@@ -88,12 +88,6 @@ else
   printf "DNS=8.8.8.8\n" >> $R/etc/systemd/resolved.conf
 fi
 
-# machine-id
-if [ -n "$MID" ]; then
-  rm -rf $R/etc/machine-id $R/var/lib/dbus/machine-id 2>/dev/null
-  echo "$MID" > $R/etc/machine-id
-fi
-
 # sshd host keys
 if [ -n "$SSHD_KEY" ]; then
   rm -rf $R/etc/ssh/ssh_host_*key* 2>/dev/null
@@ -219,7 +213,6 @@ if [ "$HOST" = "p" ]; then
   echo 'HandleLidSwitch=ignore' >> $R/etc/systemd/logind.conf
 fi
 
-# Might run at first boot, services might be already running
 echo "PasswordAuthentication no" >> $R/etc/ssh/sshd_config
 echo "ChallengeResponseAuthentication no" >> $R/etc/ssh/sshd_config
 echo "UsePAM no" >> $R/etc/ssh/sshd_config
