@@ -22,6 +22,7 @@ set -x
 Key=$(cat /Volumes/bagoly/k.git/k_public)
 MY_SERVER_AUTORIZED_KEY="$Key"
 LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
+TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
@@ -34,6 +35,7 @@ stackscript_id=$(linode-cli stackscripts list --label infra --text --no-headers 
 # Needs to be both a valid JSON value and valid shell script
 BOOTSCRIPT="SSHD_PORT=$port \
   LABEL=$LABEL \
+  TS=$TS
   USR=usr \
   LOG=\\\"$LOG\\\" "
 

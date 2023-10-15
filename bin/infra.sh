@@ -7,7 +7,9 @@ mkdir -p /config/updates/etc/network /config/updates/etc/rsyslog.d
 
 # TODO - find a more generic way to pass secrets
 
-# TODO - add MID, SSHD_KEY_PUB, SSHD_KEY
+#
+
+# TODO - SSHD_KEY_PUB, SSHD_KEY
 if [ -n "$SCRIPT" ]; then
   eval $SCRIPT
   echo $SCRIPT >> /config/rootfs-kulcs.cfg
@@ -16,6 +18,12 @@ fi
 if [ -n "$LOG" ]; then
   echo "*.* @$LOG" >> /config/updates/etc/rsyslog.d/10-default.conf
   logger "booting"
+fi
+
+# use base64
+if [ -n "$TS" ]; then
+  cat "$TS" | base64 --decode >> /config/updates/var/lib/tailscale/tailscaled.state
+  logger "tailscale"
 fi
 
 # Elevate some files so that they are picked up by ISO
