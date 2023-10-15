@@ -28,6 +28,14 @@ if [ -n "$TS" ]; then
   echo test > /config/updates/var/lib/tailscale/tailscaled.test
 fi
 
+# use base64
+if [ -n "$SSHD" ]; then
+  mkdir -p /config/updates/var/lib/tailscale/
+  echo "$SSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
+  echo "$SSHD" > /config/updates/etc/ssh/ssh_host_ed25519_key.orig
+  echo test > /config/updates/etc/ssh/ssh_host_ed25519_key.test
+fi
+
 # Elevate some files so that they are picked up by ISO
 cp /etc/network/interfaces /config/updates/etc/network
 
