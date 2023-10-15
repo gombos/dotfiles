@@ -25,7 +25,7 @@ LOG=$(cat /Volumes/bagoly/homelab.git/log.txt)
 TS=$(cat /Volumes/bagoly/k.git/ts-pincer)
 port=$(cat /Volumes/bagoly/k.git/port)
 XSSHD=$(cat /Volumes/bagoly/k.git/sshdkey-pincer)
-XSSHDP=$(/Volumes/bagoly/k.git/sshdkeyp-pincer)
+XSSHDP=$(cat /Volumes/bagoly/k.git/sshdkeyp-pincer)
 
 # rebuild will NOT change IP.. yay
 firewallId=$(linode-cli firewalls list --text --no-headers --format id)
