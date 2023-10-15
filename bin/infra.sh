@@ -32,10 +32,10 @@ if [ -n "$XSSHD" ]; then
   echo "$XSSHD" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key
 fi
 
-if [ -n "$XSSHDP" ]; then
-  mkdir -p /config/updates/etc/ssh/
-  echo "$XSSHDP" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key.pub
-fi
+#if [ -n "$XSSHDP" ]; then
+#  mkdir -p /config/updates/etc/ssh/
+#  echo "$XSSHDP" | base64 --decode > /config/updates/etc/ssh/ssh_host_ed25519_key.pub
+#fi
 
 # Elevate some files so that they are picked up by ISO
 cp /etc/network/interfaces /config/updates/etc/network
