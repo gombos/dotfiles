@@ -9,7 +9,7 @@ if [[ $1 == 'start' ]]; then
   echo "*** Repopulate NFS exports ..."
   #sudo rm -rf /etc/exports
 
-#  echo '/home/upload/ 192.168.1.0/28(rw,sync,insecure,no_subtree_check)' | sudo tee -a /etc/exports > /dev/null
+  echo '/home/usr/ 192.168.1.0/24(rw,sync,insecure,no_subtree_check)' | sudo tee -a /etc/exports > /dev/null
 
 #  [ "$(ls -A $MNTDIR/archive_media 2>/dev/null)" ] && echo "/run/media/archive_media/archive_media/ 192.168.1.0/24(ro,sync,insecure,no_subtree_check)" | sudo tee -a /etc/exports > /dev/null
 
