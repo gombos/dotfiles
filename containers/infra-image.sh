@@ -20,7 +20,7 @@ mv netboot.xyz* /tmp/iso/efi/netboot/
 #quiet rd.driver.pre=exfat rd.retry=5 systemd.unit=multi-user.target net.ifnames=1
 
 #KERNEL_ARGS+=(rd.live.overlay.overlayfs=1 rd.live.image)
-echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+echo "hello rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
 # make unified kernel
 objcopy --verbose  \
