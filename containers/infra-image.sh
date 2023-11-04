@@ -22,12 +22,13 @@ mv netboot.xyz* /tmp/iso/efi/netboot/
 #quiet rd.driver.pre=exfat rd.retry=5 systemd.unit=multi-user.target net.ifnames=1
 
 #KERNEL_ARGS+=(rd.live.overlay.overlayfs=1 rd.live.image)
-echo "hello rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+#echo "hello rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+
+#--add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
 
 # make unified kernel
 objcopy --verbose  \
     --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
-    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
     --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
     --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
     /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/newvmlinuz
