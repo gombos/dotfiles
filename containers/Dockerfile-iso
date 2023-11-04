@@ -2,6 +2,8 @@ ARG BASE=ghcr.io/gombos/rootfs
 
 FROM ghcr.io/gombos/rootfs as r
 
+FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
+
 # compression takes 10 min
 FROM alpine as pra
 COPY --from=r / /rootfs
@@ -20,6 +22,7 @@ COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=kernel /boot /boot
 COPY --from=kernelinitramfs /efi /efi
+COPY --from=initrd /efi /efi
 
 ENV REPO=/_tmp
 COPY . $REPO/
