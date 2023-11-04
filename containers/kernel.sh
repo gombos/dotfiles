@@ -31,9 +31,9 @@ rm -rf /var/lib/apt /var/cache
 
 cd linux-$KERNEL
 
-cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
+#cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
 
-ls -la /tmp/initramfs.cpio.gz
+#ls -la /tmp/initramfs.cpio.gz
 
 cp $REPO/containers/kernelconfig .config
 
@@ -189,7 +189,7 @@ cp .config oldconfig
 # nvme
 ./scripts/config --enable  CONFIG_BLK_DEV_NVME
 
-./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
+#./scripts/config --set-str CONFIG_INITRAMFS_SOURCE "/tmp/initramfs.cpio.gz"
 
 # virtualization
 
