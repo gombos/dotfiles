@@ -21,7 +21,7 @@ git branch -m originprs
 git push -f origin HEAD
 
 git clone https://github.com/dracutdevs-extra/dracut-canary.wiki.git /tmp/wiki
-cat /tmp/wiki/prlist.* | tr '\*' ' ' | sed '/^[[:blank:]]*#/d;s/#.*//' | sed 's/^[ \t]*//' | grep '[0-9]' | sed '/^$/d' | sort > prlist
+cat /tmp/wiki/prlist.* | tr '\*' ' ' | sed '/^[[:blank:]]*#/d;s/#.*//' | sed 's/^[ \t]*//' | grep '[0-9]' | sed '/^$/d' | sort -r > prlist
 
 while read p;
     do gh pr checkout --repo dracutdevs/dracut $p
@@ -36,3 +36,17 @@ git commit -m "dracut upstream list of PRs"
 
 git push origin HEAD
 
+# phase 2
+rm -rf /tmp/gh-cli-cache
+cd /tmp/
+rm -rf dracut-canary
+git clone -b originprs git@github.com:dracutdevs-extra/dracut-canary.git
+cd dracut-canary
+git config advice.skippedCherryPicks false
+git branch -m master
+git push -f origin HEAD
+gh pr list --limit 1000 --repo laszlogombos/dracut --search "milestone:milestone" | cut -f1 | sort -r | uniq > list
+while read p; do gh pr checkout --repo laszlogombos/dracut $p && git branch -m $p ;done <list
+git checkout master
+while read p; do git rebase $p && git pull ;done <list
+git push origin HEAD
