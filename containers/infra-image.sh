@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso
+apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
@@ -16,8 +16,26 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /tmp/iso/efi/netboot
 mv netboot.xyz* /tmp/iso/efi/netboot/
 
+#rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO net.ifnames=0
+#quiet rd.driver.pre=exfat rd.retry=5 systemd.unit=multi-user.target net.ifnames=1
+
+#KERNEL_ARGS+=(rd.live.overlay.overlayfs=1 rd.live.image)
+echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+
+# make unified kernel
+objcopy --verbose  \
+    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
+    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
+    --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
+    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
+    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/newvmlinuz
+
 # optionals
-rm -rf /tmp/iso/kernel/initrd.img
+#rm -rf /tmp/iso/kernel/initrd.img
+ls -la /tmp/iso/kernel/vmlinuz
+ls -la /tmp/newvmlinuz
+
+cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
