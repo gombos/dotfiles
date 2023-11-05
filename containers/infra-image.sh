@@ -10,7 +10,7 @@ mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
-cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
+cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz_
 
 # netboot-xyz
 wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
@@ -29,7 +29,7 @@ mv netboot.xyz* /tmp/iso/efi/netboot/
 # make unified kernel
 objcopy --verbose  \
     --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
-    --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
+    --add-section .linux="/tmp/iso/kernel/vmlinuz_" --change-section-vma .linux=0x40000 \
     --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
     /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/newvmlinuz
 
@@ -38,7 +38,7 @@ objcopy --verbose  \
 ls -la /tmp/iso/kernel/vmlinuz
 ls -la /tmp/newvmlinuz
 
-cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz_2
+cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
