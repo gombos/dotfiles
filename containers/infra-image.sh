@@ -38,15 +38,13 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # experiment
 cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
-rm -rf boot efi isolinux  kernel EFI/BOOT/*.cfg syslinux
+
+# todo - calculate size/count
 dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
 mkfs.vfat /tmp/efiboot.img
 LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
 LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
-
-#   -no-emul-boot \
-#   -boot-load-size 4 \
-#   -boot-info-table \
+rm -rf boot efi isolinux  kernel EFI syslinux
 
 find /tmp/iso
 
