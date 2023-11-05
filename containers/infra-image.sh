@@ -51,7 +51,18 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # experiment
 cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
-rm -rf boot efi isolinux  kernel
+rm -rf boot efi isolinux  kernel EFI/BOOT/*.cfg
+
+# EFI boot partition - FAT16 disk image
+dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=10 && \
+mkfs.vfat /tmp/efiboot.img && \
+LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT && \
+LC_CTYPE=C mcopy -i /tmp/efiboot.img /efi/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
+
+#   -no-emul-boot \
+#   -boot-load-size 4 \
+#   -boot-info-table \
+
 
 find /tmp/iso
 
@@ -62,9 +73,6 @@ xorriso \
    -full-iso9660-filenames \
    -volid "ISO" \
    -output "/tmp/linux.iso" \
-   -no-emul-boot \
-   -boot-load-size 4 \
-   -boot-info-table \
    -eltorito-alt-boot \
      -e EFI/efiboot.img \
      -no-emul-boot \
