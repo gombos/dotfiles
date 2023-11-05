@@ -62,6 +62,9 @@ xorriso \
    -full-iso9660-filenames \
    -volid "ISO" \
    -output "/tmp/linux.iso" \
+   -no-emul-boot \
+   -boot-load-size 4 \
+   -boot-info-table \
    -eltorito-alt-boot \
      -e EFI/efiboot.img \
      -no-emul-boot \
