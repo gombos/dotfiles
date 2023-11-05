@@ -36,33 +36,6 @@ mkdir /tmp/isotemp
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
-# experiment
-cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
-
-# todo - calculate size/count
-dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
-mkfs.vfat /tmp/efiboot.img
-LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
-LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
-rm -rf boot efi isolinux  kernel EFI syslinux
-
-find /tmp/iso
-
-xorriso \
-   -as mkisofs \
-   -iso-level 3 \
-   -full-iso9660-filenames \
-   -volid "ISO" \
-   -output "/tmp/linux.iso" \
-   -eltorito-alt-boot \
-     -e EFI/efiboot.img \
-     -no-emul-boot \
-   -graft-points \
-      "." \
-      /EFI/efiboot.img=/tmp/efiboot.img
-
-exit
-
 xorriso \
    -as mkisofs \
    -iso-level 3 \
@@ -86,3 +59,28 @@ xorriso \
 
 rm -rf /tmp/iso
 rm -rf /boot
+
+## experiment
+#cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
+#
+## todo - calculate size/count
+#dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
+#mkfs.vfat /tmp/efiboot.img
+#LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
+#LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
+#rm -rf boot efi isolinux  kernel EFI syslinux
+
+#find /tmp/iso
+
+#xorriso \
+#   -as mkisofs \
+#   -iso-level 3 \
+#   -full-iso9660-filenames \
+#   -volid "ISO" \
+#   -output "/tmp/linux.iso" \
+#   -eltorito-alt-boot \
+#     -e EFI/efiboot.img \
+#     -no-emul-boot \
+#   -graft-points \
+#      "." \
+#      /EFI/efiboot.img=/tmp/efiboot.img
