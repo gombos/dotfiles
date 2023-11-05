@@ -62,7 +62,7 @@ xorriso \
    -full-iso9660-filenames \
    -volid "ISO" \
    -output "/tmp/linux.iso" \
-   -eltorito-boot \
+   -eltorito-alt-boot \
      -e EFI/efiboot.img \
      -no-emul-boot \
    -graft-points \
