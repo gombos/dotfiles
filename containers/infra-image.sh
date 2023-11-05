@@ -4,8 +4,6 @@ apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractiv
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
-ls -lRa /efi/
-
 mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
@@ -18,10 +16,6 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /tmp/iso/efi/netboot
 mv netboot.xyz* /tmp/iso/efi/netboot/
 
-#rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO net.ifnames=0
-#quiet rd.driver.pre=exfat rd.retry=5 systemd.unit=multi-user.target net.ifnames=1
-
-#KERNEL_ARGS+=(rd.live.overlay.overlayfs=1 rd.live.image)
 echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
 # make unified kernel
@@ -31,13 +25,6 @@ objcopy --verbose  \
     --add-section .linux="/tmp/vmlinuz_" --change-section-vma .linux=0x40000 \
     --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
     /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/kernel/vmlinuz
-
-# optionals
-#rm -rf /tmp/iso/kernel/initrd.img
-#ls -la /tmp/iso/kernel/vmlinuz
-#ls -la /tmp/newvmlinuz
-
-#cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
@@ -52,20 +39,16 @@ mv isolinux/efiboot.img /tmp/isotemp/
 # experiment
 cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
 rm -rf boot efi isolinux  kernel EFI/BOOT/*.cfg
-
-# EFI boot partition - FAT16 disk image
-dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=10 && \
-mkfs.vfat /tmp/efiboot.img && \
-LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT && \
-LC_CTYPE=C mcopy -i /tmp/efiboot.img /efi/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
+dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=10
+mkfs.vfat /tmp/efiboot.img
+LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
+LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
 
 #   -no-emul-boot \
 #   -boot-load-size 4 \
 #   -boot-info-table \
 
-
 find /tmp/iso
-
 
 xorriso \
    -as mkisofs \
@@ -81,7 +64,6 @@ xorriso \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
 exit
-
 
 xorriso \
    -as mkisofs \
