@@ -38,7 +38,7 @@ mv isolinux/efiboot.img /tmp/isotemp/
 
 # experiment
 cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
-rm -rf boot efi isolinux  kernel EFI/BOOT/*.cfg
+rm -rf boot efi isolinux  kernel EFI/BOOT/*.cfg syslinux
 dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
 mkfs.vfat /tmp/efiboot.img
 LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
@@ -61,7 +61,7 @@ xorriso \
      -no-emul-boot \
    -graft-points \
       "." \
-      /EFI/efiboot.img=../isotemp/efiboot.img
+      /EFI/efiboot.img=/tmp/efiboot.img
 
 exit
 
