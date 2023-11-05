@@ -38,7 +38,7 @@ objcopy --verbose  \
 ls -la /tmp/iso/kernel/vmlinuz
 ls -la /tmp/newvmlinuz
 
-cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz
+cp /tmp/newvmlinuz /tmp/iso/kernel/vmlinuz_2
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
