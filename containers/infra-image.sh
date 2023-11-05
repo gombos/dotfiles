@@ -31,10 +31,14 @@ cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 cd /tmp/iso
 chown -R 1000:1000 .
 
+rm -rf syslinux kernel/initrd.img efi/netboot
+
 # Only include files once in the iso
 mkdir /tmp/isotemp
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
+
+find /tmp/iso
 
 xorriso \
    -as mkisofs \
@@ -60,7 +64,9 @@ xorriso \
 rm -rf /tmp/iso
 rm -rf /boot
 
-## experiment
+## experiment for minimal iso
+## todo, make this production
+
 #cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
 #
 ## todo - calculate size/count
