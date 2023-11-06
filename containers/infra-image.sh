@@ -8,7 +8,7 @@ mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
-cp /boot/vmlinuz* /tmp/vmlinuz_
+cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 # netboot-xyz
 wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
@@ -16,22 +16,22 @@ wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.x
 mkdir -p /tmp/iso/efi/netboot
 mv netboot.xyz* /tmp/iso/efi/netboot/
 
-echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+#echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
 # make unified kernel
-objcopy --verbose  \
-    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
-    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
-    --add-section .linux="/tmp/vmlinuz_" --change-section-vma .linux=0x40000 \
-    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
-    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/kernel/vmlinuz
+#objcopy --verbose  \
+#    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
+#    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
+#    --add-section .linux="/tmp/vmlinuz_" --change-section-vma .linux=0x40000 \
+#    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
+#    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/kernel/vmlinuz
 
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 cd /tmp/iso
 chown -R 1000:1000 .
 
-rm -rf syslinux kernel/initrd.img efi/netboot
+rm -rf syslinux efi/netboot
 
 # Only include files once in the iso
 mkdir /tmp/isotemp
