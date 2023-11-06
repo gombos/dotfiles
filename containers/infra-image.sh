@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools
+apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
