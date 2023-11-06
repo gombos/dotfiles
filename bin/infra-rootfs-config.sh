@@ -276,3 +276,6 @@ rm -rf etc/apt/sources.list.d
 infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local/*
+
+# exerimental
+rm -rf /var/*
