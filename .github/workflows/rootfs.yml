@@ -1,4 +1,4 @@
-name: rootfs
+name: rootfs - base
 # runs for 10 min
 
 on:
