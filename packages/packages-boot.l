@@ -9,5 +9,10 @@
 # docker, podman, runc
 
 # init
-systemd-sysv
-udev
+systemd
+
+# optional
+systemd-sysv # SysV compatibility symlinks
+udev # load Linux kernel modules that are not built in
+kmod # load Linux kernel modules that are not built in
+open-vm-tools # mount shared directories between host and VMware VM guest

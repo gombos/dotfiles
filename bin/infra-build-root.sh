@@ -69,7 +69,6 @@ packages_upgrade.sh
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-base-baremetal.l
 install_my_packages.sh packages-packages.l
-#install_my_packages.sh packages-*linux.l "packages*-$ID.l"
 fi
 
 ########## EXTRA
