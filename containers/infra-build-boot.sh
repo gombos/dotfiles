@@ -73,7 +73,7 @@ cat /usr/lib/grub/i386-pc/cdboot.img $LEGACYDIR/core.img > $ISODIR/bios.img
 rm -rf $LEGACYDIR/core.img
 
 # EFI boot partition - FAT16 disk image
-dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=10 && \
+dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=2 && \
 mkfs.vfat $ISODIR/efiboot.img && \
 LC_CTYPE=C mmd -i $ISODIR/efiboot.img EFI EFI/BOOT && \
 LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/

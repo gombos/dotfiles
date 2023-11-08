@@ -92,7 +92,7 @@ cp /usr/lib/grub/i386-pc/boot_hybrid.img $ISODIR/
 cat /usr/lib/grub/i386-pc/cdboot.img $LEGACYDIR/core.img > $ISODIR/bios.img
 
 # EFI boot partition - FAT16 disk image
-dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=10 && \
+dd if=/dev/zero of=$ISODIR/efiboot.img bs=1M count=2 && \
 mkfs.vfat $ISODIR/efiboot.img && \
 LC_CTYPE=C mmd -i $ISODIR/efiboot.img efi efi/boot && \
 LC_CTYPE=C mcopy -i $ISODIR/efiboot.img /efi/EFI/BOOT/bootx64.efi ::efi/boot/
