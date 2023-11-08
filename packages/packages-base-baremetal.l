@@ -1,11 +1,5 @@
 # Purpose: baremetal only packages
 
-# debian system
-#apt-file
-#apt-transport-https
-#apt-utils
-#ca-certificates
-
 # tools - should be first
 locales
 fuse3

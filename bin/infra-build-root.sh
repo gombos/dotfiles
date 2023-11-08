@@ -68,6 +68,7 @@ packages_upgrade.sh
 
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-base-baremetal.l
+install_my_packages.sh packages-packages.l
 fi
 
 ########## EXTRA
@@ -75,6 +76,8 @@ fi
 if [ "$TARGET" = "extra" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
+# todo - make this a systemextension squashfs image
+
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
@@ -82,7 +85,7 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l"
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l"
 
 infra-install-vmware-workstation.sh
 
