@@ -25,6 +25,7 @@ bash-completion
 docker
 gnupg
 gawk
+sudo
 
 # power management
 apcupsd
