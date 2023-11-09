@@ -18,6 +18,8 @@ mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
+mv /tmp/iso/sysext.img   /tmp/iso/
+
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 # netboot-xyz
