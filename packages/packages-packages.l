@@ -12,19 +12,13 @@ python3
 # core tools
 git
 less
-unzip
-file
 micro
 pass
-ripgrep
 rsync
-wget
 curl
 distrobox
-bash-completion
 docker
 gnupg
-gawk
 sudo
 
 # power management
@@ -36,4 +30,4 @@ rsyslog
 # virtualization
 qemu
 swtpm
-
+ovmf

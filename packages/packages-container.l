@@ -1,5 +1,14 @@
 # container only
 
+
+# core tools
+unzip
+file
+ripgrep
+wget
+bash-completion
+gawk
+
 # files
 antiword
 attr

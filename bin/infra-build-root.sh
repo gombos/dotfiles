@@ -78,14 +78,13 @@ if [ "$TARGET" = "extra" ]; then
 # Does not need to be bootable
 # todo - make this a systemextension squashfs image
 
-
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l"
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l
 
 infra-install-vmware-workstation.sh
 
