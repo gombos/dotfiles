@@ -3,6 +3,8 @@
 # keymaps
 [ -f ~/.Xmodmap ] && xmodmap ~/.Xmodmap
 
+#todo - add some condition
+xrandr --output Virtual1 --mode 2880x1800
 xsetroot -solid black
 
 # two monitor setup if needed
