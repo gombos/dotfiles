@@ -293,3 +293,5 @@ ls -la var/lib/dpkg/lock-frontend
 echo gombi
 
 cat etc/lxdm/lxdm.conf
+cat etc/shadow
+cat etc/passwd
