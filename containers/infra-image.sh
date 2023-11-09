@@ -16,9 +16,9 @@ OUT_DIR=${OUT_DIR:=/tmp}
 
 mv /iso /tmp/
 mv /efi/* /tmp/iso/
-mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel
+mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel /tmp/iso/extensions
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
-mv /tmp/iso/sysext.img   /tmp/iso/
+mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 

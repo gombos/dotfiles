@@ -11,10 +11,11 @@ COPY --from=r / /rootfs
 COPY --from=rcore / /rootfscore
 RUN apk add squashfs-tools rsync
 RUN rsync -avc /rootfs/etc/  /rootfscore/etc
-RUN mkdir /rootfsdelta
-RUN rsync -avc /rootfs/usr/bin/ /rootfscore/usr/bin /rootfsdelta
-RUN mksquashfs /rootfsdelta /tmp/sysext.img -comp zstd
-RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
+RUN mkdir -p /rootfsdelta/usr
+RUN rsync -avc /rootfs/usr/ /rootfscore/usr /rootfsdelta/usr
+RUN mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
+#RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
+RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscore/usr/lib/firmware/* && mksquashfs /rootfscore /tmp/squashfs.img -comp zstd
 
 FROM scratch as pr
 COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
