@@ -32,6 +32,8 @@ cd /tmp
 
 ls -lha /efi/kernel/initrd_modules.img
 
+mksquashfs /lib/modules /efi/kernel/modules
+
 mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.modules && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.modules
 mv /lib/modules /rootfsdelta/usr/lib/
 rm -rf /rootfsdelta/usr/lib/os-release && mksquashfs /rootfsdelta /efi/kernel/modules.raw -comp zstd
