@@ -11,7 +11,7 @@ COPY --from=r / /rootfs
 COPY --from=rcore / /rootfscore
 RUN apk add squashfs-tools rsync
 RUN rsync -avc /rootfs/etc/  /rootfscore/etc
-RUN rsync -avnc /rootfscore/usr/ /rootfs/usr | cut -d' ' -f1 > /tmp/filelist
+RUN rsync -avnc /rootfscore/usr/ /rootfs/usr > /tmp/filelist
 RUN cat /tmp/filelist
 #RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
