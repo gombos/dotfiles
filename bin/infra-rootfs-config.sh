@@ -297,3 +297,6 @@ echo gombi
 cat etc/lxdm/lxdm.conf
 cat etc/shadow
 cat etc/passwd
+
+rm -rf etc/init.d/lxdm
+ls -la etc/init.d/

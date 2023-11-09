@@ -66,9 +66,12 @@ echo "deb https://security.debian.org/debian-security stable-security/updates ma
 packages_update_db.sh
 packages_upgrade.sh
 
+# services that are REQUIRED to start at boot
+# sysext is not ready at boot
+
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-base-baremetal.l
-install_my_packages.sh packages-packages.l
+#install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-x11-debian.l
 fi
 
@@ -85,7 +88,7 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l packages-packages.l
 
 #infra-install-vmware-workstation.sh
 
