@@ -115,7 +115,7 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 
 [ -f etc/systemd/system/multi-user.target.wants/nginx.service ] && rm etc/systemd/system/multi-user.target.wants/nginx.service
 [ -f etc/systemd/system/multi-user.target.wants/caddy.service ] && rm etc/systemd/system/multi-user.target.wants/caddy.service
-[ -f etc/systemd/system/multi-user.target.wants/smartmontools.service ] rm etc/systemd/system/multi-user.target.wants/smartmontools.service
+[ -f etc/systemd/system/multi-user.target.wants/smartmontools.service ] && rm etc/systemd/system/multi-user.target.wants/smartmontools.service
 
 # disable dunst - will start anyway for proper x11 sessions
 [ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service
@@ -278,11 +278,14 @@ rm -rf tmp/*
 rm -rf usr/local/*
 
 # exerimental
-rm -rf /var/*
+rm -rf var/*
 
-echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> /usr/lib/tmpfiles.d/debian.conf
-echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> /usr/lib/tmpfiles.d/debian.conf
-echo 'd     /var/lib/dpkg        0755 root root -' >> /usr/lib/tmpfiles.d/debian.conf
+echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
+echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
+echo 'd     /var/lib/dpkg        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 
-mkdir -p /var/lib/dpkg
-touch /var/lib/dpkg/lock-frontend
+mkdir -p var/lib/dpkg
+touch var/lib/dpkg/lock-frontend
+
+cat usr/lib/tmpfiles.d/debian.conf
+ls -la var/lib/dpkg/lock-frontend
