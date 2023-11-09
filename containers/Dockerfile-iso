@@ -13,6 +13,7 @@ RUN apk add squashfs-tools rsync
 RUN rsync -avc /rootfs/etc/  /rootfscore/etc
 RUN mkdir -p /rootfsdelta/usr
 RUN rsync -avc /rootfs/usr/ /rootfscore/usr /rootfsdelta/usr
+RUN mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext
 RUN mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
 #RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscore/usr/lib/firmware/* && mksquashfs /rootfscore /tmp/squashfs.img -comp zstd
