@@ -11,6 +11,7 @@ COPY --from=r / /rootfs
 COPY --from=rcore / /rootfscore
 RUN apk add squashfs-tools rsync
 RUN rsync -ac /rootfs/etc/  /rootfscore/etc
+RUN rsync -ac /rootfs/var/  /rootfscore/var
 RUN mkdir -p /rootfsdelta/usr
 RUN rsync -acn --info=NAME /rootfs/usr/ /rootfscore/usr | cut -d' ' -f1  > /tmp/filelist6
 RUN rsync -lptgoD --no-dirs --files-from=/tmp/filelist6 /rootfs/usr /rootfsdelta/usr/ ; exit 0
