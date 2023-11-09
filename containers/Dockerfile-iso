@@ -15,7 +15,7 @@ RUN mkdir -p /rootfsdelta/usr
 RUN rsync -acn --info=NAME /rootfs/usr/ /rootfscore/usr > /tmp/filelist
 RUN rsync -av --files-from=/tmp/filelist /rootfs/usr/ /rootfsdelta/usr/ ; exit 0
 RUN mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext
-RUN mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
+RUN rm -rf /rootfsdelta/usr/lib/os-release && mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
 RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscore/usr/lib/firmware/* && mksquashfs /rootfscore /tmp/squashfs.img -comp zstd
 
 FROM scratch as pr
