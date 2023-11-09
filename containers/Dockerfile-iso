@@ -10,8 +10,8 @@ FROM alpine as pra
 COPY --from=r / /rootfs
 COPY --from=rcore / /rootfscore
 RUN apk add squashfs-tools rsync
-RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
-RUN rsync -avnc /rootfscore /rootfs
+RUN rsync -avnc /rootfscore/etc /rootfs/etc/
+#RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
 #FROM scratch as pr
 #COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
