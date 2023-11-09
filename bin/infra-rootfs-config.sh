@@ -289,3 +289,7 @@ touch var/lib/dpkg/lock-frontend
 
 cat usr/lib/tmpfiles.d/debian.conf
 ls -la var/lib/dpkg/lock-frontend
+
+echo gombi
+
+cat etc/lxdm/lxdm.conf
