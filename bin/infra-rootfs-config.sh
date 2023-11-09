@@ -278,7 +278,7 @@ rm -rf tmp/*
 rm -rf usr/local/*
 
 # exerimental
-rm -rf var/*
+#rm -rf var/*
 
 echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf

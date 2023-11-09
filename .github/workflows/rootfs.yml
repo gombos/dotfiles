@@ -31,4 +31,4 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-homelab
-                    tags: ghcr.io/${{env.repository_owner}}/rootfsextra
+                    tags: ghcr.io/${{env.repository_owner}}/rootfs
