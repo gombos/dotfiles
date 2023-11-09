@@ -1,13 +1,16 @@
 ARG BASE=ghcr.io/gombos/rootfsextra
 
 FROM ghcr.io/gombos/rootfsconfig as r
+FROM ghcr.io/gombos/rootfscoreconfig as rcore
 
 FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
 
 # compression takes 10 min
 FROM alpine as pra
 COPY --from=r / /rootfs
-RUN apk add squashfs-tools && touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
+COPY --from=rcore / /rootfscore
+RUN apk add squashfs-tools rsync
+RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
 
 FROM scratch as pr
 COPY --from=pra /tmp/squashfs.img /iso/squashfs.img

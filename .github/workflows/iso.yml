@@ -33,7 +33,14 @@ jobs:
                     file: containers/Dockerfile-initrd2
                     tags: ghcr.io/${{env.repository_owner}}/ki
 
-            -   name: rootfs
+            -   name: rootfscoreconfig
+                uses: docker/build-push-action@v4
+                with:
+                    push: true
+                    file: containers/Dockerfile-homelabcore-config
+                    tags: ghcr.io/${{env.repository_owner}}/rootfscoreconfig
+
+            -   name: rootfsconfig
                 uses: docker/build-push-action@v4
                 with:
                     push: true
