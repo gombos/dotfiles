@@ -86,7 +86,7 @@ packages_upgrade.sh
 
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l
 
-infra-install-vmware-workstation.sh
+#infra-install-vmware-workstation.sh
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
