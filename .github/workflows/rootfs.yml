@@ -26,7 +26,7 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
-            -   name: rootfsextra
+            -   name: rootf
                 uses: docker/build-push-action@v4
                 with:
                     push: true
