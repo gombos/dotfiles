@@ -20,7 +20,7 @@ RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscor
 
 FROM scratch as pr
 COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
-COPY --from=pra /tmp/sysext.img /iso/sysext.img
+COPY --from=pra /tmp/sysext.raw /iso/sysext.raw
 
 FROM ghcr.io/gombos/boot as efi
 FROM ghcr.io/gombos/kernel as kernel
