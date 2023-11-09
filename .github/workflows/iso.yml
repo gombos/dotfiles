@@ -38,7 +38,7 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-homelab-config
-                    tags: ghcr.io/${{env.repository_owner}}/rootfs
+                    tags: ghcr.io/${{env.repository_owner}}/rootfsconfig
 
             -   name: iso
                 uses: docker/build-push-action@v4

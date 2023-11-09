@@ -1,6 +1,6 @@
 ARG BASE=ghcr.io/gombos/rootfsextra
 
-FROM ghcr.io/gombos/rootfsextra as r
+FROM ghcr.io/gombos/rootfsconfig as r
 
 FROM ghcr.io/initramfs-modules/initramfs:latest as initrd
 
