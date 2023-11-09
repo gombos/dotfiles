@@ -14,7 +14,7 @@ RUN rsync -ac /rootfs/etc/  /rootfscore/etc
 RUN rsync -ac /rootfs/var/  /rootfscore/var
 RUN mkdir -p /rootfsdelta/usr
 RUN rsync -acn --info=NAME /rootfs/usr/ /rootfscore/usr | cut -d' ' -f1  > /tmp/filelist6
-RUN rsync -lptgoD --no-dirs --files-from=/tmp/filelist6 /rootfs/usr /rootfsdelta/usr/ ; exit 0
+RUN rsync -qlptgoD --no-dirs --files-from=/tmp/filelist6 /rootfs/usr /rootfsdelta/usr/ ; exit 0
 RUN mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext
 RUN rm -rf /rootfsdelta/usr/lib/os-release && rm -rf /rootfsdelta/usr/lib/modules && mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
 RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscore/usr/lib/firmware/* && mksquashfs /rootfscore /tmp/squashfs.img -comp zstd
