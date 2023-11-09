@@ -11,25 +11,26 @@ COPY --from=r / /rootfs
 COPY --from=rcore / /rootfscore
 RUN apk add squashfs-tools rsync
 RUN touch /rootfs/etc/hosts && rm -rf /rootfs/etc/resolv.conf /rootfs/usr/lib/firmware/* && mksquashfs /rootfs /tmp/squashfs.img -comp zstd
+RUN rsync -avnc /rootfscore /rootfs
 
-FROM scratch as pr
-COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
+#FROM scratch as pr
+#COPY --from=pra /tmp/squashfs.img /iso/squashfs.img
 
-FROM ghcr.io/gombos/boot as efi
-FROM ghcr.io/gombos/kernel as kernel
-FROM ghcr.io/gombos/ki as kernelinitramfs
+#FROM ghcr.io/gombos/boot as efi
+#FROM ghcr.io/gombos/kernel as kernel
+#FROM ghcr.io/gombos/ki as kernelinitramfs
 
-FROM $BASE as builder
+#FROM $BASE as builder
 
-COPY --from=pr /iso /iso
-COPY --from=efi /efi /efi
-COPY --from=kernel /boot /boot
-COPY --from=kernelinitramfs /efi /efi
-COPY --from=initrd /efi /efi
+#COPY --from=pr /iso /iso
+#COPY --from=efi /efi /efi
+#COPY --from=kernel /boot /boot
+#COPY --from=kernelinitramfs /efi /efi
+#COPY --from=initrd /efi /efi
 
-ENV REPO=/_tmp
-COPY . $REPO/
-RUN $REPO/containers/infra-image.sh
+#ENV REPO=/_tmp
+#COPY . $REPO/
+#RUN $REPO/containers/infra-image.sh
 
-FROM scratch
-COPY --from=builder /tmp/linux.iso /tmp/linux.iso
+#FROM scratch
+#COPY --from=builder /tmp/linux.iso /tmp/linux.iso
