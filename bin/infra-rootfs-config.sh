@@ -74,6 +74,8 @@ chmod g+w /home
 # make the salt deterministic, reproducible builds
 sed -ri "s/^$USR:[^:]*:(.*)/$USR:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
+cat etc/shadow
+
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 
