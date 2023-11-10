@@ -18,6 +18,8 @@ mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel /tmp/iso/extensions
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
+ls -laR /boot/
+
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 
