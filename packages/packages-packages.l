@@ -31,4 +31,4 @@ ovmf
 # networking
 #ifupdown
 #isc-dhcp-client
-#ethtool
+ethtool
