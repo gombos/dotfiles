@@ -27,3 +27,8 @@ apcupsd
 qemu
 swtpm
 ovmf
+
+# networking
+#ifupdown
+#isc-dhcp-client
+#ethtool
