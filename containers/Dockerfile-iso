@@ -25,14 +25,14 @@ COPY --from=pra /tmp/sysext.raw /iso/sysext.raw
 
 FROM ghcr.io/gombos/boot as efi
 FROM ghcr.io/gombos/kernel as kernel
-FROM ghcr.io/gombos/ki as kernelinitramfs
+FROM ghcr.io/gombos/initrdextra as initrdextra
 
 FROM $BASE as builder
 
 COPY --from=pr /iso /iso
 COPY --from=efi /efi /efi
 COPY --from=kernel /boot /boot
-COPY --from=kernelinitramfs /efi /efi
+COPY --from=initrdextra /efi /efi
 COPY --from=initrd /efi /efi
 
 ENV REPO=/_tmp

@@ -29,12 +29,12 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
-            -   name: ki
+            -   name: initrdextra
                 uses: docker/build-push-action@v4
                 with:
                     push: true
-                    file: containers/Dockerfile-initrd2
-                    tags: ghcr.io/${{env.repository_owner}}/ki
+                    file: containers/Dockerfile-initrdextra
+                    tags: ghcr.io/${{env.repository_owner}}/initrdextra
 
             -   name: rootfscoreconfig
                 uses: docker/build-push-action@v4
