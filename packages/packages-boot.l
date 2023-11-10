@@ -6,7 +6,7 @@
 # Can be used:
 # Boot on baremetal with bootloader and kernel in EFI
 
-# init
+# init, networking, sysext
 systemd
 
 # optional for boot
@@ -14,11 +14,6 @@ systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 udev # load Linux kernel modules that are not built in
 kmod # load Linux kernel modules that are not built in
 open-vm-tools # mount shared directories between host and VMware VM guest
-
-# networking
-#ifupdown
-#isc-dhcp-client
-#ethtool
 
 # optional services
 openssh-server

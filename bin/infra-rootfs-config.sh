@@ -274,7 +274,6 @@ rm -rf usr/local/*
 
 echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
-echo 'd     /var/lib/dpkg        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 
 mkdir -p var/lib/dpkg
 touch var/lib/dpkg/lock-frontend
@@ -289,5 +288,11 @@ cat etc/passwd
 # Disable all SysVInit services by default
 rm -rf etc/init.d
 
+mkdir usr/lib/
+mv var/dpkg usr/lib/
+
 # exerimental
 rm -rf var/*
+
+mkdir -p var/lib/dpkg
+ln -sf usr/lib/dpkg var/lib/dpkg
