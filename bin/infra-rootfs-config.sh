@@ -52,14 +52,7 @@ echo "nixbld:x:402:nobody" >> etc/group
 
 # rootfs customizations
 
-# networking - IP
-#mkdir -p etc/network/interfaces.d
-#printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
-
-# If wired is connected, this will wait to get an IP via DHCP by default
-# Make sure to mask this line for static IPs
-#printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
-
+# wired network
 mkdir -p etc/systemd/network/
 printf "[Match]\nName=e*\n[Network]\nDHCP=yes\n"> etc/systemd/network/20-wired.network
 
@@ -106,9 +99,6 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/man-db.timer
 rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 
 # Disable some services by default
-rm -f etc/init.d/lxdm
-rm -f etc/init.d/dnsmasq
-
 rm -f etc/systemd/system/multi-user.target.wants/dnsmasq.service
 rm -f etc/systemd/system/multi-user.target.wants/apcupsd.service
 rm -f etc/systemd/system/multi-user.target.wants/open-vm-tools.service
@@ -279,9 +269,6 @@ infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local/*
 
-# exerimental
-#rm -rf var/*
-
 echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 echo 'd     /var/lib/dpkg        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
@@ -296,13 +283,8 @@ cat etc/lxdm/lxdm.conf
 cat etc/shadow
 cat etc/passwd
 
-rm -f etc/init.d/lxdm etc/init.d/dnsmasq
-ls -la etc/init.d/
+# Disable all SysVInit services by default
+rm -rf etc/init.d
 
-
-# Disable some services by default
-rm -f etc/init.d/lxdm
-rm -f etc/init.d/dnsmasq
-
-#debug
-rm -rf etc/init.d/*
+# exerimental
+rm -rf var/*
