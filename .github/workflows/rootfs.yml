@@ -1,4 +1,4 @@
-name: rootfscore
+name: rootfs
 # runs for 10 min
 
 on:
@@ -9,7 +9,7 @@ permissions:
     contents: read
 
 jobs:
-    rootfscore:
+    rootfs:
         runs-on: ubuntu-latest
 
         steps:
@@ -26,9 +26,9 @@ jobs:
             -   name: Set up env
                 run: echo "repository_owner=${GITHUB_REPOSITORY_OWNER,,}" >>${GITHUB_ENV}
 
-            -   name: rootfscore
+            -   name: rootfs
                 uses: docker/build-push-action@v4
                 with:
                     push: true
-                    file: containers/Dockerfile-homelab
-                    tags: ghcr.io/${{env.repository_owner}}/rootfscore
+                    file: containers/Dockerfile-homelab-extra
+                    tags: ghcr.io/${{env.repository_owner}}/rootfs
