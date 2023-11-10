@@ -53,12 +53,12 @@ echo "nixbld:x:402:nobody" >> etc/group
 # rootfs customizations
 
 # networking - IP
-mkdir -p etc/network/interfaces.d
-printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
+#mkdir -p etc/network/interfaces.d
+#printf "auto lo\niface lo inet loopback\n" > etc/network/interfaces.d/loopback
 
 # If wired is connected, this will wait to get an IP via DHCP by default
 # Make sure to mask this line for static IPs
-printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
+#printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
