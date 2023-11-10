@@ -9,7 +9,7 @@ uidmap
 upower
 
 # networking
-#dnsmasq
+dnsmasq
 nfs-utils
 hostapd
 systemd

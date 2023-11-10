@@ -24,5 +24,5 @@ xserver-xorg-video-nouveau
 xserver-xorg-video-radeon
 xserver-xorg-video-vmware
 xtrlock
-#xrdp
-#xorgxrdp
+xrdp
+xorgxrdp
