@@ -56,6 +56,9 @@ echo "nixbld:x:402:nobody" >> etc/group
 mkdir -p etc/systemd/network/
 printf "[Match]\nName=e*\n[Network]\nDHCP=yes\n"> etc/systemd/network/20-wired.network
 
+ln -sf /lib/systemd/system/systemd-networkd.service /etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+ln -sf /lib/systemd/system/systemd-sysext.service /etc/systemd/system/multi-user.target.wants/systemd-sysext.service
+
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
 adduser --disabled-password --no-create-home --shell "/bin/bash" --home /home --gecos "" $USR
