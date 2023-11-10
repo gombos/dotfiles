@@ -123,9 +123,3 @@ chmod +x opt/bootsync.sh
 
 tar -czvf /efi/tce/mydata.tgz opt
 cd ..
-
-# netboot-xyz
-wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
-wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
-mkdir -p /efi/netboot
-mv netboot.xyz* /efi/netboot/

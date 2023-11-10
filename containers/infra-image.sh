@@ -20,12 +20,6 @@ mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
-# netboot-xyz
-#wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
-#wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
-#mkdir -p /tmp/iso/efi/netboot
-#mv netboot.xyz* /tmp/iso/efi/netboot/
-
 #echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
 # make unified kernel
@@ -42,8 +36,6 @@ cd /tmp/iso
 chown -R 1000:1000 .
 
 rm -rf syslinux
-
-#efi/netboot
 
 # Only include files once in the iso
 mkdir /tmp/isotemp
