@@ -280,11 +280,11 @@ touch var/lib/dpkg/lock-frontend
 # Disable all SysVInit services by default
 rm -rf etc/init.d
 
-mkdir usr/lib/
-mv var/dpkg usr/lib/
+mkdir -p usr/lib/dpkg/
+mv var/lib/dpkg/* usr/lib/dpkg/
 
-ls -la var/dpkg/*
-ls -la usr/dpkg/*
+ls -la var/lib/dpkg/*
+ls -la usr/lib/dpkg/*
 
 # exerimental
 #rm -rf var/*
