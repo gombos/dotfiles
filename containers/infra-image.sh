@@ -20,6 +20,7 @@ mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
+
 #echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
 # make unified kernel
@@ -33,6 +34,7 @@ cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 cd /tmp/iso
+ln -sf kernel li
 chown -R 1000:1000 .
 
 rm -rf syslinux
