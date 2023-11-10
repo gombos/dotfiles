@@ -60,6 +60,9 @@ echo "nixbld:x:402:nobody" >> etc/group
 # Make sure to mask this line for static IPs
 #printf "allow-hotplug eth0\niface eth0 inet dhcp\n" > $R/etc/network/interfaces.d/eth0
 
+mkdir -p etc/systemd/network/
+printf "[Match]\nName=e*\n[Network]\nDHCP=yes\n"> etc/systemd/network/20-wired.network
+
 # default admin user to log in (instead of root)
 #  --uid 1000 -gid 1000
 adduser --disabled-password --no-create-home --shell "/bin/bash" --home /home --gecos "" $USR
