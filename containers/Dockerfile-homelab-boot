@@ -6,7 +6,7 @@ FROM ubuntu:jammy as base
 COPY bin/* /tmp/
 COPY boot/ /tmp/
 WORKDIR /tmp
-RUN ./infra-build-boot.sh
+#RUN ./infra-build-boot.sh
 
 FROM scratch
-COPY --from=base /efi /efi
+#COPY --from=base /efi /efi
