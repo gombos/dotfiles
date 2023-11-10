@@ -73,8 +73,6 @@ chmod g+w /home
 # make the salt deterministic, reproducible builds
 sed -ri "s/^$USR:[^:]*:(.*)/$USR:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
-cat etc/shadow
-
 # set timezone
 ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 
@@ -272,18 +270,12 @@ infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local/*
 
-echo 'd     /var/lib/apt/lists/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
+echo 'd     /var/lib/apt/lists/partial             0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
 echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
+echo 'L     /var/lib/dpkg                          0755 root root - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
 
 mkdir -p var/lib/dpkg
 touch var/lib/dpkg/lock-frontend
-
-cat usr/lib/tmpfiles.d/debian.conf
-ls -la var/lib/dpkg/lock-frontend
-
-cat etc/lxdm/lxdm.conf
-cat etc/shadow
-cat etc/passwd
 
 # Disable all SysVInit services by default
 rm -rf etc/init.d
@@ -291,8 +283,11 @@ rm -rf etc/init.d
 mkdir usr/lib/
 mv var/dpkg usr/lib/
 
-# exerimental
-rm -rf var/*
+ls -la var/dpkg/*
+ls -la usr/dpkg/*
 
-mkdir -p var/lib/dpkg
-ln -sf usr/lib/dpkg var/lib/dpkg
+# exerimental
+#rm -rf var/*
+
+#mkdir -p var/lib/dpkg
+#ln -sf usr/lib/dpkg var/lib/dpkg
