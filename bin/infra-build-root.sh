@@ -87,7 +87,7 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l packages-packages.l
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l packages-packages.l packages-base-baremetal.l
 
 infra-install-vmware-workstation.sh
 
