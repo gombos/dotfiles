@@ -43,6 +43,10 @@ rm -rf syslinux
 
 # Only include files once in the iso
 mkdir /tmp/isotemp
+
+echo gombi
+ls -la isolinux
+
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
