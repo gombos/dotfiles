@@ -15,11 +15,7 @@ kexec-tools #soft reboot (without bootloader)
 # networking
 ca-certificates
 dnsmasq-base
-ifupdown
-isc-dhcp-client
-ethtool
 wakeonlan
-openssh-server
 
 # storage
 hdparm

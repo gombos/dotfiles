@@ -19,13 +19,9 @@ curl
 distrobox
 docker
 gnupg
-sudo
 
 # power management
 apcupsd
-
-# log
-rsyslog
 
 # virtualization
 qemu

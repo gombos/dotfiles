@@ -9,18 +9,21 @@
 # init
 systemd
 
-# optional
+# optional for boot
 systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 udev # load Linux kernel modules that are not built in
 kmod # load Linux kernel modules that are not built in
 open-vm-tools # mount shared directories between host and VMware VM guest
 
-# services
+# networking
+ifupdown
+isc-dhcp-client
+ethtool
+
+# optional services
 openssh-server
 docker.io
-
-# power management
-apcupsd
-
-# log
 rsyslog
+
+# essential tools
+sudo
