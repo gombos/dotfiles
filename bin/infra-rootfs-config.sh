@@ -86,6 +86,7 @@ ln -sf /usr/share/zoneinfo/US/Eastern etc/localtime
 ln -sf /dev/null etc/systemd/system/timers.target.wants/motd-news.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
 ln -sf /dev/null etc/systemd/system/timers.target.wants/apt-daily.timer
+ln -sf /dev/null etc/systemd/system/timers.target.wants/dpkg-db-backup.timer  # dpkg state backup
 
 # Defaults are optimized for vm/container use
 
@@ -102,34 +103,34 @@ ln -sf /dev/null etc/systemd/system/timers.target.wants/man-db.timer
 rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 
 # Disable some services by default
-[ -f etc/systemd/system/multi-user.target.wants/dnsmasq.service ] && rm etc/systemd/system/multi-user.target.wants/dnsmasq.service
-[ -f etc/systemd/system/multi-user.target.wants/autosuspend.service ] && rm etc/systemd/system/multi-user.target.wants/autosuspend.service
-[ -f etc/systemd/system/multi-user.target.wants/apcupsd.service ] && rm etc/systemd/system/multi-user.target.wants/apcupsd.service
-[ -f etc/systemd/system/multi-user.target.wants/open-vm-tools.service ] && rm etc/systemd/system/multi-user.target.wants/open-vm-tools.service
-[ -f etc/systemd/system/multi-user.target.wants/rpcbind.service ] && rm etc/systemd/system/multi-user.target.wants/rpcbind.service
-[ -f etc/systemd/system/multi-user.target.wants/nfs-server.service ] && rm etc/systemd/system/multi-user.target.wants/nfs-server.service
-[ -f etc/systemd/system/multi-user.target.wants/cron.service ] && rm etc/systemd/system/multi-user.target.wants/cron.service
-[ -f etc/systemd/system/multi-user.target.wants/containerd.service ] && rm etc/systemd/system/multi-user.target.wants/containerd.service
-[ -f etc/systemd/system/multi-user.target.wants/docker.service ] && rm etc/systemd/system/multi-user.target.wants/docker.service
+rm -f etc/init.d/lxdm
+rm -f etc/init.d/dnsmasq
 
-[ -f etc/systemd/system/remote-fs.target.wants/nfs-client.target ] && rm etc/systemd/system/remote-fs.target.wants/nfs-client.target
-[ -f etc/systemd/system/multi-user.target.wants/nfs-client.target ] && rm etc/systemd/system/multi-user.target.wants/nfs-client.target
+debug
+etc/init.d/*
 
-[ -f etc/systemd/system/multi-user.target.wants/nginx.service ] && rm etc/systemd/system/multi-user.target.wants/nginx.service
-[ -f etc/systemd/system/multi-user.target.wants/caddy.service ] && rm etc/systemd/system/multi-user.target.wants/caddy.service
-[ -f etc/systemd/system/multi-user.target.wants/smartmontools.service ] && rm etc/systemd/system/multi-user.target.wants/smartmontools.service
+
+rm -f etc/systemd/system/multi-user.target.wants/dnsmasq.service
+rm -f etc/systemd/system/multi-user.target.wants/apcupsd.service
+rm -f etc/systemd/system/multi-user.target.wants/open-vm-tools.service
+rm -f etc/systemd/system/multi-user.target.wants/rpcbind.service
+rm -f etc/systemd/system/multi-user.target.wants/nfs-server.service
+rm -f etc/systemd/system/multi-user.target.wants/containerd.service
+rm -f etc/systemd/system/multi-user.target.wants/docker.service
+
+rm -f etc/systemd/system/remote-fs.target.wants/nfs-client.target
+rm -f etc/systemd/system/multi-user.target.wants/nfs-client.target
+
+rm -f etc/systemd/system/multi-user.target.wants/smartmontools.service
 
 # disable dunst - will start anyway for proper x11 sessions
-[ -f etc/systemd/user/default.target.wants/dunst.service ] && rm etc/systemd/user/default.target.wants/dunst.service
+rm -f etc/systemd/user/default.target.wants/dunst.service
 
 # disable pulseaudio - will start anyway for proper x11 sessions
-[ -f etc/systemd/user/default.target.wants/pulseaudio.service ] && rm etc/systemd/user/default.target.wants/pulseaudio.service
-
-# disable dpkg state backup
-[ -f etc/systemd/system/timers.target.wants/dpkg-db-backup.timer ] && rm etc/systemd/system/timers.target.wants/dpkg-db-backup.timer
+rm -f etc/systemd/user/default.target.wants/pulseaudio.service
 
 # hostapd
-[ -f etc/systemd/system/multi-user.target.wants/hostapd.service ] && rm etc/systemd/system/multi-user.target.wants/hostapd.service
+rm -f etc/systemd/system/multi-user.target.wants/hostapd.service
 
 # ssh-keygen.service
 cat > /lib/systemd/system/ssh-keygen.service << 'EOF'
@@ -292,11 +293,9 @@ touch var/lib/dpkg/lock-frontend
 cat usr/lib/tmpfiles.d/debian.conf
 ls -la var/lib/dpkg/lock-frontend
 
-echo gombi
-
 cat etc/lxdm/lxdm.conf
 cat etc/shadow
 cat etc/passwd
 
-rm -rf etc/init.d/lxdm
+rm -f etc/init.d/lxdm etc/init.d/dnsmasq
 ls -la etc/init.d/
