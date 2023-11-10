@@ -9,7 +9,7 @@ mkdir /tmp/dracut
 apk upgrade
 apk update
 
-apk add dracut-modules squashfs-tools wget tar rsync
+apk add dracut-modules squashfs-tools wget tar rsync intel-ucode
 
 KVERSION=$(cd /lib/modules; ls -1 | tail -1)
 
@@ -27,10 +27,11 @@ find lib/modules/ -name "*.ko"
 mkdir -p /efi/kernel
 
 find lib/modules/ -print0 | cpio --null --create --format=newc | gzip --best > /efi/kernel/initrd_modules.img
+cat /boot/intel-ucode.img | gzip --best > /efi/kernel/initrd_intel.img
 
 cd /tmp
 
-ls -lha /efi/kernel/initrd_modules.img
+ls -lha /efi/kernel/initrd_modules.img /efi/kernel/initrd_intel.img
 
 mksquashfs /lib/modules /efi/kernel/modules
 
