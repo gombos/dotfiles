@@ -9,7 +9,7 @@ permissions:
     contents: read
 
 jobs:
-    rootfs:
+    rootfscore:
         runs-on: ubuntu-latest
 
         steps:
