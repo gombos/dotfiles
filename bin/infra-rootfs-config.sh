@@ -106,10 +106,6 @@ rm -rf usr/lib/modules-load.d/open-vm-tools-desktop.conf
 rm -f etc/init.d/lxdm
 rm -f etc/init.d/dnsmasq
 
-debug
-etc/init.d/*
-
-
 rm -f etc/systemd/system/multi-user.target.wants/dnsmasq.service
 rm -f etc/systemd/system/multi-user.target.wants/apcupsd.service
 rm -f etc/systemd/system/multi-user.target.wants/open-vm-tools.service
@@ -299,3 +295,11 @@ cat etc/passwd
 
 rm -f etc/init.d/lxdm etc/init.d/dnsmasq
 ls -la etc/init.d/
+
+
+# Disable some services by default
+rm -f etc/init.d/lxdm
+rm -f etc/init.d/dnsmasq
+
+#debug
+rm -rf etc/init.d/*
