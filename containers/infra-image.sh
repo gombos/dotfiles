@@ -10,8 +10,6 @@ touch /var/lib/dpkg/lock-frontend
 apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils
 #intel-microcode
 
-#find /boot/
-
 OUT_DIR=${OUT_DIR:=/tmp}
 
 mv /iso /tmp/
@@ -20,15 +18,13 @@ mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel /tmp/iso/extensions
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
-#mv /tmp/iso/kernel/modules.raw /tmp/iso/extensions/
-
 cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 # netboot-xyz
-wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
-wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
-mkdir -p /tmp/iso/efi/netboot
-mv netboot.xyz* /tmp/iso/efi/netboot/
+#wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.lkrn
+#wget --no-verbose --no-check-certificate https://boot.netboot.xyz/ipxe/netboot.xyz.efi
+#mkdir -p /tmp/iso/efi/netboot
+#mv netboot.xyz* /tmp/iso/efi/netboot/
 
 #echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
@@ -45,7 +41,9 @@ cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 cd /tmp/iso
 chown -R 1000:1000 .
 
-rm -rf syslinux efi/netboot
+rm -rf syslinux
+
+#efi/netboot
 
 # Only include files once in the iso
 mkdir /tmp/isotemp
@@ -74,6 +72,9 @@ xorriso \
       "." \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
+
+# log the size
+ls -lha /tmp/linux.iso
 
 rm -rf /tmp/iso
 rm -rf /boot
