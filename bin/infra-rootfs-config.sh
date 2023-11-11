@@ -230,7 +230,7 @@ mkdir -p var/lib/nfs/sm
 
 # ---- Cleanup
 # Booting up with systemd with read-only /etc is only supported if machine-id exists and empty
-rm -rf etc/machine-id /var/lib/dbus/machine-id
+rm -rf etc/machine-id var/lib/dbus/machine-id
 touch etc/machine-id
 
 # Empty fstab
@@ -248,8 +248,8 @@ sed -ri "s/([^:]+:[^:]+:)([^:]+)(.*)/\11\3/" etc/shadow
 # Following directories should exists but should be empty
 # boot, home, media, run
 
-rm -rf /etc/ssh/ssh_host*
-rm -rf /var/log/journal/*
+rm -rf etc/ssh/ssh_host*
+rm -rf var/log/journal/*
 
 [ -f etc/hostname ] && rm -f etc/hostname 2>/dev/null || true
 
@@ -270,9 +270,9 @@ infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local/*
 
-echo 'd     /var/lib/apt/lists/partial             0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
-echo 'd     /var/cache/apt/archives/partial        0755 root root -' >> usr/lib/tmpfiles.d/debian.conf
-echo 'L     /var/lib/dpkg                          0755 root root - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
+echo 'd    /var/lib/apt/lists/partial         0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
+echo 'd    /var/cache/apt/archives/partial    0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
+echo 'L+   /var/lib/dpkg                      - - - - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
 
 mkdir -p var/lib/dpkg
 touch var/lib/dpkg/lock-frontend
@@ -283,11 +283,5 @@ rm -rf etc/init.d
 mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
 
-ls -la var/lib/dpkg/*
-ls -la usr/lib/dpkg/*
-
 # exerimental
-#rm -rf var/*
-
-#mkdir -p var/lib/dpkg
-#ln -sf usr/lib/dpkg var/lib/dpkg
+rm -rf var/*
