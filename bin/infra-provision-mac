@@ -20,6 +20,13 @@ brew install karabiner-elements	kitty skype	slack visual-studio-code brave-brows
 
 brew install micro ripgrep-all rmlint qemu
 
+#authy kitty microsoft-auto-update nomachine utm visual-studio-code brave-browser macfuse microsoft-edge osxfuse
+#veracrypt karabiner-elements macs-fan-control microsoft-remote-desktop	teamviewer viber
+
+# bitwarden hp-easy-scan vmware-fusion zoom.us
+# https://alt-tab-macos.netlify.app/
+# brew install --cask alt-tab
+
 #    bash bash-completion pass pinentry-mac sshuttle lesspipe rclone lastpass-cli
 
 # remoteviewer
