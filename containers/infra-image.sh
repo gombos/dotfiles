@@ -17,15 +17,10 @@ mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel /tmp/iso/extensions
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
-
-ls -laR /boot/
-
-cp /boot/vmlinuz-* /tmp/iso/kernel/
-#cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
-
-#echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+mv /boot/vmlinuz-* /tmp/iso/kernel/
 
 # make unified kernel
+#echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 #objcopy --verbose  \
 #    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
 #    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
@@ -36,20 +31,16 @@ cp /boot/vmlinuz-* /tmp/iso/kernel/
 cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 cd /tmp/iso
-ln -sf kernel li
 
 rm -rf syslinux
 
 # Only include files once in the iso
 mkdir /tmp/isotemp
 
-echo gombi
-ls -la isolinux
-
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
-cd boot && ln -sf vmlinuz-* vmlinuz && cd ..
+cd kernel && ln -sf vmlinuz-* vmlinuz && cd ..
 
 find .
 chown -R 0:0 .
