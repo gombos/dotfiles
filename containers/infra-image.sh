@@ -20,8 +20,8 @@ mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 
 ls -laR /boot/
 
-cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
-
+cp /boot/vmlinuz-* /tmp/iso/kernel/
+#cp /boot/vmlinuz* /tmp/iso/kernel/vmlinuz
 
 #echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
@@ -37,7 +37,6 @@ cp /_tmp/boot/grub.cfg /tmp/iso/EFI/BOOT/
 
 cd /tmp/iso
 ln -sf kernel li
-chown -R 1000:1000 .
 
 rm -rf syslinux
 
@@ -50,7 +49,12 @@ ls -la isolinux
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
-find /tmp/iso
+cd boot && ln -sf vmlinuz-* vmlinuz && cd ..
+
+find .
+chown -R 0:0 .
+chmod -R 444 .
+ln -sf kernel
 
 xorriso \
    -as mkisofs \
