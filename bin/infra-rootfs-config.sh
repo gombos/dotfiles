@@ -285,3 +285,8 @@ mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
 rm -rf var/*
+
+find usr/share/locale \
+    -not -name "en" -not -name "en_*" -not -name "en@*" -delete
+
+rm -rf usr/share/man/*
