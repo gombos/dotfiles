@@ -10,6 +10,10 @@ if [ -d "/usr/local/sbin" ] ; then
   export PATH="$PATH:/usr/local/sbin"
 fi
 
+if [ -d "/opt/homebrew/bin" ] ; then
+  eval $(/opt/homebrew/bin/brew shellenv)
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;

@@ -7,7 +7,6 @@
     "telemetry.enableTelemetry": false,
     "telemetry.enableCrashReporter": false,
     "workbench.colorTheme": "Solarized Dark",
-    "workbench.activityBar.visible": false,
     "workbench.statusBar.visible": false,
     "workbench.welcome.enabled": false,
     "editor.minimap.enabled": false,
@@ -18,7 +17,8 @@
     "editor.acceptSuggestionOnCommitCharacter": false,
     "update.mode": "none",
     "editor.copyWithSyntaxHighlighting": false,
-    "workbench.editor.untitled.hint": "hidden",
     "extensions.ignoreRecommendations": true,
-    "window.zoomLevel": 1
+    "window.zoomLevel": 1,
+    "workbench.activityBar.location": "hidden",
+    "workbench.editor.empty.hint": "hidden"
 }
