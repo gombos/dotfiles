@@ -177,6 +177,11 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 # TODO
 #. "$HOME/.cargo/env"
 
-#if [[ "$OSTYPE" == "darwin"* ]]; then
-#  alias docker="lima nerdctl"
-#fi
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  alias linux="ssh -F ~/.colima/ssh_config colima"
+fi
+# Lima BEGIN
+# Make sure iptables and mount.fuse3 are available
+PATH="$PATH:/usr/sbin:/sbin"
+export PATH
+# Lima END
