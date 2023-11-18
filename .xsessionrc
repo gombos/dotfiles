@@ -4,7 +4,7 @@
 [ -f ~/.Xmodmap ] && xmodmap ~/.Xmodmap
 
 #todo - add some condition
-xrandr --output Virtual1 --mode 2880x1800
+#xrandr --output Virtual1 --mode 2880x1800
 xsetroot -solid black
 
 # two monitor setup if needed
@@ -32,4 +32,4 @@ fi
 # see https://github.com/systemd/systemd/issues/27919
 # see xdg-desktop-autostart.target
 # maybe use systemd to start this
-vmware-user-suid-wrapper
+#vmware-user-suid-wrapper

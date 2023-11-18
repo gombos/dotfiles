@@ -1,5 +1,8 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
+PATH="$PATH:/usr/sbin:/sbin"
+export PATH
+
 export DOTFILES="$HOME/.dotfiles"
 
 if [ -d "$DOTFILES/bin" ] ; then
@@ -166,7 +169,6 @@ fi
 
 # brew packages
 if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
-#if [ -e .linuxbrew/bin/brew ]; then eval $(.linuxbrew/bin/brew shellenv); fi
 
 # nix packages
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
@@ -174,9 +176,11 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 # host specific
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
 
-# TODO
-#. "$HOME/.cargo/env"
-
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  alias docker="lima nerdctl"
+  alias linux="ssh -F ~/.colima/ssh_config colima"
 fi
+# Lima BEGIN
+# Make sure iptables and mount.fuse3 are available
+PATH="$PATH:/usr/sbin:/sbin"
+export PATH
+# Lima END

@@ -1,9 +1,9 @@
 # Purpose: Basic cross-platform desktop GUI apps
 
 kitty
-sqlitebrowser
+#sqlitebrowser
 xterm
-vlc
+#vlc
 #libreoffice
 google-chrome
 
