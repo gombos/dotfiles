@@ -36,19 +36,18 @@ stty -ixon -ixoff
 
 # command prompt username
 function psusername {
-  if [ $UID != 1000 ] ; then
+  if [ $UID != 501 ] && [ $UID != 1000 ] ; then
     echo -n $USER; echo -n ':';
   fi
 }
 
 # command prompt hostname
 function pshostname {
-  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "taska.kucko" ]  ; then
+  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "mac.lan" ]  ; then
     echo -n $HOSTNAME; echo -n ':';
   fi
 }
 
-#PS1='\[\033[01;32m\]$(psusername)\[\033[01;34m\]\w\[\033[00m\] '
 PS1='\[\033[01;32m\]$(psusername)\[\033[01;34m\]$(pshostname)\w\[\033[00m\] '
 
 # -- Configure the environment for childs
@@ -177,7 +176,7 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  alias linux="ssh -F ~/.colima/ssh_config colima"
+  alias l="ssh -F ~/.colima/ssh_config colima"
 fi
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
