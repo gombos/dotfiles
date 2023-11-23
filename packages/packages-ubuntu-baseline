@@ -16,7 +16,6 @@ linux-image-virtual
 login
 ncurses-base
 ncurses-bin
-python3-networkx
 python3-systemd
 shim-signed
 socat
