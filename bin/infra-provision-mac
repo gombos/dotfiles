@@ -4,7 +4,7 @@ fi
 
 softwareupdate --all --install --force
 
-# install manually - xquartz, google-chrome, vmware fusion
+# install manually - google-chrome
 
 brew update
 brew upgrade
@@ -14,38 +14,15 @@ brew upgrade
 # defaults write com.brave.Browser IncognitoModeAvailability -integer 2
 
 # cask
-brew install karabiner-elements	kitty skype	slack visual-studio-code brave-browser
+brew install --cask tailscale karabiner-elements microsoft-edge skype utm kitty microsoft-remote-desktop spotify visual-studio-code brave-browser
+# osxfuse teamviewer veracrypt authy viber zoom.us syncthing nomachine hp-easy-scan
 
-#brew install osxfuse teamviewer veracrypt microsoft-edge google-cloud-sdk authy
+# install only essentials, for the rest call into linux vm
+brew install micro bash colima docker pinentry-mac pass
 
-brew install micro ripgrep-all rmlint qemu
-
-#authy kitty microsoft-auto-update nomachine utm visual-studio-code brave-browser macfuse microsoft-edge osxfuse
-#veracrypt karabiner-elements macs-fan-control microsoft-remote-desktop	teamviewer viber
-
-# bitwarden hp-easy-scan vmware-fusion zoom.us
-# https://alt-tab-macos.netlify.app/
-# brew install --cask alt-tab
-
-#    bash bash-completion pass pinentry-mac sshuttle lesspipe rclone lastpass-cli
-
-# remoteviewer
-# vlc
-# xquartz
-# microsoft-edge
-# canon-eos-utility
-# gimp
-# syncthing
-# nomachine
-
-# basictex tesseract pandoc poppler wakeonlan
-
-# macs-fan-control db-browser-for-sqlite libreoffice sshuttle rga
-
-if [[ `hostname -s` != "taska" ]]; then
-  brew install --cask slack
-  brew upgrade --cask slack
-fi
+# cli apps from linux
+# bitwarden bash-completion sshuttle lesspipe rclone ripgrep-all rmlint pandoc wakeonlan
+# tesseract poppler db-browser-for-sqlite libreoffice sshuttle rga
 
 #python3 -m pip install --upgrade pip
 #pip3 install visidata
