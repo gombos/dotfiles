@@ -7,7 +7,7 @@ apt install lxdm --no-install-recommends
 apt install micro --no-install-recommends
 apt install xorgxrdp --no-install-recommends
 apt install kitty --no-install-recommends
-apt install lxrandr --no-install-recommends
+apt install sshfs lxrandr --no-install-recommends
 apt purge lxd-installer lxd-agent-loader
 apt install ripgrep
 apt purge ubuntu-advantage-tools distro-info
