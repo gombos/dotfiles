@@ -5,7 +5,7 @@ cpu: 2
 # Size of the disk in GiB to be allocated to the virtual machine.
 # NOTE: changing this has no effect after the virtual machine has been created.
 # Default: 60
-disk: 6
+disk: 2
 
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
@@ -29,12 +29,12 @@ kubernetes:
   # Enable kubernetes.
   # Default: false
   enabled: false
-
+  
   # Kubernetes version to use.
   # This needs to exactly match a k3s version https://github.com/k3s-io/k3s/releases
   # Default: latest stable release
   version: v1.24.3+k3s1
-
+  
   # Additional args to pass to k3s https://docs.k3s.io/cli/server
   # Default: traefik is disabled
   k3sArgs:
@@ -53,7 +53,7 @@ network:
   # NOTE: this is currently macOS only and ignored on Linux.
   # Default: false
   address: true
-
+  
   # Custom DNS resolvers for the virtual machine.
   #
   # EXAMPLE
@@ -61,7 +61,7 @@ network:
   #
   # Default: []
   dns: []
-
+  
   # DNS hostnames to resolve to custom targets using the internal resolver.
   # This setting has no effect if a custom DNS resolver list is supplied above.
   # It does not configure the /etc/hosts files of any machine or container.
@@ -157,8 +157,14 @@ provision:
       apt-get purge -y -qq ubuntu-cloud-minimal unattended-upgrades ubuntu-release-upgrader-core python3-distro-info python3-distupgrade python3-update-manager ubuntu-drivers-common libusb-1.0-0 python3-click python3-colorama
       apt-get purge -y -qq python3-xkit usbutils snapd liblzo2-2 squashfs-tools lxd-installer lxd-agent-loader inetutils-ping ubuntu-advantage-tools nautilus-extension-gnome-terminal dosfstools ssh-import-id ntfs-3g dmsetup socat gnupg dirmngr gnupg-l10n
       apt-get purge -y -qq gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server gpgconf gpgsm libassuan0 libksba8 libnpth0 pinentry-curses vfs-* libatasmart4 libblockdev-* libnvme1 libudisks2-0 desktop-file-utils distro-info eject libbytesize-common
-      apt-get purge -y -qq apport
-      apt-get install -y -qq --no-install-recommends xrdp python3-networkx sudo cloud-init micro less git kitty lxdm openbox ripgrep x11-xserver-utils xorgxrdp xrdp
+      apt-get purge -y -qq apport curl pciutils libcurl4 libpci3 pci.ids python3-apport python3-distro python3-httplib2 python3-launchpadlib python3-lazr.restfulclient python3-lazr.uri python3-problem-report python3-pyparsing python3-systemd python3-wadllib
+      apt-get purge -y -qq lsb-release xz-utils
+      apt-get install -y -qq --no-install-recommends xrdp python3-networkx sudo cloud-init micro less git kitty lxdm openbox ripgrep x11-xserver-utils xorgxrdp xrdp python3-apt wget python3-xdg
+      sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
+      sed -i "s|\#\ autologin=.*|autologin=user|g" etc/lxdm/lxdm.conf
+      cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
+      usermod -p `openssl passwd user` user
+      mount --bind  /Users/user /home/user.linux
 
 # Modify ~/.ssh/config automatically to include a SSH config for the virtual machine.
 # SSH config will still be generated in ~/.colima/ssh_config regardless.
