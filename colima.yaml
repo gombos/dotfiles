@@ -155,9 +155,8 @@ provision:
   - mode: system
     script: |
       apt-get purge -y -qq ubuntu-cloud-minimal unattended-upgrades ubuntu-release-upgrader-core ubuntu-drivers-common libusb-1.0-0 usbutils snapd liblzo2-2 squashfs-tools lxd-installer lxd-agent-loader inetutils-ping ubuntu-advantage-tools
-      apt-get purge -y -qq nautilus-extension-gnome-terminal dosfstools ssh-import-id ntfs-3g dmsetup socat gnupg dirmngr gnupg-l10n
+      apt-get purge -y -qq nautilus-extension-gnome-terminal dosfstools ssh-import-id ntfs-3g dmsetup gnupg dirmngr gnupg-l10n
       apt-get purge -y -qq gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server gpgconf gpgsm libassuan0 libksba8 libnpth0 pinentry-curses vfs-* libatasmart4 libblockdev-* libnvme1 libudisks2-0 desktop-file-utils distro-info eject libbytesize-common
-      #apt-get purge -y -qq lsb-release xz-utils
       apt-get purge -y -qq python3-gi parted pciutils curl gir1.2-glib-2.0 libcurl4 libgirepository-1.0-1 libparted2 libpci3 pci.ids xz-utils
       apt-get purge -y -qq apport pollinate python3-apport python3-click python3-colorama python3-distro python3-distro-info python3-distupgrade python3-httplib2 python3-launchpadlib python3-lazr.restfulclient python3-lazr.uri python3-problem-report python3-pyparsing python3-systemd python3-update-manager python3-wadllib python3-xkit xxd
       apt-mark hold  linux-image-virtual
