@@ -1,84 +1,101 @@
 vmType: vz
 arch: aarch64
 images:
-    - location: https://github.com/abiosoft/colima-ubuntu/releases/download/v0.6.0/ubuntu-23.10-minimal-cloudimg-arm64.img
-      arch: aarch64
-      digest: sha512:a45cbba1e3ce8968aa103a8a1ff276905a5013c3b6e25050426f66d2b7c6b30067dfccc900bbadb132d867bb17cf395cb5e89119e1614d3feea24021f6718921
-    - location: https://github.com/abiosoft/colima-ubuntu/releases/download/v0.6.0/ubuntu-23.10-minimal-cloudimg-amd64.img
-      arch: x86_64
-      digest: sha512:ff16319abfd9b5e81395b0d0e7058a61b4bbd057fbab40fe654fb38cac1ed53b53a6a6d4c8ad10802f800daf5e069597e89ec2b2d360dbbc1dc44d0c2b1372fa
+  - location: https://github.com/abiosoft/colima-ubuntu/releases/download/v0.6.0/ubuntu-23.10-minimal-cloudimg-arm64.img
+    arch: aarch64
+    digest: sha512:a45cbba1e3ce8968aa103a8a1ff276905a5013c3b6e25050426f66d2b7c6b30067dfccc900bbadb132d867bb17cf395cb5e89119e1614d3feea24021f6718921
+  - location: https://github.com/abiosoft/colima-ubuntu/releases/download/v0.6.0/ubuntu-23.10-minimal-cloudimg-amd64.img
+    arch: x86_64
+    digest: sha512:ff16319abfd9b5e81395b0d0e7058a61b4bbd057fbab40fe654fb38cac1ed53b53a6a6d4c8ad10802f800daf5e069597e89ec2b2d360dbbc1dc44d0c2b1372fa
 cpus: 2
 memory: 2GiB
-disk: 10GiB
+disk: 4GiB
 mounts:
-    - location: "~"
-      writable: true
-    - location: /tmp/colima
-      writable: true
+  - location: "~"
+    writable: true
+  - location: /tmp/colima
+    writable: true
 mountType: virtiofs
 ssh:
-    loadDotSSHPubKeys: false
-    forwardAgent: false
+  loadDotSSHPubKeys: false
+  forwardAgent: false
 containerd:
-    system: false
-    user: false
+  system: false
+  user: false
 dns: []
 firmware:
-    legacyBIOS: false
+  legacyBIOS: false
 hostResolver:
-    enabled: true
-    hosts:
-        host.docker.internal: host.lima.internal
+  enabled: true
+  hosts:
+    host.docker.internal: host.lima.internal
 portForwards:
-    - guestPortRange:
-        - 0
-        - 0
-      guestSocket: /var/run/docker.sock
-      hostPortRange:
-        - 0
-        - 0
-      hostSocket: /Users/user/.colima/default/docker.sock
-      proto: tcp
-    - guestPortRange:
-        - 0
-        - 0
-      guestSocket: /var/run/docker.sock
-      hostPortRange:
-        - 0
-        - 0
-      hostSocket: /Users/user/.colima/docker.sock
-      proto: tcp
-    - guestIPMustBeZero: true
-      guestIP: 0.0.0.0
-      guestPortRange:
-        - 1
-        - 65535
-      hostIP: 0.0.0.0
-      hostPortRange:
-        - 1
-        - 65535
-      proto: tcp
-    - guestIP: 127.0.0.1
-      guestPortRange:
-        - 1
-        - 65535
-      hostIP: 127.0.0.1
-      hostPortRange:
-        - 1
-        - 65535
-      proto: tcp
+  - guestPortRange:
+      - 0
+      - 0
+    guestSocket: /var/run/docker.sock
+    hostPortRange:
+      - 0
+      - 0
+    hostSocket: /Users/user/.colima/default/docker.sock
+    proto: tcp
+  - guestPortRange:
+      - 0
+      - 0
+    guestSocket: /var/run/docker.sock
+    hostPortRange:
+      - 0
+      - 0
+    hostSocket: /Users/user/.colima/docker.sock
+    proto: tcp
+  - guestIPMustBeZero: true
+    guestIP: 0.0.0.0
+    guestPortRange:
+      - 1
+      - 65535
+    hostIP: 0.0.0.0
+    hostPortRange:
+      - 1
+      - 65535
+    proto: tcp
+  - guestIP: 127.0.0.1
+    guestPortRange:
+      - 1
+      - 65535
+    hostIP: 127.0.0.1
+    hostPortRange:
+      - 1
+      - 65535
+    proto: tcp
 networks:
-    - lima: user-v2
-    - vzNAT: true
-      interface: col0
+  - lima: user-v2
+  - vzNAT: true
+    interface: col0
 provision:
-    - mode: system
-      script: sysctl -w fs.inotify.max_user_watches=1048576
-    - mode: dependency
-      script: groupadd -f docker && usermod -aG docker $LIMA_CIDATA_USER
-    - mode: system
-      script: hostnamectl set-hostname colima
-    - mode: system
-      script: mount -a
-    - mode: system
-      script: readlink /usr/sbin/fstrim || fstrim -a
+  - mode: system
+    script: sysctl -w fs.inotify.max_user_watches=1048576
+  - mode: dependency
+    script: groupadd -f docker && usermod -aG docker $LIMA_CIDATA_USER
+  - mode: system
+    script: hostnamectl set-hostname linux
+  - mode: system
+    script: mount -a
+  - mode: system
+    script: readlink /usr/sbin/fstrim || fstrim -a
+  - mode: system
+    script: |
+      apt-get purge -y -qq ubuntu-cloud-minimal unattended-upgrades ubuntu-release-upgrader-core ubuntu-drivers-common libusb-1.0-0 usbutils snapd liblzo2-2 squashfs-tools lxd-installer lxd-agent-loader inetutils-ping ubuntu-advantage-tools
+      apt-get purge -y -qq nautilus-extension-gnome-terminal dosfstools ssh-import-id ntfs-3g dmsetup gnupg dirmngr gnupg-l10n
+      apt-get purge -y -qq gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server gpgconf gpgsm libassuan0 libksba8 libnpth0 pinentry-curses vfs-* libatasmart4 libblockdev-* libnvme1 libudisks2-0 desktop-file-utils distro-info eject libbytesize-common
+      apt-get purge -y -qq python3-gi parted pciutils curl gir1.2-glib-2.0 libcurl4 libgirepository-1.0-1 libparted2 libpci3 pci.ids xz-utils console-setup-linux
+      apt-get purge -y -qq apport pollinate python3-apport python3-click python3-colorama python3-distro python3-distro-info python3-distupgrade python3-httplib2 python3-launchpadlib python3-lazr.restfulclient python3-lazr.uri python3-problem-report python3-pyparsing python3-systemd python3-update-manager python3-wadllib python3-xkit xxd
+      apt-get purge -y -qq keyboard-configuration libldap2 libnghttp2-14 librtmp1 libssh-4 liblocale-gettext-perl libsasl2-2 wget xkb-data libsasl2-modules-db libpsl5 apparmor
+      apt-mark hold linux-image-virtual
+      apt-get update -y -qq && apt-get upgrade -y -qq
+      apt-get install -y -qq --no-install-recommends xrdp python3-networkx sudo cloud-init micro less git kitty lxdm openbox ripgrep x11-xserver-utils xorgxrdp xrdp python3-apt wget
+      sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
+      sed -i "s|\#\ autologin=.*|autologin=user|g" etc/lxdm/lxdm.conf
+      cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
+      usermod -p `openssl passwd user` user
+      mount --bind  /Users/user /home/user.linux
+      rm -rf /Users/user/Library/Caches/colima

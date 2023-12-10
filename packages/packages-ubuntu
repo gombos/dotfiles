@@ -1,8 +1,5 @@
-apparmor
 apt
 bash
-bind9-libs
-bridge-utils
 bsdutils
 cloud-init
 coreutils
@@ -10,6 +7,7 @@ dash
 diffutils
 docker-buildx-plugin
 docker-ce
+docker-ce-rootless-extras
 docker-compose-plugin
 findutils
 git
@@ -19,8 +17,6 @@ hostname
 kitty
 less
 libc-bin
-libnftables1
-libpam-systemd
 linux-image-virtual
 login
 lsb-release
@@ -43,6 +39,7 @@ systemd-timesyncd
 sysvinit-utils
 usrmerge
 util-linux
+wget
 x11-xserver-utils
 xorgxrdp
 xrdp
