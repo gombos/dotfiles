@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  lima nerdctl run --net=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
-else
-  sudo docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
-fi
+#if [[ "$OSTYPE" == "darwin"* ]]; then
+#  lima nerdctl run --net=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
+#else
+docker run --privileged --ipc=host --net=host --pid=host --tty --interactive --rm --volume /home/:/home --workdir "$PWD" $1 /bin/sh
+#fi
