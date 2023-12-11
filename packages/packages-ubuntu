@@ -1,8 +1,10 @@
+apparmor
 apt
 bash
 bsdutils
 cloud-init
 coreutils
+curl
 dash
 diffutils
 docker-ce
