@@ -158,16 +158,18 @@ provision:
       apt-get purge -y -qq nautilus-extension-gnome-terminal dosfstools ssh-import-id ntfs-3g dmsetup gnupg dirmngr gnupg-l10n
       apt-get purge -y -qq gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server gpgconf gpgsm libassuan0 libksba8 libnpth0 pinentry-curses vfs-* libatasmart4 libblockdev-* libnvme1 libudisks2-0 desktop-file-utils distro-info eject libbytesize-common
       apt-get purge -y -qq python3-gi parted pciutils curl gir1.2-glib-2.0 libcurl4 libgirepository-1.0-1 libparted2 libpci3 pci.ids xz-utils console-setup-linux
-      apt-get purge -y -qq apport pollinate python3-apport python3-click python3-colorama python3-distro python3-distro-info python3-distupgrade python3-httplib2 python3-launchpadlib python3-lazr.restfulclient python3-lazr.uri python3-problem-report python3-pyparsing python3-systemd python3-update-manager python3-wadllib python3-xkit xxd
-      apt-get purge -y -qq keyboard-configuration libegl-mesa0 libegl1 libepoxy0 libgbm1 libpciaccess0 libunwind8 libwayland-server0 libxcvt0 libxfont2 x11-xkb-utils xserver-common
+      apt-get purge -y -qq keyboard-configuration libegl-mesa0 libegl1 libepoxy0 libgbm1 libpciaccess0 libunwind8 libwayland-server0 libxcvt0 libxfont2 x11-xkb-utils xserver-common apparmor dbus-user-session
       apt-mark hold linux-image-virtual
-      apt-get install -y -qq --no-install-recommends ca-certificates curl gnupg
+      apt-get install -y -qq --no-install-recommends ca-certificates gnupg
       install -m 0755 -d /etc/apt/keyrings
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      wget -q -O - https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       chmod a+r /etc/apt/keyrings/docker.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       apt-get update -y -qq && apt-get upgrade -y -qq
       apt-get install -y -qq --no-install-recommends xrdp python3-networkx sudo cloud-init micro less git kitty lxdm openbox ripgrep x11-xserver-utils xorgxrdp xrdp python3-apt wget docker-ce socat
+      apt autoremove -y
+      apt clean -y
+      sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"
       sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
       sed -i "s|\#\ autologin=.*|autologin=user|g" etc/lxdm/lxdm.conf
       cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
