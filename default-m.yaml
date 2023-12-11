@@ -154,28 +154,26 @@ cpuType: host
 provision:
   - mode: system
     script: |
-      apt install -y cloud-init lsb-release python3-apt gnupg curl wget
+      apt install -y cloud-init lsb-release python3-apt gnupg curl
       apt purge -y apport console-setup-linux dbus-user-session dmsetup liblocale-gettext-perl lxd-agent-loader lxd-installer parted pciutils pollinate python3-gi snapd ssh-import-id
-      apt purge -y ubuntu-advantage-tools ubuntu-cloud-minimal ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades xz-utils
-      #apt purge -y snapd pollinate
-      #apt purge -y ubuntu-cloud-minimal dbus-user-session dmsetup parted ssh-import-id ubuntu-advantage-tools ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades python3-gi liblocale-gettext-perl xz-utils pciutils
-      #apport console-setup-linux lxd-agent-loader lxd-installer
+      apt purge -y ubuntu-advantage-tools ubuntu-cloud-minimal ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades xz-utils wget
+      cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
       apt-mark hold linux-image-virtual
       install -m 0755 -d /etc/apt/keyrings
-      wget -q -O - https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       chmod a+r /etc/apt/keyrings/docker.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       apt-get update -y -qq && apt-get upgrade -y -qq
       apt-get install -y -qq --no-install-recommends docker-ce socat
-      apt-get install -y -qq --no-install-recommends xrdp python3-networkx micro less git kitty lxdm openbox ripgrep x11-xserver-utils xorgxrdp
+      apt-get install -y -qq --no-install-recommends xrdp python3-networkx kitty lxdm openbox x11-xserver-utils xorgxrdp # remote desktop
+      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-packages.l
       apt autoremove -y
       apt clean -y
       sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"
       sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
       sed -i "s|\#\ autologin=.*|autologin=user|g" etc/lxdm/lxdm.conf
-      cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
       usermod -p `openssl passwd user` user
-      mount --bind  /Users/user /home/user.linux
+      mount --bind /Users/user /home/user.linux
       rm -rf /Users/user/Library/Caches/colima
 
 # Modify ~/.ssh/config automatically to include a SSH config for the virtual machine.

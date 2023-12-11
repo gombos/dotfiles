@@ -5,7 +5,7 @@ if [ -f /etc/os-release ]; then
 fi
 
 filterpackage() {
-if [ "$ID" = "debian" ]
+if [ "$ID" = "debian" ] || [ "$ID" = "ubuntu" ]
 then
   case "$1" in
     google-chrome)

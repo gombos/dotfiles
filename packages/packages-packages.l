@@ -1,8 +1,6 @@
 # avoid HW packages
 # avoid distro specific packages
-# The idea is that these pacages are always available
-# ideally these packages are even available via brew on MacOS
-# use the brew name
+# The idea is that these pacages are always available when Linux is available
 
 # core runtimes
 bash
@@ -13,22 +11,25 @@ python3
 git
 less
 micro
-pass
 rsync
 curl
 distrobox
-docker
 gnupg
 
+# networking
+openssh-server
+ethtool
+
+# pass - replace with bw
+# docker - todo - make this docker.io
+
 # power management
-apcupsd
+# apcupsd - this shoulw work from sysext
 
 # virtualization
-qemu
-swtpm
-ovmf
+# qemu - make this architecture specific
+# swtpm
+# ovmf
 
-# networking
 #ifupdown
 #isc-dhcp-client
-ethtool

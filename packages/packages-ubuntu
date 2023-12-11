@@ -7,10 +7,11 @@ coreutils
 curl
 dash
 diffutils
+distrobox
 docker-ce
+ethtool
 findutils
 git
-gnupg
 grep
 gzip
 hostname
@@ -29,7 +30,7 @@ openbox
 openssh-server
 python3-apt
 python3-networkx
-ripgrep
+rsync
 secureboot-db
 sed
 shim-signed
@@ -39,7 +40,6 @@ systemd-resolved
 systemd-timesyncd
 usrmerge
 util-linux
-wget
 x11-xserver-utils
 xorgxrdp
 xrdp

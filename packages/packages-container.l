@@ -26,7 +26,7 @@ hashdeep
 #scrcpy
 
 # networking
-iperf3
+#iperf3
 net-tools
 #nmap
 mutt
