@@ -156,7 +156,7 @@ provision:
     script: |
       apt install -y cloud-init lsb-release python3-apt gnupg curl
       apt purge -y apport console-setup-linux dbus-user-session dmsetup liblocale-gettext-perl lxd-agent-loader lxd-installer parted pciutils pollinate python3-gi snapd ssh-import-id
-      apt purge -y ubuntu-advantage-tools ubuntu-cloud-minimal ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades xz-utils wget
+      apt purge -y ubuntu-advantage-tools ubuntu-cloud-minimal ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades xz-utils wget apt-transport-https pigz libltdl7
       cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
       apt-mark hold linux-image-virtual
       install -m 0755 -d /etc/apt/keyrings
@@ -166,7 +166,7 @@ provision:
       apt-get update -y -qq && apt-get upgrade -y -qq
       apt-get install -y -qq --no-install-recommends docker-ce socat
       apt-get install -y -qq --no-install-recommends xrdp python3-networkx kitty lxdm openbox x11-xserver-utils xorgxrdp # remote desktop
-      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-packages.l
+      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-boot.l
       apt autoremove -y
       apt clean -y
       sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"
