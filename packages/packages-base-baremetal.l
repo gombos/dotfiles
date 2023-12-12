@@ -35,3 +35,12 @@ dmidecode
 
 # memory
 procps
+
+# video
+xserver-xorg-video-amdgpu
+xserver-xorg-video-ati
+xserver-xorg-video-intel
+xserver-xorg-video-nouveau
+xserver-xorg-video-radeon
+xserver-xorg-video-vmware
+xserver-xorg-input-libinput

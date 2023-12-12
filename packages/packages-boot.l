@@ -13,7 +13,7 @@ systemd
 systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 udev # load Linux kernel modules that are not built in
 kmod # load Linux kernel modules that are not built in
-#open-vm-tools # mount shared directories between host and VMware VM guest
+open-vm-tools # mount shared directories between host and VMware VM guest
 
 # optional services
 openssh-server

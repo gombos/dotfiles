@@ -13,6 +13,8 @@ fi
 
 . ./infra-env.sh
 
+cd /
+
 if [ -f /etc/os-release ]; then
  . /etc/os-release
 
@@ -21,8 +23,6 @@ if [ -f /etc/os-release ]; then
     RELEASE=$(echo $VERSION | sed -rn 's|.+\((.+)\).+|\1|p')
   fi
 fi
-
-cd /
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -60,8 +60,10 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
 
 # debian security updates
-echo "deb https://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
-echo "deb https://security.debian.org/debian-security stable-security/updates main" >> etc/apt/sources.list
+if [ "$ID" == "debian" ]; then
+  echo "deb https://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
+  echo "deb https://security.debian.org/debian-security stable-security/updates main" >> etc/apt/sources.list
+fi
 
 ## docker-ce
 #packages_update_db.sh
