@@ -9,17 +9,18 @@
 # init, networking, sysext
 systemd
 
-# optional for boot
+# optional for boot, but good to have it around
 systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 udev # load Linux kernel modules that are not built in
 kmod # load Linux kernel modules that are not built in
-open-vm-tools # mount shared directories between host and VMware VM guest
 
-# optional services
+# essential admin tools
+sudo
+
+# systemd services needed to boot or good to have when sysext is unloaded
+open-vm-tools # mount shared directories between host and VMware VM guest
 openssh-server
 docker.io
+
 #docker-ce
 # rsyslog
-
-# essential tools
-sudo
