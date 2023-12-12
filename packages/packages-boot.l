@@ -17,7 +17,8 @@ kmod # load Linux kernel modules that are not built in
 
 # optional services
 openssh-server
-docker-ce
+docker.io
+#docker-ce
 # rsyslog
 
 # essential tools
