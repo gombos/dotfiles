@@ -16,11 +16,10 @@ kmod # load Linux kernel modules that are not built in
 
 # essential admin tools
 sudo
+nano
 
 # systemd services needed to boot or good to have when sysext is unloaded
 open-vm-tools # mount shared directories between host and VMware VM guest
 openssh-server
 docker.io
-
-#docker-ce
-# rsyslog
+rsyslog
