@@ -33,3 +33,4 @@ fi
 # see xdg-desktop-autostart.target
 # maybe use systemd to start this
 #vmware-user-suid-wrapper
+systemctl --user start "app-vmware\x2duser@autostart.service"
