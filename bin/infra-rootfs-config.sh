@@ -295,6 +295,6 @@ find usr/share/locale \
 
 rm -rf usr/share/man/*
 
-ls -la var/log
-ls -lRa var/log
+#ls -la var/log
+#ls -lRa var/log
 
