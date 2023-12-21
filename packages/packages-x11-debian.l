@@ -6,3 +6,4 @@ x11-xserver-utils
 xrdp
 xorgxrdp
 kitty
+dbus-x11
