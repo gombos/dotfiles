@@ -30,6 +30,9 @@ PATH=$SCRIPTS:$PATH
 
 cd /
 
+ls -la var/log
+ls -lRa var/log
+
 # Symlink some directories normally on / to /usr to allow to share between machines/instances
 mv opt usr
 ln -sf usr/opt
@@ -266,7 +269,7 @@ apt-get clean
 rm -rf etc/apt/sources.list.d
 
 # cleanup
-infra-clean-linux.sh /
+#infra-clean-linux.sh /
 rm -rf tmp/*
 rm -rf usr/local/*
 
