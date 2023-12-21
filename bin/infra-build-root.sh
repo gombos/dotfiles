@@ -87,6 +87,8 @@ install_my_packages.sh packages-x11-debian.l
 mkdir -p var/log/
 touch var/log/xrdp.log
 
+ls -la var/log/
+
 fi
 
 ########## EXTRA
