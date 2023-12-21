@@ -290,3 +290,7 @@ find usr/share/locale \
     -not -name "en" -not -name "en_*" -not -name "en@*" -delete
 
 rm -rf usr/share/man/*
+
+ls -la var/log
+ls -lRa var/log
+
