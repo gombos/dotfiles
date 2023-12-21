@@ -275,6 +275,7 @@ rm -rf usr/local/*
 
 echo 'd    /var/lib/apt/lists/partial         0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'd    /var/cache/apt/archives/partial    0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
+echo 'd    /var/log                           0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'L+   /var/lib/dpkg                      - - - - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
 
 mkdir -p var/lib/dpkg
@@ -287,7 +288,7 @@ mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
-rm -rf var/*
+#rm -rf var/*
 
 find usr/share/locale \
     -not -name "en" -not -name "en_*" -not -name "en@*" -delete
