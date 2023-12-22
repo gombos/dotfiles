@@ -288,7 +288,7 @@ mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
-rm -rf var/*
+#rm -rf var/*
 mkdir -p var/log
 touch var/log/xrdp.log
 
