@@ -276,6 +276,7 @@ rm -rf usr/local/*
 echo 'd    /var/lib/apt/lists/partial         0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'd    /var/cache/apt/archives/partial    0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'd    /var/log                           0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
+echo 'f    /var/log/xrdp.log                  0640 xrdp adm  -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'L+   /var/lib/dpkg                      - - - - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
 
 mkdir -p var/lib/dpkg
@@ -292,17 +293,10 @@ find usr/share/locale \
 
 rm -rf usr/share/man/*
 
-mv var/log/xrdp* tmp/
+#mv var/log/xrdp* tmp/
 rm -rf var
-mkdir -p var/log/
-mv tmp/xrdp* var/log/
-
-#rm -rf var/log/apt
-#rm -rf var/log/journal
-#rm -rf var/log/private
-#rm -rf var/log/runit
-#rm -rf var/log/caddy
-#rm -rf var/log/vmware
+#mkdir -p var/log/
+#mv tmp/xrdp* var/log/
 
 ls -la var/log
 ls -lRa var/log
