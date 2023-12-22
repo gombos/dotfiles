@@ -302,3 +302,6 @@ rm -rf var/log/private
 
 ls -la var/log
 ls -lRa var/log
+
+sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
+cat /etc/xrdp/xrdp.ini | grep Enable
