@@ -288,7 +288,7 @@ mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
-rm  var/log/*
+#rm  var/log/*
 mkdir -p var/log
 touch var/log/xrdp.log
 
@@ -296,6 +296,11 @@ find usr/share/locale \
     -not -name "en" -not -name "en_*" -not -name "en@*" -delete
 
 rm -rf usr/share/man/*
+
+rm -rf var/log/apt
+rm -rf var/log/journal
+rm -rf var/log/private
+rm -rf var/log/runit
 
 ls -la var/log
 ls -lRa var/log
