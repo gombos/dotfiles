@@ -147,6 +147,22 @@ EOF
 mkdir -p etc/systemd/system/multi-user.target.wants
 ln -sf /lib/systemd/system/ssh-keygen.service /etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
+# systemdreload.service
+cat > /lib/systemd/system/systemdreload.service << 'EOF'
+[Unit]
+Description=systemd reload
+
+[Service]
+Type=oneshot
+ExecStart=systemctl daemon-reload
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+mkdir -p etc/systemd/system/multi-user.target.wants
+ln -sf /lib/systemd/system/systemdreload.service /etc/systemd/system/multi-user.target.wants/systemdreload.service
+
 # home.service
 cat > /lib/systemd/system/home.service << 'EOF'
 [Unit]
@@ -260,8 +276,6 @@ rm -rf var/log/journal/*
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
-# Todo - this should not be required
-#DEBIAN_FRONTEND=noninteractive apt purge network-manager libbluetooth* libmm-glib* libndp* libnewt* libnm* libteamdctl* tailscale-archive-keyring -y -qq -o Dpkg::Use-Pty=0
 apt-get -y -qq autoremove
 dpkg --list |grep "^rc" | cut -d " " -f 3 | xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
@@ -271,7 +285,6 @@ rm -rf etc/apt/sources.list.d
 echo 'd    /var/lib/apt/lists/partial         0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'd    /var/cache/apt/archives/partial    0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 echo 'L+   /var/lib/dpkg                      - - - - /usr/lib/dpkg' >> usr/lib/tmpfiles.d/debian.conf
-#echo 'd    /var/log                           0755 root root -'      >> usr/lib/tmpfiles.d/debian.conf
 
 echo 'f    /var/log/xrdp.log                  0640 xrdp adm  -'      >> usr/lib/tmpfiles.d/xrdp.conf
 
@@ -293,4 +306,3 @@ find usr/share/locale \
 
 rm -rf usr/share/man/*
 rm -rf var
-
