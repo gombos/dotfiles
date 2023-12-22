@@ -151,11 +151,11 @@ ln -sf /lib/systemd/system/ssh-keygen.service /etc/systemd/system/multi-user.tar
 cat > /lib/systemd/system/systemdreload.service << 'EOF'
 [Unit]
 Description=systemd reload
+After=systemd-sysext
 
 [Service]
 Type=oneshot
 ExecStart=systemctl daemon-reload
-After=systemd-sysext
 
 [Install]
 WantedBy=multi-user.target
