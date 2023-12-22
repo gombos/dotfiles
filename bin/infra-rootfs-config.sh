@@ -294,7 +294,7 @@ find usr/share/locale \
 rm -rf usr/share/man/*
 
 #mv var/log/xrdp* tmp/
-rm -rf var
+rm -rf var/*
 #mkdir -p var/log/
 #mv tmp/xrdp* var/log/
 
