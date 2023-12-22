@@ -289,6 +289,7 @@ mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
 rm -rf var/*
+mkdir -p var/log
 
 find usr/share/locale \
     -not -name "en" -not -name "en_*" -not -name "en@*" -delete
@@ -297,4 +298,3 @@ rm -rf usr/share/man/*
 
 ls -la var/log
 ls -lRa var/log
-
