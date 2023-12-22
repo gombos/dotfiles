@@ -82,12 +82,6 @@ packages_upgrade.sh
 # sysext is not ready at boot
 
 install_my_packages.sh packages-boot.l
-#install_my_packages.sh packages-x11-debian.l
-
-#mkdir -p var/log/
-#touch var/log/xrdp.log
-
-#ls -la var/log/
 
 fi
 
@@ -99,7 +93,6 @@ if [ "$TARGET" = "extra" ]; then
 # todo - make this a systemextension squashfs image
 
 packages_update_db.sh
-#packages_upgrade.sh
 
 install_my_packages.sh packages-base-baremetal.l
 
@@ -107,10 +100,9 @@ wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
 packages_update_db.sh
-#packages_upgrade.sh
 
-install_my_packages.sh packages-x11-debian.l
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-container.l packages-packages.l
+#install_my_packages.sh packages-x11-debian.l
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
 
 infra-install-vmware-workstation.sh
 
