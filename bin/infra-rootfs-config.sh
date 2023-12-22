@@ -288,7 +288,7 @@ mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
 
 # exerimental
-#rm -rf var/*
+rm -rf var/*
 mkdir -p var/log
 touch var/log/xrdp.log
 
@@ -304,4 +304,4 @@ ls -la var/log
 ls -lRa var/log
 
 sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
-cat /etc/xrdp/xrdp.ini | grep Enable
+cat etc/xrdp/xrdp.ini | grep Enable
