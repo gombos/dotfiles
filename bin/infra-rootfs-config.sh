@@ -292,9 +292,5 @@ find usr/share/locale \
     -not -name "en" -not -name "en_*" -not -name "en@*" -delete
 
 rm -rf usr/share/man/*
-
-rm -rf var/*
-ls -lRa var
-
-#sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
-#cat etc/xrdp/xrdp.ini | grep Enable
+rm -rf var
+#ls -lRa var
