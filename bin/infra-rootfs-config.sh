@@ -293,13 +293,8 @@ find usr/share/locale \
 
 rm -rf usr/share/man/*
 
-#mv var/log/xrdp* tmp/
 rm -rf var/*
-#mkdir -p var/log/
-#mv tmp/xrdp* var/log/
+ls -lRa var
 
-#ls -la var/log
-#ls -lRa var/log
-
-sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
-cat etc/xrdp/xrdp.ini | grep Enable
+#sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
+#cat etc/xrdp/xrdp.ini | grep Enable
