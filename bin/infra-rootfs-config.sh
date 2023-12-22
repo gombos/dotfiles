@@ -155,7 +155,8 @@ After=systemd-sysext.service
 
 [Service]
 Type=oneshot
-ExecStart=systemctl daemon-reload
+ExecStart=/bin/systemctl daemon-reload
+ExecStartPost=/bin/systemctl restart default.target
 
 [Install]
 WantedBy=multi-user.target
