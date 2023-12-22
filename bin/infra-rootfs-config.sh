@@ -298,8 +298,8 @@ rm -rf var
 #mkdir -p var/log/
 #mv tmp/xrdp* var/log/
 
-ls -la var/log
-ls -lRa var/log
+#ls -la var/log
+#ls -lRa var/log
 
 sed -i 's/^EnableSyslog.*/EnableSyslog=false/' etc/xrdp/xrdp.ini
 cat etc/xrdp/xrdp.ini | grep Enable
