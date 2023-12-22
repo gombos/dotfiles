@@ -155,6 +155,7 @@ Description=systemd reload
 [Service]
 Type=oneshot
 ExecStart=systemctl daemon-reload
+After=systemd-sysext
 
 [Install]
 WantedBy=multi-user.target
