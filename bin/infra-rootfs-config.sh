@@ -297,7 +297,7 @@ find usr/share/locale \
 
 rm -rf usr/share/man/*
 
-rm -rf var/lo/journal
+rm -rf var/log/journal
 rm -rf var/log/private
 
 ls -la var/log
