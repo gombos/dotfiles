@@ -47,6 +47,9 @@ chown -R 0:0 .
 chmod -R 444 .
 ln -sf kernel
 
+# experiment - no sysext
+rm -rf extensions
+
 xorriso \
    -as mkisofs \
    -iso-level 3 \
