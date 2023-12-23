@@ -47,9 +47,6 @@ chown -R 0:0 .
 chmod -R 444 .
 ln -sf kernel
 
-# experiment - no sysext
-rm -rf extensions
-
 xorriso \
    -as mkisofs \
    -iso-level 3 \
@@ -71,35 +68,34 @@ xorriso \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
+## experiment for minimal iso
+rm -rf extensions
+cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
+
+## todo - calculate size/count
+dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
+mkfs.vfat /tmp/efiboot.img
+LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
+LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
+rm -rf boot efi isolinux kernel EFI syslinux
+
+find /tmp/iso
+
+xorriso \
+   -as mkisofs \
+   -iso-level 3 \
+   -full-iso9660-filenames \
+   -volid "ISO" \
+   -output "/tmp/linux-core.iso" \
+   -eltorito-alt-boot \
+     -e EFI/efiboot.img \
+     -no-emul-boot \
+   -graft-points \
+      "." \
+      /EFI/efiboot.img=/tmp/efiboot.img
+
 # log the size
-ls -lha /tmp/linux.iso
+ls -lha /tmp/*.iso
 
 rm -rf /tmp/iso
 rm -rf /boot
-
-## experiment for minimal iso
-## todo, make this production
-
-#cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
-#
-## todo - calculate size/count
-#dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
-#mkfs.vfat /tmp/efiboot.img
-#LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
-#LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
-#rm -rf boot efi isolinux  kernel EFI syslinux
-
-#find /tmp/iso
-
-#xorriso \
-#   -as mkisofs \
-#   -iso-level 3 \
-#   -full-iso9660-filenames \
-#   -volid "ISO" \
-#   -output "/tmp/linux.iso" \
-#   -eltorito-alt-boot \
-#     -e EFI/efiboot.img \
-#     -no-emul-boot \
-#   -graft-points \
-#      "." \
-#      /EFI/efiboot.img=/tmp/efiboot.img
