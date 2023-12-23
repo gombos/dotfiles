@@ -186,7 +186,7 @@ ExecStart=/bin/bash -c \
     exit; \
   fi; \
   if [[ "$virt" == "qemu" ]]; then \
-    mount -t 9p -o trans=virtio,version=9p2000.L share /home
+    mount -t 9p -o trans=virtio,version=9p2000.L share /home; \
   fi
   if [[ -e /run/initramfs/live/home.img ]]; then \
     mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
