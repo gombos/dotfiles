@@ -9,7 +9,7 @@ virtualHW.version = "20"
 uuid.bios = "56 4d 92 bc 65 3b ae 44-6a 32 8e 82 fe 54 0c c2"
 
 # This uuid can change as the directory of the vm changes
-uuid.location = "56 4d 68 8e 59 9f bd 68-29 73 11 e4 00 d2 d5 3f"
+uuid.location = "56 4d 6d d0 be b0 b4 fe-4d e1 b2 49 b5 32 01 d4"
 
 vmci0.id = "100"
 
@@ -22,7 +22,7 @@ sharedFolder0.present = "TRUE"
 sharedFolder0.enabled = "TRUE"
 sharedFolder0.readAccess = "TRUE"
 sharedFolder0.writeAccess = "TRUE"
-sharedFolder0.hostPath = "/Volumes/bagoly"
+sharedFolder0.hostPath = "/Volumes/data/Users/user/"
 sharedFolder0.guestName = "home"
 sharedFolder0.expiration = "never"
 
@@ -129,8 +129,8 @@ vmotion.svga.mobMaxSize = "268435456"
 vmotion.svga.graphicsMemoryKB = "262144"
 guestInfo.detailed.data = "architecture='X86' bitness='64' distroAddlVersion='12 (bookworm)' distroName='Debian GNU/Linux' distroVersion='12' familyName='Linux' kernelVersion='6.1.64' prettyName='Debian GNU/Linux 12 (bookworm)'"
 ulm.disableMitigations = "TRUE"
+floppy0.present = "FALSE"
 usb:0.present = "TRUE"
 usb:0.deviceType = "hid"
 usb:0.port = "0"
 usb:0.parent = "-1"
-floppy0.present = "FALSE"
