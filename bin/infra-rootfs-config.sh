@@ -185,6 +185,9 @@ ExecStart=/bin/bash -c \
     mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
     exit; \
   fi; \
+  if [[ "$virt" == "qemu" ]]; then \
+    mount -t 9p -o trans=virtio,version=9p2000.L share /home
+  fi
   if [[ -e /run/initramfs/live/home.img ]]; then \
     mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
     mount /run/initramfs/live/home.img /run/initramfs/home/lower && \
@@ -192,6 +195,9 @@ ExecStart=/bin/bash -c \
     chown -R 1000:0 /home; \
   fi;'
 EOF
+
+# mount -t 9p -o trans=virtio,version=9p2000.L share share_folder
+
 
 mkdir -p etc/systemd/system/local-fs.target.wants
 ln -sf /lib/systemd/system/home.service /etc/systemd/system/local-fs.target.wants/
