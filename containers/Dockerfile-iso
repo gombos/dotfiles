@@ -39,4 +39,4 @@ COPY . $REPO/
 RUN $REPO/containers/infra-image.sh
 
 FROM scratch
-COPY --from=builder /tmp/linux.iso /tmp/linux.iso
+COPY --from=builder /tmp/linux* /tmp/
