@@ -182,6 +182,7 @@ ExecStart=/bin/bash -c \
   virt=$(systemd-detect-virt); \
   if [[ "$virt" == "vmware" ]]; then \
     mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
+    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
     exit; \
   fi; \
   if [[ -e /run/initramfs/live/home.img ]]; then \

@@ -27,6 +27,13 @@ sharedFolder0.guestName = "home"
 sharedFolder0.expiration = "never"
 
 # [Drives] - /home
+sharedFolder1.present = "TRUE"
+sharedFolder1.enabled = "TRUE"
+sharedFolder1.readAccess = "TRUE"
+sharedFolder1.writeAccess = "TRUE"
+sharedFolder1.hostPath = "/Volumes/shared"
+sharedFolder1.guestName = "host"
+sharedFolder1.expiration = "never"
 
 sharedFolder.maxNum = "2"
 
@@ -126,6 +133,4 @@ usb:0.present = "TRUE"
 usb:0.deviceType = "hid"
 usb:0.port = "0"
 usb:0.parent = "-1"
-sharedFolder1.present = "FALSE"
-sharedFolder2.present = "FALSE"
 floppy0.present = "FALSE"
