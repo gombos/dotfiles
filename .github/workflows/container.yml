@@ -46,5 +46,7 @@ jobs:
                 with:
                     push: true
                     file: containers/Dockerfile-container
-                    build-args: TAG=${{ inputs.container }}
                     tags: ghcr.io/${{env.repository_owner}}/linux
+                    build-args: |
+                        TAG=${{ inputs.container }}
+                         BUILDX_NO_DEFAULT_ATTESTATIONS: 1
