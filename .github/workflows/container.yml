@@ -7,11 +7,11 @@ on:
             container:
                 type: choice
                 description: 'container'
-                default: 'archlinux/archlinux'
+                default: 'fedora'
                 options:
                     - "greyltc/archlinux-aur:paru"
                     - "debian:stable"
-                    - "archlinux/archlinux"
+                    - "fedora"
 permissions:
     packages: write
     contents: read
