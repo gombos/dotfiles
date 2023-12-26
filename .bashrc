@@ -176,7 +176,8 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  alias l="ssh -F ~/.colima/ssh_config colima"
+  alias lb="ssh -F ~/.colima/ssh_config colima"
+  alias l="ssh -F ~/.colima/ssh_config colima -t distrobox enter linux"
 fi
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
