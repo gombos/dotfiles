@@ -7,13 +7,11 @@ on:
             container:
                 type: choice
                 description: 'container'
-                default: 'greyltc/archlinux-aur:paru'
+                default: 'archlinux'
                 options:
                     - "greyltc/archlinux-aur:paru"
                     - "debian:stable"
-                    - "debian:sid"
-                    - "homebrew/brew"
-                    - "alpine"
+                    - "archlinux"
 permissions:
     packages: write
     contents: read
