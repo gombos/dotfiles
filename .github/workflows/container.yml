@@ -7,7 +7,7 @@ on:
             container:
                 type: choice
                 description: 'container'
-                default: 'fedora'
+                default: 'debian:stable'
                 options:
                     - "greyltc/archlinux-aur:paru"
                     - "debian:stable"
