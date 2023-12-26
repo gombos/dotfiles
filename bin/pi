@@ -32,4 +32,8 @@ if [ -f /usr/local/bin/pacapt ]; then
   installpackage() { pacapt -Sy --noconfirm --needed "$@" ;}
 fi
 
+if [ -f /bin/dnf ]; then
+  installpackage() { dnf -y install "$@" ;}
+fi
+
 installpackage "$@"

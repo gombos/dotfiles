@@ -39,7 +39,7 @@ fi
 echo "Building $RELEASE $TARGET on $ID"
 
 if [ "$TARGET" = "container" ]; then
-   /usr/bin/pacman --noconfirm -Syu
+  #/usr/bin/pacman --noconfirm -Syu
   packages_update_db.sh
   packages_upgrade.sh
   install_my_packages.sh packages-packages.l packages-container.l
@@ -145,6 +145,7 @@ rm -rf /usr/sbin/aur-install
 
 # pipx
 /usr/local/bin/pip3 install pipx
+pipx install osxphotos
 
 # appimage - digikam
 mkdir -p /usr/local/bin/
