@@ -123,7 +123,7 @@ echo "Using $ID"
 
 PATH=$PATH:.
 
-if [ "$ID" == "arch" ]; then
+if [ "$ID" = "arch" ]; then
   echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
   pacman -Syyu
 #  useradd -m build
@@ -139,20 +139,21 @@ install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "pa
 rm -rf /usr/sbin/aur-install
 
 # python venv
-/usr/bin/python3 -m venv  /usr/local/
-/usr/bin/python3 -m pip install --upgrade pip
+apt-get install -y python3-venv
+/usr/bin/python3 -m venv /usr/local/
+/usr/local/bin/python3 -m pip install --upgrade pip
 /usr/local/bin/pip install --upgrade pip
 
 # pipx
 /usr/local/bin/pip3 install pipx
-pipx install osxphotos
+pip install osxphotos
 
 # appimage - digikam
 mkdir -p /usr/local/bin/
 wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 chmod +x /usr/local/bin/digikam
 
-if [ "$ID" == "arch" ]; then
+if [ "$ID" = "arch" ]; then
   /usr/bin/pacman --noconfirm -Syu
 
   # make i point to pacapt
