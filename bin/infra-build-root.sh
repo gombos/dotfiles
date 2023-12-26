@@ -146,7 +146,7 @@ apt-get install -y python3-venv
 
 # pipx
 /usr/local/bin/pip3 install pipx
-pip install osxphotos
+#pip install osxphotos
 
 # appimage - digikam
 mkdir -p /usr/local/bin/
