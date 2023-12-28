@@ -11,6 +11,8 @@ else
   DST="$1"
 fi
 
+find . -type f ! -name "*md5*" -exec media-md5 {} \;
+
 find $DST -empty
 detox -r -n -s iso8859_1 $DST
 find $DST -type f -not -perm 0444
