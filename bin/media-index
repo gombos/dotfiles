@@ -2,18 +2,18 @@
 # whole process is likely IO bound
 
 # Mount
-mnt-archive_media
+#mnt-archive_media
 
-cd /mnt
-sudo ln -sf "$MNTDIR/archive_media/archive_media/p"
+#cd /mnt
+#sudo ln -sf "$MNTDIR/archive_media/archive_media/p"
 
-cd /home/mediadb/db
+#cd /home/mediadb/db
 
 # Uncomment for full re-indexing
-#nohup find /mnt/p/ -type f -exec media-hash.sh {} \; > allraw.index
-#cat allraw.index | sort -t ','  -k 3 > all.index
-#rm allraw.index
-#exit 0
+nohup find /mnt/archive_media/ -type f -exec media-hash {} \; > allraw.index
+cat allraw.index | sort -t ','  -k 3 > all.index
+rm allraw.index
+exit 0
 
 # All files to index
 find /mnt/p/ -type f | sort > /tmp/allfiles
