@@ -42,7 +42,9 @@ if [ "$TARGET" = "container" ]; then
   #/usr/bin/pacman --noconfirm -Syu
   packages_update_db.sh
   packages_upgrade.sh
-  install_my_packages.sh packages-packages.l packages-container.l
+  install_my_packages.sh packages-packages.l packages-container.l packages-distrobox.l
+  # todo - install more packages to container
+  # packages-apps.l packages-*linux.l "packages*-$ID.l"
 fi
 
 ########## BASE
