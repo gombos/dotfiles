@@ -68,3 +68,12 @@ caddy
 qemu-user-static
 gh
 nmap
+
+
+# make b complete even without container
+hfsutils
+usbmuxd
+ifuse
+xz-utils
+apparmor-utils
+exfatprogs
