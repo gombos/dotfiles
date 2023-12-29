@@ -3,4 +3,4 @@ filename=$(basename -- "$1")
 extension="${filename##*.}"
 filename="${filename%.*}"
 path=$(dirname -- "$1")
-mv $1 $path.$filename.md5-${md5}.$extension
+mv $1 $path/$filename.md5-${md5}.$extension
