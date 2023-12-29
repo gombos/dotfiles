@@ -304,7 +304,7 @@ rm -rf tmp/*
 rm -rf usr/local/*
 
 # Disable all SysVInit services by default
-rm -rf etc/init.d
+#rm -rf etc/init.d
 
 mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/
