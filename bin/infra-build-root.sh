@@ -101,7 +101,6 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 
 packages_update_db.sh
 
-#install_my_packages.sh packages-x11-debian.l
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
 
 infra-install-vmware-workstation.sh
