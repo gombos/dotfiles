@@ -175,10 +175,6 @@ fi
 
 if [ "$HOST" = "bestia" ]; then
   ln -sf /lib/systemd/system/systemd-networkd.service $R/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
-  ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
-  rm -rf $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
-  rm -rf $R/etc/systemd/system/dbus-fi.w1.wpa_supplicant1.service
-  ln -sf /dev/null $R/etc/systemd/system/wpa_supplicant.service
   mkdir $R/var/lib/bluetooth
 
   # NFS
@@ -269,6 +265,13 @@ if [ -d /run/initramfs/isoscan/config/updates/run ]; then
   find . -depth -type d -exec mkdir -p "/run/{}" \;
   find . -depth \! -type d -exec cp -a "{}" "/run/{}" \;
   cd -
+fi
+
+if [ -f /run/initramfs/isoscan/config/updates/etc/wpa_supplicant/wpa_supplicant-wlo1.conf ]; then
+  ln -sf /lib/systemd/system/wpa_supplicant\@.service $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant\@wlo1.service
+  rm -rf $R/etc/systemd/system/multi-user.target.wants/wpa_supplicant.service
+  rm -rf $R/etc/systemd/system/dbus-fi.w1.wpa_supplicant1.service
+  ln -sf /dev/null $R/etc/systemd/system/wpa_supplicant.service
 fi
 
 # first boot of a new instance, run all the “per-instance” configuration
