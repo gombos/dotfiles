@@ -315,5 +315,8 @@ find usr/share/locale \
 rm -rf usr/share/man/*
 rm -rf var
 
-# sysext should not hide firmwares
+# fix firmware
 rm -rf usr/firmware
+ln -sf /run/initramfs/firmware usr/firmware
+
+ls -la usr/
