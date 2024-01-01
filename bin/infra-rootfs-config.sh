@@ -148,19 +148,19 @@ mkdir -p etc/systemd/system/multi-user.target.wants
 ln -sf /lib/systemd/system/ssh-keygen.service /etc/systemd/system/multi-user.target.wants/ssh-keygen.service
 
 # systemdreload.service
-cat > /lib/systemd/system/systemdreload.service << 'EOF'
-[Unit]
-Description=systemd reload
-After=systemd-sysext.service
-
-[Service]
-Type=oneshot
-ExecStart=/bin/systemctl daemon-reload
-ExecStartPost=/bin/systemctl restart default.target
-
-[Install]
-WantedBy=multi-user.target
-EOF
+#cat > /lib/systemd/system/systemdreload.service << 'EOF'
+#[Unit]
+#Description=systemd reload
+#After=systemd-sysext.service
+#
+#[Service]
+#Type=oneshot
+#ExecStart=/bin/systemctl daemon-reload
+#ExecStartPost=/bin/systemctl restart default.target
+#
+#[Install]
+#WantedBy=multi-user.target
+#EOF
 
 #mkdir -p etc/systemd/system/multi-user.target.wants
 #ln -sf /lib/systemd/system/systemdreload.service /etc/systemd/system/multi-user.target.wants/systemdreload.service
