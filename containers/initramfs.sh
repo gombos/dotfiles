@@ -35,38 +35,33 @@ ls -lha /efi/kernel/initrd_modules.img /efi/kernel/initrd_intel.img
 
 mksquashfs /lib/modules /efi/kernel/modules
 
-#mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.modules && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.modules
-#mv /lib/modules /rootfsdelta/usr/lib/
-#rm -rf /rootfsdelta/usr/lib/os-release && mksquashfs /rootfsdelta /efi/kernel/modules.raw -comp zstd
-
 # FIRMWARE
 
-#mv /lib/firmware /tmp/
-#mkdir -p /lib/firmware
-#cp -a /tmp/firmware/iwlwifi-*-72.ucode /lib/firmware/
-#cp -a /tmp/firmware/i915 /lib/firmware/
-#find /lib/firmware/
-
-#mksquashfs /lib/firmware /efi/kernel/firmware
-
-
 # this is a large file.. 0.5G
-wget --quiet -O - https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20230919.tar.gz > /tmp/firmware.tar.gz
+wget --quiet -O - https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/snapshot/linux-firmware-20231211.tar.gz > /tmp/firmware.tar.gz
 rm -rf /tmp/linux-firmware-*
 cd /tmp
 tar -xf firmware.tar.gz
 cd /tmp/linux-firmware-*
 
 mv /lib/firmware /tmp/
-mkdir -p /lib/firmware/i915
+
+#mkdir -p /lib/firmware/i915
+
 rsync -av iwlwifi-*-72.ucode /lib/firmware/
+
+# mele video
 rsync -av i915/icl_dmc_ver1_09.bin /lib/firmware/i915/
 
-# mele
+# mele eth
 rsync -av rtl_nic/rtl8168h-2.fw /lib/firmware/rtl_nic/
 
 # usb wifi
 rsync -av mediatek/mt7610u.bin  /lib/firmware/mediatek/
+
+# bluetooth
+rsync -av intel/ibt-19-0-4.sfi /lib/firmware/intel
+
 find /lib/firmware/
 mksquashfs /lib/firmware /efi/kernel/firmware
 
