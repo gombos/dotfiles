@@ -61,6 +61,7 @@ mv /lib/firmware /tmp/
 mkdir -p /lib/firmware/i915
 rsync -av iwlwifi-*-72.ucode /lib/firmware/
 rsync -av i915/icl_dmc_ver1_09.bin /lib/firmware/i915/
+rsync -av rtl_nic/rtl8168h-2.fw /lib/firmware/rtl_nic/
 find /lib/firmware/
 mksquashfs /lib/firmware /efi/kernel/firmware
 
