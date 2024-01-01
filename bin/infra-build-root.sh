@@ -85,6 +85,9 @@ packages_upgrade.sh
 
 install_my_packages.sh packages-boot.l
 
+# tailscale
+curl -fsSL https://tailscale.com/install.sh | sh
+
 fi
 
 ########## EXTRA
