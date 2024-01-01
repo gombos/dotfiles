@@ -162,8 +162,8 @@ ExecStartPost=/bin/systemctl restart default.target
 WantedBy=multi-user.target
 EOF
 
-mkdir -p etc/systemd/system/multi-user.target.wants
-ln -sf /lib/systemd/system/systemdreload.service /etc/systemd/system/multi-user.target.wants/systemdreload.service
+#mkdir -p etc/systemd/system/multi-user.target.wants
+#ln -sf /lib/systemd/system/systemdreload.service /etc/systemd/system/multi-user.target.wants/systemdreload.service
 
 # home.service
 cat > /lib/systemd/system/home.service << 'EOF'
