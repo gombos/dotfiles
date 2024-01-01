@@ -316,7 +316,7 @@ rm -rf usr/share/man/*
 rm -rf var
 
 # fix firmware
-rm -rf usr/firmware
-ln -sf /run/initramfs/firmware usr/firmware
+#rm -rf usr/firmware
+#ln -sf /run/initramfs/firmware usr/firmware
 
-ls -la usr/
+#ls -la usr/
