@@ -46,7 +46,7 @@ cd /tmp/linux-firmware-*
 
 mv /lib/firmware /tmp/
 
-#mkdir -p /lib/firmware/i915
+mkdir -p /lib/firmware/
 
 rsync -av iwlwifi-*-72.ucode /lib/firmware/
 
@@ -60,7 +60,7 @@ rsync -av rtl_nic/rtl8168h-2.fw /lib/firmware/rtl_nic/
 rsync -av mediatek/mt7610u.bin  /lib/firmware/mediatek/
 
 # bluetooth
-rsync -av intel/ibt-19-0-4.sfi /lib/firmware/intel
+rsync -av intel/ibt-19-0-4.sfi /lib/firmware/intel/
 
 find /lib/firmware/
 mksquashfs /lib/firmware /efi/kernel/firmware
