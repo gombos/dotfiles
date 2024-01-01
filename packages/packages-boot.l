@@ -15,6 +15,7 @@ systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 kmod         # loading, inserting, and removing kernel modules
 sudo         # super user privileges
 nano         # editor
+curl         # get stuff from the network
 
 # services to start at boot (or good to have when sysext is unloaded)
 udev                  # hotplug events
