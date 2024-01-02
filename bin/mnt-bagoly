@@ -1,4 +1,5 @@
 # Look for the container - last match wins
+test -f ~/.bagoly && BAGOLY=~/.bagoly
 test -f /Volumes/data/Users/adat/.bagoly && BAGOLY=/Volumes/data/Users/adat/.bagoly
 test -f /Users/adat/.bagoly && BAGOLY=/Users/adat/.bagoly
 test -f /home/adat/.bagoly && BAGOLY=/home/adat/.bagoly
