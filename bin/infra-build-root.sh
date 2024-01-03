@@ -137,7 +137,7 @@ if [ "$ID" = "arch" ]; then
 fi
 
 packages_update_db.sh
-install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l
+install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-packages-extra.l
 
 # use this install script only during initial container creation
 rm -rf /usr/sbin/aur-install

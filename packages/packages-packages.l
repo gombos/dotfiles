@@ -20,8 +20,7 @@ gnupg
 openssh-server
 ethtool
 
-# pass - replace with bw
-# docker - todo - make this docker.io
+pass
 
 # power management
 # apcupsd - this shoulw work from sysext

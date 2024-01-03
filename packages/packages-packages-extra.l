@@ -6,7 +6,7 @@ attr
 detox
 dos2unix
 rename
-ripgrep-all # not on debian
+#ripgrep-all # not on debian
 rmlint
 sqlite3
 # pandoc - large package
@@ -14,7 +14,7 @@ zip
 hashdeep
 
 # android devices
-#scrcpy
+scrcpy
 
 # networking
 iperf3
@@ -24,9 +24,9 @@ mutt
 tcpdump
 nethogs
 rclone
-bitwarden-cli # not on debian
-tailscale     # not on debian
-linode-cli    # not on debian
+#bitwarden-cli # not on debian
+#tailscale     # not on debian
+#linode-cli    # not on debian
 #nomachine     # not on debian
 
 # tools
