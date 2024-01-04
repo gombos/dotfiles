@@ -589,6 +589,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.microsoft\\.Edge",
+                                            "^com\\.microsoft\\.edgemac",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$"
                                         ],
@@ -626,6 +627,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.microsoft\\.Edge",
+                                            "^com\\.microsoft\\.edgemac",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$",
                                             "^com\\.microsoft\\.VSCode",
@@ -660,6 +662,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.microsoft\\.Edge",
+                                            "^com\\.microsoft\\.edgemac",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$",
                                             "^com\\.microsoft\\.VSCode",
@@ -699,6 +702,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.microsoft\\.Edge",
+                                            "^com\\.microsoft\\.edgemac",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$"
                                         ],
@@ -731,6 +735,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^com\\.microsoft\\.Edge",
+                                            "^com\\.microsoft\\.edgemac",
                                             "^com\\.google\\.Chrome$",
                                             "^com\\.apple\\.Safari$"
                                         ],
