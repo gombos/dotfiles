@@ -184,7 +184,7 @@ ExecStart=/bin/bash -c \
     mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home; exit; \
   fi; \
   if [[ "$virt" == "qemu" ]]; then \
-    mount -t 9p -o trans=virtio,version=9p2000.L,security_model=mapped-xattr share /home; exit; \
+    mount -t 9p -o trans=virtio,version=9p2000.L share /home; exit; \
   fi; \
   if [[ -e /run/initramfs/live/home.img ]]; then \
     mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
@@ -302,7 +302,7 @@ rm -rf tmp/*
 rm -rf usr/local/*
 
 # Disable all SysVInit services by default
-#rm -rf etc/init.d
+rm -rf etc/rc2.d/*
 
 mkdir -p usr/lib/dpkg/
 mv var/lib/dpkg/* usr/lib/dpkg/

@@ -28,7 +28,7 @@ sharedFolder0.expiration = "never"
 
 # [Drives] - /home
 
-sharedFolder.maxNum = "2"
+sharedFolder.maxNum = "1"
 
 # Optimization
 logging = "FALSE"
@@ -122,9 +122,9 @@ vmotion.svga.mobMaxSize = "268435456"
 vmotion.svga.graphicsMemoryKB = "262144"
 guestInfo.detailed.data = "architecture='X86' bitness='64' distroAddlVersion='12 (bookworm)' distroName='Debian GNU/Linux' distroVersion='12' familyName='Linux' kernelVersion='6.1.69' prettyName='Debian GNU/Linux 12 (bookworm)'"
 ulm.disableMitigations = "TRUE"
+sharedFolder1.present = "FALSE"
+floppy0.present = "FALSE"
 usb:0.present = "TRUE"
 usb:0.deviceType = "hid"
 usb:0.port = "0"
 usb:0.parent = "-1"
-sharedFolder1.present = "FALSE"
-floppy0.present = "FALSE"
