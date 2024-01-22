@@ -181,12 +181,10 @@ ExecStart=/bin/bash -c \
   fi; \
   virt=$(systemd-detect-virt); \
   if [[ "$virt" == "vmware" ]]; then \
-    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home && \
-    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/host /home/host; \
-    exit; \
+    mount -t fuse.vmhgfs-fuse -o defaults,allow_other,uid=1000,gid=1000,nosuid,nodev .host:/home /home; exit; \
   fi; \
   if [[ "$virt" == "qemu" ]]; then \
-    mount -t 9p -o trans=virtio,version=9p2000.L share /home; \
+    mount -t 9p -o trans=virtio,version=9p2000.L,security_model=mapped-xattr share /home; exit; \
   fi; \
   if [[ -e /run/initramfs/live/home.img ]]; then \
     mkdir -p /run/initramfs/home/lower /run/initramfs/home/upper /run/initramfs/home/work && \
