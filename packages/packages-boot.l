@@ -18,11 +18,10 @@ nano         # editor
 curl         # get stuff from the network
 
 # services to start at boot (or good to have when sysext is unloaded)
-udev                  # hotplug events
-#open-vm-tools         # mount shared directories between host and VMware VM guest
-openssh-server        # remote login
-rsyslog               # remote logging (in case can not remote log in)
-wpasupplicant         # wifi authentication
-systemd-resolved      # DNS resolver
-systemd-timesyncd     # synchronize local time with NTP servers
-docker.io             # containers
+udev               # hotplug events
+openssh-server     # remote login
+rsyslog            # remote logging (in case can not remote log in)
+wpasupplicant      # wifi authentication
+systemd-resolved   # DNS resolver
+systemd-timesyncd  # synchronize local time with NTP servers
+docker.io          # containers
