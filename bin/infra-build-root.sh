@@ -92,8 +92,12 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 
 rm var/lib/dpkg/info/dash.post*
 #dpkg --remove --force-remove-essential dash
-apt-get remove -y --allow-remove-essential dash
-apt-get remove -y --allow-remove-essential apt
+#apt-get remove -y --allow-remove-essential dash
+#apt-get remove -y --allow-remove-essential apt
+apt-get install debianutils
+dpkg -P --force-remove-essential dash
+
+cd bin && rm -rf sh && ln -s bash sh && cd -
 
 ls -la bin/sh
 
