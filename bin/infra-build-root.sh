@@ -77,9 +77,6 @@ fi
 ##echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. etc/os-release && echo "$RELEASE") stable" | tee etc/apt/sources.list.d/docker.list > /dev/null
 #echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. etc/os-release && echo "$RELEASE") stable" | tee etc/apt/sources.list.d/docker.list > /dev/null
 
-#echo "dash dash/sh boolean false" | debconf-set-selections
-#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
-
 packages_update_db.sh
 packages_upgrade.sh
 
@@ -91,19 +88,22 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-#echo "dash dash/sh boolean false" | debconf-set-selections
-#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+echo "dash dash/sh boolean false" | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+echo "bash bash/sh boolean true" | debconf-set-selections
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
+
+ls -la bin/  | grep ash
 
 ln -sf bash bin/sh
 
-#apt-get remove -y --allow-remove-essential dash
-#dpkg --purge --force-all dash
 rm var/lib/dpkg/info/dash.postrm
 apt-mark hold debianutils
 dpkg --remove --force-depends --force-remove-essential dash
 apt-get install --reinstall bash debianutils
 
-ls -la bin/
+ls -la bin/ | grep ash
 
 # log installed packages
 dpkg -l
