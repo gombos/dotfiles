@@ -98,7 +98,8 @@ ln -sf bash bin/sh
 
 #ls -la bin/
 
-apt-get remove -y --allow-remove-essential dash
+#apt-get remove -y --allow-remove-essential dash
+dpkg --purge --force-all dash
 
 ls -la bin/
 
