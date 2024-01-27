@@ -88,6 +88,8 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
+apt-get purge -y --allow-remove-essential  dash
+
 # log installed packages
 dpkg -l
 
