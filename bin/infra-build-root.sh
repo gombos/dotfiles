@@ -42,7 +42,7 @@ if [ "$TARGET" = "container" ]; then
   #/usr/bin/pacman --noconfirm -Syu
   packages_update_db.sh
   packages_upgrade.sh
-  install_my_packages.sh packages-packages.l packages-container.l packages-distrobox.l
+  install_my_packages.sh packages-packages.l packages-container.l packages-core.l packages-distrobox.l
   # todo - install more packages to container
   # packages-apps.l packages-*linux.l "packages*-$ID.l"
 fi
@@ -83,7 +83,7 @@ packages_upgrade.sh
 # services that are REQUIRED to start at boot
 # sysext is not ready at boot
 
-install_my_packages.sh packages-boot.l
+install_my_packages.sh packages-boot.l packages-core.l
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -137,7 +137,7 @@ if [ "$ID" = "arch" ]; then
 fi
 
 packages_update_db.sh
-install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-packages-extra.l
+install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-core.l packages-packages-extra.l
 
 # use this install script only during initial container creation
 rm -rf /usr/sbin/aur-install
