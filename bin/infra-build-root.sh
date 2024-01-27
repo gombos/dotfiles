@@ -90,6 +90,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 echo "dash dash/sh boolean false" | debconf-set-selections
 DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+ls -la bin
 
 #apt-get purge -y --allow-remove-essential  dash
 
