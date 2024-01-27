@@ -96,11 +96,9 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 ln -sf bash bin/sh
 
-#ls -la bin/
-
 #apt-get remove -y --allow-remove-essential dash
 #dpkg --purge --force-all dash
-dpkg -r --force-depends -y --allow-remove-essential dash
+dpkg -r --force-depends --allow-remove-essential dash
 apt-get install --reinstall bash
 
 ls -la bin/
