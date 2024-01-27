@@ -100,7 +100,7 @@ ln -sf bash bin/sh
 
 #apt-get remove -y --allow-remove-essential dash
 #dpkg --purge --force-all dash
-dpkg -r --force-depends dash
+dpkg -r --force-depends -y --allow-remove-essential dash
 apt-get install --reinstall bash
 
 ls -la bin/
