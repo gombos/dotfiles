@@ -62,7 +62,7 @@ printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/ap
 #echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
 
 # debian security updates
-if [ "$ID" == "debian" ]; then
+if [ "$ID" = "debian" ]; then
   echo "deb https://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
   echo "deb https://security.debian.org/debian-security stable-security/updates main" >> etc/apt/sources.list
 fi
@@ -87,6 +87,9 @@ install_my_packages.sh packages-boot.l packages-core.l
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
+
+# log installed packages
+dpkg -l
 
 fi
 

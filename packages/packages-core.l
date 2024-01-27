@@ -16,3 +16,4 @@ e2fsprogs
 findutils
 diffutils
 procps
+openssl
