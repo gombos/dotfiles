@@ -99,7 +99,8 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 #apt-get remove -y --allow-remove-essential apt
 #apt-get install debianutils
 
-dpkg -P --force-remove-essential --force-all --no-triggers debianutils dash apt
+dpkg -P --force-remove-essential --force-all --no-triggers debianutils
+#dash apt
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
