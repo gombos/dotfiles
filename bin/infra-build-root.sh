@@ -96,12 +96,24 @@ DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
 
 ls -la bin/  | grep ash
 
-ln -sf bash bin/sh
+cd bin && ln -sf bash sh && cd -
+
+ls -la bin/sh
+ls -la usr/bin/sh
+
+ls -la bin/  | grep ash
 
 rm var/lib/dpkg/info/dash.postrm
 apt-mark hold debianutils
-dpkg --remove --force-depends --force-remove-essential dash
+dpkg --remove --force-remove-essential dash
 apt-get install --reinstall bash debianutils
+
+ls -la bin/  | grep ash
+
+cd bin && ln -sf bash sh && cd -
+
+ls -la bin/sh
+ls -la usr/bin/sh
 
 ls -la bin/ | grep ash
 
