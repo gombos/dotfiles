@@ -101,7 +101,7 @@ ln -sf bash bin/sh
 rm var/lib/dpkg/info/dash.postrm
 apt-mark hold debianutils
 dpkg --remove --force-depends --force-remove-essential dash
-apt-get install --reinstall bash
+apt-get install --reinstall bash debianutils
 
 ls -la bin/
 
