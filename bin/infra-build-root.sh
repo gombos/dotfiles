@@ -107,8 +107,9 @@ rm -rf var/lib/dpkg/triggers/
 
 apt-get remove -y --allow-remove-essential dash
 #apt-get remove -y --allow-remove-essential debianutils
-
 cd bin && rm -rf sh && ln -s bash sh && cd -
+
+apt-get remove -y --allow-remove-essential apt
 
 ls -la bin/sh
 
