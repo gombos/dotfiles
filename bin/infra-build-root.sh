@@ -94,8 +94,8 @@ curl -fsSL https://tailscale.com/install.sh | sh
 #echo "bash bash/sh boolean true" | debconf-set-selections
 #DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
 
-rm var/lib/dpkg/info/dash.postrm var/lib/dpkg/info/debianutils.postrm
-dpkg --remove --force-remove-essential dash debianutils apt
+rm var/lib/dpkg/info/dash.postrm
+dpkg --remove --force-remove-essential dash apt
 
 cd bin && ln -sf bash sh && cd -
 

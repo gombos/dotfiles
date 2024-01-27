@@ -17,4 +17,3 @@ findutils
 diffutils
 procps
 openssl
-apt-utils
