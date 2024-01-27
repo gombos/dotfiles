@@ -99,8 +99,8 @@ ln -sf bash bin/sh
 #apt-get remove -y --allow-remove-essential dash
 #dpkg --purge --force-all dash
 rm var/lib/dpkg/info/dash.postrm
-apt-get hold debianutils
-dpkg --force-depends --force-remove-essential dash
+apt-mark hold debianutils
+dpkg --remove --force-depends --force-remove-essential dash
 apt-get install --reinstall bash
 
 ls -la bin/
