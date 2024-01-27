@@ -90,12 +90,12 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
-rm var/lib/dpkg/info/dash.post*
+rm var/lib/dpkg/info/dash.pos* var/lib/dpkg/info/dash.pre*
 #dpkg --remove --force-remove-essential dash
 #apt-get remove -y --allow-remove-essential dash
 #apt-get remove -y --allow-remove-essential apt
 apt-get install debianutils
-dpkg -P --force-remove-essential dash
+dpkg -P --force-remove-essential --force-all dash
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
