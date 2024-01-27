@@ -90,7 +90,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 rm var/lib/dpkg/info/dash.postrm
 #dpkg --remove --force-remove-essential dash
-apt-get remove --allow-remove-essential dash
+apt-get remove -y --allow-remove-essential dash
 
 cd bin && ln -sf bash sh && cd -
 
