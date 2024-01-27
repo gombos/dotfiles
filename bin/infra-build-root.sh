@@ -80,8 +80,6 @@ fi
 packages_update_db.sh
 packages_upgrade.sh
 
-cd bin && ln -sf bash sh && cd -
-
 # services that are REQUIRED to start at boot
 # sysext is not ready at boot
 
@@ -90,7 +88,9 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-rm var/lib/dpkg/info/dash.postrm
+cd bin && rm -rf sh && ln -s bash sh && cd -
+
+rm var/lib/dpkg/info/dash.post*
 #dpkg --remove --force-remove-essential dash
 apt-get remove -y --allow-remove-essential dash
 apt-get remove -y --allow-remove-essential apt
