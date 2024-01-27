@@ -90,28 +90,15 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
-rm var/lib/dpkg/info/dash.pos* var/lib/dpkg/info/dash.pre*
-rm var/lib/dpkg/info/debianutils.pos* var/lib/dpkg/info/debianutils.pre*
-#rm var/lib/dpkg/info/apt.pos* var/lib/dpkg/info/apt.pre*
+rm var/lib/dpkg/info/dash.*rm
 
 #dpkg --remove --force-remove-essential dash
-#apt-get remove -y --allow-remove-essential dash
-#apt-get remove -y --allow-remove-essential apt
-#apt-get install debianutils
-
-rm -rf var/lib/dpkg/triggers/
+#rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
-#dpkg -P --force-remove-essential --force-all --no-triggers dash
-#dpkg -P --force-remove-essential --force-all --no-triggers apt
-#dash apt
 
 apt-get remove -y --allow-remove-essential dash
-#apt-get remove -y --allow-remove-essential debianutils
+
 cd bin && rm -rf sh && ln -s bash sh && cd -
-
-apt-get remove -y --allow-remove-essential apt
-
-ls -la bin/sh
 
 # log installed packages
 dpkg -l
