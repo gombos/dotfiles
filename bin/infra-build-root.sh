@@ -88,38 +88,27 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+#echo "dash dash/sh boolean false" | debconf-set-selections
+#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
-echo "bash bash/sh boolean true" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
+#echo "bash bash/sh boolean true" | debconf-set-selections
+#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
 
-ls -la bin/  | grep ash
-
-cd bin && ln -sf bash sh && cd -
-
-ls -la bin/sh
-ls -la usr/bin/sh
-
-ls -la bin/  | grep ash
-
-rm var/lib/dpkg/info/dash.postrm
-apt-mark hold debianutils
+rm var/lib/dpkg/info/dash.postrm var/lib/dpkg/info/debianutils.postrm
 dpkg --remove --force-remove-essential dash
+
+packages_update_db.sh
+
 apt-get install --reinstall bash debianutils
 
-ls -la bin/  | grep ash
+packages_update_db.sh
 
 cd bin && ln -sf bash sh && cd -
 
 ls -la bin/sh
-ls -la usr/bin/sh
-
-ls -la bin/ | grep ash
 
 # log installed packages
 dpkg -l
-
 
 fi
 
