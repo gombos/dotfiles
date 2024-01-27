@@ -98,7 +98,7 @@ ln -sf bash bin/sh
 
 #ls -la bin/
 
-#apt-get purge -y --allow-remove-essential dash
+apt-get remove -y --allow-remove-essential dash
 
 ls -la bin/
 
