@@ -77,8 +77,8 @@ fi
 ##echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. etc/os-release && echo "$RELEASE") stable" | tee etc/apt/sources.list.d/docker.list > /dev/null
 #echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. etc/os-release && echo "$RELEASE") stable" | tee etc/apt/sources.list.d/docker.list > /dev/null
 
-echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+#echo "dash dash/sh boolean false" | debconf-set-selections
+#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -91,14 +91,14 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-echo "dash dash/sh boolean false" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+#echo "dash dash/sh boolean false" | debconf-set-selections
+#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
-ln -sf /usr/bash bin/sh
+#ln -sf /usr/bash bin/sh
 
-ls -la bin/
+#ls -la bin/
 
-apt-get purge -y --allow-remove-essential dash
+#apt-get purge -y --allow-remove-essential dash
 
 ls -la bin/
 
