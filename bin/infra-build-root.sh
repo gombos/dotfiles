@@ -88,14 +88,9 @@ install_my_packages.sh packages-boot.l packages-core.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-#echo "dash dash/sh boolean false" | debconf-set-selections
-#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
-
-#echo "bash bash/sh boolean true" | debconf-set-selections
-#DEBIAN_FRONTEND=noninteractive dpkg-reconfigure bash
-
 rm var/lib/dpkg/info/dash.postrm
-dpkg --remove --force-remove-essential dash apt
+#dpkg --remove --force-remove-essential dash
+apt-get remove --allow-remove-essential dash
 
 cd bin && ln -sf bash sh && cd -
 
