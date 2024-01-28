@@ -90,12 +90,14 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
-rm var/lib/dpkg/info/dash.*rm
+#rm var/lib/dpkg/info/dash.*rm
 
 #dpkg --remove --force-remove-essential dash
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
+# modern version of essential packages
+apt-get remove -y usr-is-merged
 apt-get remove -y --allow-remove-essential gzip # prefer pigz
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
@@ -110,9 +112,12 @@ cd -
 # remove alternative symlinks from base
 cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
+# 64 bit only
+rm -rf lib*32
+
 # debug
-#dpkg -l
-#cd usr/bin && ls -la && cd -
+dpkg -l
+cd usr/bin && ls -la && cd -
 fi
 
 ########## EXTRA
