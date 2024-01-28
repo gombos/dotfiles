@@ -102,7 +102,7 @@ apt-get remove -y --allow-remove-essential dash # prefer bash
 cd bin &&
   rm -rf sh && ln -s bash sh &&
   rm -rf awk && ln -s gawk awk &&
-  rm -rf which && ln -s which which.debianutils &&
+  rm -rf which && ln -s which.debianutils which &&
 cd -
 
 # remove alternative symlinks from base
