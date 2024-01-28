@@ -96,12 +96,16 @@ rm var/lib/dpkg/info/dash.*rm
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
-apt-get remove -y --allow-remove-essential dash
+apt-get remove -y --allow-remove-essential mawk # prefer gawk
+apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
 # log installed packages
 dpkg -l
+
+# remove alternative symlinks from base
+cd usr/bin && ls -la | grep /etc/alternatives && cd -
 
 fi
 
