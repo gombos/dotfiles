@@ -100,7 +100,6 @@ apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
-  rm -rf 1sh 1awk 1which &&
   ln -fs bash sh &&
   ln -fs gawk awk &&
   ln -fs which.debianutils which &&
@@ -111,7 +110,7 @@ cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' '
 
 # debug
 #dpkg -l
-cd usr/bin && ls -la && cd -
+#cd usr/bin && ls -la && cd -
 fi
 
 ########## EXTRA
