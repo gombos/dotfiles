@@ -109,7 +109,7 @@ cd bin &&
 cd -
 
 # remove alternative symlinks from base
-cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # 64 bit only
 rm -rf lib*32
