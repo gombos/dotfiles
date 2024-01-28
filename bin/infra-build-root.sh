@@ -99,15 +99,18 @@ rm var/lib/dpkg/info/dash.*rm
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
-cd bin && rm -rf sh && ln -s bash sh && cd -
-
-# log installed packages
-dpkg -l
+cd bin &&
+  rm -rf sh && ln -s bash sh &&
+  rm -rf awk && ln -s gawk awk &&
+  rm -rf which && ln -s which which.debianutils &&
+cd -
 
 # remove alternative symlinks from base
 cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
-cd usr/bin && ls -la && cd -
 
+# debug
+#dpkg -l
+cd usr/bin && ls -la && cd -
 fi
 
 ########## EXTRA
