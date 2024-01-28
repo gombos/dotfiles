@@ -106,11 +106,11 @@ cd bin &&
 cd -
 
 # remove alternative symlinks from base
-cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+#cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # debug
 #dpkg -l
-#cd usr/bin && ls -la && cd -
+cd usr/bin && ls -la && cd -
 fi
 
 ########## EXTRA

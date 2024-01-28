@@ -18,3 +18,4 @@ diffutils
 procps
 openssl
 gawk
+pigz
