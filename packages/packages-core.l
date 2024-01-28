@@ -10,7 +10,6 @@ util-linux
 coreutils
 tar
 sed
-gzip
 grep
 e2fsprogs
 findutils

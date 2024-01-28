@@ -103,15 +103,16 @@ apt-get remove -y --allow-remove-essential dash # prefer bash
 cd bin &&
   ln -fs bash sh &&
   ln -fs gawk awk &&
+  ln -fs pigz gzip &&
   ln -fs which.debianutils which &&
 cd -
 
 # remove alternative symlinks from base
-#cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # debug
 #dpkg -l
-cd usr/bin && ls -la && cd -
+#cd usr/bin && ls -la && cd -
 fi
 
 ########## EXTRA
