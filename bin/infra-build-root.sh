@@ -105,7 +105,8 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 dpkg -l
 
 # remove alternative symlinks from base
-cd usr/bin && ls -la | grep /etc/alternatives && cd -
+cd usr/bin && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+cd usr/bin && ls -la && cd -
 
 fi
 
