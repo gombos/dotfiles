@@ -96,6 +96,7 @@ rm var/lib/dpkg/info/dash.*rm
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
+apt-get remove -y --allow-remove-essential gzip # prefer pigz
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
