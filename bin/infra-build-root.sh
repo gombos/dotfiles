@@ -97,7 +97,7 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
 # modern version of essential packages
-apt-get remove -y usr-is-merged
+apt-get remove -y usr-is-merged usrmerge
 apt-get remove -y --allow-remove-essential gzip # prefer pigz
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
