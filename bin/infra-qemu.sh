@@ -1,12 +1,15 @@
 if [ -f "$1" ]; then
   ISO=$1
 else
-  ISO="/go/efi/isos/linux.iso"
+  ISO="/go/efi/linux.iso"
 fi
 
 mkdir /tmp/mnt
 sudo umount /tmp/mnt 2>/dev/null
 sudo mount $ISO /tmp/mnt
+
+#sudo ls -la /tmp/mnt/kernel/
+sudo ls -la  /tmp/mnt/kernel/initrd*img
 
 #qemu-system-x86_64 -nodefaults -snapshot -cpu host -boot d -cdrom  ~/linux.iso -m 4G -machine type=q35,accel=hvf -smp 2 -net user -net nic -vga virtio -usb -device usb-tablet  -display default,show-cursor=on -device ich9-intel-hda,addr=1f.1 -audiodev pa,id=snd0  -device hda-output,audiodev=snd0
 
@@ -20,9 +23,12 @@ sudo mount $ISO /tmp/mnt
 #qemu-system-x86_64 -m 512 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -drive file=/mnt/Live/squashfs.img,if=ide,format=raw -netdev user,id=net0 -device e1000,netdev=net0  -append "console=ttyS0 root=/dev/sda rw net.ifnames=0"
 
 # with initrd
-cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO \
--append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
+#sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd
+
+#sudo qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
 
 sudo umount /tmp/mnt 2>/dev/null
 
 # -nodefaults -cpu host
+
+# qemu-system-x86_64 -m 1024  --enable-kvm --cdrom linux-core.iso  -global driver=cfi.pflash01,property=secure,value=on -drive if=pflash,format=raw,unit=0,file="/usr/share/OVMF/OVMF_CODE.fd",readonly=on -boot d -nographic -serial mon:stdio
