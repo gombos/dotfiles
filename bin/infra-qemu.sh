@@ -23,9 +23,7 @@ sudo ls -la  /tmp/mnt/kernel/initrd*img
 #qemu-system-x86_64 -m 512 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -drive file=/mnt/Live/squashfs.img,if=ide,format=raw -netdev user,id=net0 -device e1000,netdev=net0  -append "console=ttyS0 root=/dev/sda rw net.ifnames=0"
 
 # with initrd
-#sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd
-
-#sudo qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
+sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && sudo qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
 
 sudo umount /tmp/mnt 2>/dev/null
 
