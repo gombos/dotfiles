@@ -14,7 +14,7 @@ RUN rsync -ac /rootfs/etc/ /rootfscore/etc
 RUN mkdir -p /rootfsdelta/usr
 RUN rsync -acn --info=NAME /rootfs/usr/ /rootfscore/usr | cut -d' ' -f1  > /tmp/filelist
 RUN rsync -qlptgoD --no-dirs --files-from=/tmp/filelist /rootfs/usr /rootfsdelta/usr/ ; exit 0
-RUN mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.` && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "EXTENSION_RELOAD_MANAGER=1" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext
+RUN mkdir -p /rootfsdelta/usr/lib/extension-release.d/ && echo "ID=_any" > /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "ARCHITECTURE=_any" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext && echo "EXTENSION_RELOAD_MANAGER=1" >> /rootfsdelta/usr/lib/extension-release.d/extension-release.sysext
 RUN rm -rf /rootfsdelta/usr/lib/os-release && rm -rf /rootfsdelta/usr/lib/modules && ln -sf /run/initramfs/modules /rootfsdelta/usr/lib/modules && rm -rf /rootfsdelta/usr/lib/firmware && ln -sf /run/initramfs/firmware /rootfsdelta/usr/lib/firmware && mksquashfs /rootfsdelta /tmp/sysext.raw -comp zstd
 RUN touch /rootfscore/etc/hosts && rm -rf /rootfscore/etc/resolv.conf /rootfscore/usr/lib/firmware/* && mksquashfs /rootfscore /tmp/squashfs.img -comp zstd
 
