@@ -15,7 +15,6 @@ OUT_DIR=${OUT_DIR:=/tmp}
 mv /iso /tmp/
 mv /efi/* /tmp/iso/
 mkdir -p /tmp/iso/LiveOS /tmp/iso/kernel /tmp/iso/extensions
-chmod +x /tmp/iso/LiveOS  /tmp/iso/kernel  /tmp/iso/extensions
 mv /tmp/iso/squashfs.img /tmp/iso/LiveOS/
 mv /tmp/iso/sysext.raw   /tmp/iso/extensions/
 mv /boot/vmlinuz-* /tmp/iso/kernel/
@@ -45,7 +44,7 @@ cd kernel && ln -sf vmlinuz-* vmlinuz && cd ..
 
 find .
 chown -R 0:0 .
-chmod -R 444 .
+#chmod -R 444 .
 chmod +x LiveOS kernel extensions
 ln -sf kernel
 
