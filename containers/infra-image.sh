@@ -46,6 +46,7 @@ cd kernel && ln -sf vmlinuz-* vmlinuz && cd ..
 find .
 chown -R 0:0 .
 chmod -R 444 .
+chmod +x LiveOS kernel extensions
 ln -sf kernel
 
 xorriso \
