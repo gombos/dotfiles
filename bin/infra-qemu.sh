@@ -8,9 +8,6 @@ mkdir /tmp/mnt
 sudo umount /tmp/mnt 2>/dev/null
 sudo mount $ISO /tmp/mnt
 
-#sudo ls -la /tmp/mnt/kernel/
-sudo ls -la  /tmp/mnt/kernel/initrd*img
-
 #qemu-system-x86_64 -nodefaults -snapshot -cpu host -boot d -cdrom  ~/linux.iso -m 4G -machine type=q35,accel=hvf -smp 2 -net user -net nic -vga virtio -usb -device usb-tablet  -display default,show-cursor=on -device ich9-intel-hda,addr=1f.1 -audiodev pa,id=snd0  -device hda-output,audiodev=snd0
 
 # simplest to boot, but does not work
@@ -24,6 +21,9 @@ sudo ls -la  /tmp/mnt/kernel/initrd*img
 
 # with initrd
 sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && sudo qemu-system-x86_64 -m 1024 -snapshot -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 systemd.mask=docker root=live:CDLABEL=ISO rootfstype=iso9660"
+
+# todo
+#switch to UEFI boot with full iso as test case
 
 sudo umount /tmp/mnt 2>/dev/null
 
