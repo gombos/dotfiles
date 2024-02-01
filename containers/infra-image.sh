@@ -44,7 +44,6 @@ cd kernel && ln -sf vmlinuz-* vmlinuz && cd ..
 
 find .
 chown -R 0:0 .
-#chmod -R 444 .
 chmod +x LiveOS kernel extensions
 ln -sf kernel
 
@@ -69,22 +68,17 @@ xorriso \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
-
 # make unified kernel
-echo "root=/dev/sr0" > /tmp/cmdline
+echo "console=ttyS0 gombi root=live:/dev/sr0 rootfstype=iso9660" > /tmp/cmdline
 objcopy --verbose  \
     --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
     --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
     --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
+    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
     /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/EFI/BOOT/BOOTX64.efi
-
-#   --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
-# 184418304
-# 176M
 
 ## experiment for minimal iso
 rm -rf extensions
-#cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
 
 ## todo - calculate size/count
 dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
@@ -93,7 +87,7 @@ LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
 LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
 rm -rf boot efi isolinux kernel EFI syslinux
 
-find /tmp/iso
+ls -lRah /tmp/iso
 
 xorriso \
    -as mkisofs \
