@@ -20,11 +20,11 @@ sudo mount $ISO /tmp/mnt
 #qemu-system-x86_64 -m 512 -snapshot -nographic -kernel /mnt/kernel/vmlinuz -drive file=/mnt/Live/squashfs.img,if=ide,format=raw -netdev user,id=net0 -device e1000,netdev=net0  -append "console=ttyS0 root=/dev/sda rw net.ifnames=0"
 
 # with initrd
-#sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && sudo qemu-system-x86_64 -m 512 -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 root=live:CDLABEL=ISO"
+sudo cat /tmp/mnt/kernel/initrd*img > /tmp/initrd && sudo qemu-system-x86_64 -m 512 -nographic --enable-kvm -kernel /tmp/mnt/kernel/vmlinuz -initrd /tmp/initrd --cdrom $ISO -append "console=ttyS0 root=live:CDLABEL=ISO"
 
 # todo
 #switch to UEFI boot with full iso as test case
-qemu-system-x86_64 -m 1024 -nographic --enable-kvm --cdrom /go/efi/linux.iso -global driver=cfi.pflash01,property=secure,value=on -drive if=pflash,format=raw,unit=0,file="/usr/share/OVMF/OVMF_CODE.fd",readonly=on
+#qemu-system-x86_64 -m 1024 -nographic --enable-kvm --cdrom /go/efi/linux.iso -global driver=cfi.pflash01,property=secure,value=on -drive if=pflash,format=raw,unit=0,file="/usr/share/OVMF/OVMF_CODE.fd",readonly=on
 
 sudo umount /tmp/mnt 2>/dev/null
 
