@@ -267,6 +267,8 @@ cp .config oldconfig
 ./scripts/config --set-val CONFIG_X86_X32 n
 ./scripts/config --set-val CONFIG_FTRACE n
 
+./scripts/config --set-val CONFIG_CMDLINE_BOOL y
+./scripts/config --set-str CONFIG_CMDLINE "console=ttyS0 root=live:CDLABEL=ISO gombi"
 # proxmox
 
 #  28 -m INTEL_MEI_WDT \
