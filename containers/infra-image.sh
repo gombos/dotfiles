@@ -69,9 +69,19 @@ xorriso \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
+
+# make unified kernel
+echo "rd.live.overlay.overlayfs=1 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+objcopy --verbose  \
+    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
+    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
+    --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
+    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
+    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/EFI/BOOT/BOOTX64.efi
+
 ## experiment for minimal iso
 rm -rf extensions
-cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
+#cp kernel/vmlinuz EFI/BOOT/BOOTX64.efi
 
 ## todo - calculate size/count
 dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=20
