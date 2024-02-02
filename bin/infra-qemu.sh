@@ -1,12 +1,13 @@
 if [ -f "$1" ]; then
   ISO=$1
 else
-  ISO="/go/efi/linux.iso"
+  #ISO="/go/efi/linux.iso"
+  ISO=~/linux-core.iso
 fi
 
-mkdir /tmp/mnt
-sudo umount /tmp/mnt 2>/dev/null
-sudo mount $ISO /tmp/mnt
+#mkdir /tmp/mnt
+#sudo umount /tmp/mnt 2>/dev/null
+#sudo mount $ISO /tmp/mnt
 
 #qemu-system-x86_64 -nodefaults -snapshot -cpu host -boot d -cdrom  ~/linux.iso -m 4G -machine type=q35,accel=hvf -smp 2 -net user -net nic -vga virtio -usb -device usb-tablet  -display default,show-cursor=on -device ich9-intel-hda,addr=1f.1 -audiodev pa,id=snd0  -device hda-output,audiodev=snd0
 
@@ -24,9 +25,9 @@ sudo mount $ISO /tmp/mnt
 
 # todo
 #switch to UEFI boot with full iso as test case
-qemu-system-x86_64 -m 1024 -nographic --enable-kvm --cdrom ~/linux-core.iso -global driver=cfi.pflash01,property=secure,value=on -drive if=pflash,format=raw,unit=0,file="/usr/share/OVMF/OVMF_CODE.fd",readonly=on
+qemu-system-x86_64 -m 1024 -nographic --enable-kvm --cdrom $ISO -global driver=cfi.pflash01,property=secure,value=on -drive if=pflash,format=raw,unit=0,file="/usr/share/OVMF/OVMF_CODE.fd",readonly=on  -fw_cfg name=opt/com.name.domain.your.example,string=1
 
-sudo umount /tmp/mnt 2>/dev/null
+#sudo umount /tmp/mnt 2>/dev/null
 
 # -nodefaults -cpu host
 

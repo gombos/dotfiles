@@ -65,9 +65,11 @@ cp .config oldconfig
 ./scripts/config --set-val CONFIG_MICROCODE_INTEL y
 
 # EFI
- ./scripts/config --set-val CONFIG_EFI y
- ./scripts/config --set-val CONFIG_EFI_STUB y
- ./scripts/config --set-val CONFIG_EFI_HANDOVER_PROTOCOL y
+./scripts/config --set-val CONFIG_EFI y
+./scripts/config --set-val CONFIG_EFI_STUB y
+./scripts/config --set-val CONFIG_EFI_HANDOVER_PROTOCOL y
+./scripts/config --set-val CONFIG_FW_CFG_SYSFS y
+./scripts/config --set-val CONFIG_EFI_SECRET y
 
 # modules
 ./scripts/config --set-val CONFIG_MODULES y

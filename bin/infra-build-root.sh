@@ -97,14 +97,12 @@ rm var/lib/dpkg/info/dash.*rm
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
 # modern version of essential packages
-apt-get remove -y --allow-remove-essential gzip # prefer pigz
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
   ln -fs bash sh &&
   ln -fs gawk awk &&
-  ln -fs pigz gzip &&
   ln -fs which.debianutils which &&
 cd -
 

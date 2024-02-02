@@ -17,4 +17,5 @@ diffutils
 procps
 openssl
 gawk
-pigz
+gzip
+efibootmgr
