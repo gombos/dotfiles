@@ -31,6 +31,7 @@ mkdir /tmp/isotemp
 mv isolinux/bios.img /tmp/isotemp/
 mv isolinux/efiboot.img /tmp/isotemp/
 
+# support BIOS and UEFI
 cd kernel && ln -sf vmlinuz-* vmlinuz && cd ..
 
 find .
