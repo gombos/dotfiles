@@ -1,4 +1,4 @@
-# builds for about 2:30 hours on GA
+# builds for about 1:30 hours on GA
 
 . $REPO/bin/infra-env.sh
 
@@ -13,12 +13,6 @@ apt-get update -y -qq -o Dpkg::Use-Pty=0
 
 apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 autoconf build-essential libssl-dev gawk openssl libssl-dev libelf-dev libudev-dev libpci-dev flex bison cpio zstd wget bc kmod git squashfs-tools cpio dracut-core ca-certificates apt-utils ca-certificates git fakeroot gzip dracut-core wget linux-base sudo libelf1 python3 dkms build-essential rsync linux-headers-generic
 
-#echo "deb https://deb.debian.org/debian bookworm non-free-firmware" >> /etc/apt/sources.list
-#apt-get update -y -qq -o Dpkg::Use-Pty=0
-
-# device firmware - i916 and nvidea, Intel Wireless cards
-#apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 firmware-linux-free firmware-misc-nonfree firmware-iwlwifi
-
 find /lib/firmware
 
 rm -rf linux-*
@@ -30,10 +24,6 @@ rm -rf linux-$KERNEL.tar.xz
 rm -rf /var/lib/apt /var/cache
 
 cd linux-$KERNEL
-
-#cp /efi/kernel/initrd.img /tmp/initramfs.cpio.gz
-
-#ls -la /tmp/initramfs.cpio.gz
 
 cp $REPO/containers/kernelconfig .config
 
@@ -356,18 +346,5 @@ $REPO/bin/infra-install-vmware-workstation-modules.sh
 #/usr/include/
 #make headers_install
 #make clean
-
-
-# todo - add a stp to generate unified kernel
-#echo "Signing unified kernel"
-
-#objcopy \
-#    --add-section .osrel=/usr/lib/os-release --change-section-vma .osrel=0x20000 \
-#    --add-section .cmdline=cmdline --change-section-vma .cmdline=0x30000 \
-#    --add-section .linux=/boot/vmlinuz --change-section-vma .linux=0x2000000 \
-#    --add-section .initrd=/boot/initrd.img --change-section-vma .initrd=0x3000000 \
-#    /usr/lib/systemd/boot/efi/linuxx64.efi.stub \
-#    vmlinuz.unsigned.efi
-# see https://github.com/pop-os/core/blob/master/res/image.sh
 
 df -h
