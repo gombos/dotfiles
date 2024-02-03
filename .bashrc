@@ -36,14 +36,14 @@ stty -ixon -ixoff
 
 # command prompt username
 function psusername {
-  if [ $UID != 501 ] && [ $UID != 1000 ] ; then
+  if [ $UID != 501 ] && [ $UID != 1000 ] && [ $UID != 1561434206 ]; then
     echo -n $USER; echo -n ':';
   fi
 }
 
 # command prompt hostname
 function pshostname {
-  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "mac.lan" ]  ; then
+  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "mac.lan" ]  && [ $HOSTNAME != "2033000807" ] ; then
     echo -n $HOSTNAME; echo -n ':';
   fi
 }
