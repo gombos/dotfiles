@@ -63,7 +63,7 @@ xorriso \
 # make unified kernel
 #echo "console=ttyS0 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
-echo "" > /tmp/cmdline
+echo "console=ttyS0" > /tmp/cmdline
 
 objcopy --verbose  \
     --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
