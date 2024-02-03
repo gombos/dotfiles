@@ -61,7 +61,10 @@ xorriso \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
 # make unified kernel
-echo "console=ttyS0 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+#echo "console=ttyS0 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
+
+echo "" > /tmp/cmdline
+
 objcopy --verbose  \
     --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
     --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
