@@ -9,6 +9,11 @@ softwareupdate --all --install --force
 brew update
 brew upgrade
 
+brew install micro bash qemu
+brew install --cask karabiner-elements		kitty				microsoft-edge			microsoft-remote-desktop	spotify				visual-studio-code
+
+exit
+
 # brave - incognito browser
 # cd Library/Preferences
 # defaults write com.brave.Browser IncognitoModeAvailability -integer 2
