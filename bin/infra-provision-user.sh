@@ -6,19 +6,22 @@ cwd=$HOME
 
 cd $cwd
 
-ln .dotfiles/.bashrc
-ln .dotfiles/.profile
-ln .dotfiles/.inputrc
-ln .dotfiles/.hushlogin
 
-ln .dotfiles/.gtkrc-2.0
-ln .dotfiles/.mailcap
-ln .dotfiles/.Xresources
-ln .dotfiles/.xsessionrc
-ln .dotfiles/.Xmodmap
-ln .dotfiles/.gitconfig
 
-ln .dotfiles/.Xresources-HiDPI
+
+ln -f .dotfiles/.bashrc
+ln -f .dotfiles/.profile
+ln -f .dotfiles/.inputrc
+ln -f .dotfiles/.hushlogin
+
+ln -f .dotfiles/.gtkrc-2.0
+ln -f .dotfiles/.mailcap
+ln -f .dotfiles/.Xresources
+ln -f .dotfiles/.xsessionrc
+ln -f .dotfiles/.Xmodmap
+ln -f .dotfiles/.gitconfig
+
+ln -f .dotfiles/.Xresources-HiDPI
 
 cd $cwd
 mkdir -p .config
@@ -37,20 +40,20 @@ ln ../../../.dotfiles/.local/share/applications/web-incognito.desktop
 cd $cwd
 mkdir -p .config/kitty
 cd .config/kitty
-ln ../../.dotfiles/.config/kitty/kitty.conf
+ln -f ../../.dotfiles/.config/kitty/kitty.conf
 
 cd $cwd
 mkdir -p .config/micro
 cd .config/micro
-ln ../../.dotfiles/.config/micro/bindings.json
-ln ../../.dotfiles/.config/micro/settings.json
+ln -f ../../.dotfiles/.config/micro/bindings.json
+ln -f ../../.dotfiles/.config/micro/settings.json
 
 # VS code
 cd $cwd
 mkdir -p .config/Code/User
 cd .config/Code/User
-ln ../../../.dotfiles/.config/Code/User/settings.json
-ln ../../../.dotfiles/.config/Code/User/keybindings.json
+ln -f ../../../.dotfiles/.config/Code/User/settings.json
+ln -f ../../../.dotfiles/.config/Code/User/keybindings.json
 
 # panel
 cd $cwd
