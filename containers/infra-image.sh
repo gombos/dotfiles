@@ -7,8 +7,14 @@
 mkdir -p /var/lib/apt/lists/partial /var/cache/apt/archives/partial /var/lib/dpkg/
 touch /var/lib/dpkg/lock-frontend
 
-apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils
+echo 'deb https://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
+
+cat /etc/apt/sources.list
+
+apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -t bookworm-backports --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils
 #intel-microcode
+
+dpkg -l | grep systemd-boot-efi
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
