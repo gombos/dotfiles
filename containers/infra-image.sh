@@ -67,16 +67,22 @@ xorriso \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
 # make unified kernel
-#echo "console=ttyS0 root=live:/dev/disk/by-label/ISO" > /tmp/cmdline
 
-echo "console=ttyS0" > /tmp/cmdline
+#/usr/lib/systemd/ukify build
 
-objcopy --verbose  \
-    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
-    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
-    --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
-    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
-    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/EFI/BOOT/BOOTX64.efi
+ukify build \
+  --linux=/tmp/iso/kernel/vmlinuz \
+  --initrd=/tmp/iso/kernel/initrd.img \
+  --cmdline='console=ttyS0' \
+  --output=/tmp/iso/EFI/BOOT/BOOTX64.efi
+
+#echo "console=ttyS0" > /tmp/cmdline
+#objcopy --verbose  \
+#    --add-section .osrel="/etc/os-release" --change-section-vma .osrel=0x20000 \
+#    --add-section .cmdline="/tmp/cmdline" --change-section-vma .cmdline=0x30000 \
+#    --add-section .linux="/tmp/iso/kernel/vmlinuz" --change-section-vma .linux=0x40000 \
+#    --add-section .initrd="/tmp/iso/kernel/initrd.img" --change-section-vma .initrd=0x3000000 \
+#    /usr/lib/systemd/boot/efi/linuxx64.efi.stub /tmp/iso/EFI/BOOT/BOOTX64.efi
 
 ## experiment for minimal iso
 rm -rf extensions
