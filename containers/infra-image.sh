@@ -83,11 +83,11 @@ xorriso \
    -volid "ISO" \
    -output "/tmp/linux-core.iso" \
    -eltorito-alt-boot \
-     -e EFI/efiboot.img \
+     -e EFI/uki.img \
      -no-emul-boot \
    -graft-points \
       "." \
-      /efiboot.img=/tmp/efiboot.img
+      EFI/uki.img=/tmp/efiboot.img
 
 # log the size
 ls -lha /tmp/*.iso
