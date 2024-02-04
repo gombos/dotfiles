@@ -11,10 +11,14 @@ echo 'deb https://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sou
 
 cat /etc/apt/sources.list
 
-apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -t bookworm-backports --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils
+apt-get update -y -qq && apt-get upgrade -y -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -t bookworm-backports --no-install-recommends -o Dpkg::Use-Pty=0 xorriso systemd-boot-efi mtools binutils systemd
 #intel-microcode
 
-dpkg -l | grep systemd-boot-efi
+dpkg -l | grep systemd
+
+ls -la /usr/lib/systemd/ukify
+ukify
+which ukify
 
 OUT_DIR=${OUT_DIR:=/tmp}
 
