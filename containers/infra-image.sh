@@ -61,14 +61,15 @@ xorriso \
 /usr/lib/systemd/ukify build \
   --linux=/tmp/iso/kernel/vmlinuz \
   --initrd=/tmp/iso/kernel/initrd.img \
-  --cmdline='console=ttyS0,115200n8' \
+  --cmdline='console=ttyS0,115200n8 rd.live.squashimg=rootfs.img root=live:/dev/disk/by-label/ISO' \
   --output=/tmp/iso/EFI/BOOT/BOOTX64.efi
 
 ## experiment for minimal iso
 rm -rf extensions
+mv LiveOS/squashfs.img LiveOS/rootfs.img
 
 ## todo - calculate size/count
-dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=12
+dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=11
 mkfs.vfat /tmp/efiboot.img
 LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
 LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
