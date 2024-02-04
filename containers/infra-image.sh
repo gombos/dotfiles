@@ -69,7 +69,7 @@ rm -rf extensions
 mv LiveOS/squashfs.img LiveOS/rootfs.img
 
 ## todo - calculate size/count
-dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=11
+dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=12
 mkfs.vfat /tmp/efiboot.img
 LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
 LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
