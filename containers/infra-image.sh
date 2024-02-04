@@ -74,7 +74,7 @@ xorriso \
 
 #/usr/lib/systemd/ukify build
 
-ukify build \
+/usr/lib/systemd/ukify build \
   --linux=/tmp/iso/kernel/vmlinuz \
   --initrd=/tmp/iso/kernel/initrd.img \
   --cmdline='console=ttyS0' \
