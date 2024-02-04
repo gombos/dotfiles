@@ -87,7 +87,7 @@ xorriso \
      -no-emul-boot \
    -graft-points \
       "." \
-      /EFI/efiboot.img=/tmp/efiboot.img
+      /efiboot.img=/tmp/efiboot.img
 
 # log the size
 ls -lha /tmp/*.iso
