@@ -25,7 +25,8 @@ fi
 
 # todo
 #switch to UEFI boot with full iso as test case
-qemu-system-x86_64 -m 1024 -nographic -drive file=fat:rw:~/.dotfiles/boot,format=vvfat,label=CONFIG --cdrom $ISO -global driver=cfi.pflash01,property=secure,value=on  -drive if=pflash,format=raw,unit=0,file="/opt/homebrew/Cellar/qemu/8.2.0/share/qemu/edk2-x86_64-code.fd"
+f=$(ls /opt/homebrew/Cellar/qemu/*/share/qemu/edk2-x86_64-code.fd)
+qemu-system-x86_64 -m 1024 -nographic -drive file=fat:rw:~/.dotfiles/boot,format=vvfat,label=CONFIG --cdrom $ISO -global driver=cfi.pflash01,property=secure,value=on  -drive if=pflash,format=raw,unit=0,file="$f"
 #-drive if=pflash,format=raw,unit=0,file="/opt/homebrew/Cellar/qemu/8.2.0/share/qemu/edk2-x86_64-code.fd",readonly=on -smbios type=11,value=io.systemd.stub.kernel-cmdline-extra="$1"
 
 # -fw_cfg name=opt/io.dracut/cmdline,string="root=live:/dev/disk/by-label/ISO $1" -smbios type=11,value=io.dracut:cmdline=ro
