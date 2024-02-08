@@ -16,7 +16,7 @@ systemd
 
 # storage
 udisks2
-libblockdev-crypto2
+# libblockdev-crypto2, missing from sid
 
 ## Linux tools
 ## ===========
@@ -28,7 +28,7 @@ bluez
 wpa_supplicant
 
 # laptop
-thermald # monitors and controls temperature in laptops
+#thermald # monitors and controls temperature in laptops (might not be available on arm)
 tlp # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network

@@ -165,6 +165,7 @@ fi
 
 packages_update_db.sh
 install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-core.l packages-packages-extra.l
+install_my_packages.sh packages-*linux.l packages-x11-debian.l packages-container.l
 
 # use this install script only during initial container creation
 #rm -rf /usr/sbin/aur-install
