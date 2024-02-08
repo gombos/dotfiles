@@ -14,7 +14,7 @@ zip
 hashdeep
 
 # android devices
-scrcpy
+#scrcpy
 
 # networking
 iperf3

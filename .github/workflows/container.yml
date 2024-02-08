@@ -7,11 +7,12 @@ on:
             container:
                 type: choice
                 description: 'container'
-                default: 'debian:testing'
+                default: 'debian:sid'
                 options:
                     - "greyltc/archlinux-aur:paru"
                     - "debian:stable"
                     - "debian:testing"
+                    - "debian:sid"
                     - "fedora"
 permissions:
     packages: write

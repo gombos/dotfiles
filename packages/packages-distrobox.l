@@ -11,7 +11,5 @@ passwd
 pinentry-curses
 time
 wget
-libegl1-mesa
-libgl1-mesa-glx
 libvulkan1
 mesa-vulkan-drivers
