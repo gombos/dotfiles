@@ -167,22 +167,22 @@ packages_update_db.sh
 install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-core.l packages-packages-extra.l
 
 # use this install script only during initial container creation
-rm -rf /usr/sbin/aur-install
+#rm -rf /usr/sbin/aur-install
 
 # python venv
-apt-get install -y python3-venv
-/usr/bin/python3 -m venv /usr/local/
-/usr/local/bin/python3 -m pip install --upgrade pip
-/usr/local/bin/pip install --upgrade pip
+#apt-get install -y python3-venv
+#/usr/bin/python3 -m venv /usr/local/
+#/usr/local/bin/python3 -m pip install --upgrade pip
+#/usr/local/bin/pip install --upgrade pip
 
 # pipx
-/usr/local/bin/pip3 install pipx
+#/usr/local/bin/pip3 install pipx
 #pip install osxphotos
 
 # appimage - digikam
-mkdir -p /usr/local/bin/
-wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
-chmod +x /usr/local/bin/digikam
+#mkdir -p /usr/local/bin/
+#wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
+#chmod +x /usr/local/bin/digikam
 
 if [ "$ID" = "arch" ]; then
   /usr/bin/pacman --noconfirm -Syu
