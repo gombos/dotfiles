@@ -1,4 +1,4 @@
-ARG TAG=debian
+ARG TAG=debian:trixie
 #FROM archlinux
 #FROM greyltc/archlinux-aur:paru
 FROM $TAG
