@@ -21,7 +21,7 @@ udisks2
 ## Linux tools
 ## ===========
 
-systemd-ukify
+#systemd-ukify
 
 # wireless
 rfkill
