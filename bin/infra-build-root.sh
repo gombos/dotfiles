@@ -119,7 +119,11 @@ if [ "$TARGET" = "extra" ]; then
 # Does not need to be bootable
 # todo - make this a systemextension squashfs image
 
+sed -i 's/bookworm/sid/g' etc/apt/sources.list
+cat etc/apt/sources.list
+
 packages_update_db.sh
+packages_upgrade.sh
 
 install_my_packages.sh packages-base-baremetal.l
 
