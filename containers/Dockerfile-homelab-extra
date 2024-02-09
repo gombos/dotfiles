@@ -1,5 +1,5 @@
 FROM ghcr.io/gombos/base:bookworm
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
-RUN ./infra-build-root.sh base
+#RUN ./infra-build-root.sh base
 RUN ./infra-build-root.sh extra

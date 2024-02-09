@@ -1,10 +1,5 @@
 #!/bin/sh
 
-# Option to run this when rootfs gets instantiated/initalized/booted
-# Todo - maybe I can invoke rootfsoverlay at the end of this script to share some logic between the two scrips
-
-# Soft goal - try to keep the wire size (compressed) under 2GB and uncompressed size under 5 GB
-
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
   cp $REPO/packages/* /tmp/
@@ -133,6 +128,7 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 
 packages_update_db.sh
 
+install_my_packages.sh packages-boot.l packages-core.l
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
 
 infra-install-vmware-workstation.sh
