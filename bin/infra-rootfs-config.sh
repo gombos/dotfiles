@@ -278,6 +278,9 @@ rm -rf var/log/journal/*
 
 [ -f etc/hostname ] && rm -f etc/hostname 2>/dev/null || true
 
+
+sed -i 's/bookworm/sid/g' etc/apt/sources.list
+
 # -- common
 DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
