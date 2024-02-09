@@ -1,4 +1,4 @@
-FROM ghcr.io/gombos/base:bookworm
+FROM ghcr.io/gombos/base:sid
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 #RUN ./infra-build-root.sh base
