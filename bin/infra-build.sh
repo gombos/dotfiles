@@ -17,6 +17,7 @@ if echo $TARGET | grep -w -q kernel; then
   docker push     ghcr.io/gombos/kernel
 fi
 
+# todo - use mkosi instead
 if echo $TARGET | grep -w -q minbase; then
   sudo rm -rf /tmp/minbase
   sudo LANG=C debootstrap --variant=minbase --components=main,universe $RELEASE /tmp/minbase
