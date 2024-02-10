@@ -13,7 +13,8 @@ libnotify-bin
 locales
 
 # virtualization
-qemu-system-gui
+#qemu-system-gui
+qemu-system
 
 # networking
 iputils-ping
