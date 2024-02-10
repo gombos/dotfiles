@@ -22,7 +22,15 @@ udisks2
 ## ===========
 
 systemd-ukify
-mkosi
+ovmf
+python3-cryptography
+systemd-timesyncd
+bubblewrap
+systemd-container
+python3-all
+python3-setuptools
+python3-pytest
+#mkosi
 
 # wireless
 rfkill
