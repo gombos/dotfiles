@@ -31,7 +31,27 @@ python3-all
 python3-setuptools
 python3-pytest
 systemd-boot
+bash
+bubblewrap
+ca-certificates
+coreutils
 cpio
+diffutils
+dosfstools
+e2fsprogs
+kmod
+less
+mtools
+nano
+openssl
+socat
+strace
+swtpm
+systemd
+tar
+util-linux
+virtiofsd
+xfsprogs
 zstd
 #mkosi
 
