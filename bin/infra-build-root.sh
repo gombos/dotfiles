@@ -144,10 +144,10 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 packages_update_db.sh
 
 install_my_packages.sh packages-boot.l packages-core.l
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-packages.l packages-debian.l
 
 # make this container only later
-install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l packages-debian.l
+install_my_packages.sh packages-core.l packages-packages-extra.l packages-container.l
 
 infra-install-vmware-workstation.sh
 
@@ -188,5 +188,13 @@ curl -fsSL https://tailscale.com/install.sh | sh
 #  mv /usr/bin/pacman /usr/local/bin/
 #  mv /usr/bin/paru /usr/bin/pacman
 #fi
+
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+
+apt-get -y -qq autoremove
+dpkg --list | grep "^rc" | cut -d " " -f 3 | grep . && xargs dpkg --purge
+DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
+apt-get clean
 
 fi

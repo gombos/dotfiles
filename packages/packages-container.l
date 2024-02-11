@@ -77,3 +77,21 @@ ifuse
 xz-utils
 apparmor-utils
 exfatprogs
+
+
+# distrobox
+apt-utils
+bc
+dialog
+gnupg2
+less
+libnss-myhostname
+libvte-common
+lsof
+ncurses-base
+passwd
+pinentry-curses
+time
+wget
+libvulkan1
+mesa-vulkan-drivers
