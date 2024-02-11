@@ -1,6 +1,5 @@
 # container only
 
-
 # core tools
 unzip
 file
@@ -18,7 +17,7 @@ rename
 ripgrep-all # not on debian
 rmlint
 sqlite3
-# pandoc - large package
+pand - large package
 zip
 hashdeep
 
@@ -26,16 +25,15 @@ hashdeep
 #scrcpy
 
 # networking
-#iperf3
+iperf3
 net-tools
-#nmap
 mutt
 tcpdump
 nethogs
 rclone
-bitwarden-cli # not on debian
-tailscale     # not on debian
-linode-cli    # not on debian
+#bitwarden-cli # not on debian
+#tailscale     # not on debian
+#linode-cli    # not on debian
 #nomachine     # not on debian
 
 # tools
@@ -62,13 +60,10 @@ inetutils
 # Install on-demand
 # visidata # pip
 # EdgeGPT.EdgeGPT # pip only
-pandoc
-rclone
 caddy
 qemu-user-static
 gh
 nmap
-
 
 # make b complete even without container
 hfsutils
@@ -79,7 +74,7 @@ apparmor-utils
 exfatprogs
 
 
-# distrobox
+# distrobox trying to install these inside a container
 apt-utils
 bc
 dialog
@@ -115,60 +110,3 @@ wget
 util-linux
 libegl1-mesa
 libgl1-mesa-glx
-
-
-# container only
-
-# files
-antiword
-attr
-detox
-dos2unix
-rename
-#ripgrep-all # not on debian
-rmlint
-sqlite3
-# pandoc - large package
-zip
-hashdeep
-
-# android devices
-#scrcpy
-
-# networking
-iperf3
-net-tools
-#nmap
-mutt
-tcpdump
-nethogs
-rclone
-#bitwarden-cli # not on debian
-#tailscale     # not on debian
-#linode-cli    # not on debian
-#nomachine     # not on debian
-
-# tools
-bc
-htop
-lsof
-man-db
-strace
-make
-
-# filesystems
-xorriso
-dosfstools
-
-binutils
-graphicsmagick
-
-#gh
-jq
-openssh
-#caddy
-inetutils
-
-# Install on-demand
-# visidata # pip
-# EdgeGPT.EdgeGPT # pip only
