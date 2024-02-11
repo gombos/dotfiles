@@ -163,6 +163,13 @@ PATH=$PATH:.
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
+sed -i 's/bookworm/sid/g' etc/apt/sources.list
+cat etc/apt/sources.list
+
+packages_update_db.sh
+packages_upgrade.sh
+
+install_my_packages.sh packages-base-baremetal.l
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
