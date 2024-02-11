@@ -163,9 +163,13 @@ PATH=$PATH:.
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
+
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+
 packages_update_db.sh
-install_my_packages.sh packages-packages.l packages-apps.l packages-*linux.l "packages*-$ID.l" packages-distrobox.l packages-core.l packages-packages-extra.l
-install_my_packages.sh packages-*linux.l packages-x11-debian.l packages-container.l
+install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
+install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l
 
 # use this install script only during initial container creation
 #rm -rf /usr/sbin/aur-install
