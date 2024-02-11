@@ -32,6 +32,7 @@ python3-setuptools
 python3-pytest
 systemd-boot
 cpio
+zstd
 #mkosi
 
 # wireless
