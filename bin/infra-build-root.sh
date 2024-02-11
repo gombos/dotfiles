@@ -126,10 +126,7 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
-pwd
-ls -la etc/apt
-ls -la /etc/apt
-
+# todo - fix this properly for extra, this is anyways meaningless for container
 sed -i 's/bookworm/sid/g' etc/apt/sources.list
 cat etc/apt/sources.list
 
@@ -146,13 +143,14 @@ packages_update_db.sh
 install_my_packages.sh packages-boot.l packages-core.l
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-packages.l packages-debian.l
 
-# make this container only later
-install_my_packages.sh packages-core.l packages-packages-extra.l packages-container.l
-
 infra-install-vmware-workstation.sh
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
+
+if [ "$TARGET" = "container" ]; then
+  install_my_packages.sh packages-container.l
+fi
 
 #/usr/bin/pacman --noconfirm -Syu
 # todo - install more packages to container
