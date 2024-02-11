@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# three rootfs
+# initramfs with systemd - base
+# sysext - extra
+# docker container - container
+
 if ! [ -z "$REPO" ]; then
   cp $REPO/bin/* /tmp/
   cp $REPO/packages/* /tmp/
@@ -32,15 +37,6 @@ else
 fi
 
 echo "Building $RELEASE $TARGET on $ID"
-
-if [ "$TARGET" = "container" ]; then
-  #/usr/bin/pacman --noconfirm -Syu
-  packages_update_db.sh
-  packages_upgrade.sh
-  install_my_packages.sh packages-packages.l packages-container.l packages-core.l packages-distrobox.l
-  # todo - install more packages to container
-  # packages-apps.l packages-*linux.l "packages*-$ID.l"
-fi
 
 ########## BASE
 
@@ -114,10 +110,23 @@ fi
 
 ########## EXTRA
 
-if [ "$TARGET" = "extra" ]; then
+if [ "$TARGET" = "extra" || "$TARGET" = "container" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
 # todo - make this a systemextension squashfs image
+
+
+#PATH=$PATH:.
+
+#if [ "$ID" = "arch" ]; then
+#  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+#  pacman -Syyu
+##  useradd -m build
+##  pacman --noconfirm -Syu base-devel git sudo cargo
+##  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
+##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
+#fi
+
 
 sed -i 's/bookworm/sid/g' etc/apt/sources.list
 cat etc/apt/sources.list
@@ -135,48 +144,21 @@ packages_update_db.sh
 install_my_packages.sh packages-boot.l packages-core.l
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
 
+# make this container only later
+install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l packages-debian.l
+
 infra-install-vmware-workstation.sh
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
+#/usr/bin/pacman --noconfirm -Syu
+# todo - install more packages to container
+# packages-apps.l packages-*linux.l "packages*-$ID.l"
+
 # configure flatpack
 #rm -rf /var/lib/flatpak/repo
 #flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
-fi
-
-# container only....
-
-if [ "$TARGET" = "container" ]; then
-
-echo "Using $ID"
-
-PATH=$PATH:.
-
-#if [ "$ID" = "arch" ]; then
-#  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-#  pacman -Syyu
-##  useradd -m build
-##  pacman --noconfirm -Syu base-devel git sudo cargo
-##  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
-##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
-#fi
-
-sed -i 's/bookworm/sid/g' etc/apt/sources.list
-cat etc/apt/sources.list
-
-packages_update_db.sh
-packages_upgrade.sh
-
-install_my_packages.sh packages-base-baremetal.l
-
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-
-packages_update_db.sh
-install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
-install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l packages-debian.l
 
 # use this install script only during initial container creation
 #rm -rf /usr/sbin/aur-install
