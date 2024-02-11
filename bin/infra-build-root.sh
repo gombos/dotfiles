@@ -110,7 +110,7 @@ fi
 
 ########## EXTRA
 
-if [ "$TARGET" = "extra" || "$TARGET" = "container" ]; then
+if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 # Could run on my base image or other distro's base image
 # Does not need to be bootable
 # todo - make this a systemextension squashfs image
