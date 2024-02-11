@@ -169,7 +169,7 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 
 packages_update_db.sh
 install_my_packages.sh packages-apps.l packages-*linux.l "packages*-$ID.l" packages-x11-debian.l packages-container.l packages-packages.l
-install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l
+install_my_packages.sh packages-distrobox.l packages-core.l packages-packages-extra.l packages-debian.l
 
 # use this install script only during initial container creation
 #rm -rf /usr/sbin/aur-install
