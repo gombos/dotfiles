@@ -30,6 +30,7 @@ systemd-container
 python3-all
 python3-setuptools
 python3-pytest
+systemd-boot
 #mkosi
 
 # wireless
