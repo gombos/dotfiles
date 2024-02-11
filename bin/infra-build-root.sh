@@ -115,7 +115,6 @@ if [ "$TARGET" = "extra" || "$TARGET" = "container" ]; then
 # Does not need to be bootable
 # todo - make this a systemextension squashfs image
 
-
 #PATH=$PATH:.
 
 #if [ "$ID" = "arch" ]; then
@@ -127,6 +126,9 @@ if [ "$TARGET" = "extra" || "$TARGET" = "container" ]; then
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
+pwd
+ls -la etc/apt
+ls -la /etc/apt
 
 sed -i 's/bookworm/sid/g' etc/apt/sources.list
 cat etc/apt/sources.list
