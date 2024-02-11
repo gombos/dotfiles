@@ -14,7 +14,8 @@ locales
 
 # virtualization
 #qemu-system-gui
-qemu-system
+qemu-system-x86
+qemu-system-arm
 
 # networking
 iputils-ping
