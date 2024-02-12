@@ -17,7 +17,7 @@ rename
 ripgrep-all # not on debian
 rmlint
 sqlite3
-pand - large package
+pandoc - large package
 zip
 hashdeep
 
