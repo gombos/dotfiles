@@ -114,3 +114,4 @@ libgl1-mesa-glx
 
 initramfs-tools
 cloud-init
+snapd
