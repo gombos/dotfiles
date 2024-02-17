@@ -110,3 +110,6 @@ wget
 util-linux
 libegl1-mesa
 libgl1-mesa-glx
+
+initramfs-tools
+cloud-init
