@@ -127,8 +127,16 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 #fi
 
 # todo - fix this properly for extra, this is anyways meaningless for container
-sed -i 's/bookworm/sid/g' etc/apt/sources.list
-cat etc/apt/sources.list
+#sed -i 's/bookworm/sid/g' etc/apt/sources.list
+#cat etc/apt/sources.list
+
+DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+
+apt-get -y -qq autoremove
+dpkg --list | grep "^rc" | cut -d " " -f 3 | grep . && xargs dpkg --purge
+DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
+apt-get clean
 
 packages_update_db.sh
 packages_upgrade.sh
