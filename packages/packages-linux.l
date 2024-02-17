@@ -21,6 +21,9 @@ udisks2
 ## Linux tools
 ## ===========
 
+# networking
+networkd-dispatcher
+
 systemd-ukify
 ovmf
 python3-cryptography

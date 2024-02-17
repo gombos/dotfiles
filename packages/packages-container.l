@@ -47,6 +47,7 @@ make
 # filesystems
 xorriso
 dosfstools
+hfsplus
 
 binutils
 graphicsmagick
