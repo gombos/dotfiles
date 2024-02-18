@@ -141,9 +141,13 @@ apt-get clean
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-boot-extra.l  packages-boot.l packages-base-baremetal.l
+install_my_packages.sh packages-boot-extra.l
+install_my_packages.sh packages-boot.l
+install_my_packages.sh packages-base-baremetal.l
 
-install_my_packages.sh packages-linux.l packages-packages.l packages-debian.l
+install_my_packages.sh packages-linux.l
+install_my_packages.sh packages-packages.l
+install_my_packages.sh packages-debian.l
 
 # GUI
 install_my_packages.sh packages-apps-debian.l
