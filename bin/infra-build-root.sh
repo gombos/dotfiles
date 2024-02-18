@@ -146,7 +146,9 @@ install_my_packages.sh packages-boot-extra.l  packages-boot.l packages-base-bare
 install_my_packages.sh packages-linux.l packages-packages.l packages-debian.l
 
 # GUI
-install_my_packages.sh packages-apps-debian.l  packages-apps.l  packages-apps-linux.l
+install_my_packages.sh packages-apps-debian.l
+install_my_packages.sh packages-apps.l
+install_my_packages.sh packages-apps-linux.l
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
