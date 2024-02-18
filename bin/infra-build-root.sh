@@ -143,7 +143,6 @@ packages_upgrade.sh
 
 # order is important
 install_my_packages.sh packages-boot.l
-install_my_packages.sh packages-base-baremetal.l
 install_my_packages.sh packages-boot-extra.l
 
 install_my_packages.sh packages-linux.l
