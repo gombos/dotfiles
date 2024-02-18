@@ -116,3 +116,4 @@ cloud-init
 patch
 unattended-upgrades
 snapd
+grub-efi
