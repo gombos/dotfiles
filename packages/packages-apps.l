@@ -5,6 +5,6 @@ kitty
 xterm
 #vlc
 #libreoffice
-google-chrome
+#google-chrome
 
 #thunderbird

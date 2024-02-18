@@ -55,6 +55,7 @@ dbus-bin
 dbus-daemon
 dbus-session-bus-common
 dbus-system-bus-common
+dbus-user-session
 dbus-x11
 dconf-gsettings-backend
 dconf-service
@@ -69,6 +70,7 @@ dictionaries-common
 diffutils
 dirmngr
 distrobox
+distro-info-data
 dmidecode
 dmsetup
 dnsmasq
@@ -90,9 +92,10 @@ findutils
 flatpak
 fontconfig
 fontconfig-config
+fonts-dejavu-core
+fonts-dejavu-mono
 fonts-freefont-ttf
 fonts-inconsolata
-fonts-liberation
 fonts-urw-base35
 fuse3
 gawk
@@ -110,7 +113,6 @@ gnupg
 gnupg2
 gnupg-l10n
 gnupg-utils
-google-chrome-stable
 gparted
 gparted-common
 gpg
@@ -124,7 +126,11 @@ graphicsmagick
 graphicsmagick-imagemagick-compat
 grep
 groff-base
+grub2-common
 grub-common
+grub-efi
+grub-efi-amd64
+grub-efi-amd64-bin
 gtk2-engines
 gtk2-engines-pixbuf
 gtk-update-icon-cache
@@ -573,7 +579,6 @@ liburing2
 libusb-1.0-0
 libusbmuxd6
 libusbredirparser1
-libutempter0
 libuuid1
 libuv1
 libva2
@@ -736,6 +741,7 @@ partclone
 parted
 pass
 passwd
+patch
 pavucontrol
 pci.ids
 pciutils
@@ -749,6 +755,7 @@ pkexec
 polkitd
 poppler-data
 poppler-utils
+postfix
 powertop
 procps
 psmisc
@@ -761,6 +768,7 @@ python3.12
 python3.12-minimal
 python3-all
 python3-apparmor
+python3-apt
 python3-attr
 python3-blinker
 python3-certifi
@@ -770,6 +778,7 @@ python3-charset-normalizer
 python3-configobj
 python3-cryptography
 python3-dbus
+python3-distro-info
 python3-distutils
 python3-gi
 python3-idna
@@ -797,6 +806,7 @@ python3-setuptools
 python3-six
 python3-urllib3
 python3-yaml
+python-apt-common
 qemu-guest-agent
 qemu-system-arm
 qemu-system-common
@@ -825,6 +835,7 @@ sg3-utils
 sgml-base
 shared-mime-info
 smartmontools
+snapd
 socat
 sound-theme-freedesktop
 spice-vdagent
@@ -865,6 +876,7 @@ udev
 udisks2
 uhubctl
 uidmap
+unattended-upgrades
 unzip
 upower
 usbmuxd
@@ -883,7 +895,6 @@ x11-utils
 x11-xkb-utils
 x11-xserver-utils
 xauth
-xbitmaps
 xdg-dbus-proxy
 xdg-utils
 xdotool
@@ -908,7 +919,6 @@ xserver-xorg-video-intel
 xserver-xorg-video-nouveau
 xserver-xorg-video-radeon
 xserver-xorg-video-vmware
-xterm
 xtrlock
 xz-utils
 zathura
