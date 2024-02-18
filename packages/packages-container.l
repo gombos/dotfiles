@@ -113,7 +113,6 @@ libgl1-mesa-glx
 
 initramfs-tools
 cloud-init
-snapd
-postfix
 patch
 unattended-upgrades
+snapd

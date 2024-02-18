@@ -43,3 +43,6 @@ xserver-xorg-video-nouveau
 xserver-xorg-video-radeon
 xserver-xorg-video-vmware
 xserver-xorg-input-libinput
+
+# services
+postfix
