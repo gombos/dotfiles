@@ -153,6 +153,10 @@ install_my_packages.sh packages-apps-linux.l
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 
+packages_update_db.sh
+
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
+
 infra-install-vmware-workstation.sh
 
 # tailscale
