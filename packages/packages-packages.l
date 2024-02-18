@@ -32,3 +32,6 @@ pass
 
 #ifupdown
 #isc-dhcp-client
+
+
+newuidmap

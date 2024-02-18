@@ -89,3 +89,7 @@ openssh-server
 ethtool
 
 pass
+
+
+
+newuidmap
