@@ -96,6 +96,8 @@ fonts-dejavu-core
 fonts-dejavu-mono
 fonts-freefont-ttf
 fonts-inconsolata
+fonts-liberation
+fonts-liberation-sans-narrow
 fonts-urw-base35
 fuse3
 gawk
@@ -113,6 +115,7 @@ gnupg
 gnupg2
 gnupg-l10n
 gnupg-utils
+google-chrome-stable
 gparted
 gparted-common
 gpg
@@ -579,6 +582,7 @@ liburing2
 libusb-1.0-0
 libusbmuxd6
 libusbredirparser1
+libutempter0
 libuuid1
 libuv1
 libva2
@@ -895,6 +899,7 @@ x11-utils
 x11-xkb-utils
 x11-xserver-utils
 xauth
+xbitmaps
 xdg-dbus-proxy
 xdg-utils
 xdotool
@@ -919,6 +924,7 @@ xserver-xorg-video-intel
 xserver-xorg-video-nouveau
 xserver-xorg-video-radeon
 xserver-xorg-video-vmware
+xterm
 xtrlock
 xz-utils
 zathura
