@@ -74,7 +74,6 @@ xz-utils
 apparmor-utils
 exfatprogs
 
-
 # distrobox trying to install these inside a container
 apt-utils
 bc
@@ -115,3 +114,6 @@ libgl1-mesa-glx
 initramfs-tools
 cloud-init
 snapd
+postfix
+patch
+unattended-upgrades
