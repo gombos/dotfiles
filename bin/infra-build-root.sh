@@ -135,7 +135,7 @@ install_my_packages.sh packages-boot-extra.l
 
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-linux.l
-install_my_packages.sh packages-debian.l
+#install_my_packages.sh packages-debian.l
 
 # GUI
 install_my_packages.sh packages-apps.l

@@ -104,3 +104,7 @@ patch
 unattended-upgrades
 snapd
 grub-efi
+
+tesseract-ocr
+poppler-utils
+libimage-exiftool-perl

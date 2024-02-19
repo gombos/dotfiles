@@ -1,3 +1,5 @@
+# move some packages to container only
+
 ## Linux services
 ## ==============
 
@@ -143,3 +145,21 @@ xserver-xorg-input-libinput
 postfix
 
 distrobox
+# filesystems
+open-vm-tools-desktop
+spice-webdavd
+gddrescue
+gpg
+gpg-agent
+libnotify-bin
+locales
+
+# virtualization
+#qemu-system-gui
+qemu-system-x86
+qemu-system-arm
+
+# networking
+iputils-ping
+iputils-tracepath
+bind9-dnsutils
