@@ -161,7 +161,7 @@ packages_update_db.sh
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
 
-infra-install-vmware-workstation.sh
+#infra-install-vmware-workstation.sh
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh

@@ -5,8 +5,10 @@ cd /
 
 VMWARE_VERSION=15.5.7-17171714
 VMWARE_FILE=VMware-Workstation-Full-${VMWARE_VERSION}.x86_64.bundle
+#wget -q --no-verbose https://download3.vmware.com/software/wkst/file/${VMWARE_FILE}
 
-wget -q --no-verbose https://download3.vmware.com/software/wkst/file/${VMWARE_FILE}
+wget -q --no-verbose https://archive.org/download/vmware-workstation-full-15.5.7-17171714.x-86-64/${VMWARE_FILE}
+
 chmod +x ./${VMWARE_FILE}
 ./${VMWARE_FILE} --eulas-agreed
 ./${VMWARE_FILE} --uninstall-component=vmware-tools-linuxPreGlibc25
