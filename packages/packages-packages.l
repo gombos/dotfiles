@@ -1,9 +1,10 @@
 # avoid HW packages
 # avoid distro specific packages
 # The idea is that these pacages are always available when Linux is available
+# available on Linux and MacOS
+# installed only into sysext on Linux not at boot
 
 # core runtimes
-bash
 perl
 python3
 
@@ -12,7 +13,6 @@ git
 less
 micro
 rsync
-curl
 gnupg
 
 # networking
@@ -20,7 +20,6 @@ openssh-server
 ethtool
 
 pass
-util-linux
 
 # power management
 # apcupsd - this shoulw work from sysext

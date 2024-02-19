@@ -1,4 +1,6 @@
-# essential tools
+# essential user space
+# available on Linux and MacOS
+# available right after boot
 systemd-sysv # installs /sbin/init symlink to /lib/systemd/systemd
 kmod         # loading, inserting, and removing kernel modules
 sudo         # super user privileges

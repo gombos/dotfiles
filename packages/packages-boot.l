@@ -6,6 +6,8 @@
 # Can be used:
 # Boot on baremetal with bootloader and kernel in EFI
 
+# Not for inside containers
+
 # init, networking, sysext
 # this is the only package that is strictly mandatory
 systemd

@@ -168,7 +168,9 @@ provision:
       apt-get install -y --no-install-recommends docker.io socat
       apt-get install -y --no-install-recommends distrobox micro
       PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-boot.l
-      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-apps-debian.l
+      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-essential.l
+      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-desktop.l
+      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-desktop-apps.l
       apt autoremove -y
       apt clean -y
       sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"

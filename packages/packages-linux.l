@@ -14,7 +14,6 @@ upower
 dnsmasq
 nfs-utils
 hostapd
-systemd
 
 # storage
 udisks2
@@ -35,18 +34,9 @@ python3-setuptools
 python3-pytest
 systemd-boot
 acl
-bubblewrap
-ca-certificates
 cpio
-diffutils
-dosfstools
-e2fsprogs
 mtools
-openssl
 socat
-strace
-swtpm
-systemd
 virtiofsd
 xfsprogs
 zstd
@@ -67,7 +57,6 @@ tlp # kernel power management, disable radio (wifi, bluetooth) triggered by even
 
 ## Linux filesystems
 ## =================
-fuse3
 spice-vdagent
 qemu-guest-agent
 spice-webdavd
@@ -83,16 +72,11 @@ cryptsetup
 zerofree
 squashfs-tools
 
-xorriso
-dosfstools
-
-sudo
 adb
 flatpak
 debootstrap
 powertop
 psmisc
-time
 graphicsmagick-imagemagick-compat
 
 # Purpose: baremetal only packages
@@ -129,9 +113,6 @@ laptop-detect
 lm-sensors
 dmidecode
 
-# memory
-procps
-
 # video
 xserver-xorg-video-amdgpu
 xserver-xorg-video-ati
@@ -147,12 +128,8 @@ postfix
 distrobox
 # filesystems
 open-vm-tools-desktop
-spice-webdavd
 gddrescue
-gpg
-gpg-agent
 libnotify-bin
-locales
 
 # virtualization
 #qemu-system-gui

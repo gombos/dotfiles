@@ -74,7 +74,8 @@ packages_upgrade.sh
 # services that are REQUIRED to start at boot
 # sysext is not ready at boot
 
-install_my_packages.sh packages-boot*.l
+install_my_packages.sh packages-boot.l
+install_my_packages.sh packages-essential.l
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -131,16 +132,16 @@ packages_upgrade.sh
 
 # order is important
 install_my_packages.sh packages-boot.l
-install_my_packages.sh packages-boot-extra.l
+install_my_packages.sh packages-essential.l
 
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-linux.l
 #install_my_packages.sh packages-debian.l
 
-# GUI
-install_my_packages.sh packages-apps.l
+# desktop
+install_my_packages.sh packages-desktop.l
+install_my_packages.sh packages-desktop-apps.l
 install_my_packages.sh packages-apps-linux.l
-install_my_packages.sh packages-apps-debian.l
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
@@ -158,7 +159,6 @@ fi
 
 #/usr/bin/pacman --noconfirm -Syu
 # todo - install more packages to container
-# packages-apps.l packages-*linux.l "packages*-$ID.l"
 
 # configure flatpack
 #rm -rf /var/lib/flatpak/repo

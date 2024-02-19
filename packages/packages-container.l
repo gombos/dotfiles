@@ -4,9 +4,7 @@
 unzip
 file
 ripgrep
-wget
 bash-completion
-gawk
 
 # files
 antiword
@@ -37,9 +35,7 @@ rclone
 #nomachine     # not on debian
 
 # tools
-bc
 htop
-lsof
 man-db
 strace
 make
@@ -78,7 +74,6 @@ exfatprogs
 apt-utils
 bc
 dialog
-gnupg2
 libnss-myhostname
 libvte-common
 lsof
@@ -86,15 +81,10 @@ ncurses-base
 passwd
 pinentry-curses
 time
-wget
 libvulkan1
 mesa-vulkan-drivers
 
-diffutils
-findutils
 gnupg2
-procps
-sudo
 libegl1-mesa
 libgl1-mesa-glx
 
