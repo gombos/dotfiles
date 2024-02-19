@@ -143,13 +143,13 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/google.
 packages_update_db.sh
 packages_upgrade.sh
 
-install_my_packages.sh packages-packages.l
-install_my_packages.sh packages-linux.l
-#install_my_packages.sh packages-debian.l
+#install_my_packages.sh packages-packages.l
+#install_my_packages.sh packages-linux.l
+##install_my_packages.sh packages-debian.l
 
 # desktop
-install_my_packages.sh packages-desktop.l
-install_my_packages.sh packages-desktop-linux.l
+#install_my_packages.sh packages-desktop.l
+#install_my_packages.sh packages-desktop-linux.l
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
 
@@ -157,7 +157,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-
 curl -fsSL https://tailscale.com/install.sh | sh
 
 if [ "$TARGET" = "container" ]; then
-  install_my_packages.sh packages-container.l
+#  install_my_packages.sh packages-container.l
 fi
 
 #/usr/bin/pacman --noconfirm -Syu

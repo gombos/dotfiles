@@ -21,3 +21,4 @@ openssl
 gawk
 gzip
 efibootmgr
+ca-certificates
