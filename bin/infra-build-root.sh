@@ -156,9 +156,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-if [ "$TARGET" = "container" ]; then
+#if [ "$TARGET" = "container" ]; then
 #  install_my_packages.sh packages-container.l
-fi
+#fi
 
 #/usr/bin/pacman --noconfirm -Syu
 # todo - install more packages to container
