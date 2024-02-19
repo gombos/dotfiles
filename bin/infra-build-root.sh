@@ -126,18 +126,6 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
-# todo - fix this properly for extra, this is anyways meaningless for container
-#sed -i 's/bookworm/sid/g' etc/apt/sources.list
-#cat etc/apt/sources.list
-
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
-
-apt-get -y -qq autoremove
-dpkg --list | grep "^rc" | cut -d " " -f 3 | grep . && xargs dpkg --purge
-DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
-apt-get clean
-
 packages_update_db.sh
 packages_upgrade.sh
 
@@ -145,14 +133,14 @@ packages_upgrade.sh
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-boot-extra.l
 
-install_my_packages.sh packages-linux.l
 install_my_packages.sh packages-packages.l
+install_my_packages.sh packages-linux.l
 install_my_packages.sh packages-debian.l
 
 # GUI
-install_my_packages.sh packages-apps-debian.l
 install_my_packages.sh packages-apps.l
 install_my_packages.sh packages-apps-linux.l
+install_my_packages.sh packages-apps-debian.l
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
@@ -160,8 +148,6 @@ sh -c 'echo "deb [arch=$(dpkg --print-architecture)] https://dl.google.com/linux
 packages_update_db.sh
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
-
-#infra-install-vmware-workstation.sh
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh

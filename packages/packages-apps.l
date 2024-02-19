@@ -1,10 +1,9 @@
 # Purpose: Basic cross-platform desktop GUI apps
 
 kitty
-#sqlitebrowser
 xterm
+#sqlitebrowser
 #vlc
 #libreoffice
 #google-chrome
-
 #thunderbird

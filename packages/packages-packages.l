@@ -13,7 +13,6 @@ less
 micro
 rsync
 curl
-distrobox
 gnupg
 
 # networking
@@ -21,14 +20,14 @@ openssh-server
 ethtool
 
 pass
+util-linux
 
 # power management
 # apcupsd - this shoulw work from sysext
 
 # virtualization
-# qemu - make this architecture specific
-# swtpm
-# ovmf
+swtpm
+ovmf
 
 #ifupdown
 #isc-dhcp-client

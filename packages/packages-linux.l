@@ -16,7 +16,6 @@ systemd
 
 # storage
 udisks2
-# libblockdev-crypto2, missing from sid
 
 ## Linux tools
 ## ===========
@@ -25,7 +24,6 @@ udisks2
 networkd-dispatcher
 
 systemd-ukify
-ovmf
 python3-cryptography
 systemd-timesyncd
 bubblewrap
@@ -35,25 +33,18 @@ python3-setuptools
 python3-pytest
 systemd-boot
 acl
-bash
 bubblewrap
 ca-certificates
-coreutils
 cpio
 diffutils
 dosfstools
 e2fsprogs
-kmod
-less
 mtools
-nano
 openssl
 socat
 strace
 swtpm
 systemd
-tar
-util-linux
 virtiofsd
 xfsprogs
 zstd
@@ -100,8 +91,6 @@ debootstrap
 powertop
 psmisc
 time
-ovmf
-# qemu-user-static - large package
 graphicsmagick-imagemagick-compat
 
 # Purpose: baremetal only packages
@@ -152,3 +141,5 @@ xserver-xorg-input-libinput
 
 # services
 postfix
+
+distrobox

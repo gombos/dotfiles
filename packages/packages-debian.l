@@ -1,5 +1,3 @@
-rclone
-
 # filesystems
 open-vm-tools-desktop
 spice-webdavd
@@ -21,4 +19,3 @@ qemu-system-arm
 iputils-ping
 iputils-tracepath
 bind9-dnsutils
-
