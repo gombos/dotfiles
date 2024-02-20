@@ -98,3 +98,5 @@ grub-efi
 tesseract-ocr
 poppler-utils
 libimage-exiftool-perl
+
+python3-networkx
