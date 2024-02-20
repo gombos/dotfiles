@@ -162,6 +162,7 @@ provision:
       PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-boot.l
       PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-essential.l
       PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-desktop.l
+      curl -fsSL https://tailscale.com/install.sh | sh
       apt autoremove -y
       apt clean -y
       sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"
