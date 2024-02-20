@@ -1,3 +1,4 @@
+# copy me to ~/.colima/_templates/default.yaml
 # Number of CPUs to be allocated to the virtual machine.
 # Default: 2
 cpu: 2
