@@ -14,19 +14,13 @@ less
 micro
 rsync
 gnupg
+pass
 
 # networking
 openssh-server
 ethtool
 
-pass
-
-# power management
-# apcupsd - this shoulw work from sysext
-
 # virtualization
 swtpm
 ovmf
 
-#ifupdown
-#isc-dhcp-client

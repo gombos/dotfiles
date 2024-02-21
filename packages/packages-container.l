@@ -100,3 +100,13 @@ poppler-utils
 libimage-exiftool-perl
 
 python3-networkx
+
+# power management
+apcupsd
+
+ifupdown
+isc-dhcp-client
+cron
+
+qemu-system-gui
+thermald
