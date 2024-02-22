@@ -9,7 +9,7 @@ virtualHW.version = "20"
 uuid.bios = "56 4d 92 bc 65 3b ae 44-6a 32 8e 82 fe 54 0c c2"
 
 # This uuid can change as the directory of the vm changes
-uuid.location = "56 4d b5 ce 63 6b de ac-78 f5 33 58 e6 46 e8 a4"
+uuid.location = "56 4d d7 8e dd 5e c1 d8-7e 70 43 9e 0a 5e 97 cb"
 
 vmci0.id = "100"
 
