@@ -110,3 +110,15 @@ cron
 
 qemu-system-gui
 thermald
+
+
+# apfs tools
+dpkg-dev
+build-essential
+fuse3
+libfuse3-dev
+bzip2
+libbz2-dev
+cmake
+libattr1-dev
+zlib1g-dev
