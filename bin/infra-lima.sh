@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 apt-mark hold linux-image-virtual
 apt-get update -y && apt-get upgrade -y
 PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-boot.l
