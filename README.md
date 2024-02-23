@@ -19,4 +19,10 @@ how to utilize my rootfs (squashfs)
  - docker container
  - oci
 
-
+kasm
+cd /tmp
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.tar.gz
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_service_images_arm64_1.15.0.06fdc8.tar.gz
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_workspace_images_arm64_1.15.0.06fdc8.tar.gz
+tar -xf kasm_release_1.15.0.06fdc8.tar.gz
+sudo bash ./kasm_release/install.sh --proxy-port 8443 --skip-v4l2loopback
