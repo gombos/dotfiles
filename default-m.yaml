@@ -155,29 +155,8 @@ cpuType: host
 provision:
   - mode: system
     script: |
-      apt install -y cloud-init lsb-release python3-apt gnupg curl
-      apt purge -y apport console-setup-linux dbus-user-session dmsetup liblocale-gettext-perl lxd-agent-loader lxd-installer parted pciutils pollinate python3-gi snapd ssh-import-id
-      apt purge -y ubuntu-advantage-tools ubuntu-cloud-minimal ubuntu-drivers-common ubuntu-release-upgrader-core unattended-upgrades xz-utils wget apt-transport-https pigz libltdl7
-      apt purge -y docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-ce-rootless-extras docker-buildx-plugin
-      cp /home/user.linux/.ssh/authorized_keys /Users/user/.ssh/
-      apt-mark hold linux-image-virtual
-      #install -m 0755 -d /etc/apt/keyrings
-      #curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-      #chmod a+r /etc/apt/keyrings/docker.gpg
-      #echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-      apt-get update -y && apt-get upgrade -y
-      apt-get install -y --no-install-recommends docker.io socat
-      apt-get install -y --no-install-recommends distrobox micro
-      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-boot.l
-      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-essential.l
-      PATH=$PATH:/Users/user/.dotfiles/bin/ && install_my_packages.sh /Users/user/.dotfiles/packages/packages-desktop.l
-      apt autoremove -y
-      apt clean -y
-      sh -c "rm -rf /var/lib/apt/lists/* /var/cache/apt/*"
-      sed -i "s|\# session.*|session=/usr/bin/openbox-session|g" etc/lxdm/lxdm.conf
-      sed -i "s|\#\ autologin=.*|autologin=user|g" etc/lxdm/lxdm.conf
-      usermod -p `openssl passwd user` user
-      mount --bind /Users/user /home/user.linux
+      mkdir -p /home/lima.linux/host && mount --bind /Users/user /home/lima.linux/host
+      PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && infra-lima.sh
       rm -rf /Users/user/Library/Caches/colima
 
 # Modify ~/.ssh/config automatically to include a SSH config for the virtual machine.
