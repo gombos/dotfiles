@@ -6,7 +6,7 @@ PATH=$PATH:$1/bin/
 install_my_packages.sh $1/packages/packages-boot.l
 install_my_packages.sh $1/packages/packages-essential.l
 install_my_packages.sh $1/packages/packages-desktop.l
-install_my_packages.sh $1/packages-packages.l
+install_my_packages.sh $1/packages/packages-packages.l
 curl -fsSL https://tailscale.com/install.sh | sh
 apt autoremove -y
 apt clean -y
