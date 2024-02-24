@@ -15,6 +15,7 @@ micro
 rsync
 gnupg
 pass
+ripgrep
 
 # networking
 openssh-server

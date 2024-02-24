@@ -3,7 +3,6 @@
 # core tools
 unzip
 file
-ripgrep
 bash-completion
 
 # files
