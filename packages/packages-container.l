@@ -109,7 +109,7 @@ isc-dhcp-client
 cron
 
 qemu-system-gui
-thermald
+#thermald
 
 
 # apfs tools
