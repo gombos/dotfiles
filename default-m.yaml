@@ -155,8 +155,8 @@ cpuType: host
 provision:
   - mode: system
     script: |
-      mkdir -p /home/lima.linux/host && mount --bind /Users/user /home/lima.linux/host
-      PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && infra-lima.sh
+      mkdir -p /home/user.linux/host && mount --bind /Users/user /home/user.linux/host
+      PATH=$PATH:/home/user.linux/host/.dotfiles/bin/ && infra-lima.sh
       rm -rf /Users/user/Library/Caches/colima
 
 # Modify ~/.ssh/config automatically to include a SSH config for the virtual machine.
