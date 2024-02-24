@@ -155,6 +155,18 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
+
+  git clone https://github.com/sgan81/apfs-fuse.git
+  cd apfs-fuse
+  git submodule init
+  git submodule update
+
+  mkdir build
+  cd build
+  cmake ..
+  make
+
+  make install
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
