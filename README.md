@@ -33,3 +33,5 @@ Proxy Hostname: public hostname (not url) of the server
 Proxy Port: 0
 
 https://kasmweb.com/docs/latest/how_to/reverse_proxy.html
+https://kasmweb.com/docs/latest/how_to.html
+https://kasmweb.com/docs/latest/how_to/fixed_infrastructure.html#vnc
