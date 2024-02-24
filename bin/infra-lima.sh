@@ -1,11 +1,11 @@
 #!/bin/sh
 
-
 apt-mark hold linux-image-virtual
 apt-get update -y && apt-get upgrade -y
-PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-boot.l
-PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-essential.l
-PATH=$PATH:/home/lima.linux/host/.dotfiles/bin/ && install_my_packages.sh /home/lima.linux/host/.dotfiles/packages/packages-desktop.l
+PATH=$PATH:$1/bin/
+install_my_packages.sh $1/packages/packages-boot.l
+install_my_packages.sh $1/packages/packages-essential.l
+install_my_packages.sh $1/packages/packages-desktop.l
 curl -fsSL https://tailscale.com/install.sh | sh
 apt autoremove -y
 apt clean -y
