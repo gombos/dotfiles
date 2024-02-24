@@ -23,4 +23,3 @@ ethtool
 # virtualization
 swtpm
 ovmf
-
