@@ -49,7 +49,6 @@ bluez
 wpa_supplicant
 
 # laptop
-#thermald # monitors and controls temperature in laptops (might not be available on arm)
 tlp # kernel power management, disable radio (wifi, bluetooth) triggered by events to save power
 
 # network
