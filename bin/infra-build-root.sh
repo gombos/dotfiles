@@ -167,6 +167,21 @@ if [ "$TARGET" = "container" ]; then
   make
 
   make install
+
+ export RIPGREP=0.10.6
+ export AA=$(uname -m)
+
+ if [ "$AA" == "x86_64" ]; then
+   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-${AA}-unknown-linux-musl.tar.gz
+ else
+   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-arm-unknown-linux-gnueabihf.tar.gz
+ fi
+
+ gzip -d ripgrep_all-*
+ tar -xvf ripgrep_all-*
+ mv ripgrep_all-*/rga* /usr/local/bin/
+ rm -rf ripgrep_all-*
+
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
