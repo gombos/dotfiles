@@ -156,6 +156,22 @@ curl -fsSL https://tailscale.com/install.sh | sh
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
 
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  mkdir -p /nix
+  rm -rf /nix/*
+
+  # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
+  echo "nixbld:x:402:nobody" >> /etc/group
+  rm -rf install
+  wget --quiet https://nixos.org/nix/install
+  chmod +x install
+  USER=root ./install --no-daemon
+  . /root/.nix-profile/etc/profile.d/nix.sh
+  rm -rf install
+
+  sudo usermod -aG sudo user
+
   git clone https://github.com/sgan81/apfs-fuse.git
   cd apfs-fuse
   git submodule init
@@ -168,20 +184,29 @@ if [ "$TARGET" = "container" ]; then
 
   make install
 
- export RIPGREP=0.10.6
- export AA=$(uname -m)
+  wget https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
+  gzip -d v0.10.6.tar.gz
+  tar -xvf v0.10.6.tar
+  cd ripgrep-all-0.10.6/
+  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release --all-features
+  install -Dm 755 target/release/rga /usr/bin/rga
+  install -Dm 755 target/release/rga-preproc /usr/bin/rga-preproc
+  install -Dm 755 target/release/rga-fzf /usr/bin/rga-fzf
+  install -Dm 755 target/release/rga-fzf-open /usr/bin/rga-fzf-open
+  cd ..
+  rm -rf ripgrep-all* v0.10.6*
 
- if [ "$AA" = "x86_64" ]; then
-   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-${AA}-unknown-linux-musl.tar.gz
- else
-   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-arm-unknown-linux-gnueabihf.tar.gz
- fi
+# export RIPGREP=0.10.6
+# export AA=$(uname -m)
 
- gzip -d ripgrep_all-*
- tar -xvf ripgrep_all-*
- mv ripgrep_all-*/rga* /usr/local/bin/
- rm -rf ripgrep_all-*
-
+# if [ "$AA" = "x86_64" ]; then
+#   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-${AA}-unknown-linux-musl.tar.gz
+# else
+#   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-arm-unknown-linux-gnueabihf.tar.gz
+# fi
 fi
 
 #/usr/bin/pacman --noconfirm -Syu

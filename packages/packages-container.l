@@ -109,7 +109,6 @@ cron
 
 qemu-system-gui
 
-
 # apfs tools
 dpkg-dev
 build-essential
@@ -120,3 +119,5 @@ libbz2-dev
 cmake
 libattr1-dev
 zlib1g-dev
+
+cargo
