@@ -171,7 +171,7 @@ if [ "$TARGET" = "container" ]; then
  export RIPGREP=0.10.6
  export AA=$(uname -m)
 
- if [ "$AA" == "x86_64" ]; then
+ if [ "$AA" = "x86_64" ]; then
    wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-${AA}-unknown-linux-musl.tar.gz
  else
    wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-arm-unknown-linux-gnueabihf.tar.gz
