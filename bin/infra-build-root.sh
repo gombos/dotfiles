@@ -154,9 +154,9 @@ install_my_packages.sh packages-desktop-linux.l
 curl -fsSL https://tailscale.com/install.sh | sh
 
 if [ "$TARGET" = "container" ]; then
-#  install_my_packages.sh packages-container.l
+  install_my_packages.sh packages-container.l
 
-  usermod -aG sudo user
+  sed -i "s/^sudo:.*/&user/" /etc/group
 
   mkdir -p /nix
   rm -rf /nix/*
