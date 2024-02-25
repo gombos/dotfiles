@@ -157,6 +157,7 @@ provision:
     script: |
       U=$(cat /etc/passwd | grep home | cut -d\: -f1)
       H=$(ls /Users)
+      sed -i "s/^sudo:.*/&$U/" /etc/group
       cp -a /home/$U.linux/.ssh /Users/$H/
       mount --bind /Users/$H /home/$U.linux
       PATH=$PATH:/home/$U.linux/.dotfiles/bin/ && infra-lima.sh /home/$U.linux/.dotfiles
