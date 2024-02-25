@@ -8,3 +8,5 @@ fi
 PATH="$PATH:/usr/sbin:/sbin"
 export PATH
 # Lima END
+
+if [ -e /home/user.linux/.nix-profile/etc/profile.d/nix.sh ]; then . /home/user.linux/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

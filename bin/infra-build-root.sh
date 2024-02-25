@@ -158,47 +158,42 @@ if [ "$TARGET" = "container" ]; then
 
   sed -i "s/^sudo:.*/&user/" /etc/group
 
-  mkdir -p /nix
-  rm -rf /nix/*
-
+  #mkdir -p /nix
+  #rm -rf /nix/*
   # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
-  echo "nixbld:x:402:nobody" >> /etc/group
-  rm -rf install
-  curl -L -O  https://nixos.org/nix/install
-  chmod +x install
-  export NIX_CONFIG='filter-syscalls = false'
-  USER=root ./install --no-daemon --yes
-  . /root/.nix-profile/etc/profile.d/nix.sh
-  rm -rf install
-
-  usermod -aG sudo user
+  #echo "nixbld:x:402:nobody" >> /etc/group
+  #rm -rf install
+  #curl -L -O  https://nixos.org/nix/install
+  #chmod +x install
+  #export NIX_CONFIG='filter-syscalls = false'
+  #USER=root ./install --no-daemon --yes
+  #. /root/.nix-profile/etc/profile.d/nix.sh
+  #rm -rf install
 
   git clone https://github.com/sgan81/apfs-fuse.git
   cd apfs-fuse
   git submodule init
   git submodule update
-
   mkdir build
   cd build
   cmake ..
   make
-
   make install
 
-  curl -L -O https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
-  gzip -d v0.10.6.tar.gz
-  tar -xvf v0.10.6.tar
-  cd ripgrep-all-0.10.6/
-  cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
-  export RUSTUP_TOOLCHAIN=stable
-  export CARGO_TARGET_DIR=target
-  cargo build --frozen --release --all-features
-  install -Dm 755 target/release/rga /usr/bin/rga
-  install -Dm 755 target/release/rga-preproc /usr/bin/rga-preproc
-  install -Dm 755 target/release/rga-fzf /usr/bin/rga-fzf
-  install -Dm 755 target/release/rga-fzf-open /usr/bin/rga-fzf-open
-  cd ..
-  rm -rf ripgrep-all* v0.10.6*
+  #curl -L -O https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
+  #gzip -d v0.10.6.tar.gz
+  #tar -xvf v0.10.6.tar
+  #cd ripgrep-all-0.10.6/
+  #cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+  #export RUSTUP_TOOLCHAIN=stable
+  #export CARGO_TARGET_DIR=target
+  #cargo build --frozen --release --all-features
+  #install -Dm 755 target/release/rga /usr/bin/rga
+  #install -Dm 755 target/release/rga-preproc /usr/bin/rga-preproc
+  #install -Dm 755 target/release/rga-fzf /usr/bin/rga-fzf
+  #install -Dm 755 target/release/rga-fzf-open /usr/bin/rga-fzf-open
+  #cd ..
+  #rm -rf ripgrep-all* v0.10.6*
 
 # export RIPGREP=0.10.6
 # export AA=$(uname -m)
