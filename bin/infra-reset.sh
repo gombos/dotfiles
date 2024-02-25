@@ -4,6 +4,8 @@
 # prune all container images
 #docker system prune -a -f
 
+docker context use default
+
 # pull in latest container
 docker pull ghcr.io/gombos/linux:latest
 
