@@ -154,7 +154,7 @@ install_my_packages.sh packages-desktop-linux.l
 curl -fsSL https://tailscale.com/install.sh | sh
 
 if [ "$TARGET" = "container" ]; then
-  install_my_packages.sh packages-container.l
+#  install_my_packages.sh packages-container.l
 
   usermod -aG sudo user
 
@@ -166,7 +166,7 @@ if [ "$TARGET" = "container" ]; then
   rm -rf install
   curl -L -O  https://nixos.org/nix/install
   chmod +x install
-  USER=root ./install --no-daemon
+  USER=root ./install --no-daemon --extra-conf 'filter-syscalls = false'
   . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
 
