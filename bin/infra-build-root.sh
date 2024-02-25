@@ -184,7 +184,7 @@ if [ "$TARGET" = "container" ]; then
 
   make install
 
-  wget https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
+  curl -L -O https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
   gzip -d v0.10.6.tar.gz
   tar -xvf v0.10.6.tar
   cd ripgrep-all-0.10.6/
