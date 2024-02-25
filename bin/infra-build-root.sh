@@ -166,7 +166,8 @@ if [ "$TARGET" = "container" ]; then
   rm -rf install
   curl -L -O  https://nixos.org/nix/install
   chmod +x install
-  USER=root ./install --no-daemon --extra-conf 'filter-syscalls = false'
+  export NIX_CONFIG='filter-syscalls = false'
+  USER=root ./install --no-daemon --yes
   . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
 
