@@ -24,3 +24,7 @@ ethtool
 # virtualization
 swtpm
 ovmf
+
+
+#temp
+xz-utils
