@@ -164,11 +164,11 @@ if [ "$TARGET" = "container" ]; then
   # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
   echo "nixbld:x:402:nobody" >> /etc/group
   rm -rf install
-  wget --quiet https://nixos.org/nix/install
-  chmod +x install
-  USER=root ./install --no-daemon
-  . /root/.nix-profile/etc/profile.d/nix.sh
-  rm -rf install
+  #wget  https://nixos.org/nix/install
+  #chmod +x install
+  #USER=root ./install --no-daemon
+  #. /root/.nix-profile/etc/profile.d/nix.sh
+  #rm -rf install
 
   sudo usermod -aG sudo user
 
