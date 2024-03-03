@@ -28,3 +28,4 @@ ovmf
 
 #temp
 xz-utils
+apparmor-utils

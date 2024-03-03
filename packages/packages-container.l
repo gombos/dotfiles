@@ -66,7 +66,6 @@ hfsutils
 usbmuxd
 ifuse
 xz-utils
-apparmor-utils
 exfatprogs
 
 # distrobox trying to install these inside a container
