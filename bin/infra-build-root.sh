@@ -156,7 +156,11 @@ curl -fsSL https://tailscale.com/install.sh | sh
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
 
-  sed -i "s/^sudo:.*/&user,lima/" /etc/group
+  sed -i "s/^sudo:.*/&,user,lima/" /etc/group
+  sed -i "s/^docker:.*/&,user,lima/" /etc/group
+  sed -i "s/^adm:.*/&,user,lima/" /etc/group
+  sed -i "s/^users:.*/&,user,lima/" /etc/group
+  sed -i "s/^kvm:.*/&,user,lima/" /etc/group
 
   #mkdir -p /nix
   #rm -rf /nix/*
