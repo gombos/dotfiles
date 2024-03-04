@@ -120,3 +120,4 @@ libattr1-dev
 zlib1g-dev
 
 cargo
+npm
