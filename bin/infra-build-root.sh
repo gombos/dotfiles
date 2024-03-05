@@ -165,7 +165,13 @@ if [ "$TARGET" = "container" ]; then
   sed -i "s/^users:.*/&,usr,user,lima/" /etc/group
   sed -i "s/^kvm:.*/&,usr,user,lima/" /etc/group
 
+  # makedeb packages
   bash -c "$(wget -qO - 'https://shlink.makedeb.org/install')"
+
+  # npm packages
+  npm install -g @bitwarden/cli
+
+  # nix packages
 
   #mkdir -p /nix
   #rm -rf /nix/*
@@ -179,6 +185,7 @@ if [ "$TARGET" = "container" ]; then
   #. /root/.nix-profile/etc/profile.d/nix.sh
   #rm -rf install
 
+  # manual builds
   git clone https://github.com/sgan81/apfs-fuse.git
   cd apfs-fuse
   git submodule init
