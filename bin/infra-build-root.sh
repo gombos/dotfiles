@@ -166,7 +166,7 @@ if [ "$TARGET" = "container" ]; then
   sed -i "s/^kvm:.*/&,usr,user,lima/" /etc/group
 
   # makedeb packages
-  MAKEDEB_RELEASE=makedeb
+  export MAKEDEB_RELEASE=makedeb
   bash -c "$(wget -qO - 'https://shlink.makedeb.org/install')"
 
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
