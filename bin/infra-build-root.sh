@@ -169,8 +169,12 @@ if [ "$TARGET" = "container" ]; then
   MAKEDEB_RELEASE=makedeb
   bash -c "$(wget -qO - 'https://shlink.makedeb.org/install')"
 
-  # npm packages
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
+  if [ -e /lib/aarch64-linux-gnu ]; then
+    mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
+  fi
+
+  # npm packages
   npm install -g @bitwarden/cli
 
   # nix packages
