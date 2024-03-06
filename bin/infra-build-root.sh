@@ -166,9 +166,11 @@ if [ "$TARGET" = "container" ]; then
   sed -i "s/^kvm:.*/&,usr,user,lima/" /etc/group
 
   # makedeb packages
+  MAKEDEB_RELEASE=makedeb
   bash -c "$(wget -qO - 'https://shlink.makedeb.org/install')"
 
   # npm packages
+  # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
   npm install -g @bitwarden/cli
 
   # nix packages
