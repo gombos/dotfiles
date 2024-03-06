@@ -159,7 +159,10 @@ curl -fsSL https://tailscale.com/install.sh | sh
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
 
-  sed -i "s/^sudo:.*/&,usr,user,lima/" /etc/group
+  useradd -m build
+  echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
+
+  sed -i "s/^sudo:.*/&,usr,user,lima,build/" /etc/group
   sed -i "s/^docker:.*/&,usr,user,lima/" /etc/group
   sed -i "s/^adm:.*/&,usr,user,lima/" /etc/group
   sed -i "s/^users:.*/&,usr,user,lima/" /etc/group
@@ -167,7 +170,9 @@ if [ "$TARGET" = "container" ]; then
 
   # makedeb packages
   export MAKEDEB_RELEASE=makedeb
-  bash -c "$(wget -qO - 'https://shlink.makedeb.org/install')"
+  wget -qO - 'https://shlink.makedeb.org/install' > runme
+  chmod +x runme
+  su -c "bash runme" build
 
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
   if [ -e /lib/aarch64-linux-gnu ]; then
