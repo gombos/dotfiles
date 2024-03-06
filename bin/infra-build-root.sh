@@ -137,12 +137,6 @@ mkdir -m 0755 -p /etc/apt/keyrings /etc/apt/sources.list.d
 curl -fsSL https://dl.google.com/linux/linux_signing_key.pub > /etc/apt/keyrings/google.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/google.asc] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
-#wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
-#echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr bookworm"  | tee /etc/apt/sources.list.d/prebuilt-mpr.list
-
-#wget -qO - 'https://proget.makedeb.org/debian-feeds/makedeb.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/makedeb-archive-keyring.gpg 1> /dev/null
-#echo 'deb [signed-by=/usr/share/keyrings/makedeb-archive-keyring.gpg arch=all] https://proget.makedeb.org/ makedeb main' | sudo tee /etc/apt/sources.list.d/makedeb.list
-
 packages_update_db.sh
 packages_upgrade.sh
 
@@ -171,13 +165,6 @@ if [ "$TARGET" = "container" ]; then
   sed -i "s/^users:.*/&,usr,user,lima/" /etc/group
   sed -i "s/^kvm:.*/&,usr,user,lima/" /etc/group
 
-#  pi makedeb
-  # makedeb packages
-  #export MAKEDEB_RELEASE=makedeb
-  #wget -qO - 'https://shlink.makedeb.org/install' > runme
-  #chmod +x runme
-  #su -c "bash MAKEDEB_RELEASE=makedeb runme" build
-
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
   if [ -e /lib/aarch64-linux-gnu ]; then
     mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
@@ -188,17 +175,17 @@ if [ "$TARGET" = "container" ]; then
 
   # nix packages
 
-  #mkdir -p /nix
-  #rm -rf /nix/*
+  mkdir -p /nix
+  rm -rf /nix/*
   # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
-  #echo "nixbld:x:402:nobody" >> /etc/group
-  #rm -rf install
-  #curl -L -O  https://nixos.org/nix/install
-  #chmod +x install
-  #export NIX_CONFIG='filter-syscalls = false'
-  #USER=root ./install --no-daemon --yes
-  #. /root/.nix-profile/etc/profile.d/nix.sh
-  #rm -rf install
+  echo "nixbld:x:402:nobody" >> /etc/group
+  rm -rf install
+  curl -L -O  https://nixos.org/nix/install
+  chmod +x install
+  export NIX_CONFIG='filter-syscalls = false'
+  USER=root ./install --no-daemon --yes
+  . /root/.nix-profile/etc/profile.d/nix.sh
+  rm -rf install
 
   # manual builds
   git clone https://github.com/sgan81/apfs-fuse.git
