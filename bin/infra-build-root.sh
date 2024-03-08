@@ -156,10 +156,11 @@ curl -fsSL https://tailscale.com/install.sh | sh
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
 
-  useradd -m build
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
+
+  /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0
   cat /etc/passwd
-  su build
+  su admin
 
   sed -i "s/^sudo:.*/&,usr,user,lima,build/" /etc/group
   sed -i "s/^docker:.*/&,usr,user,lima/" /etc/group
