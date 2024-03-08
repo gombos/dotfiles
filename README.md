@@ -26,7 +26,6 @@ curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.
 tar -xf kasm_release_1.15.0.06fdc8.tar.gz
 sudo bash kasm_release/install.sh --proxy-port 8443 --skip-v4l2loopback --slim-images
 
-
 https://www.kontrol.dev/#/zones
 edit
 Proxy Hostname: public hostname (not url) of the server
@@ -35,3 +34,8 @@ Proxy Port: 0
 https://kasmweb.com/docs/latest/how_to/reverse_proxy.html
 https://kasmweb.com/docs/latest/how_to.html
 https://kasmweb.com/docs/latest/how_to/fixed_infrastructure.html#vnc
+
+
+Packaging:
+ - brew does not support arm linux
+ - makedeb does not support arm linux
