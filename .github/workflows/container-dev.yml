@@ -1,5 +1,4 @@
-name: container
-# runs for 10 min
+name: container-dev
 
 on:
     workflow_dispatch:
