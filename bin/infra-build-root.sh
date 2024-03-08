@@ -188,7 +188,8 @@ if [ "$TARGET" = "container" ]; then
   source /root/.nix-profile/etc/profile.d/nix.sh
   . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
-  nix-env -iA nixpkgs.ripgrep-all
+  #nix-env -iA nixpkgs.ripgrep-all
+  sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && nix-env -iA nixpkgs.ripgrep-all'
 
   # manual builds
   git clone https://github.com/sgan81/apfs-fuse.git
