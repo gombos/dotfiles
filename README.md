@@ -39,3 +39,30 @@ https://kasmweb.com/docs/latest/how_to/fixed_infrastructure.html#vnc
 Packaging:
  - brew does not support arm linux
  - makedeb does not support arm linux
+
+Install from:
+ - apt repositories
+  - http://deb.debian.org/debian
+  - http://archive.ubuntu.com/ubuntu
+
+ - nix channels
+  - https://nixos.org/channels
+
+ - nix flakes
+   - https://flakehub.com
+
+ - flathub apps
+   - https://flathub.org
+
+ - docker images
+  - https://ghcr.io
+  - docker.io
+
+ - python
+  - https://pypi.org/
+
+ - npm
+   - https://www.npmjs.com/package
+
+ - cargo
+   - https://crates.io/crates
