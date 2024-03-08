@@ -158,6 +158,7 @@ if [ "$TARGET" = "container" ]; then
 
   useradd -m build
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
+  cat /etc/passwd
 
   sed -i "s/^sudo:.*/&,usr,user,lima,build/" /etc/group
   sed -i "s/^docker:.*/&,usr,user,lima/" /etc/group
