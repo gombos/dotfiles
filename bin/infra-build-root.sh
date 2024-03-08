@@ -186,6 +186,7 @@ if [ "$TARGET" = "container" ]; then
   USER=root ./install --no-daemon --yes
   . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
+  nix-env -iA nixpkgs.ripgrep-all
 
   # manual builds
   git clone https://github.com/sgan81/apfs-fuse.git
@@ -212,15 +213,6 @@ if [ "$TARGET" = "container" ]; then
   #install -Dm 755 target/release/rga-fzf-open /usr/bin/rga-fzf-open
   #cd ..
   #rm -rf ripgrep-all* v0.10.6*
-
-# export RIPGREP=0.10.6
-# export AA=$(uname -m)
-
-# if [ "$AA" = "x86_64" ]; then
-#   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-${AA}-unknown-linux-musl.tar.gz
-# else
-#   wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-arm-unknown-linux-gnueabihf.tar.gz
-# fi
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
