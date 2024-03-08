@@ -184,7 +184,9 @@ if [ "$TARGET" = "container" ]; then
   chmod +x install
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
+  ls -la /root/.nix-profile/etc/profile.d/
   source /root/.nix-profile/etc/profile.d/nix.sh
+  . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
   nix-env -iA nixpkgs.ripgrep-all
 
