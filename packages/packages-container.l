@@ -121,3 +121,5 @@ zlib1g-dev
 
 cargo
 npm
+debhelper
+mkosi

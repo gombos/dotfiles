@@ -40,7 +40,6 @@ socat
 virtiofsd
 xfsprogs
 zstd
-#mkosi
 
 # wireless
 rfkill
