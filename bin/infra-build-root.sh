@@ -185,11 +185,8 @@ if [ "$TARGET" = "container" ]; then
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
   ls -la /root/.nix-profile/etc/profile.d/
-  source /root/.nix-profile/etc/profile.d/nix.sh
-  . /root/.nix-profile/etc/profile.d/nix.sh
   rm -rf install
-  #nix-env -iA nixpkgs.ripgrep-all
-  sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && nix-env -iA nixpkgs.ripgrep-all'
+  sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && /root/.nix-profile/bin/nix-env -iA nixpkgs.ripgrep-all'
 
   # manual builds
   git clone https://github.com/sgan81/apfs-fuse.git
