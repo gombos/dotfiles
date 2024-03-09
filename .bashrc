@@ -13,10 +13,6 @@ if [ -d "/usr/local/sbin" ] ; then
   export PATH="$PATH:/usr/local/sbin"
 fi
 
-if [ -d "/opt/homebrew/bin" ] ; then
-  eval $(/opt/homebrew/bin/brew shellenv)
-fi
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -142,13 +138,6 @@ if type brew &>/dev/null; then
   fi
 fi
 
-# google-cloud-sdk on MacOS (brew)
-if [ -x /usr/local/Caskroom/google-cloud-sdk ]; then
-    export CLOUDSDK_PYTHON="/usr/local/opt/python@3.9/libexec/bin/python"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc"
-    source "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc"
-fi
-
 # Color
 if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
@@ -165,9 +154,6 @@ fi
 if [ -f "/google/devshell/bashrc.google" ]; then
   source "/google/devshell/bashrc.google"
 fi
-
-# brew packages
-if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 
 # nix
 if ! [ -e ~/.nix-profile ]; then ln -sf  /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
