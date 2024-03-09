@@ -169,7 +169,8 @@ fi
 # brew packages
 if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv); fi
 
-# nix packages
+# nix
+if ! [ -e ~/.nix-profile ]; then ln -sf  /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
 
 # host specific
