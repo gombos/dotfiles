@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
+
+# point to the system python3 enviroment and NOT to the /usr/local/python3 which might be in the path
 
 # sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0 && sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-apt -y -qq -o Dpkg::Use-Pty=0
 

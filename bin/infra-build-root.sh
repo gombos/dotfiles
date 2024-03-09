@@ -171,13 +171,11 @@ if [ "$TARGET" = "container" ]; then
     mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
   fi
 
-  # python venv, pip, pipx
-  #wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
-  #/usr/local/bin/pip3 install pipx networkx
-  # make /usr/local an additional python venv
+  # python, pip
+  # make /usr/local an additional python env
   /usr/bin/python3 -m venv /usr/local/
   /usr/local/bin/python3 -m pip install --upgrade pip
-  /usr/local/bin/pip3 install pipx
+  /usr/local/bin/pip3 install yt-dlp
 
   # flatpack
   rm -rf /var/lib/flatpak/repo
@@ -195,7 +193,6 @@ if [ "$TARGET" = "container" ]; then
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
   rm -rf install
-  /nix/var/nix/profiles/per-user/root/profile
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.ripgrep-all nixpkgs.apfs-fuse'
 
   # let uid 1000 manage /nix and /usr/local
