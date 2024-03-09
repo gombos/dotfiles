@@ -160,11 +160,11 @@ if [ "$TARGET" = "container" ]; then
 
   /usr/sbin/adduser --disabled-password --no-create-home --uid 1000 --shell "/bin/bash" --home /home --gecos "" user --gid 1000
 
-  sed -i "s/^sudo:.*/&,user/" /etc/group
-  sed -i "s/^docker:.*/&,user/" /etc/group
-  sed -i "s/^adm:.*/&,user/" /etc/group
-  sed -i "s/^users:.*/&,user/" /etc/group
-  sed -i "s/^kvm:.*/&,user/" /etc/group
+  sed -i "s/^sudo:.*/&,1000/" /etc/group
+  sed -i "s/^docker:.*/&,1000/" /etc/group
+  sed -i "s/^adm:.*/&,1000/" /etc/group
+  sed -i "s/^users:.*/&,1000/" /etc/group
+  sed -i "s/^kvm:.*/&,1000/" /etc/group
 
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
   if [ -e /lib/aarch64-linux-gnu ]; then
