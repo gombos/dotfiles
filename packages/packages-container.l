@@ -123,3 +123,4 @@ cargo
 npm
 debhelper
 mkosi
+python3-venv
