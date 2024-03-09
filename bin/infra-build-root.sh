@@ -158,7 +158,7 @@ if [ "$TARGET" = "container" ]; then
 
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
 
-  /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" user --gid 100
+  /usr/sbin/adduser --disabled-password --no-create-home --uid 1000 --shell "/bin/bash" --home /home --gecos "" user --gid 1000
 
   sed -i "s/^sudo:.*/&,user/" /etc/group
   sed -i "s/^docker:.*/&,user/" /etc/group
@@ -184,7 +184,7 @@ if [ "$TARGET" = "container" ]; then
   rm -rf install
   /nix/var/nix/profiles/per-user/root/profile
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.ripgrep-all nixpkgs.apfs-fuse'
-  chown -R 99:100 /nix
+  chown -R 1000:1000 /nix
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
