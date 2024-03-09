@@ -174,6 +174,10 @@ if [ "$TARGET" = "container" ]; then
   # python venv, pip, pipx
   #wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
   #/usr/local/bin/pip3 install pipx networkx
+  # make /usr/local an additional python venv
+  /usr/bin/python3 -m venv /usr/local/
+  /usr/local/bin/python3 -m pip install --upgrade pip
+  /usr/local/bin/pip3 install pipx
 
   # flatpack
   rm -rf /var/lib/flatpak/repo
