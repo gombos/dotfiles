@@ -185,18 +185,6 @@ if [ "$TARGET" = "container" ]; then
   /nix/var/nix/profiles/per-user/root/profile
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.ripgrep-all nixpkgs.apfs-fuse'
   chown -R 99:100 /nix
-  #sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && /root/.nix-profile/bin/nix-env -iA nixpkgs.ripgrep-all'
-
-  # manual builds
-  #git clone https://github.com/sgan81/apfs-fuse.git
-  #cd apfs-fuse
-  #git submodule init
-  #git submodule update
-  #mkdir build
-  #cd build
-  #cmake ..
-  #make
-  #make install
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
