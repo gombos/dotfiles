@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0 && sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-apt -y -qq -o Dpkg::Use-Pty=0
 
