@@ -171,6 +171,15 @@ if [ "$TARGET" = "container" ]; then
     mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
   fi
 
+  # python venv, pip, pipx
+  #wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
+  #/usr/local/bin/pip3 install pipx networkx
+
+  # flatpack
+  rm -rf /var/lib/flatpak/repo
+  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  flatpak repair
+
   # npm packages
   npm install -g @bitwarden/cli
 
@@ -184,27 +193,14 @@ if [ "$TARGET" = "container" ]; then
   rm -rf install
   /nix/var/nix/profiles/per-user/root/profile
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.ripgrep-all nixpkgs.apfs-fuse'
-  chown -R 1000:1000 /nix
+
+  # let uid 1000 manage /nix and /usr/local
+  chown -R 1000:1000 /nix /usr/local
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
 # todo - install more packages to container
 
-# configure flatpack
-#rm -rf /var/lib/flatpak/repo
-#flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
-# use this install script only during initial container creation
-#rm -rf /usr/sbin/aur-install
-
-# python venv
-#apt-get install -y python3-venv
-#/usr/bin/python3 -m venv /usr/local/
-#/usr/local/bin/python3 -m pip install --upgrade pip
-#/usr/local/bin/pip install --upgrade pip
-
-# pipx
-#/usr/local/bin/pip3 install pipx
 #pip install osxphotos
 
 # appimage - digikam

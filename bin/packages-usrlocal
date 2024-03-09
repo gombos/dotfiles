@@ -11,9 +11,6 @@ mkdir -p /usr/local/bin
 # todo - separate out nix to its own script
 #
 
-#mkdir -p /nix
-#rm -rf /nix/*
-
 # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
 #echo "nixbld:x:402:nobody" >> /etc/group
 #rm -rf install
@@ -28,42 +25,16 @@ mkdir -p /usr/local/bin
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
 
 # packages of interest
-# go google-chrome thunderbird kubernetes micro rclone bitwarden-cli apfs-fuse-unstable
+# go google-chrome
 
 #fixme nix-collect-garbage -d
 #fixme nix-store --verify --check-contents
 #fixme nix-store --gc
 #fixme nix-store --optimise
-#fixme sudo chown root:root /nix/store
-
-# rga
-#rm -rf ripgrep_all-*
-#wget --quiet https://github.com/phiresky/ripgrep-all/releases/download/v${RIPGREP}/ripgrep_all-v${RIPGREP}-x86_64-unknown-linux-musl.tar.gz
-#gzip -d ripgrep_all-*
-#tar -xvf ripgrep_all-*
-#mv ripgrep_all-*/rga* /usr/local/bin/
-#rm -rf ripgrep_all-*
-
-# rclone
-#rm -rf rclone-*-linux-amd64.zip
-#wget --quiet https://github.com/rclone/rclone/releases/download/v${RCLONE}/rclone-v${RCLONE}-linux-amd64.zip
-#unzip rclone-*-linux-amd64.zip
-#mv rclone-*/rclone /usr/local/bin/
-#rm -rf rclone-*
-
-# bitwarden
-#wget --quiet -O - https://github.com/bitwarden/clients/releases/download/cli-v${BW}/bw-linux-${BW}.zip > bw.zip
-#unzip bw.zip
-#rm bw.zip
-#chmod +x bw
-#mv bw /usr/local/bin/
 
 # appimage - digikam
 #wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 #chmod +x /usr/local/bin/digikam
-
-# pip
-#wget --quiet -O - https://bootstrap.pypa.io/get-pip.py | python3
 
 #pip3 install castero
 #pip3 install --break-system-packages --prefix /usr linode-cli
@@ -74,6 +45,3 @@ mkdir -p /usr/local/bin
 # pip3 install awscli PyYAML
 # pip3 install pyusb temperusb
 
-sudo chown -R root:root /usr/local/bin/
-
-find /usr/local
