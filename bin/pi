@@ -4,7 +4,7 @@ if [ -f /usr/sbin/pacman ]; then
   installpackage() { pacman -Sy --noconfirm --needed "$@" ;}
 fi
 
-if [ -f /usr/local/bin/brew ]; then
+if [ -f /opt/homebrew/bin/brew ]; then
   installpackage() { brew install "$@" ;}
 fi
 
@@ -22,10 +22,6 @@ fi
 
 if [ -f /usr/sbin/aur-install ]; then
   installpackage() { /usr/sbin/aur-install "$@" ;}
-fi
-
-if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-  installpackage() { brew install "$@" ;}
 fi
 
 if [ -f /usr/local/bin/pacapt ]; then
