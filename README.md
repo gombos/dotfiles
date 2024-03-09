@@ -41,15 +41,12 @@ Packaging:
  - makedeb does not support arm linux
 
 Install from:
- - apt repositories
+ - apt repositories for Debian archives (.deb)
   - http://deb.debian.org/debian
   - http://archive.ubuntu.com/ubuntu
 
- - nix channels
-  - https://nixos.org/channels
-
- - nix flakes
-   - https://flakehub.com
+ - nix channels for Nix archives (.nar)
+  - https://cache.nixos.org
 
  - flathub apps
    - https://flathub.org
