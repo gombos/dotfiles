@@ -158,15 +158,13 @@ if [ "$TARGET" = "container" ]; then
 
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
 
-  /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" admin --gid 0
-  cat /etc/passwd
-  su admin
+  /usr/sbin/adduser --disabled-password --no-create-home --uid 99 --shell "/bin/bash" --home /home --gecos "" user --gid 100
 
-  sed -i "s/^sudo:.*/&,usr,user,lima,build/" /etc/group
-  sed -i "s/^docker:.*/&,usr,user,lima/" /etc/group
-  sed -i "s/^adm:.*/&,usr,user,lima/" /etc/group
-  sed -i "s/^users:.*/&,usr,user,lima/" /etc/group
-  sed -i "s/^kvm:.*/&,usr,user,lima/" /etc/group
+  sed -i "s/^sudo:.*/&,user/" /etc/group
+  sed -i "s/^docker:.*/&,user/" /etc/group
+  sed -i "s/^adm:.*/&,user/" /etc/group
+  sed -i "s/^users:.*/&,user/" /etc/group
+  sed -i "s/^kvm:.*/&,user/" /etc/group
 
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
   if [ -e /lib/aarch64-linux-gnu ]; then
@@ -177,45 +175,28 @@ if [ "$TARGET" = "container" ]; then
   npm install -g @bitwarden/cli
 
   # nix packages
-
   mkdir -p /nix
-  rm -rf /nix/*
-  # populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
   echo "nixbld:x:402:nobody" >> /etc/group
-  rm -rf install
   curl -L -O  https://nixos.org/nix/install
   chmod +x install
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
-  ls -la /root/.nix-profile/etc/profile.d/
   rm -rf install
-  sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && /root/.nix-profile/bin/nix-env -iA nixpkgs.ripgrep-all'
+  /nix/var/nix/profiles/per-user/root/profile
+  sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.ripgrep-all nixpkgs.apfs-fuse'
+  chown -R 99:100 /nix
+  #sh -c '. /root/.nix-profile/etc/profile.d/nix.sh && /root/.nix-profile/bin/nix-env -iA nixpkgs.ripgrep-all'
 
   # manual builds
-  git clone https://github.com/sgan81/apfs-fuse.git
-  cd apfs-fuse
-  git submodule init
-  git submodule update
-  mkdir build
-  cd build
-  cmake ..
-  make
-  make install
-
-  #curl -L -O https://github.com/phiresky/ripgrep-all/archive/refs/tags/v0.10.6.tar.gz
-  #gzip -d v0.10.6.tar.gz
-  #tar -xvf v0.10.6.tar
-  #cd ripgrep-all-0.10.6/
-  #cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
-  #export RUSTUP_TOOLCHAIN=stable
-  #export CARGO_TARGET_DIR=target
-  #cargo build --frozen --release --all-features
-  #install -Dm 755 target/release/rga /usr/bin/rga
-  #install -Dm 755 target/release/rga-preproc /usr/bin/rga-preproc
-  #install -Dm 755 target/release/rga-fzf /usr/bin/rga-fzf
-  #install -Dm 755 target/release/rga-fzf-open /usr/bin/rga-fzf-open
-  #cd ..
-  #rm -rf ripgrep-all* v0.10.6*
+  #git clone https://github.com/sgan81/apfs-fuse.git
+  #cd apfs-fuse
+  #git submodule init
+  #git submodule update
+  #mkdir build
+  #cd build
+  #cmake ..
+  #make
+  #make install
 fi
 
 #/usr/bin/pacman --noconfirm -Syu

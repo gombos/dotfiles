@@ -46,7 +46,7 @@ kubernetes:
 #  - sets as active Docker context (for Docker runtime).
 #  - sets as active Kubernetes context (if Kubernetes is enabled).
 # Default: true
-autoActivate: true
+autoActivate: false
 
 # Network configurations for the virtual machine.
 network:
