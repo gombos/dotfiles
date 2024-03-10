@@ -180,9 +180,9 @@ if [ "$TARGET" = "container" ]; then
   /usr/local/bin/pip3 install yt-dlp
 
   # flatpack
-  rm -rf /var/lib/flatpak/repo
-  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-  flatpak repair
+  #rm -rf /var/lib/flatpak/repo
+  #flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+  #flatpak repair
 
   # npm packages
   npm install -g @bitwarden/cli
@@ -190,6 +190,7 @@ if [ "$TARGET" = "container" ]; then
   # cargo packages
   export CARGO_HOME=/usr/local
   RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  /usr/local/bin/cargo install ripgrep_all
 
   # nix packages
   mkdir -p /nix

@@ -39,10 +39,19 @@ Packaging:
  - brew does not support arm linux
  - makedeb does not support arm linux
 
-Install from:
+Install from (priority order):
  - apt repositories for Debian archives (.deb) --> /usr/bin
   - http://deb.debian.org/debian
   - http://archive.ubuntu.com/ubuntu
+
+ - pip --> /usr/local/bin/
+  - https://pypi.org/
+
+ - npm --> /usr/local/bin
+   - https://www.npmjs.com/package
+
+ - cargo --> /usr/local/bin
+   - https://crates.io/crates
 
  - nix channels for Nix archives (.nar) --> /nix/var/nix/profiles/default/bin/
   - https://cache.nixos.org
@@ -54,14 +63,7 @@ Install from:
   - https://ghcr.io
   - docker.io
 
- - pip --> /usr/local/bin/
-  - https://pypi.org/
 
- - npm --> /usr/local/bin
-   - https://www.npmjs.com/package
-
- - cargo --> /usr/local/bin
-   - https://crates.io/crates
 
 Package managers (in priority order)
  - pip - user, cross-platform
