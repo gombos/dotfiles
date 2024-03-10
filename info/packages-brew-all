@@ -2,6 +2,15 @@
 
 # brew leaves
 
+bash
+colima
+docker
+findutils
+micro
+pass
+scrcpy
+
+
 # cross-platform
 bash
 jq
