@@ -12,7 +12,8 @@ kitty
 xterm
 
 # Optional
-chromium
+# note that Ubuntu no longer has chromium deb
+#chromium
 #sqlitebrowser
 #vlc
 #libreoffice
