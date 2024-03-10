@@ -35,17 +35,25 @@ https://kasmweb.com/docs/latest/how_to/reverse_proxy.html
 https://kasmweb.com/docs/latest/how_to.html
 https://kasmweb.com/docs/latest/how_to/fixed_infrastructure.html#vnc
 
-
 Packaging:
  - brew does not support arm linux
  - makedeb does not support arm linux
 
-Install from:
- - apt repositories for Debian archives (.deb)
+Install from (priority order):
+ - apt repositories for Debian archives (.deb) --> /usr/bin
   - http://deb.debian.org/debian
   - http://archive.ubuntu.com/ubuntu
 
- - nix channels for Nix archives (.nar)
+ - pip --> /usr/local/bin/
+  - https://pypi.org/
+
+ - npm --> /usr/local/bin
+   - https://www.npmjs.com/package
+
+ - cargo --> /usr/local/bin
+   - https://crates.io/crates
+
+ - nix channels for Nix archives (.nar) --> /nix/var/nix/profiles/default/bin/
   - https://cache.nixos.org
 
  - flathub apps
@@ -55,11 +63,12 @@ Install from:
   - https://ghcr.io
   - docker.io
 
- - python
-  - https://pypi.org/
 
- - npm
-   - https://www.npmjs.com/package
 
- - cargo
-   - https://crates.io/crates
+Package managers (in priority order)
+ - pip - user, cross-platform
+ - conda - user, cross-platform
+ - brew - user and system, MacOS and Linux
+ - docker - system only, cross-platform
+ - nix - user and system, MacOS and Linux
+ - apt - system only, MacOS and Linux
