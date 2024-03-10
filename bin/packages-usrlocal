@@ -8,24 +8,9 @@ cd /tmp
 
 mkdir -p /usr/local/bin
 
-# todo - separate out nix to its own script
-#
-
-# populate /nix and /nix/var/nix/profiles/default/ so that it is usrlocal compatible
-#echo "nixbld:x:402:nobody" >> /etc/group
-#rm -rf install
-#wget --quiet https://nixos.org/nix/install
-#chmod +x install
-#USER=root ./install --no-daemon
-#. /root/.nix-profile/etc/profile.d/nix.sh
-#rm -rf install
-
 #nix-channel --update
 
 # NIXPKGS_ALLOW_UNFREE=1 nix-env --install vscode
-
-# packages of interest
-# go google-chrome
 
 #fixme nix-collect-garbage -d
 #fixme nix-store --verify --check-contents

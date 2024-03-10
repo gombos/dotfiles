@@ -133,9 +133,9 @@ install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-essential.l
 
 # configure google repository
-mkdir -m 0755 -p /etc/apt/keyrings /etc/apt/sources.list.d
-curl -fsSL https://dl.google.com/linux/linux_signing_key.pub > /etc/apt/keyrings/google.asc
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/google.asc] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+#mkdir -m 0755 -p /etc/apt/keyrings /etc/apt/sources.list.d
+#curl -fsSL https://dl.google.com/linux/linux_signing_key.pub > /etc/apt/keyrings/google.asc
+#echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/google.asc] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
 packages_update_db.sh
 packages_upgrade.sh

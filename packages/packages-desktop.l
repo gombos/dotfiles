@@ -12,6 +12,7 @@ kitty
 xterm
 
 # Optional
+chromium
 #sqlitebrowser
 #vlc
 #libreoffice
