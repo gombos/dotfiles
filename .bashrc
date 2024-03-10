@@ -99,12 +99,10 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias iotop='sudo iotop'
+alias flatpak='sudo flatpak'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
-alias vd='vd -f csv'
 alias finance='EDITOR="vd -f csv" pass edit'
-alias wake-bestia='ssh kispincer-wan wake-bestia'
 
 alias stop-session='openbox --exit'
 
