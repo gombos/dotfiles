@@ -11,7 +11,7 @@ attr
 detox
 dos2unix
 rename
-ripgrep-all # not on debian
+#ripgrep-all # not on debian
 rmlint
 sqlite3
 pandoc - large package
@@ -119,8 +119,9 @@ cmake
 libattr1-dev
 zlib1g-dev
 
-cargo
+#cargo
 npm
 debhelper
 mkosi
 python3-venv
+ffmpeg
