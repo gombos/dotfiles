@@ -190,7 +190,7 @@ if [ "$TARGET" = "container" ]; then
 
   # cargo packages
   #export CARGO_HOME=/usr/local
-  RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  sh -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local  sh -s -- -y --no-modify-path'
   #RUSTUP_HOME=/usr/local
   #export RUSTUP_HOME
   #CARGO_HOME=/usr/local
