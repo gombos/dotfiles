@@ -200,7 +200,7 @@ if [ "$TARGET" = "container" ]; then
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
   rm -rf install
-  sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse'
+  sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse && /nix/var/nix/profiles/per-user/root/profile/bin/nix-channel --update && /nix/var/nix/profiles/per-user/root/profile/bin/nix-collect-garbage -d && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --verify --check-contents && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --gc && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --optimise'
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
