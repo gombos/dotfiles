@@ -166,9 +166,15 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   alias lb="ssh -F ~/.colima/ssh_config colima"
-  alias l="ssh -F ~/.colima/ssh_config colima -t distrobox enter linux"
   alias find='gfind'
+
+  function l {
+    ssh -F ~/.colima/ssh_config colima -t distrobox-enter
+  }
 fi
+
+
+
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
 PATH="$PATH:/usr/sbin:/sbin"
