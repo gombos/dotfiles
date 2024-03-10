@@ -11,6 +11,8 @@ open-vm-tools-desktop # copy paste between host and VMware VM guest
 kitty
 xterm
 
+flatpak
+
 # Optional
 # note that Ubuntu no longer has chromium deb
 #chromium
