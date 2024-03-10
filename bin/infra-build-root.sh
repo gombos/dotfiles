@@ -171,6 +171,8 @@ if [ "$TARGET" = "container" ]; then
     mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
   fi
 
+  # /usr/local
+
   # python, pip
   # make /usr/local an additional python env
   /usr/bin/python3 -m venv /usr/local/
@@ -184,6 +186,10 @@ if [ "$TARGET" = "container" ]; then
 
   # npm packages
   npm install -g @bitwarden/cli
+
+  # cargo packages
+  export CARGO_HOME=/usr/local
+  RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
   # nix packages
   mkdir -p /nix
