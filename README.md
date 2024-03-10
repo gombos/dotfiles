@@ -62,8 +62,6 @@ Install from (priority order):
   - https://ghcr.io
   - docker.io
 
-
-
 Package managers (in priority order)
  - pip - user, cross-platform
  - conda - user, cross-platform

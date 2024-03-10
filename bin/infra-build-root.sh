@@ -188,9 +188,16 @@ if [ "$TARGET" = "container" ]; then
   npm install -g @bitwarden/cli
 
   # cargo packages
-  export CARGO_HOME=/usr/local
-  RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  RUSTUP_HOME=/usr/local
+  export RUSTUP_HOME
+  CARGO_HOME=/usr/local
+  export CARGO_HOME
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local sh -s -- -y --no-modify-path
   /usr/local/bin/cargo install ripgrep_all
+
+  #export CARGO_HOME=/usr/local
+  #RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  #/usr/local/bin/cargo install ripgrep_all
 
   # nix packages
   mkdir -p /nix
