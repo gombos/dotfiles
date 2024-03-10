@@ -192,7 +192,7 @@ if [ "$TARGET" = "container" ]; then
   sh -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local sh -s -- -y --no-modify-path && rustup default stable'
   RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local /usr/local/bin/cargo install ripgrep_all
 
-  # nix packages
+  # nix
   mkdir -p /nix
   echo "nixbld:x:402:nobody" >> /etc/group
   curl -L -O  https://nixos.org/nix/install
@@ -200,12 +200,23 @@ if [ "$TARGET" = "container" ]; then
   export NIX_CONFIG='filter-syscalls = false'
   USER=root ./install --no-daemon --yes
   rm -rf install
-  sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse && /nix/var/nix/profiles/per-user/root/profile/bin/nix-channel --update && /nix/var/nix/profiles/per-user/root/profile/bin/nix-collect-garbage -d && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --verify --check-contents && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --gc && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --optimise'
+  sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh'
+  #  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse && /nix/var/nix/profiles/per-user/root/profile/bin/nix-channel --update && /nix/var/nix/profiles/per-user/root/profile/bin/nix-collect-garbage -d && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --verify --check-contents && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --gc && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --optimise'
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
   rm -rf /root/.cache /root/.cargo /root/.npm /root/.rustup /root/.ssh $(readlink -f /root/.nix-defexpr/channels/nixpkgs) $(readlink -f /root/.nix-defexpr/channels/manifest.nix) /root/.nix-defexpr /.bashrc /.profile
   mv /root/.nix-channels /nix/
+
+  git clone https://github.com/sgan81/apfs-fuse.git
+  cd apfs-fuse
+  git submodule init
+  git submodule update
+  mkdir build
+  cd build
+  cmake ..
+  make
+  make install
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
