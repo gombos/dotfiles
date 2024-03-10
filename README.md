@@ -55,7 +55,7 @@ Install from (priority order):
  - nix channels for Nix archives (.nar) --> /nix/var/nix/profiles/default/bin/
   - https://cache.nixos.org
 
- - flathub apps
+ - flathub apps (for browser)
    - https://flathub.org
 
  - docker images
