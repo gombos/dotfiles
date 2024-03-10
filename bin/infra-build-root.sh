@@ -158,6 +158,7 @@ if [ "$TARGET" = "container" ]; then
 
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
 
+  /usr/sbin/addgroup --gid 1000 user
   /usr/sbin/adduser --disabled-password --no-create-home --uid 1000 --shell "/bin/bash" --home /home --gecos "" user --gid 1000
 
   sed -i "s/^sudo:.*/&,1000/" /etc/group
@@ -188,11 +189,13 @@ if [ "$TARGET" = "container" ]; then
   npm install -g @bitwarden/cli
 
   # cargo packages
-  RUSTUP_HOME=/usr/local
-  export RUSTUP_HOME
-  CARGO_HOME=/usr/local
-  export CARGO_HOME
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local sh -s -- -y --no-modify-path
+  #export CARGO_HOME=/usr/local
+  RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  #RUSTUP_HOME=/usr/local
+  #export RUSTUP_HOME
+  #CARGO_HOME=/usr/local
+  #export CARGO_HOME
+  #curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -sSf | RUSTUP_HOME=/usr/local CARGO_HOME=/usr/local sh -s -- -y --no-modify-path
   /usr/local/bin/cargo install ripgrep_all
 
   #export CARGO_HOME=/usr/local
@@ -232,11 +235,11 @@ fi
 #  mv /usr/bin/paru /usr/bin/pacman
 #fi
 
-DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
-DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
+#DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
+#DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
 
 apt-get -y -qq autoremove
-dpkg --list | grep "^rc" | cut -d " " -f 3 | grep . && xargs dpkg --purge
+#dpkg --list | grep "^rc" | cut -d " " -f 3 | grep . && xargs dpkg --purge
 DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true dpkg --configure --pending
 apt-get clean
 
