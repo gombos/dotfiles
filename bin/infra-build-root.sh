@@ -204,7 +204,8 @@ if [ "$TARGET" = "container" ]; then
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
-  rm -rf /root/.cache /root/.cargo /root/.npm /root/.rustup /root.ssh
+  rm -rf /root/.cache /root/.cargo /root/.npm /root/.rustup /root/.ssh $(readlink -f /root/.nix-defexpr/channels/nixpkgs) $(readlink -f /root/.nix-defexpr/channels/manifest.nix) /root/.nix-defexpr /.bashrc /.profile
+  mv /root/.nix-channels /nix/
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
