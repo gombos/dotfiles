@@ -204,6 +204,7 @@ if [ "$TARGET" = "container" ]; then
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
+  rm -rf /root/.cache /root/.cargo /root/.npm /root/.rustup /root.ssh
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
