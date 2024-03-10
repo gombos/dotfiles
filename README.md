@@ -40,10 +40,6 @@ Packaging:
  - makedeb does not support arm linux
 
 Install from (priority order):
- - apt repositories for Debian archives (.deb) --> /usr/bin
-  - http://deb.debian.org/debian
-  - http://archive.ubuntu.com/ubuntu
-
  - pip --> /usr/local/bin/
   - https://pypi.org/
 
@@ -52,6 +48,9 @@ Install from (priority order):
 
  - cargo --> /usr/local/bin
    - https://crates.io/crates
+
+ - apt repositories for Debian archives (.deb) --> /usr/bin
+  - http://deb.debian.org/debian
 
  - nix channels for Nix archives (.nar) --> /nix/var/nix/profiles/default/bin/
   - https://cache.nixos.org
