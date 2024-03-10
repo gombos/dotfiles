@@ -198,7 +198,7 @@ if [ "$TARGET" = "container" ]; then
   curl -L -O  https://nixos.org/nix/install
   chmod +x install
   export NIX_CONFIG='filter-syscalls = false'
-  USER=root ./install --no-daemon --yes
+  USER=root ./install --no-daemon --yes --no-channel-add --no-modify-profile
   rm -rf install
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh'
   #  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse && /nix/var/nix/profiles/per-user/root/profile/bin/nix-channel --update && /nix/var/nix/profiles/per-user/root/profile/bin/nix-collect-garbage -d && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --verify --check-contents && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --gc && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --optimise'
