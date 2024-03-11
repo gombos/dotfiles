@@ -71,7 +71,6 @@ zerofree
 squashfs-tools
 
 adb
-flatpak
 debootstrap
 powertop
 psmisc

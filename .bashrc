@@ -99,12 +99,10 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias iotop='sudo iotop'
+alias flatpak='sudo flatpak'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
-alias vd='vd -f csv'
 alias finance='EDITOR="vd -f csv" pass edit'
-alias wake-bestia='ssh kispincer-wan wake-bestia'
 
 alias stop-session='openbox --exit'
 
@@ -172,9 +170,15 @@ fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   alias lb="ssh -F ~/.colima/ssh_config colima"
-  alias l="ssh -F ~/.colima/ssh_config colima -t distrobox enter linux"
   alias find='gfind'
+
+  function l {
+    ssh -F ~/.colima/ssh_config colima -t distrobox-enter
+  }
 fi
+
+
+
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
 PATH="$PATH:/usr/sbin:/sbin"
