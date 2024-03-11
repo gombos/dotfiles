@@ -9,11 +9,20 @@ on:
                 description: 'container'
                 default: 'debian:sid'
                 options:
-                    - "greyltc/archlinux-aur:paru"
+                    - "debian:sid"
+                    - "ubuntu:devel"
                     - "debian:stable"
                     - "debian:testing"
-                    - "debian:sid"
-                    - "fedora"
+                    - "ubuntu:latest"
+            platform:
+                type: choice
+                description: 'platform'
+                default: 'linux/arm64,linux/amd64'
+                options:
+                    - "linux/arm64,linux/amd64"
+                    - "linux/amd64"
+                    - "linux/arm64"
+
 permissions:
     packages: write
     contents: read
@@ -26,7 +35,7 @@ jobs:
             -   name: Set up QEMU
                 uses: docker/setup-qemu-action@v3
                 with:
-                    platforms: 'linux/arm64,linux/amd64'
+                    platforms: ${{ inputs.platform }}
 
             -   name: Set up Docker Buildx
                 uses: docker/setup-buildx-action@v3
@@ -47,7 +56,7 @@ jobs:
                     push: true
                     file: containers/Dockerfile-container
                     tags: ghcr.io/${{env.repository_owner}}/linux
-                    platforms: 'linux/arm64,linux/amd64'
+                    platforms: ${{ inputs.platform }}
                     build-args: |
                         TAG=${{ inputs.container }}
                         BUILDX_NO_DEFAULT_ATTESTATIONS: 1

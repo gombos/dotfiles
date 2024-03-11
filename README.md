@@ -1,3 +1,12 @@
+OS:
+ - Reach: Linux
+ - Preferred: MacOS
+ - Avoid: Windows
+
+Linux distro
+ - Reach: Debian
+ - Preferred: Ubuntu
+
 dotfiles
 homelab
 Keep size around 1 MB
