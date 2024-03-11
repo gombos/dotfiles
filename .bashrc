@@ -160,8 +160,12 @@ if [ -f "/google/devshell/bashrc.google" ]; then
 fi
 
 # nix
-if ! [ -e ~/.nix-profile ]; then ln -sf  /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
-if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
+if [ -e /nix ]; then
+  if ! [ -e ~/.nix-profile ]; then ln -sf /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
+  if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
+  rm -rf ~/.nix-channels ~/.nix-defexpr
+  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+fi
 
 # host specific
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
