@@ -1,6 +1,4 @@
-ARG TAG=debian:sid
-#FROM archlinux
-#FROM greyltc/archlinux-aur:paru
+#ARG TAG=debian:sid
 FROM $TAG
 ARG TAG
 COPY bin/* packages/* /tmp/
