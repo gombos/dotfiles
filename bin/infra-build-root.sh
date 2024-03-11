@@ -167,23 +167,12 @@ if [ "$TARGET" = "container" ]; then
   sed -i "s/^users:.*/&,1000/" /etc/group
   sed -i "s/^kvm:.*/&,1000/" /etc/group
 
-  # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1065510
-  if [ -e /lib/aarch64-linux-gnu ]; then
-    mv /lib/x86_64-linux-gnu/* /lib/aarch64-linux-gnu/
-  fi
-
-  # /usr/local
-
-  # python, pip
-  # make /usr/local an additional python env
-  /usr/bin/python3 -m venv /usr/local/
-  /usr/local/bin/python3 -m pip install --upgrade pip
-  /usr/local/bin/pip3 install yt-dlp
-
   # flatpack
   #rm -rf /var/lib/flatpak/repo
   #flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
   #flatpak repair
+
+  # /usr/local
 
   # npm packages
   npm install -g @bitwarden/cli
@@ -203,10 +192,7 @@ if [ "$TARGET" = "container" ]; then
   sh -c '. /nix/var/nix/profiles/per-user/root/profile/etc/profile.d/nix.sh'
   #  && /nix/var/nix/profiles/per-user/root/profile/bin/nix-env -iA nixpkgs.apfs-fuse && /nix/var/nix/profiles/per-user/root/profile/bin/nix-channel --update && /nix/var/nix/profiles/per-user/root/profile/bin/nix-collect-garbage -d && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --verify --check-contents && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --gc && /nix/var/nix/profiles/per-user/root/profile/bin/nix-store --optimise'
 
-  # let uid 1000 manage /nix and /usr/local
-  chown -R 1000:1000 /nix /usr/local
-  rm -rf /root/.cache /root/.cargo /root/.npm /root/.rustup /root/.ssh $(readlink -f /root/.nix-defexpr/channels/nixpkgs) $(readlink -f /root/.nix-defexpr/channels/manifest.nix) /root/.nix-defexpr /.bashrc /.profile
-  mv /root/.nix-channels /nix/
+  rm -rf /root/.*
 
   git clone https://github.com/sgan81/apfs-fuse.git
   cd apfs-fuse
@@ -217,6 +203,15 @@ if [ "$TARGET" = "container" ]; then
   cmake ..
   make
   make install
+
+  # python, pip
+  # make /usr/local an additional python env
+  /usr/bin/python3 -m venv /usr/local/
+  /usr/local/bin/python3 -m pip install --upgrade pip
+  /usr/local/bin/pip3 install yt-dlp
+
+  # let uid 1000 manage /nix and /usr/local
+  chown -R 1000:1000 /nix /usr/local
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
