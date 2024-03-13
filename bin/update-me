@@ -2,11 +2,11 @@
 #python3 -m pip install --upgrade pip
 #python3 -m pip list --outdated --format=json | jq -r '.[] | "\(.name)==\(.latest_version)"' | xargs -n1 sudo pip3 install -U 2>/dev/null
 
-if [ -f /usr/local/bin/pacapt ]; then
-  /usr/local/bin/pacapt -Su --noconfirm
-fi
+#if [ -f /usr/local/bin/pacapt ]; then
+#  /usr/local/bin/pacapt -Su --noconfirm
+#fi
 
-cd "$DOTFILES" && git pull && cd -
+cd ~/.dotfiles && git pull && cd -
 
 # for pincer
 #mnt efi && cd $MNTDIR/efi/dotfiles && git pull
@@ -16,9 +16,8 @@ cd "$DOTFILES" && git pull && cd -
 
 #infra-provision-mac
 
-# brew
-if [ -f /usr/local/bin/brew ]; then
-  brew update
+if command -v brew &> /dev/null
+then
   brew upgrade
   brew cleanup --prune=all
   brew doctor
@@ -35,7 +34,7 @@ fi
 #sudo docker images |grep -v REPOSITORY|awk '{print $1}'|xargs -L1 sudo docker pull
 #sudo docker ps -q | xargs sudo docker restart
 
-cd $DOTFILES/infra
+#cd $DOTFILES/infra
 #sudo docker-compose up -d --force-recreate --remove-orphans
 
 # aws
