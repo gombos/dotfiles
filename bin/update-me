@@ -8,6 +8,8 @@
 
 cd ~/.dotfiles && git pull && cd -
 
+rm -rf ~/.cache/*
+
 # for pincer
 #mnt efi && cd $MNTDIR/efi/dotfiles && git pull
 
@@ -15,6 +17,11 @@ cd ~/.dotfiles && git pull && cd -
 #mnt-efi_bestia && cd $MNTDIR/efi_bestia/dotfiles && git pull
 
 #infra-provision-mac
+
+if command -v mas &> /dev/null
+then
+  mas upgrade
+fi
 
 if command -v brew &> /dev/null
 then

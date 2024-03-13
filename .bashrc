@@ -177,7 +177,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   }
 fi
 
-
+export LESSHISTFILE=-
 
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
