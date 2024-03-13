@@ -54,7 +54,7 @@ jobs:
                 uses: docker/build-push-action@v5
                 with:
                     push: true
-                    file: containers/Dockerfile-container-${{ inputs.platform }}
+                    file: containers/Dockerfile-container-${{ inputs.container }}
                     tags: ghcr.io/${{env.repository_owner}}/linux
                     platforms: ${{ inputs.platform }}
                     build-args: |

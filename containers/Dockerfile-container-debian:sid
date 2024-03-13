@@ -1,6 +1,4 @@
-#ARG TAG=debian:sid
-FROM $TAG
-ARG TAG
+FROM debian:sid
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh container
