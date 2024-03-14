@@ -73,7 +73,7 @@ apt-utils
 bc
 dialog
 libnss-myhostname
-libvte-common
+#libvte-common
 lsof
 ncurses-base
 passwd
@@ -83,8 +83,8 @@ libvulkan1
 mesa-vulkan-drivers
 
 gnupg2
-libegl1-mesa
-libgl1-mesa-glx
+#libegl1-mesa
+#libgl1-mesa-glx
 
 initramfs-tools
 cloud-init
