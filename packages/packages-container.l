@@ -125,3 +125,14 @@ debhelper
 mkosi
 python3-venv
 ffmpeg
+
+
+# distrobox
+libvte-2.9*-common
+mesa-vulkan-drivers
+pigz
+mtr
+language-pack-en
+manpages
+traceroute
+libnss-mdns
