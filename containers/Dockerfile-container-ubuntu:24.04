@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:24.04
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh container

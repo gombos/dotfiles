@@ -10,11 +10,10 @@ on:
                 default: 'debian:sid'
                 options:
                     - "debian:sid"
-                    - "ubuntu:noble"
-                    - "ubuntu:devel"
+                    - "ubuntu:24.04"
                     - "debian:stable"
                     - "debian:testing"
-                    - "ubuntu:latest"
+                    - "ubuntu:rolling"
             platform:
                 type: choice
                 description: 'platform'
