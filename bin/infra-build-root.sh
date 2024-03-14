@@ -48,10 +48,12 @@ if [ "$TARGET" = "base" ]; then
 mkdir -p etc/apt/apt.conf.d/
 printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
 
+# restricted multiverse
+
 # ubuntu - universe
 if [ "$ID" = "ubuntu" ]; then
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe restricted multiverse" > etc/apt/sources.list
-  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe restricted multiverse" >> etc/apt/sources.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
 fi
 
 # debian security updates
@@ -142,7 +144,7 @@ install_my_packages.sh packages-essential.l
 packages_update_db.sh
 packages_upgrade.sh
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
+# DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -o Dpkg::Use-Pty=0 google-chrome-stable
 
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-linux.l
