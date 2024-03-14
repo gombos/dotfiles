@@ -49,8 +49,10 @@ mkdir -p etc/apt/apt.conf.d/
 printf "APT::Install-Recommends false;\nAPT::Install-Suggests false;\n" > etc/apt/apt.conf.d/99local
 
 # ubuntu - universe
-#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
-#echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
+if [ "$ID" = "ubuntu" ]; then
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE} main universe" > etc/apt/sources.list
+  echo "deb http://archive.ubuntu.com/ubuntu ${RELEASE}-security main universe" >> etc/apt/sources.list
+fi
 
 # debian security updates
 if [ "$ID" = "debian" ]; then
