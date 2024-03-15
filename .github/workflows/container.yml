@@ -9,8 +9,8 @@ on:
                 description: 'container'
                 default: 'debian:sid'
                 options:
-                    - "debian:sid"
                     - "ubuntu:24.04"   # devel
+                    - "debian:sid"
                     - "debian:trixie"  # testing
                     - "ubuntu:mantic"  # rolling
             platform:
