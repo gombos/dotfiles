@@ -7,7 +7,7 @@ on:
             container:
                 type: choice
                 description: 'container'
-                default: 'debian:sid'
+                default: 'ubuntu:24.04'
                 options:
                     - "ubuntu:24.04"   # devel
                     - "debian:sid"
