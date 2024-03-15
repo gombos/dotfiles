@@ -1,0 +1,4 @@
+FROM debian:bookworm-backports
+COPY bin/* packages/* /tmp/
+WORKDIR /tmp
+RUN ./infra-build-root.sh container
