@@ -10,10 +10,9 @@ on:
                 default: 'debian:sid'
                 options:
                     - "debian:sid"
-                    - "ubuntu:24.04"
-                    - "debian:stable"
-                    - "debian:testing"
-                    - "ubuntu:rolling"
+                    - "ubuntu:24.04"   # devel
+                    - "debian:trixie"  # testing
+                    - "ubuntu:mantic"  # rolling
             platform:
                 type: choice
                 description: 'platform'

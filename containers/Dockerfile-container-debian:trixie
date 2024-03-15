@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:trixie
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh container
