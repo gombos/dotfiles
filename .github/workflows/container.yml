@@ -9,10 +9,11 @@ on:
                 description: 'container'
                 default: 'ubuntu:24.04'
                 options:
-                    - "ubuntu:24.04"   # devel
+                    - "ubuntu:24.04"   # soon stable
                     - "debian:sid"
                     - "debian:trixie"  # testing
                     - "ubuntu:mantic"  # rolling
+                    - "ubuntu:devel"
             platform:
                 type: choice
                 description: 'platform'
