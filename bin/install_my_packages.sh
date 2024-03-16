@@ -8,8 +8,6 @@ filterpackage() {
 if [ "$ID" = "debian" ] || [ "$ID" = "ubuntu" ]
 then
   case "$1" in
-    google-chrome)
-      echo google-chrome-stable ;;
     wpa_supplicant)
       echo wpasupplicant ;;
     networkmanager)
@@ -26,7 +24,7 @@ then
       echo qemu-system-x86 ;;
     systemd)
       echo systemd-timesyncd systemd-resolved systemd-container ;;
-    ripgrep-all|tailscale|bitwarden-cli|linode-cli|inetutils)
+    tailscale|inetutils)
       ;;
     *)
       echo "$1" ;;
