@@ -17,7 +17,7 @@ gnupg
 pass
 
 # networking
-openssh-server
+#openssh-server
 ethtool
 
 # virtualization
@@ -26,4 +26,4 @@ ovmf
 
 #temp
 xz-utils
-apparmor-utils
+#apparmor-utils

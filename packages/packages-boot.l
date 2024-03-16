@@ -20,3 +20,7 @@ wpasupplicant      # wifi authentication
 systemd-resolved   # DNS resolver
 systemd-timesyncd  # synchronize local time with NTP servers
 docker.io          # containers
+
+# todo
+distrobox
+apparmor-utils

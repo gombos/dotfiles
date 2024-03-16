@@ -122,7 +122,7 @@ xserver-xorg-input-libinput
 # services
 postfix
 
-distrobox
+# distrobox
 # filesystems
 open-vm-tools-desktop
 gddrescue
