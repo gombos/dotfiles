@@ -56,8 +56,31 @@ xorriso \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
-# make unified kernel
+rm -rf extensions
 
+xorriso \
+   -as mkisofs \
+   -iso-level 3 \
+   -full-iso9660-filenames \
+   -volid "ISO" \
+   -output "/tmp/linux-small.iso" \
+   -eltorito-boot boot/grub/bios.img \
+     -no-emul-boot \
+     -boot-load-size 4 \
+     -boot-info-table \
+     --eltorito-catalog boot/grub/boot.cat \
+     --grub2-boot-info \
+     --grub2-mbr /tmp/iso/isolinux/boot_hybrid.img \
+   -eltorito-alt-boot \
+     -e EFI/efiboot.img \
+     -no-emul-boot \
+   -graft-points \
+      "." \
+      /boot/grub/bios.img=../isotemp/bios.img \
+      /EFI/efiboot.img=../isotemp/efiboot.img
+
+
+# make unified kernel
 /usr/lib/systemd/ukify build \
   --linux=/tmp/iso/kernel/vmlinuz \
   --initrd=/tmp/iso/kernel/initrd.img \
@@ -65,7 +88,6 @@ xorriso \
   --output=/tmp/iso/EFI/BOOT/BOOTX64.efi
 
 ## experiment for minimal iso
-rm -rf extensions
 mv LiveOS/squashfs.img LiveOS/rootfs.img
 
 ## todo - calculate size/count

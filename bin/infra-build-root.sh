@@ -148,7 +148,6 @@ packages_upgrade.sh
 
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-linux.l
-#install_my_packages.sh packages-debian.l
 
 # desktop
 install_my_packages.sh packages-desktop.l

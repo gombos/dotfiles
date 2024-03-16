@@ -15,7 +15,6 @@ micro
 rsync
 gnupg
 pass
-#ripgrep
 
 # networking
 openssh-server
@@ -24,7 +23,6 @@ ethtool
 # virtualization
 swtpm
 ovmf
-
 
 #temp
 xz-utils
