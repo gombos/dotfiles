@@ -1,4 +1,4 @@
-FROM debian:sid-slim
+FROM debian:bookworm-slim
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
 RUN ./infra-build-root.sh extra
