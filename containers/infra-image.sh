@@ -79,22 +79,23 @@ xorriso \
       /boot/grub/bios.img=../isotemp/bios.img \
       /EFI/efiboot.img=../isotemp/efiboot.img
 
+mv LiveOS/squashfs.img LiveOS/rootfs.img
+
+# disabled ukify for now
+ls -la /usr/lib/systemd
 
 # make unified kernel
-/usr/lib/systemd/ukify build \
-  --linux=/tmp/iso/kernel/vmlinuz \
-  --initrd=/tmp/iso/kernel/initrd.img \
-  --cmdline='console=ttyS0,115200n8 rd.live.squashimg=rootfs.img root=live:/dev/disk/by-label/ISO' \
-  --output=/tmp/iso/EFI/BOOT/BOOTX64.efi
-
-## experiment for minimal iso
-mv LiveOS/squashfs.img LiveOS/rootfs.img
+#/usr/lib/systemd/ukify build \
+#  --linux=/tmp/iso/kernel/vmlinuz \
+#  --initrd=/tmp/iso/kernel/initrd.img \
+#  --cmdline='console=ttyS0,115200n8 rd.live.squashimg=rootfs.img root=live:/dev/disk/by-label/ISO' \
+#  --output=/tmp/iso/EFI/BOOT/BOOTX64.efi
 
 ## todo - calculate size/count
 dd if=/dev/zero of=/tmp/efiboot.img bs=1M count=12
 mkfs.vfat /tmp/efiboot.img
 LC_CTYPE=C mmd -i /tmp/efiboot.img EFI EFI/BOOT
-LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
+#LC_CTYPE=C mcopy -i /tmp/efiboot.img /tmp/iso/EFI/BOOT/BOOTX64.efi ::EFI/BOOT/
 rm -rf boot efi isolinux kernel EFI syslinux
 
 ls -lRah /tmp/iso
