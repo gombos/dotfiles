@@ -146,7 +146,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias less='less -R'
-    alias l='ls -lt --color=always | head -20'
+    alias ll='ls -lt --color=auto | head -20'
 fi
 
 # lesspipe
