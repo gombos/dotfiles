@@ -1,6 +1,4 @@
-#FROM ghcr.io/gombos/base:bookworm
 FROM debian:sid-slim
 COPY bin/* packages/* /tmp/
 WORKDIR /tmp
-#RUN ./infra-build-root.sh base
 RUN ./infra-build-root.sh extra
