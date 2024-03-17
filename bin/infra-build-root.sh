@@ -218,6 +218,7 @@ if [ "$TARGET" = "container" ]; then
   /usr/bin/python3 -m venv /usr/local/
   /usr/local/bin/python3 -m pip install --upgrade pip
   /usr/local/bin/pip3 install yt-dlp
+  /usr/local/bin/pip3 install oci-cli
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
