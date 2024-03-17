@@ -91,6 +91,8 @@ isc-dhcp-client
 cron
 
 qemu-system-gui
+virtiofsd
+systemd-ukify
 
 # apfs tools
 dpkg-dev

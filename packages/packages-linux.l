@@ -24,7 +24,7 @@ udisks2
 # networking
 networkd-dispatcher
 
-systemd-ukify
+# mkosi
 python3-cryptography
 systemd-timesyncd
 bubblewrap
@@ -37,7 +37,6 @@ acl
 cpio
 mtools
 socat
-virtiofsd
 xfsprogs
 zstd
 
