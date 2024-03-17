@@ -68,23 +68,7 @@ ifuse
 xz-utils
 exfatprogs
 
-# distrobox trying to install these inside a container
-apt-utils
-bc
-dialog
-libnss-myhostname
-#libvte-common
-lsof
-ncurses-base
-passwd
-pinentry-curses
-time
-libvulkan1
-mesa-vulkan-drivers
-
 gnupg2
-#libegl1-mesa
-#libgl1-mesa-glx
 
 initramfs-tools
 cloud-init
@@ -126,8 +110,7 @@ mkosi
 python3-venv
 ffmpeg
 
-
-# distrobox
+# packages for distrobox
 libvte-2.9*-common
 mesa-vulkan-drivers
 pigz
@@ -135,3 +118,14 @@ mtr
 manpages
 traceroute
 libnss-mdns
+apt-utils
+bc
+dialog
+libnss-myhostname
+lsof
+ncurses-base
+passwd
+pinentry-curses
+time
+libvulkan1
+mesa-vulkan-drivers
