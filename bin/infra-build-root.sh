@@ -85,7 +85,7 @@ install_my_packages.sh packages-essential.l
 curl -fsSL https://tailscale.com/install.sh | sh
 
 # latest distrobox
-curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
+curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
 chmod +x install
 ./install -P /usr
 rm -rf ./install
