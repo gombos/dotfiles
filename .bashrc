@@ -146,16 +146,13 @@ if [ -x /usr/bin/dircolors ]; then
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias less='less -R'
+    alias l='ls -lt --color=always | head -20'
 fi
 
 # lesspipe
 # todo - figure out how to make lesspipe and bash-completition work together
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 #[ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
-
-if [ -f "/google/devshell/bashrc.google" ]; then
-  source "/google/devshell/bashrc.google"
-fi
 
 # nix
 if [ -e /nix ]; then
