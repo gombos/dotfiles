@@ -143,11 +143,12 @@ fi
 # Color
 if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias less='less -R'
-    alias ll='ls -lt --color=auto | head -20'
 fi
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias less='less -R'
+alias ll='ls -lt --color=auto | head -20'
 
 # lesspipe
 # todo - figure out how to make lesspipe and bash-completition work together
