@@ -131,3 +131,5 @@ pinentry-curses
 time
 libvulkan1
 mesa-vulkan-drivers
+
+ripgrep

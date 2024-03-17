@@ -15,11 +15,6 @@ else
   TARGET="boot initrd kernel kernelinitramfs minbase base extra config usrlocal iso"
 fi
 
-if echo $TARGET | grep -w -q boot; then
-  docker build -t 0gombi0/homelab:boot     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-boot
-  docker push 0gombi0/homelab:boot
-fi
-
 if echo $TARGET | grep -w -q initrd; then
   docker build -t 0gombi0/homelab:initrd     ~/.dotfiles/ -f ~/.dotfiles/containers/.Dockerfile-homelab-initrd
   docker push 0gombi0/homelab:initrd
