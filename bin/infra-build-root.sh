@@ -81,11 +81,14 @@ packages_upgrade.sh
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-essential.l
 
-# tailscale
+# latest tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-# distrobox
-curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sh
+# latest distrobox
+curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
+chmod +x install
+./install -P /usr
+rm -rf ./install
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
