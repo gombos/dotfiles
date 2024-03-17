@@ -84,6 +84,9 @@ install_my_packages.sh packages-essential.l
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
+# distrobox
+curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | sudo sh
+
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
 rm var/lib/dpkg/info/dash.*rm
