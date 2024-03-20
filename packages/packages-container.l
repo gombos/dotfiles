@@ -133,4 +133,4 @@ libvulkan1
 mesa-vulkan-drivers
 
 ripgrep
-netcat-traditional
+netcat-openbsd
