@@ -134,3 +134,5 @@ mesa-vulkan-drivers
 
 ripgrep
 netcat-openbsd
+hexcurse
+testdisk
