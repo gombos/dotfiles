@@ -120,7 +120,8 @@ dpkg -l
 sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
 rm /var/lib/dpkg/info/dpkg.*rm
 rm /var/lib/dpkg/info/apt.*rm
-apt-get purge -y --allow-remove-essential dpkg apt
+rm /var/lib/dpkg/info/debconf.*rm
+apt-get purge -y --allow-remove-essential dpkg apt debconf
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
