@@ -13,7 +13,12 @@ Keep size around 1 MB
 
 rootfs (current):
  - initramfs (alpine)
+
  - base (debian:12)
+   - /etc and /usr
+   - empty /var and /usr/local
+   - no package manager installed (distroless)
+
  - sysext_1 (debian:12)
  - container (ubuntu:24.04)
 
