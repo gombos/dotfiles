@@ -92,7 +92,10 @@ rm -rf ./install
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
-rm var/lib/dpkg/info/dash.*rm
+#rm var/lib/dpkg/info/dash.*rm
+
+> var/lib/dpkg/info/dash.prerm
+> var/lib/dpkg/info/dash.postrm
 
 #dpkg --remove --force-remove-essential dash
 #rm -rf var/lib/dpkg/triggers/
@@ -100,9 +103,9 @@ rm var/lib/dpkg/info/dash.*rm
 
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
-apt-get remove -y --allow-remove-essential perl-base
 apt-get remove -y --allow-remove-essential tzdata
-apt-get remove -y --allow-remove-essential dash --no-triggers # prefer bash
+apt-get remove -y --allow-remove-essential perl-base
+apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
   ln -fs bash sh &&
