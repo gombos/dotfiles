@@ -89,7 +89,6 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-apt-get remove -y dmsetup
 apt-get remove -y tzdata
 
 # modern version of essential packages
