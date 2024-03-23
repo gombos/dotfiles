@@ -95,9 +95,11 @@ cd bin && ls -la | grep sh && cd -
 
 #rm var/lib/dpkg/info/dash.*rm
 
-> var/lib/dpkg/info/dash.prerm
-> var/lib/dpkg/info/dash.postrm
+#> var/lib/dpkg/info/dash.prerm
+#> var/lib/dpkg/info/dash.postrm
 
+#echo '#!/bin/bash' > var/lib/dpkg/info/dash.postinst
+echo '#!/bin/bash' > var/lib/dpkg/info/dash.prerm
 echo '#!/bin/bash' > var/lib/dpkg/info/dash.postrm
 
 ls -la var/lib/dpkg/info/dash*
@@ -112,13 +114,15 @@ cat etc/apt/sources.list.d/debian.sources
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
 
-rm -rf  etc/apt/
+#rm -rf  etc/apt/
 
-echo $PATH
+#echo $PATH
+
+sed -i 's/\/bin\/sh/\/bin\/dash/' var/lib/dpkg/info/dash.list
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
-#  ln -fs bash sh &&
+  ln -fs bash sh &&
   ln -fs gawk awk &&
   ln -fs which.debianutils which &&
 cd -
