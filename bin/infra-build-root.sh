@@ -89,10 +89,10 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-apt-get remove -y tzdata
+apt-get purge -y tzdata
 
 # modern version of essential packages
-apt-get remove -y --allow-remove-essential mawk # prefer gawk
+apt-get purge -y --allow-remove-essential mawk # prefer gawk
 
 #rm -rf  etc/apt/
 
@@ -100,7 +100,7 @@ apt-get remove -y --allow-remove-essential mawk # prefer gawk
 cd bin && rm -rf sh && ln -s bash sh && cd -
 rm var/lib/dpkg/info/dash.*rm
 sed -i 's/\/bin\/sh/\/bin\/dash/' var/lib/dpkg/info/dash.list
-apt-get remove -y --allow-remove-essential dash
+apt-get purge -y --allow-remove-essential dash
 
 cd bin &&
   ln -fs gawk awk &&
@@ -108,7 +108,7 @@ cd bin &&
 cd -
 
 rm var/lib/dpkg/info/perl-base.*rm
-apt-get remove -y --allow-remove-essential perl-base
+apt-get purge -y --allow-remove-essential perl-base
 
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
