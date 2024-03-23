@@ -89,6 +89,8 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
+cd bin && ls -la | grep sh && cd -
+
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
 ls -la bin/sh
@@ -105,11 +107,13 @@ echo '#!/bin/bash' > var/lib/dpkg/info/dash.postrm
 
 ls -la var/lib/dpkg/info/dash*
 
+cat etc/apt/sources.list.d/debian.sources
+
 #dpkg --remove --force-remove-essential dash
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
-find etc/apt/
+rm -rf  etc/apt/
 
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
