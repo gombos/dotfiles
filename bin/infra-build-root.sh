@@ -101,12 +101,13 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
+cat /etc/apt/sources.list
+
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
-apt-get remove -y --allow-remove-essential perl-base
 apt-get remove -y --allow-remove-essential dash # prefer bash
-
+apt-get remove -y --allow-remove-essential perl-base
 cd bin &&
   ln -fs bash sh &&
   ln -fs gawk awk &&
