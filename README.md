@@ -18,6 +18,7 @@ rootfs (current):
    - /etc and /usr
    - empty /var and /usr/local
    - no package manager installed (distroless)
+   - 155M squashed
 
  - sysext_1 (debian:12)
  - container (ubuntu:24.04)
