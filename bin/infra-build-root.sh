@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # three rootfs
 # initramfs with systemd - base
@@ -90,13 +90,8 @@ chmod +x install
 rm -rf ./install
 
 cd bin && ls -la | grep sh && cd -
-
 cd bin && rm -rf sh && ln -s bash sh && cd -
-
-ls -la bin/sh
-ls -la usr/bin/sh
-ls -la /bin/sh
-ls -la /usr/bin/sh
+cd bin && ls -la | grep sh && cd -
 
 #rm var/lib/dpkg/info/dash.*rm
 
@@ -118,10 +113,13 @@ rm -rf  etc/apt/
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
+
+rm -rf  etc/apt/
+
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
-  ln -fs bash sh &&
+#  ln -fs bash sh &&
   ln -fs gawk awk &&
   ln -fs which.debianutils which &&
 cd -
