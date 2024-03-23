@@ -123,6 +123,9 @@ sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
 rm /var/lib/dpkg/info/dpkg.*rm
 apt-get purge -y --allow-remove-essential dpkg
 
+ls -la /usr/bin/dpkg
+ls -la /usr/bin/
+
 # todo
 # this removes python and apparmor-utils which likely break running distrobox
 
