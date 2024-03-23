@@ -121,9 +121,10 @@ dpkg -l
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
-rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debconf.*rm
-dpkg -P --force-depends debconf
+rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm
 apt-get purge -y --allow-remove-essential dpkg apt
+
+find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
