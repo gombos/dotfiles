@@ -89,38 +89,19 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-#cd bin && ls -la | grep sh && cd -
-cd bin && rm -rf sh && ln -s bash sh && cd -
-#cd bin && ls -la | grep sh && cd -
-
-rm var/lib/dpkg/info/dash.*rm
-
-#> var/lib/dpkg/info/dash.prerm
-#> var/lib/dpkg/info/dash.postrm
-
-#echo '#!/bin/bash' > var/lib/dpkg/info/dash.postinst
-#echo '#!/bin/bash' > var/lib/dpkg/info/dash.prerm
-#echo '#!/bin/bash' > var/lib/dpkg/info/dash.postrm
-
-#ls -la var/lib/dpkg/info/dash*
-
-#cat etc/apt/sources.list.d/debian.sources
-
-#dpkg --remove --force-remove-essential dash
-#rm -rf var/lib/dpkg/triggers/
-#dpkg -P --force-remove-essential --force-all --no-triggers debianutils
-
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
 
 #rm -rf  etc/apt/
 
+# /bin/sh --> /bin/bash (so that we can remove dash)
+cd bin && rm -rf sh && ln -s bash sh && cd -
+rm var/lib/dpkg/info/dash.*rm
 sed -i 's/\/bin\/sh/\/bin\/dash/' var/lib/dpkg/info/dash.list
-apt-get remove -y --allow-remove-essential dash # prefer bash
+apt-get remove -y --allow-remove-essential dash
 
 cd bin &&
-#  ln -fs bash sh &&
   ln -fs gawk awk &&
   ln -fs which.debianutils which &&
 cd -
@@ -130,15 +111,12 @@ apt-get remove -y --allow-remove-essential perl-base
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
-
-cd bin && ls -la | grep sh && cd -
-
 # 64 bit only
 rm -rf lib*32
 
 # debug
-#dpkg -l
-#cd usr/bin && ls -la && cd -
+dpkg -l
+ls -la bin/sh bin/awk bin/which
 fi
 
 ########## EXTRA
