@@ -59,7 +59,7 @@ fi
 # debian security updates
 if [ "$ID" = "debian" ]; then
   echo "deb http://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
-  echo "deb http://security.debian.org/debian-security stable-security/updates main" >> etc/apt/sources.list
+  echo "deb http://security.debian.org/debian-security ${RELEASE}-security main" >> etc/apt/sources.list
 fi
 
 ## docker-ce
