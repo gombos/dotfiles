@@ -89,14 +89,6 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-cp -a /usr/share/zoneinfo/America/New_York /tmp/
-apt-get purge -y tzdata
-mv /tmp/New_York /etc/localtime
-
-#cp -a /usr/share/zoneinfo/America/New_York /etc/localtime
-
-ls -la /etc/localtime
-
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
 
