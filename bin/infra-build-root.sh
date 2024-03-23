@@ -119,12 +119,14 @@ rm -rf lib*32
 # debug
 dpkg -l
 
+rm /var/lib/dpkg/info/apt.*rm
+apt-get purge -y --allow-remove-essential apt
+
 sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
 rm /var/lib/dpkg/info/dpkg.*rm
 apt-get purge -y --allow-remove-essential dpkg
 
-ls -la /usr/bin/dpkg
-ls -la /usr/bin/
+rm -rf /var/lib/dpkg /var/lib/apt
 
 # todo
 # this removes python and apparmor-utils which likely break running distrobox
