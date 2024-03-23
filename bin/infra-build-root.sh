@@ -58,7 +58,7 @@ fi
 
 # debian security updates
 if [ "$ID" = "debian" ]; then
-  echo "deb http://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
+#  echo "deb http://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
   echo "deb http://security.debian.org/debian-security ${RELEASE}-security main" >> etc/apt/sources.list
 fi
 
@@ -97,6 +97,7 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 > var/lib/dpkg/info/dash.prerm
 > var/lib/dpkg/info/dash.postrm
 
+echo '#!/bin/bash' > var/lib/dpkg/info/dash.postrm
 
 ls -la var/lib/dpkg/info/dash*
 
