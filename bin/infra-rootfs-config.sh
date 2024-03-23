@@ -77,7 +77,7 @@ chmod g+w /home
 sed -ri "s/^$USR:[^:]*:(.*)/$USR:\$6\$3fjvzQUNxD1lLUSe\$6VQt9RROteCnjVX1khTxTrorY2QiJMvLLuoREXwJX2BwNJRiEA5WTer1SlQQ7xNd\.dGTCfx\.KzBN6QmynSlvL\/:\1/" etc/shadow
 
 # set timezone
-ln -sf /usr/share/zoneinfo/America/New_York etc/localtime
+#ln -sf /usr/share/zoneinfo/America/New_York etc/localtime
 
 ls -la etc/localtime
 
