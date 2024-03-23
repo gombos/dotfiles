@@ -108,14 +108,13 @@ cat etc/apt/sources.list.d/debian.sources
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
-rm -rf  etc/apt/
-
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
 
 rm -rf  etc/apt/
 
+echo $PATH
 apt-get remove -y --allow-remove-essential dash # prefer bash
 
 cd bin &&
@@ -128,6 +127,9 @@ apt-get remove -y --allow-remove-essential perl-base
 
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+
+
+cd bin && ls -la | grep sh && cd -
 
 # 64 bit only
 rm -rf lib*32
