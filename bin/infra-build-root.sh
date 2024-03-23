@@ -97,6 +97,9 @@ cd bin && rm -rf sh && ln -s bash sh && cd -
 > var/lib/dpkg/info/dash.prerm
 > var/lib/dpkg/info/dash.postrm
 
+
+ls -la var/lib/dpkg/info/dash*
+
 #dpkg --remove --force-remove-essential dash
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
@@ -107,12 +110,14 @@ cat /etc/apt/sources.list
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential tzdata
 apt-get remove -y --allow-remove-essential dash # prefer bash
-apt-get remove -y --allow-remove-essential perl-base
+
 cd bin &&
   ln -fs bash sh &&
   ln -fs gawk awk &&
   ln -fs which.debianutils which &&
 cd -
+
+apt-get remove -y --allow-remove-essential perl-base
 
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
