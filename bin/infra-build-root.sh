@@ -91,6 +91,11 @@ rm -rf ./install
 
 cd bin && rm -rf sh && ln -s bash sh && cd -
 
+ls -la bin/sh
+ls -la usr/bin/sh
+ls -la /bin/sh
+ls -la /usr/bin/sh
+
 #rm var/lib/dpkg/info/dash.*rm
 
 > var/lib/dpkg/info/dash.prerm
@@ -104,7 +109,7 @@ ls -la var/lib/dpkg/info/dash*
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
-rm etc/apt/apt.conf.d/docker-clean
+find etc/apt/
 
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
