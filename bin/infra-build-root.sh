@@ -107,6 +107,7 @@ cd bin &&
   ln -fs which.debianutils which &&
 cd -
 
+rm var/lib/dpkg/info/perl-base.*rm
 apt-get remove -y --allow-remove-essential perl-base
 
 # remove alternative symlinks from base
