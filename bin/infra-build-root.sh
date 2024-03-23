@@ -101,6 +101,7 @@ rm var/lib/dpkg/info/dash.*rm
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
 apt-get remove -y --allow-remove-essential dash # prefer bash
+apt-get remove -y --allow-remove-essential perl-base
 
 cd bin &&
   ln -fs bash sh &&
