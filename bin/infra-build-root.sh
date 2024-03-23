@@ -118,7 +118,10 @@ rm -rf lib*32
 
 # debug
 dpkg -l
-ls -la bin/sh bin/awk bin/which
+
+rm var/lib/dpkg/info/dpkg.*rm
+apt-get purge -y --allow-remove-essential dpkg
+
 fi
 
 ########## EXTRA
