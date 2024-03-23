@@ -118,10 +118,9 @@ rm -rf lib*32
 dpkg -l
 
 sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
-rm /var/lib/dpkg/info/dpkg.*rm
-rm /var/lib/dpkg/info/apt.*rm
-rm /var/lib/dpkg/info/debconf.*rm
-apt-get purge -y --allow-remove-essential dpkg apt debconf
+rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debconf.*rm
+dpkg -P --force-depends debconf
+apt-get purge -y --allow-remove-essential dpkg apt
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
