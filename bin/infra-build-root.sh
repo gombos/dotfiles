@@ -94,8 +94,6 @@ apt-get purge -y tzdata
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
 
-#rm -rf  etc/apt/
-
 # /bin/sh --> /bin/bash (so that we can remove dash)
 cd bin && rm -rf sh && ln -s bash sh && cd -
 rm var/lib/dpkg/info/dash.*rm
@@ -119,14 +117,14 @@ rm -rf lib*32
 # debug
 dpkg -l
 
-rm /var/lib/dpkg/info/apt.*rm
-apt-get purge -y --allow-remove-essential apt
-
 sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
 rm /var/lib/dpkg/info/dpkg.*rm
-apt-get purge -y --allow-remove-essential dpkg
+rm /var/lib/dpkg/info/apt.*rm
+apt-get purge -y --allow-remove-essential dpkg apt
 
-rm -rf /var/lib/dpkg /var/lib/apt
+rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
+
+ls -la /usr/bin
 
 # todo
 # this removes python and apparmor-utils which likely break running distrobox
