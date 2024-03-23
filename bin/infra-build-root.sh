@@ -89,8 +89,6 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-apt-get purge -y tzdata
-
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
 
