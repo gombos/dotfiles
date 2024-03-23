@@ -89,11 +89,11 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-#cp -a /usr/share/zoneinfo/America/New_York /tmp/
-#mv /tmp/New_York /etc/localtime
-
-cp -a /usr/share/zoneinfo/America/New_York /etc/localtime
+cp -a /usr/share/zoneinfo/America/New_York /tmp/
 apt-get purge -y tzdata
+mv /tmp/New_York /etc/localtime
+
+#cp -a /usr/share/zoneinfo/America/New_York /etc/localtime
 
 ls -la /etc/localtime
 
