@@ -119,8 +119,8 @@ rm -rf lib*32
 # debug
 dpkg -l
 
-sed -ni '/Depends: dpkg/!p' var/lib/dpkg/status
-rm var/lib/dpkg/info/dpkg.*rm
+sed -ni '/Depends: dpkg/!p' /var/lib/dpkg/status
+rm /var/lib/dpkg/info/dpkg.*rm
 apt-get purge -y --allow-remove-essential dpkg
 
 # todo
