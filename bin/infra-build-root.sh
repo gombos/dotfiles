@@ -58,7 +58,6 @@ fi
 
 # debian security updates
 if [ "$ID" = "debian" ]; then
-#  echo "deb http://deb.debian.org/debian ${RELEASE} main" > etc/apt/sources.list
   echo "deb http://security.debian.org/debian-security ${RELEASE}-security main" >> etc/apt/sources.list
 fi
 
@@ -105,7 +104,7 @@ ls -la var/lib/dpkg/info/dash*
 #rm -rf var/lib/dpkg/triggers/
 #dpkg -P --force-remove-essential --force-all --no-triggers debianutils
 
-cat /etc/apt/sources.list
+rm etc/apt/apt.conf.d/docker-clean
 
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
