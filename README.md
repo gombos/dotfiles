@@ -13,9 +13,9 @@ Keep size around 1 MB
 
 rootfs (current):
  - initramfs (alpine)
- - base (debian:stable)
- - sysext_1 (debian:sid)
- - container (debian:sid)
+ - base (debian:12)
+ - sysext_1 (ubuntu:24.04)
+ - container (ubuntu:24.04)
 
 rootfs (idea):
  - stay in initramfs (base)
