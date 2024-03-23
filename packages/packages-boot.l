@@ -22,5 +22,5 @@ systemd-timesyncd  # synchronize local time with NTP servers
 docker.io          # containers
 
 # todo
-#distrobox
-apparmor-utils
+apparmor-utils # brings in python3 as well
+

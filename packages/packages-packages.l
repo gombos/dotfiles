@@ -10,7 +10,6 @@ python3
 
 # core tools
 git
-less
 micro
 rsync
 gnupg

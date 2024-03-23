@@ -119,8 +119,10 @@ rm -rf lib*32
 # debug
 dpkg -l
 
-rm var/lib/dpkg/info/dpkg.*rm
-apt-get purge -y --allow-remove-essential dpkg
+#rm var/lib/dpkg/info/dpkg.*rm
+#apt-get purge -y --allow-remove-essential dpkg
+# todo
+# this removes python and apparmor-utils which likely break running distrobox
 
 fi
 

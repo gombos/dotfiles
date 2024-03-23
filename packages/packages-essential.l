@@ -23,3 +23,4 @@ gawk
 gzip
 efibootmgr
 ca-certificates
+less
