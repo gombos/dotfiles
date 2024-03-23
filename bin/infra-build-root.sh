@@ -57,9 +57,9 @@ if [ "$ID" = "ubuntu" ]; then
 fi
 
 # debian security updates
-if [ "$ID" = "debian" ]; then
-  echo "deb http://security.debian.org/debian-security ${RELEASE}-security main" >> etc/apt/sources.list
-fi
+#if [ "$ID" = "debian" ]; then
+#  echo "deb http://security.debian.org/debian-security ${RELEASE}-security main" >> etc/apt/sources.list
+#fi
 
 ## docker-ce
 #packages_update_db.sh
@@ -89,9 +89,11 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
+apt-get remove -y dmsetup
+apt-get remove -y tzdata
+
 # modern version of essential packages
 apt-get remove -y --allow-remove-essential mawk # prefer gawk
-apt-get remove -y --allow-remove-essential tzdata
 
 #rm -rf  etc/apt/
 
