@@ -89,7 +89,12 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
-apt-get purge -y sensible-utils
+# remove all package dependencies
+sed -ni '/^Depends:/!p' /var/lib/dpkg/status
+sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
+
+# debian specific
+apt-get purge -y sensible-utils ucf
 
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
@@ -116,10 +121,6 @@ rm -rf lib*32
 
 # debug
 dpkg -l
-
-# remove all package dependencies
-sed -ni '/^Depends:/!p' /var/lib/dpkg/status
-sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm
 apt-get purge -y --allow-remove-essential dpkg apt
