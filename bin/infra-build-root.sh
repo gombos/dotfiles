@@ -89,7 +89,7 @@ sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
 # debian specific
 apt-get purge -y --allow-remove-essential util-linux-extra adduser passwd dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
-apt-get autoremove
+apt-get autoremove -y
 
 # remove all package dependencies
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
