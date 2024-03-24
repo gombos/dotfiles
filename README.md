@@ -13,15 +13,24 @@ Keep size around 1 MB
 
 rootfs (current):
  - initramfs (alpine)
+   - 1M
 
  - base (debian:12)
    - /etc and /usr
    - empty /var and /usr/local
-   - no package manager installed (distroless)
-   - 155M squashed
+   - no package manager installed (distroless), image based OS
+   - includes systemd, networking, chroot and systemd-nspawn
+   - can download another rootfs and boot into it
+   - CLI only (no dbus, no desktop)
+   - 50M squashed
 
  - sysext_1 (debian:12)
+   - container runtime
+   - distrobox
+   - qemu
+
  - container (ubuntu:24.04)
+  - superset of everything else
 
 rootfs (idea):
  - stay in initramfs (base)
