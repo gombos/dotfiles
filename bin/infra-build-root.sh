@@ -113,7 +113,8 @@ apt-get purge -y --allow-remove-essential perl-base
 dpkg -l
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
-apt-get purge -y --allow-remove-essential dpkg apt libapt* debianutils
+apt-get purge -y --allow-remove-essential apt libapt* debianutils
+apt-get purge -y --allow-remove-essential dpkg
 
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 #find $(cat /var/lib/dpkg/info/debianutils.list) -type f -maxdepth 0 -delete
