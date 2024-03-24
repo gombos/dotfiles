@@ -83,19 +83,18 @@ install_my_packages.sh packages-essential.l
 # latest tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-# debian specific
-apt-get purge -y runit-helper
-#apt-get purge -y dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
-apt-get autoremove -y
-
 # remove all package dependencies
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
-apt-get purge -y --allow-remove-essential sensible-utils ucf util-linux-extra adduser passwd
+# debian specific
+apt-get purge -y runit-helper sensible-utils ucf
 
-# modern version of essential packages
-apt-get purge -y --allow-remove-essential mawk # prefer gawk
+# todo, fix upstream dependencies and make it recommends
+apt-get purge -y util-linux-extra dmsetup
+
+# prefer gawk
+apt-get purge -y --allow-remove-essential mawk
 
 # /bin/sh --> /bin/bash (so that we can remove dash)
 cd bin && rm -rf sh && ln -s bash sh && cd -
