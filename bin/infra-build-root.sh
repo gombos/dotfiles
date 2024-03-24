@@ -83,12 +83,8 @@ install_my_packages.sh packages-essential.l
 # latest tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-# remove all package dependencies
-sed -ni '/^Depends:/!p' /var/lib/dpkg/status
-sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
-
 # debian specific
-apt-get purge -y --allow-remove-essential util-linux-extra adduser passwd dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
+apt-get purge -y util-linux-extra adduser passwd dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
 apt-get autoremove -y
 
 # remove all package dependencies
