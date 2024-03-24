@@ -184,6 +184,8 @@ chmod +x install
 ./install -P /usr
 rm -rf ./install
 
+ls -la /usr/bin/
+
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
 
