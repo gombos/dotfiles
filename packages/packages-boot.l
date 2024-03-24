@@ -8,14 +8,9 @@
 
 # Not for inside containers
 
-# init, networking, sysext
-# this is the only package that is strictly mandatory
-systemd
-
-# services to start at boot (or good to have when sysext is unloaded)
+systemd # init, networking, sysext
 udev               # hotplug events
 openssh-server     # remote login
-rsyslog            # remote logging (in case can not remote log in)
 wpasupplicant      # wifi authentication
 systemd-resolved   # DNS resolver
 systemd-timesyncd  # synchronize local time with NTP servers

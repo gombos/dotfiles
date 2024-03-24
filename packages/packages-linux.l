@@ -135,3 +135,5 @@ qemu-system-arm
 iputils-ping
 iputils-tracepath
 bind9-dnsutils
+
+rsyslog

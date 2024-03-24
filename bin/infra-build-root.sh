@@ -88,7 +88,14 @@ sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
 # debian specific
-apt-get purge -y --allow-remove-essential sensible-utils ucf util-linux-extra adduser passwd dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
+apt-get purge -y --allow-remove-essential util-linux-extra adduser passwd dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
+apt-get autoremove
+
+# remove all package dependencies
+sed -ni '/^Depends:/!p' /var/lib/dpkg/status
+sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
+
+apt-get purge -y --allow-remove-essential sensible-utils ucf
 
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
