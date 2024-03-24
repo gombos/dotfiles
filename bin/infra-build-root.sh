@@ -112,23 +112,22 @@ apt-get purge -y --allow-remove-essential perl-base
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
-# 64 bit only
-rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion/ /usr/share/doc/ /usr/share/initramfs-tools
-
-find /usr/share/ -empty -delete
-
 # debug
 dpkg -l
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
-apt-get purge -y --allow-remove-essential dpkg apt libapt* debianutils* *-keyring
+apt-get purge -y --allow-remove-essential dpkg apt libapt* debianutils
+
+# 64 bit only
+rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion /usr/share/doc /usr/share/initramfs-tools
+
+find /usr/share/ -empty -delete
 
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
 find /var
-
 
 ls -la /usr/bin
 
