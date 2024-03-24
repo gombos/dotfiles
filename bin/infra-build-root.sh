@@ -117,10 +117,9 @@ dpkg -l
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
 apt-get purge -y --allow-remove-essential apt libapt* debianutils
-apt-get purge -y --allow-remove-essential dpkg
+dpkg -P dpkg
 
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
-#find $(cat /var/lib/dpkg/info/debianutils.list) -type f -maxdepth 0 -delete
 
 # remove alternative symlinks from base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
@@ -132,17 +131,15 @@ find /usr/share/ -empty -delete
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
-find /var
-
-ls -la /usr/bin
 mv /usr/bin/nc.openbsd /usr/bin/netcat
 cd /usr/bin
 cd /usr/bin &&
   ln -fs netcat nc &&
 cd -
 
-# todo
-# this removes python and apparmor-utils which likely break running distrobox
+find /var
+
+ls -la /usr/bin
 
 fi
 
