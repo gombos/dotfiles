@@ -104,7 +104,6 @@ apt-get purge -y --allow-remove-essential dash
 
 cd bin &&
   ln -fs gawk awk &&
-  ln -fs which.debianutils which &&
 cd -
 
 rm var/lib/dpkg/info/perl-base.*rm
@@ -121,8 +120,8 @@ find /usr/share/ -empty -delete
 # debug
 dpkg -l
 
-rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm
-apt-get purge -y --allow-remove-essential dpkg apt
+rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
+apt-get purge -y --allow-remove-essential dpkg apt libapt* debianutils* *-keyring
 
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
