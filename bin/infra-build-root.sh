@@ -95,6 +95,9 @@ apt-get purge -y util-linux-extra dmsetup libdevmapper*
 
 # prefer gawk
 apt-get purge -y --allow-remove-essential mawk
+cd bin &&
+  ln -fs gawk awk &&
+cd -
 
 # /bin/sh --> /bin/bash (so that we can remove dash)
 cd bin && rm -rf sh && ln -s bash sh && cd -
@@ -132,6 +135,11 @@ rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 find /var
 
 ls -la /usr/bin
+mv /usr/bin/nc.openbsd /usr/bin/netcat
+cd /usr/bin
+cd /usr/bin &&
+  ln -fs netcat nc &&
+cd -
 
 # todo
 # this removes python and apparmor-utils which likely break running distrobox
