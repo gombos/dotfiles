@@ -117,7 +117,7 @@ dpkg -l
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
 apt-get purge -y --allow-remove-essential apt libapt* debianutils
-dpkg -P dpkg
+dpkg -P --force-remove-essential dpkg
 
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
