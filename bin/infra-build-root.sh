@@ -94,7 +94,7 @@ sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
 # debian specific
-apt-get purge -y sensible-utils ucf
+apt-get purge -y sensible-utils ucf util-linux-extra adduser passwd
 
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
@@ -117,7 +117,9 @@ apt-get purge -y --allow-remove-essential perl-base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # 64 bit only
-rm -rf lib*32
+rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion/ /usr/share/doc/
+
+find /usr/share/ -empty -delete
 
 # debug
 dpkg -l
@@ -128,6 +130,9 @@ apt-get purge -y --allow-remove-essential dpkg apt
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
+
+find /var
+
 
 ls -la /usr/bin
 
