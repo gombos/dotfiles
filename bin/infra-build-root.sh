@@ -91,7 +91,7 @@ sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 apt-get purge -y runit-helper sensible-utils ucf
 
 # todo, fix upstream dependencies and make it recommends
-apt-get purge -y util-linux-extra dmsetup
+apt-get purge -y util-linux-extra dmsetup libdevmapper
 
 # prefer gawk
 apt-get purge -y --allow-remove-essential mawk
@@ -114,7 +114,7 @@ apt-get purge -y --allow-remove-essential perl-base
 cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # 64 bit only
-rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion/ /usr/share/doc/
+rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion/ /usr/share/doc/ /usr/share/initramfs-tools
 
 find /usr/share/ -empty -delete
 
