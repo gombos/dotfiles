@@ -84,7 +84,7 @@ install_my_packages.sh packages-essential.l
 curl -fsSL https://tailscale.com/install.sh | sh
 
 # debian specific
-apt-get purge -y dbus-session-bus-common
+apt-get purge -y dmsetup
 #apt-get purge -y dmsetup runit-helper dbus dbus-bin dbus-daemon dbus-session-bus-common dbus-system-bus-common
 apt-get autoremove -y
 
