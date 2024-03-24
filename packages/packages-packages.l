@@ -24,3 +24,11 @@ ovmf
 
 #temp
 xz-utils
+
+docker.io          # containers
+
+# todo
+apparmor-utils
+
+
+

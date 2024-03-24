@@ -19,8 +19,3 @@ rsyslog            # remote logging (in case can not remote log in)
 wpasupplicant      # wifi authentication
 systemd-resolved   # DNS resolver
 systemd-timesyncd  # synchronize local time with NTP servers
-docker.io          # containers
-
-# todo
-apparmor-utils # brings in python3 as well
-
