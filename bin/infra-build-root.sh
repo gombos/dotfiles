@@ -83,18 +83,12 @@ install_my_packages.sh packages-essential.l
 # latest tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-# latest distrobox
-curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
-chmod +x install
-./install -P /usr
-rm -rf ./install
-
 # remove all package dependencies
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
 # debian specific
-apt-get purge -y sensible-utils ucf util-linux-extra adduser passwd
+apt-get purge -y sensible-utils ucf util-linux-extra adduser passwd dmsetup runit-helper
 
 # modern version of essential packages
 apt-get purge -y --allow-remove-essential mawk # prefer gawk
@@ -158,6 +152,12 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 ##  su build -c 'cd && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -s --noconfirm'
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
+
+# latest distrobox
+curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
+chmod +x install
+./install -P /usr
+rm -rf ./install
 
 # order is significant
 packages_update_db.sh
