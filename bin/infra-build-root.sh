@@ -153,12 +153,6 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 ##  pacman -U --noconfirm ~build/paru/*.pkg.tar.*
 #fi
 
-# latest distrobox
-curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
-chmod +x install
-./install -P /usr
-rm -rf ./install
-
 # order is significant
 packages_update_db.sh
 install_my_packages.sh packages-boot.l
@@ -183,6 +177,12 @@ install_my_packages.sh packages-desktop-linux.l
 
 # tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
+
+# latest distrobox
+curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
+chmod +x install
+./install -P /usr
+rm -rf ./install
 
 if [ "$TARGET" = "container" ]; then
   install_my_packages.sh packages-container.l
