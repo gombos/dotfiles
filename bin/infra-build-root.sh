@@ -112,8 +112,8 @@ dpkg -l
 # get rid of debian
 apt-get purge -y runit-helper sensible-utils ucf
 
-rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
-apt-get purge -y --allow-remove-essential apt libapt* debianutils base-passwd
+rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm /var/lib/dpkg/info/base-passwd.*rm
+apt-get purge -y --allow-remove-essential apt libapt* debianutils base-passwd 2>/dev/null
 
 find $(cat /var/lib/dpkg/info/dpkg.list) -type f -maxdepth 0 -delete 2>/dev/null > /dev/null
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete 2>/dev/null > /dev/null
