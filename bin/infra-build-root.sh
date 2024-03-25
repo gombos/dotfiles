@@ -84,11 +84,8 @@ install_my_packages.sh packages-essential.l
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
 sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 
-# debian specific
-apt-get purge -y runit-helper sensible-utils ucf
-
-# todo, fix upstream dependencies and make it recommends
-apt-get purge -y util-linux-extra dmsetup libdevmapper* adduser passwd base-passwd
+# remove install but not runtime dependencies
+apt-get purge -y util-linux-extra dmsetup libdevmapper* adduser passwd
 
 # prefer gawk
 apt-get purge -y --allow-remove-essential mawk
@@ -112,9 +109,11 @@ apt-get purge -y --allow-remove-essential perl-base
 # debug
 dpkg -l
 
-rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
-apt-get purge -y --allow-remove-essential apt libapt* debianutils
+# get rid of debian
+apt-get purge -y runit-helper sensible-utils ucf
 
+rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
+apt-get purge -y --allow-remove-essential apt libapt* debianutils base-passwd
 
 find $(cat /var/lib/dpkg/info/dpkg.list) -type f -maxdepth 0 -delete 2>/dev/null > /dev/null
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete 2>/dev/null > /dev/null
