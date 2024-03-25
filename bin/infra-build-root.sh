@@ -255,6 +255,8 @@ if [ "$TARGET" = "container" ]; then
 
   # let uid 1000 manage /nix and /usr/local
   chown -R 1000:1000 /nix /usr/local
+
+  rm -rf /etc/apt/apt.conf.d/*
 fi
 
 #/usr/bin/pacman --noconfirm -Syu
