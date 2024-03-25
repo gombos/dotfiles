@@ -139,7 +139,7 @@ cd -
 
 find /var
 
-ls -la /usr/bin
+ls -lSa /usr/bin /usr/sbin
 
 fi
 
