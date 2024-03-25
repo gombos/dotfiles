@@ -91,7 +91,7 @@ sed -ni '/^PreDepends:/!p' /var/lib/dpkg/status
 apt-get purge -y runit-helper sensible-utils ucf
 
 # todo, fix upstream dependencies and make it recommends
-apt-get purge -y util-linux-extra dmsetup libdevmapper*
+apt-get purge -y util-linux-extra dmsetup libdevmapper* adduser
 
 # prefer gawk
 apt-get purge -y --allow-remove-essential mawk
