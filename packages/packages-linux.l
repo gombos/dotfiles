@@ -1,4 +1,4 @@
-# move some packages to container only
+# move some packages to container only, especially non-hw and non-daemon packages
 
 ## Linux services
 ## ==============
