@@ -25,6 +25,7 @@ rootfs (current):
    - 50M squashed
 
  - sysext_1 (debian:12)
+   - can update without reboot, but loads at reboot
    - container runtime
    - distrobox
    - qemu
