@@ -110,7 +110,7 @@ cd bin &&
 cd -
 
 rm var/lib/dpkg/info/perl-base.*rm
-apt-get purge -y --allow-remove-essential perl-base
+apt-get purge -y --allow-remove-essential perl-base debconf
 
 # debug
 dpkg -l
@@ -119,7 +119,7 @@ rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info
 apt-get purge -y --allow-remove-essential apt libapt* debianutils
 dpkg -P --force-remove-essential dpkg
 
-find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
+#find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
 # remove alternative symlinks from base
 cd /usr/bin && ls -l --color=never | grep /etc/alternatives | cut -d\> -f1   | rev | cut -d' ' -f2  | rev | xargs rm && cd -
