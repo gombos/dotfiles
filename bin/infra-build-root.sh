@@ -117,9 +117,8 @@ dpkg -l
 
 rm -rf /var/lib/dpkg/info/dpkg.*rm /var/lib/dpkg/info/apt.*rm /var/lib/dpkg/info/debianutils.*rm
 apt-get purge -y --allow-remove-essential apt libapt* debianutils
-dpkg -P --force-remove-essential dpkg
 
-#find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
+find $(cat /var/lib/dpkg/info/dpkg.list) -type f -maxdepth 0 -delete 2>/dev/null > /dev/null
 
 # remove alternative symlinks from base
 cd /usr/bin && ls -l --color=never | grep /etc/alternatives | cut -d\> -f1   | rev | cut -d' ' -f2  | rev | xargs rm && cd -
@@ -139,7 +138,7 @@ cd -
 
 find /var
 
-ls -lSa /usr/bin /usr/sbin
+ls -lSh /usr/bin /usr/sbin
 
 fi
 
