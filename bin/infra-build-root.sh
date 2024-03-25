@@ -133,9 +133,24 @@ find /usr/share/ -empty -delete
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
 mv /usr/bin/nc.openbsd /usr/bin/netcat
-cd /usr/bin
+
 cd /usr/bin &&
   ln -fs netcat nc &&
+cd -
+
+cd /usr/sbin &&
+  ln -fs ip6tables-nft ip6tables &&
+  ln -fs ip6tables-nft-save ip6tables-save &&
+  ln -fs ip6tables-nft-restore ip6tables-restore &&
+  ln -fs iptables-nft iptables &&
+  ln -fs iptables-nft-save iptables-save &&
+  ln -fs iptables-nft-restore iptables-restore &&
+  ln -fs etables-nft etables &&
+  ln -fs etables-nft-save etables-save &&
+  ln -fs etables-nft-restore etables-restore &&
+  ln -fs arptables-nft arptables &&
+  ln -fs arptables-nft-save arptables-save &&
+  ln -fs arptables-nft-restore arptables-restore &&
 cd -
 
 find /var
