@@ -122,7 +122,7 @@ dpkg -P --force-remove-essential dpkg
 find $(cat /var/lib/dpkg/info/debconf.list) -type f -maxdepth 0 -delete
 
 # remove alternative symlinks from base
-cd usr && ls -la | grep /etc/alternatives | cut -d\- -f1  | rev  | cut -d' ' -f2  | rev | xargs rm && cd -
+cd /usr/bin && ls -l --color=never | grep /etc/alternatives | cut -d\> -f1   | rev | cut -d' ' -f2  | rev | xargs rm && cd -
 
 # 64 bit only
 rm -rf /lib*32 /usr/share/zsh /usr/share/bash-completion /usr/share/doc /usr/share/initramfs-tools
