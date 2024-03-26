@@ -333,9 +333,12 @@
 /usr/bin/znew
 /usr/sbin
 /usr/sbin/agetty
+/usr/sbin/arptables
 /usr/sbin/arptables-nft
 /usr/sbin/arptables-nft-restore
 /usr/sbin/arptables-nft-save
+/usr/sbin/arptables-restore
+/usr/sbin/arptables-save
 /usr/sbin/badblocks
 /usr/sbin/blkdiscard
 /usr/sbin/blkid
@@ -362,6 +365,9 @@
 /usr/sbin/ebtables-nft-restore
 /usr/sbin/ebtables-nft-save
 /usr/sbin/ebtables-translate
+/usr/sbin/etables
+/usr/sbin/etables-restore
+/usr/sbin/etables-save
 /usr/sbin/faillock
 /usr/sbin/filefrag
 /usr/sbin/findfs
@@ -380,6 +386,7 @@
 /usr/sbin/init
 /usr/sbin/insmod
 /usr/sbin/invoke-rc.d
+/usr/sbin/ip6tables
 /usr/sbin/ip6tables-apply
 /usr/sbin/ip6tables-legacy
 /usr/sbin/ip6tables-legacy-restore
@@ -387,8 +394,11 @@
 /usr/sbin/ip6tables-nft
 /usr/sbin/ip6tables-nft-restore
 /usr/sbin/ip6tables-nft-save
+/usr/sbin/ip6tables-restore
 /usr/sbin/ip6tables-restore-translate
+/usr/sbin/ip6tables-save
 /usr/sbin/ip6tables-translate
+/usr/sbin/iptables
 /usr/sbin/iptables-apply
 /usr/sbin/iptables-legacy
 /usr/sbin/iptables-legacy-restore
@@ -396,7 +406,9 @@
 /usr/sbin/iptables-nft
 /usr/sbin/iptables-nft-restore
 /usr/sbin/iptables-nft-save
+/usr/sbin/iptables-restore
 /usr/sbin/iptables-restore-translate
+/usr/sbin/iptables-save
 /usr/sbin/iptables-translate
 /usr/sbin/isosize
 /usr/sbin/killall5
