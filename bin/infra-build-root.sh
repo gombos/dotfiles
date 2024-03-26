@@ -205,7 +205,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 # latest distrobox
 curl -L -O -s https://raw.githubusercontent.com/89luca89/distrobox/main/install
 chmod +x install
-./install -P /usr
+./install -N -P /usr
 rm -rf ./install
 
 ls -la /usr/bin/
