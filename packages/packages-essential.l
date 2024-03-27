@@ -25,3 +25,4 @@ efibootmgr
 ca-certificates
 less
 netcat-openbsd
+iptables
