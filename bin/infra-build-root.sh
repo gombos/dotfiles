@@ -81,7 +81,8 @@ install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-essential.l
 
 # latest tailscale
-#curl -fsSL https://tailscale.com/install.sh | sh
+curl -fsSL https://tailscale.com/install.sh | sh
+rm -rf /usr/bin/tailscale
 
 # remove all package dependencies
 sed -ni '/^Depends:/!p' /var/lib/dpkg/status
