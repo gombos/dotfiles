@@ -26,7 +26,7 @@ esac
 # -- Configure bash
 
 # key binding to exit the shell (on an empty line) - ctrl+q instead of ctrl+d
-#stty eof \^q
+stty eof \^q
 
 # key binding to interrupt execution or empty the line
 #stty intr \^d
