@@ -26,10 +26,10 @@ esac
 # -- Configure bash
 
 # key binding to exit the shell (on an empty line) - ctrl+q instead of ctrl+d
-stty eof \^q
+#stty eof \^q
 
 # key binding to interrupt execution or empty the line
-stty intr \^d
+#stty intr \^d
 
 #I typically use stty -ixon -ixoff so I can reclaim the CTRL-S and CTRL-Q key bindings for more modern purposes
 stty -ixon -ixoff

@@ -132,6 +132,8 @@ find /usr/share/ -empty -delete
 
 rm -rf /var/lib/dpkg /var/lib/apt /var/log/* /var/cache/* /etc/apt/
 
+mkdir -p /run/ /var/lib/ /var/cache/ /var/log/ /etc/
+
 mv /usr/bin/nc.openbsd /usr/bin/netcat
 
 cd /usr/bin &&
