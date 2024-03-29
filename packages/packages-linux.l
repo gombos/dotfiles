@@ -14,6 +14,7 @@ upower
 dnsmasq
 nfs-utils
 hostapd
+iproute2
 
 # storage
 udisks2
