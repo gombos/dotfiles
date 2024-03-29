@@ -214,11 +214,6 @@ rm -rf ./install
 ls -la /usr/bin/
 
 if [ "$TARGET" = "container" ]; then
-  apt install net-tools man file -y
-
-  install_my_packages.sh packages-container.l
-  yes| unminimize
-
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
 
   /usr/sbin/addgroup --gid 1000 user
@@ -236,6 +231,10 @@ if [ "$TARGET" = "container" ]; then
   #flatpak repair
 
   # /usr/local
+  apt install net-tools man file -y
+  #install_my_packages.sh packages-container.l
+  yes| unminimize
+  exit
 
   # npm packages
   npm install -g @bitwarden/cli
