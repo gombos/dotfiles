@@ -215,10 +215,9 @@ ls -la /usr/bin/
 
 if [ "$TARGET" = "container" ]; then
   apt install net-tools man file -y
-  #yes| unminimize
 
   install_my_packages.sh packages-container.l
-
+  yes| unminimize
 
   echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/sudoers
 
