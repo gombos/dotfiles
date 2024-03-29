@@ -138,3 +138,8 @@ iputils-tracepath
 bind9-dnsutils
 
 rsyslog
+
+# for unminimize
+net-tools
+man
+file
