@@ -182,8 +182,16 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 
 # order is significant
 packages_update_db.sh
+
+if [ "$TARGET" = "container" ]; then
+  yes | unminimize
+fi
+
+
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-essential.l
+
+exit
 
 packages_update_db.sh
 packages_upgrade.sh
@@ -224,9 +232,9 @@ if [ "$TARGET" = "container" ]; then
   #flatpak repair
 
   # /usr/local
-  apt install net-tools man file -y
-  yes| unminimize
-  exit
+  #apt install net-tools man file -y
+  #yes| unminimize
+  #exit
   install_my_packages.sh packages-container.l
 
   # npm packages
