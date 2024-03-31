@@ -225,8 +225,9 @@ if [ "$TARGET" = "container" ]; then
 
   # /usr/local
   apt install net-tools man file -y
-  install_my_packages.sh packages-container.l
   yes| unminimize
+  exit
+  install_my_packages.sh packages-container.l
 
   # npm packages
   npm install -g @bitwarden/cli
