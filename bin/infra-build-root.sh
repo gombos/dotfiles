@@ -182,19 +182,14 @@ if [ "$TARGET" = "extra" ] || [ "$TARGET" = "container" ]; then
 
 # order is significant
 packages_update_db.sh
+packages_upgrade.sh
 
 if [ "$TARGET" = "container" ]; then
   yes | unminimize
 fi
 
-
 install_my_packages.sh packages-boot.l
 install_my_packages.sh packages-essential.l
-
-exit
-
-packages_update_db.sh
-packages_upgrade.sh
 
 install_my_packages.sh packages-packages.l
 install_my_packages.sh packages-linux.l
@@ -231,11 +226,9 @@ if [ "$TARGET" = "container" ]; then
   #flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
   #flatpak repair
 
-  # /usr/local
-  #apt install net-tools man file -y
-  #yes| unminimize
-  #exit
   install_my_packages.sh packages-container.l
+
+  # /usr/local
 
   # npm packages
   npm install -g @bitwarden/cli
@@ -280,8 +273,6 @@ if [ "$TARGET" = "container" ]; then
   rm -rf /etc/apt/apt.conf.d/*
 fi
 
-#/usr/bin/pacman --noconfirm -Syu
-# todo - install more packages to container
 
 #pip install osxphotos
 
@@ -289,15 +280,6 @@ fi
 #mkdir -p /usr/local/bin/
 #wget --quiet https://download.kde.org/stable/digikam/${DIGIKAM}/digiKam-${DIGIKAM}-x86-64.appimage -O /usr/local/bin/digikam
 #chmod +x /usr/local/bin/digikam
-
-#if [ "$ID" = "arch" ]; then
-#  /usr/bin/pacman --noconfirm -Syu
-
-  # make i point to pacapt
-#  curl -Lo /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && chmod 755 /usr/local/bin/pacapt
-#  mv /usr/bin/pacman /usr/local/bin/
-#  mv /usr/bin/paru /usr/bin/pacman
-#fi
 
 #DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0
 #DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq -o Dpkg::Use-Pty=0
