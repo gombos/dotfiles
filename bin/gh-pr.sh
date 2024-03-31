@@ -1,0 +1,1 @@
+export b=2429 && git clone -b _$b git@github.com:LaszloGombos/dracut-ng.git && cd dracut-ng && gh pr checkout --repo dracutdevs/dracut $b && git branch -m $b && git checkout _$b && git rebase $b && git pull && git push origin HEAD
