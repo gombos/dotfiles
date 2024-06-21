@@ -20,5 +20,6 @@
     "extensions.ignoreRecommendations": true,
     "window.zoomLevel": 1,
     "workbench.activityBar.location": "hidden",
-    "workbench.editor.empty.hint": "hidden"
+    "workbench.editor.empty.hint": "hidden",
+    "github.copilot.editor.enableAutoCompletions": true
 }
