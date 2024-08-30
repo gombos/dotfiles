@@ -21,5 +21,11 @@
     "window.zoomLevel": 1,
     "workbench.activityBar.location": "hidden",
     "workbench.editor.empty.hint": "hidden",
-    "github.copilot.editor.enableAutoCompletions": true
+    "github.copilot.editor.enableAutoCompletions": true,
+    "code-runner.languageIdToFileExtensionMap": {
+        
+        "bat": ".bat",
+        "powershell": ".ps1",
+        "typescript": ".ts"
+    }
 }
