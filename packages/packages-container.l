@@ -38,6 +38,10 @@ htop
 man-db
 strace
 make
+clang
+clang-tidy
+clang-format
+clang-tools
 
 # filesystems
 xorriso
