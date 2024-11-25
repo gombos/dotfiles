@@ -27,5 +27,6 @@
         "bat": ".bat",
         "powershell": ".ps1",
         "typescript": ".ts"
-    }
+    },
+    "security.workspace.trust.untrustedFiles": "newWindow"
 }
