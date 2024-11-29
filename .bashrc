@@ -156,12 +156,12 @@ alias ll='ls -lt --color=always | head -20'
 #[ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
 
 # nix
-if [ -e /nix ]; then
-  if ! [ -e ~/.nix-profile ]; then ln -sf /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
-  if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
-  rm -rf ~/.nix-channels ~/.nix-defexpr
-  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
-fi
+#if [ -e /nix ]; then
+#  if ! [ -e ~/.nix-profile ]; then ln -sf /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
+#  if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
+#  rm -rf ~/.nix-channels ~/.nix-defexpr
+#  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+#fi
 
 # host specific
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
