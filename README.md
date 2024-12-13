@@ -51,6 +51,12 @@ curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.
 tar -xf kasm_release_1.15.0.06fdc8.tar.gz
 sudo bash kasm_release/install.sh --proxy-port 8443 --skip-v4l2loopback --slim-images
 
+cd /tmp
+curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.16.1.98d6fa.tar.gz
+tar -xf kasm_release_1.16.1.98d6fa.tar.gz
+sudo bash kasm_release/install.sh
+
+
 https://www.kontrol.dev/#/zones
 edit
 Proxy Hostname: public hostname (not url) of the server
