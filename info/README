@@ -1,3 +1,9 @@
+initrd: alpine stable, dracut
+kernel: pve (ubuntu lts based) stable
+rootfs: ubuntu minimal (could be deb or ubuntu, wolfi, fedora, nix-os)
+sysext: ubuntu
+distrobox: ubuntu (arch is no good as no arm64 version)
+
 Package managers (in priority order)
  - pip - user, cross-platform
  - conda - user, cross-platform
