@@ -100,3 +100,10 @@ Package managers (in priority order)
  - docker - system only, cross-platform
  - nix - user and system, MacOS and Linux
  - apt - system only, MacOS and Linux
+ - uv ?
+
+
+Proxmox
+ - Proxmox version 8.3.3
+ - Ubuntu VM - 24.04 - does not start at Proxmox reboot
+
