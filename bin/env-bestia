@@ -85,6 +85,18 @@ function mnt-relay() {
   mnt-borg
 }
 
+function mnt-raid() {
+  sudo cryptsetup open --key-file=/etc/cryptkey --type luks /dev/disk/by-uuid/d768aa0b-99a6-45ba-a5b2-da1204848e4a data1
+  sudo cryptsetup open --key-file=/etc/cryptkey --type luks /dev/disk/by-uuid/c2c8c30c-4105-4fa3-8ad8-750bdf4057be data2
+  sudo mount -t btrfs -o defaults,noatime,compress=zstd /dev/mapper/data1 /mnt
+}
+
+function umnt-raid() {
+  sudo umount /mnt
+  sudo cryptsetup luksClose data1
+  sudo cryptsetup luksClose data2
+}
+
 function mnt-all_partitions() {
   # Always online drives
   mnt-home_bestia
