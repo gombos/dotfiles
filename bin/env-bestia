@@ -34,7 +34,7 @@ my-luks-mount pancel
 my-luks-mount kisbestia
 my-luks-mount archive_family
 my-luks-mount backup_kisbestia
-my-luks-mount backup_archive_media_aged_5inch
+my-luks-mount backup_archive_media_california
 
 # Online only on-request drives (by controlling the usb relay)
 my-luks-mount archive_media
