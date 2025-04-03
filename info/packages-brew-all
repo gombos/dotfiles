@@ -1,15 +1,43 @@
 # brew
 
 # brew leaves
-
+apcupsd
 bash
 colima
-docker
+detox
 findutils
+fio
+iperf
+mas
 micro
-pass
-scrcpy
+ollama
+rclone
+ripgrep
+ripgrep-all
+rmlint
+uhubctl
 
+docker?
+pass?
+scrcpy?
+
+# cask
+google-drive
+karabiner-elements
+kitty
+openmtp
+
+alt-tab
+karabiner-elements
+#macfuse
+#slack
+#veracrypt
+#virtualbox
+#brave-browser
+#skype
+utm
+viber
+visual-studio-code
 
 # cross-platform
 bash
@@ -25,22 +53,6 @@ rmlint
 tesseract
 wakeonlan
 wget
-
-
-# cask
-alt-tab
-karabiner-elements
-macfuse
-slack
-veracrypt
-virtualbox
-#xquartz
-brave-browser
-kitty
-skype
-utm
-viber
-visual-studio-code
 
 #linux
 binutils
