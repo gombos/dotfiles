@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 #!/usr/bin/python3
 
 # point to the system python3 enviroment and NOT to the /usr/local/python3 which might be in the path

@@ -17,6 +17,10 @@ if [ -d "/opt/homebrew/bin" ] ; then
   eval $(/opt/homebrew/bin/brew shellenv)
 fi
 
+if [ -d "/opt/brew/bin" ] ; then
+  eval $(/opt/brew/bin/brew shellenv)
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -99,6 +103,7 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
+alias pip='uv pip'
 alias flatpak='sudo flatpak'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
