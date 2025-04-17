@@ -11,4 +11,5 @@ export PATH
 
 if [ -e /home/user.linux/.nix-profile/etc/profile.d/nix.sh ]; then . /home/user.linux/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
-if [ -e $HOME/.venv/bin/activate ]; then . $HOME/.venv/bin/activate; fi #python venv
+export VIRTUAL_ENV=/opt/venv
+if [ -e /opt/venv/bin/activate ]; then . /opt/venv/bin/activate; fi #python venv
