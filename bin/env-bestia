@@ -211,6 +211,18 @@ function backup-to-tape() {
   } &
 }
 
+function mnt-bestia() {
+  cryptsetup open /dev/disk/by-uuid/a72b8f3d-cc15-42ea-b2ed-a2954ce186ca 1
+  cryptsetup open /dev/disk/by-uuid/27eb6fcb-da78-4541-8d5f-7b406fdd14d4 2
+  mkdir -p /Volumes/photosarchive/
+  mount /dev/disk/by-uuid/8e9a6c62-95f0-4448-bc2f-7543f4e444c2 /Volumes/photosarchive/
+}
+
+function umnt-bestia() {
+  umount /Volumes/photosarchive
+  cryptsetup close 1 2
+}
+
 function backup-bestia() {
   # Attempt to mount every partitions
   mnt-all_partitions
