@@ -1,8 +1,7 @@
 # avoid HW packages
 # avoid distro specific packages
-# The idea is that these pacages are always available when Linux is available
-# available on Linux and MacOS
-# installed only into sysext on Linux not at boot
+# The idea is that these pacages are available on Linux and MacOS
+# installed only into sysext on custom Linux not on rootfs
 
 # core runtimes
 perl
