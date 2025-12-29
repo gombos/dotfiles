@@ -1,2 +1,13 @@
 #!/bin/sh
-systemctl poweroff -i
+
+# quickest way (staying with the same kernel)
+# sudo init 1; sudo init 3
+# systemctl isolate rescue; systemctl isolate default
+
+if [ -f /usr/bin/systemctl ]; then
+#  cat /boot/initrd*img > /tmp/initrd
+#  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/tmp/initrd --reuse-cmdline
+  sudo systemctl poweroff
+else
+  sudo /sbin/poweroff
+fi
