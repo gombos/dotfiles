@@ -9,5 +9,5 @@ if [ -f /usr/bin/systemctl ]; then
 #  sudo /sbin/kexec -l /boot/vmlinuz --initrd=/tmp/initrd --reuse-cmdline
   sudo systemctl poweroff
 else
-  sudo /sbin/poweroff
+  sudo /sbin/halt
 fi
