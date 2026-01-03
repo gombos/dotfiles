@@ -69,7 +69,7 @@ export LESSHISTSIZE=0
 export PAGER=less
 
 # Mount point, rw access for all users
-export MNTDIR="/run/media"
+export MNTDIR="/Volumes"
 
 # Only my user has access
 export RUNDIR="/run/user/$UID"

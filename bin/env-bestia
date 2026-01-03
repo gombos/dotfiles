@@ -63,6 +63,7 @@ my-mount linux_bestia "subvol=/"
 my-mount linux_live subvol=/
 my-mount home_transient
 my-mount home_bestia
+my-mount backup_pacsa_raid1
 
 my-mount efi EFI "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
 my-mount efi_backup EFI_BACKUP "user,uid=$(id -u),gid=$(id -g),fmask=0177,dmask=0077,noexec,nosuid,nodev"
