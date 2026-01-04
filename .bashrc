@@ -13,6 +13,10 @@ if [ -d "/usr/local/sbin" ] ; then
   export PATH="$PATH:/usr/local/sbin"
 fi
 
+if [ -d "/home/linuxbrew/.linuxbrew/bin" ] ; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 if [ -d "/opt/homebrew/bin" ] ; then
   eval $(/opt/homebrew/bin/brew shellenv)
 fi
