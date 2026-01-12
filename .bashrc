@@ -1,6 +1,6 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
-PATH="$PATH:/usr/sbin:/sbin:.local/share/gem/ruby/3.4.0/bin"
+PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/share/gem/ruby/3.4.0/bin"
 export PATH
 
 export DOTFILES="$HOME/.dotfiles"
