@@ -1,6 +1,4 @@
-if [ -d "/home/linuxbrew/.linuxbrew/bin" ] ; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
+export HOMEBREW_NO_ENV_HINTS=1
 
 if [ -n "$BASH_VERSION" ]; then
     if [ -f "$HOME/.bashrc" ]; then
