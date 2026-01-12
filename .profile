@@ -1,3 +1,5 @@
+export PATH="/home/linuxbrew/.linuxbrew/opt/portable-ruby/bin:$PATH"
+
 export HOMEBREW_NO_ENV_HINTS=1
 
 if [ -n "$BASH_VERSION" ]; then
