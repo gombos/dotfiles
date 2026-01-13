@@ -26,6 +26,10 @@ if [ -d "/opt/brew/bin" ] ; then
   eval $(/opt/brew/bin/brew shellenv)
 fi
 
+if [ -d "/home/venv" ] ; then
+  source /home/venv/bin/activate
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
