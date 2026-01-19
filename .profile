@@ -21,3 +21,4 @@ export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
 export HOMEBREW_PREFIX="/opt/homebrew"
 export HOMEBREW_REPOSITORY="/opt/homebrew"
 export HOMEBREW_NO_ANALYTICS=1
+export PATH="/home/linuxbrew/.linuxbrew/opt/portable-ruby/bin:$PATH"

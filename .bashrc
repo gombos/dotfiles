@@ -112,7 +112,7 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias pip='uv pip'
+alias pip='pip3'
 alias flatpak='sudo flatpak'
 alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
