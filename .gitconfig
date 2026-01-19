@@ -1,6 +1,6 @@
 [user]
-	name = "gombi"
-	email = "gombi@"
+	name = "usr"
+	email = "usr@"
 [core]
 	autocrlf = false
 	filemode = false
