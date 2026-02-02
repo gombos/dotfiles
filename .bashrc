@@ -26,7 +26,7 @@ if [ -d "/opt/brew/bin" ] ; then
   eval $(/opt/brew/bin/brew shellenv)
 fi
 
-if [ -d "/home/venv" ] ; then
+if [ -d "/home/venv/bin" ] ; then
   source /home/venv/bin/activate
 fi
 
