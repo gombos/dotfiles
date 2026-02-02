@@ -26,9 +26,12 @@ if [ -d "/opt/brew/bin" ] ; then
   eval $(/opt/brew/bin/brew shellenv)
 fi
 
-if [ -d "/home/venv/bin" ] ; then
-  source /home/venv/bin/activate
-fi
+export VIRTUAL_ENV=/home/venv
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+if [ -e /home/venv/bin/activate ]; then
+  source /home/venv/bin/activate;
+fi #python venv
 
 # If not running interactively, don't do anything
 case $- in
