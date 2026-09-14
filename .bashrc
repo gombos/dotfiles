@@ -59,7 +59,7 @@ function psusername {
 
 # command prompt hostname
 function pshostname {
-  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "mac.lan" ]  && [ $HOSTNAME != 2033000807 ] ; then
+  if [ $HOSTNAME != "localhost" ] && [ $HOSTNAME != "mac.local" ]  && [ $HOSTNAME != 2033000807 ] ; then
     echo -n $HOSTNAME; echo -n ':';
   fi
 }
