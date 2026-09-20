@@ -11,3 +11,8 @@ Package managers (in priority order)
  - docker - system only, cross-platform
  - nix - user and system, MacOS and Linux
  - apt - system only, MacOS and Linux
+
+
+Avoid the following Debian/Ubuntu packages
+ - dkms
+ - unattended-upgrades

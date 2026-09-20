@@ -1,20 +1,29 @@
 # brew
 
-# brew leaves
-apcupsd
+# cross-platform brew leaves
 bash
-colima
-detox
 findutils
 fio
 iperf
-mas
+jq
 micro
-ollama
+pass
+podman
+portable-ruby
 rclone
-ripgrep
 ripgrep-all
 rmlint
+rsync
+wget
+
+# brew leaves
+mas
+lima
+
+pandoc
+poppler
+tesseract
+wakeonlan
 uhubctl
 
 docker?
@@ -38,21 +47,6 @@ karabiner-elements
 utm
 viber
 visual-studio-code
-
-# cross-platform
-bash
-jq
-lima
-micro
-pandoc
-poppler
-python@3.11
-rclone
-ripgrep-all
-rmlint
-tesseract
-wakeonlan
-wget
 
 #linux
 binutils
