@@ -12,6 +12,19 @@ pkgs.mkShell {
     pkgs.man
     pkgs.coreutils
     pkgs.claude-code
+    pkgs.bash
+    pkgs.findutils
+    pkgs.fio
+    pkgs.iperf
+    pkgs.jq
+    pkgs.micro
+    pkgs.pass
+    pkgs.podman
+    pkgs.rclone
+    pkgs.ripgrep-all
+    pkgs.rmlint
+    pkgs.rsync
+    pkgs.wget
   ];
 
   shellHook = ''
