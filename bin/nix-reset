@@ -1,0 +1,3 @@
+sudo rm -rf /nix/*
+mkdir -p /nix/var/nix/profiles/per-user/root/
+curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --no-daemon
