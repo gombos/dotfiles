@@ -1,6 +1,7 @@
 [user]
-	name = "usr"
-	email = "usr@"
+	name = usr
+	email = 46005796+gombos@users.noreply.github.com
+	signingkey = 70EB044C8DE4A594
 [core]
 	autocrlf = false
 	filemode = false
@@ -9,3 +10,8 @@
 	autosetuprebase = always
 [push]
 	default = simple
+[credential "https://github.com"]
+	helper =
+	helper = !/usr/bin/gh auth git-credential
+[commit]
+	gpgsign = false
