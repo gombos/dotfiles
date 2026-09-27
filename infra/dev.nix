@@ -1,5 +1,5 @@
 # bin/nix/shell.nix
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
 
 pkgs.mkShell {
   buildInputs = [
