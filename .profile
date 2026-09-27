@@ -6,11 +6,6 @@ export HOMEBREW_REPOSITORY="/opt/homebrew"
 export HOMEBREW_NO_ENV_HINTS=1
 export HOMEBREW_NO_ANALYTICS=1
 
-if [ -n "$BASH_VERSION" ]; then
-    if [ -f "$HOME/.bashrc" ]; then
-        . "$HOME/.bashrc"
-    fi
-fi
 # Lima BEGIN
 # Make sure iptables and mount.fuse3 are available
 PATH="$PATH:/usr/sbin:/sbin"
@@ -19,3 +14,9 @@ export PATH
 
 # nix
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+if [ -n "$BASH_VERSION" ]; then
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi

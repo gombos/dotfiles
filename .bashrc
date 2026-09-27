@@ -164,24 +164,6 @@ fi
 
 alias l='ls -lt --color | head -10'
 
-#alias ls='ls --color=always'
-#alias grep='grep --color=auto'
-#alias less='less -R'
-#alias ll='ls -lt --color=always | head -20'
-
-# lesspipe
-# todo - figure out how to make lesspipe and bash-completition work together
-#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-#[ -x /usr/local/bin/lesspipe.sh ] && export LESSOPEN="|/usr/local/bin/lesspipe.sh %s"
-
-# nix
-#if [ -e /nix ]; then
-#  if ! [ -e ~/.nix-profile ]; then ln -sf /nix/var/nix/profiles/per-user/root/profile ~/.nix-profile; fi
-#  if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
-#  rm -rf ~/.nix-channels ~/.nix-defexpr
-#  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
-#fi
-
 # host specific
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
 
@@ -195,9 +177,3 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 export LESSHISTFILE=-
-
-# Lima BEGIN
-# Make sure iptables and mount.fuse3 are available
-PATH="$PATH:/usr/sbin:/sbin"
-export PATH
-# Lima END
