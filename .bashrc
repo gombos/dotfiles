@@ -162,6 +162,8 @@ if [ -x /usr/bin/dircolors ]; then
     eval "$(dircolors -b)"
 fi
 
+alias l='ls -lt --color | head -10'
+
 #alias ls='ls --color=always'
 #alias grep='grep --color=auto'
 #alias less='less -R'
