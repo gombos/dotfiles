@@ -6,6 +6,8 @@ pkgs.mkShell {
     git
     docker
     python3
+    python3Packages.pip
+    python3Packages.virtualenv
     uv
     awscli
     gh
@@ -31,12 +33,16 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
+    export VIRTUAL_ENV=/home/venv
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    export PIP_PREFIX="$(pwd)/.venv/pip_packages"
+    export PATH="$PIP_PREFIX/bin:$PATH"
     export GOPATH="$HOME/go"
     export PATH="$GOPATH/bin:$PATH"
-
+    if [ -e /home/venv/bin/activate ]; then
+      source /home/venv/bin/activate;
+    fi
     go install github.com/4ier/notion-cli@latest
-
-    echo "Nix environment!"
   '';
 
   # Forces Nix to install the man outputs for packages listed above
