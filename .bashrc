@@ -177,9 +177,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 export LESSHISTFILE=-
+export NIX_SHELL_PRESERVE_PROMPT=1
 
 # Start nix-shell safely without infinite loops
-if [ -z "$IN_NIX_SHELL" ] && [ -f shell.nix ]; then
-    export NIX_SHELL_PRESERVE_PROMPT=1
-    exec nix-shell
-fi
+#if [ -z "$IN_NIX_SHELL" ] && [ -f shell.nix ]; then
+#    exec nix-shell
+#fi

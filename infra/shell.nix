@@ -29,21 +29,18 @@ pkgs.mkShell {
     rsync
     wget
     openssh
-    go
     pkg-config
+    go
   ];
 
   shellHook = ''
     export VIRTUAL_ENV=/home/venv
     export VIRTUAL_ENV_DISABLE_PROMPT=1
-    export PIP_PREFIX="$(pwd)/.venv/pip_packages"
-    export PATH="$PIP_PREFIX/bin:$PATH"
-    export GOPATH="$HOME/go"
-    export PATH="$GOPATH/bin:$PATH"
+    go install github.com/4ier/notion-cli@latest
     if [ -e /home/venv/bin/activate ]; then
       source /home/venv/bin/activate;
     fi
-    go install github.com/4ier/notion-cli@latest
+    export PATH="$HOME/go/bin:$PATH"
   '';
 
   # Forces Nix to install the man outputs for packages listed above
