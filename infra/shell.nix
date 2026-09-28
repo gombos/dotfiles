@@ -12,6 +12,7 @@ pkgs.mkShell {
     awscli
     gh
     man
+    gocryptfs
     coreutils
     claude-code
     bash
