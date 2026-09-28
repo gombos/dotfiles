@@ -186,3 +186,5 @@ export NIX_SHELL_PRESERVE_PROMPT=1
 #if [ -z "$IN_NIX_SHELL" ] && [ -f shell.nix ]; then
 #    exec nix-shell
 #fi
+
+#export CLAUDE_CODE_TMPDIR=/srv/share/claude
