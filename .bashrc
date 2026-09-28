@@ -176,6 +176,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   }
 fi
 
+
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
 export LESSHISTFILE=-
 export NIX_SHELL_PRESERVE_PROMPT=1
 
