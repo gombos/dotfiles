@@ -1,6 +1,6 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
-PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin"
+PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin:$HOME/go/bin"
 PATH="/home/linuxbrew/.linuxbrew/opt/coreutils/libexec/gnubin:$PATH"
 export PATH
 
@@ -176,15 +176,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   }
 fi
 
+export LESSHISTFILE=-
 
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-
-export LESSHISTFILE=-
-export NIX_SHELL_PRESERVE_PROMPT=1
-
-# Start nix-shell safely without infinite loops
-#if [ -z "$IN_NIX_SHELL" ] && [ -f shell.nix ]; then
-#    exec nix-shell
-#fi
-
-#export CLAUDE_CODE_TMPDIR=/srv/share/claude
