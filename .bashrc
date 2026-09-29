@@ -1,6 +1,10 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
-PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin:$HOME/go/bin"
+export GOPATH=/home/go
+
+PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin:/home/go/bin"
+
+# GNU Coreutils binary
 PATH="/home/linuxbrew/.linuxbrew/opt/coreutils/libexec/gnubin:$PATH"
 export PATH
 
