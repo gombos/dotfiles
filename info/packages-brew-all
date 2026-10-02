@@ -33,7 +33,7 @@ uhubctl
 
 docker?
 pass?
-scrcpy?
+scrcpy
 
 # cask
 google-drive
