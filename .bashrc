@@ -1,5 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
+# Set PATH
+
 export GOPATH=/home/go
 
 PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin:/home/go/bin"
@@ -36,6 +38,11 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 if [ -e /home/venv/bin/activate ]; then
   source /home/venv/bin/activate;
 fi #python venv
+
+# nix has priority over brew
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+export PATH="/home/linuxbrew/.linuxbrew/opt/portable-ruby/bin:$PATH"
 
 # If not running interactively, don't do anything
 case $- in

@@ -1,5 +1,4 @@
 # brew
-export PATH="/home/linuxbrew/.linuxbrew/opt/portable-ruby/bin:$PATH"
 export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
 export HOMEBREW_PREFIX="/opt/homebrew"
 export HOMEBREW_REPOSITORY="/opt/homebrew"
