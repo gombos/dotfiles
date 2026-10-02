@@ -1,5 +1,10 @@
 # brew
 
+# ecosystems
+uv
+go
+npm
+
 # cross-platform brew leaves
 bash
 findutils

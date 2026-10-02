@@ -35,9 +35,10 @@ fi
 export VIRTUAL_ENV=/home/venv
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
+# python3 -m venv /home/venv --system-site-packages
 if [ -e /home/venv/bin/activate ]; then
   source /home/venv/bin/activate;
-fi #python venv
+fi
 
 # nix has priority over brew
 if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
