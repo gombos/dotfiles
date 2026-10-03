@@ -132,9 +132,6 @@ alias search='rga'
 
 # Default arguments
 alias apt='sudo apt'
-alias pip='pip3'
-alias flatpak='sudo flatpak'
-alias qiv='qiv -tfi --browse --autorotate'
 alias df='df -h'
 alias finance='EDITOR="vd -f csv" pass edit'
 
@@ -180,6 +177,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 alias l='ls -lt --color | head -10'
+alias ll='ls -lt --color | head -20'
 
 # host specific
 #if [ -e $DOTFILES/bin/env-$(hostname) ]; then . $DOTFILES/bin/env-$(hostname); fi
