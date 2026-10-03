@@ -2,6 +2,8 @@
 
 # point to the system python3 enviroment and NOT to the /usr/local/python3 which might be in the path
 
+# UV_SYSTEM_PYTHON=1 uv run --with networkx /home/usr/.dotfiles/bin/infra-top-packages.py
+
 # sudo DEBIAN_FRONTEND=noninteractive apt-get update -y -qq -o Dpkg::Use-Pty=0 && sudo DEBIAN_FRONTEND=noninteractive apt-get install python3-apt -y -qq -o Dpkg::Use-Pty=0
 
 import argparse, sys

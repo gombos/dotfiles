@@ -4,6 +4,9 @@
 
 export GOPATH=/home/go
 
+# nix has priority over brew
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
 PATH="$PATH:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.local/share/gem/ruby/3.4.0/bin:/home/go/bin"
 
 # GNU Coreutils binary
@@ -20,6 +23,8 @@ if [ -d "/usr/local/sbin" ] ; then
   export PATH="$PATH:/usr/local/sbin"
 fi
 
+
+
 if [ -d "/home/linuxbrew/.linuxbrew/bin" ] ; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
@@ -35,13 +40,13 @@ fi
 export VIRTUAL_ENV=/home/venv
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
-# python3 -m venv /home/venv --system-site-packages
+# uv venv --seed --clear /home/venv
 if [ -e /home/venv/bin/activate ]; then
   source /home/venv/bin/activate;
 fi
 
 # nix has priority over brew
-if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+#if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 export PATH="/home/linuxbrew/.linuxbrew/opt/portable-ruby/bin:$PATH"
 
