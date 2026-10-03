@@ -293,7 +293,9 @@ for node in topLevelNodes:
     assert(len(packages) > 0)
 
     topLevelPackages.add(packages[0])
-    print(packages[0].displayName)
+
+for package in sorted(topLevelPackages, key = lambda package: package.displayName):
+    print(package.displayName)
 
 # Find missing recommend packages if requested
 if args.show_missing_recommends:
@@ -321,7 +323,7 @@ if args.show_missing_recommends:
                     visitStack.append(predecessor)
         return found
 
-    for fullname, via in recommendedVias.items():
+    for fullname, via in sorted(recommendedVias.items(), key = lambda item: byFullname[item[0]].displayName):
         by = topLevelPackages & {byFullname[ancestor] for ancestor in ancestors(fullname)}
         via = {byFullname[recommender] for recommender in via} - by
 
