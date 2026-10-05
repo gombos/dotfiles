@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sudo mount /efi
 sudo cp /efi/EFI/BOOT/BOOTX64.EFI /tmp/
 sudo chmod 777 /tmp/BOOTX64.EFI
 
