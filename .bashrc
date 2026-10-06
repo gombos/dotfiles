@@ -37,11 +37,10 @@ if [ -d "/opt/brew/bin" ] ; then
   eval $(/opt/brew/bin/brew shellenv)
 fi
 
-export VIRTUAL_ENV=/home/venv
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-
 # uv venv --seed --clear /home/venv
 if [ -e /home/venv/bin/activate ]; then
+  export VIRTUAL_ENV=/home/venv
+  export VIRTUAL_ENV_DISABLE_PROMPT=1
   source /home/venv/bin/activate;
 fi
 

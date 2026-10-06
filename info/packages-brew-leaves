@@ -1,3 +1,24 @@
+bash
+findutils
+gh
+go
+mas
+micro
+pandoc
+pass
+ripgrep-all
+rmlint
+sshuttle
+
+
+
+casks
+==> Casks
+android-platform-tools	betterdisplay		claude			codex			kitty			microsoft-edge		spotify			vlc
+appcleaner		chatgpt			claude-code		karabiner-elements	macwhisper		nomachine		visual-studio-code	windows-app
+
+
+
 adns
 automake
 bash
