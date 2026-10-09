@@ -20,6 +20,19 @@ ripgrep-all
 rmlint
 rsync
 wget
+coreutils
+gh
+pandoc
+sshuttle
+
+
+
+
+
+
+
+
+
 
 # brew leaves
 mas
@@ -36,6 +49,30 @@ pass?
 scrcpy
 
 # cask
+android-platform-tools
+betterdisplay
+chatgpt
+claude-code
+karabiner-elements
+macwhisper
+spotify
+vlc
+appcleaner
+brave-browser
+claude
+codex
+kitty
+nomachine
+visual-studio-code
+windows-app
+
+
+
+
+
+
+
+
 google-drive
 karabiner-elements
 kitty
