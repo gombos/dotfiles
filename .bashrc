@@ -23,18 +23,12 @@ if [ -d "/usr/local/sbin" ] ; then
   export PATH="$PATH:/usr/local/sbin"
 fi
 
-
-
 if [ -d "/home/linuxbrew/.linuxbrew/bin" ] ; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 if [ -d "/opt/homebrew/bin" ] ; then
   eval $(/opt/homebrew/bin/brew shellenv)
-fi
-
-if [ -d "/opt/brew/bin" ] ; then
-  eval $(/opt/brew/bin/brew shellenv)
 fi
 
 # uv venv --seed --clear /home/venv
@@ -148,7 +142,7 @@ alias lsb="lsblk -o mountpoint,label,fstype,size,fsavail,fsuse% | grep -v swap |
 
 alias config='/usr/bin/git --git-dir=$DOTFILES --work-tree=$DOTFILES'
 
-# -- Source externel files
+# -- Source exteral files
 
 # Enable programmable completion features
 if ! shopt -oq posix; then
@@ -159,16 +153,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-if type brew &>/dev/null; then
-  HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*; do
-      [[ -r "$COMPLETION" ]] && source "$COMPLETION"
-    done
-  fi
-fi
+[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 
 # Color
 if [ -x /usr/bin/dircolors ]; then

@@ -1,17 +1,23 @@
-# brew
+# brew leaves
 
 # ecosystems
 uv
 go
 npm
 
-# cross-platform brew leaves
+# cross-platform
+awscli
 bash
+bash-completion@2
+borgbackup
+coreutils
 findutils
 fio
+gh
 iperf
 jq
 micro
+pandoc
 pass
 podman
 portable-ruby
@@ -19,22 +25,18 @@ rclone
 ripgrep-all
 rmlint
 rsync
-wget
-coreutils
-gh
-pandoc
 sshuttle
+wget
 
+# Linux
+linux-utils
+btrfs-progs
+dosfstools
 
+# MacOS keg-only (install these on Linux)
+file-formula
 
-
-
-
-
-
-
-
-# brew leaves
+# MacOS brew leaves
 mas
 lima
 
@@ -48,7 +50,7 @@ docker?
 pass?
 scrcpy
 
-# cask
+# MacOS cask
 android-platform-tools
 betterdisplay
 chatgpt
