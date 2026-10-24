@@ -1,3 +1,5 @@
 sudo rm -rf /nix/*
 mkdir -p /nix/var/nix/profiles/per-user/root/
-curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --no-daemon
+curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install | sh -s -- --no-daemon --no-modify-profile
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then . ~/.nix-profile/etc/profile.d/nix.sh; fi
+nix-env -if ~/.dotfiles/infra/profile.nix
