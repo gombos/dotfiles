@@ -1,0 +1,916 @@
+#!/bin/bash
+# Builds a minimal Debian rootfs, or turns one into a UEFI Proxmox VM.
+#
+#   sudo ./debian.sh [--print-debs] <target>              build a rootfs
+#   sudo ./debian.sh <rootfs-dir> <vmid> <storage> <name> build a VM
+#
+# With no SCRIPT_MODE set, the VM mode is used when qm is available (a Proxmox
+# host) and the bootstrap mode otherwise. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm
+# overrides this.
+#
+# VM env: DISK_GB (8), MEMORY (2048), CORES (2), BRIDGE (vmbr0),
+#         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset).
+#
+# Notes: NOTES.md.
+
+die () { echo "error: $*" >&2; exit 1; }
+
+set -e
+
+unset TMP TEMP TMPDIR || true
+export PATH
+export LANG=C
+umask 022
+
+MIRROR="http://deb.debian.org/debian"
+SUITE=forky
+COMPONENT=main
+ARCH=amd64
+PRINT_DEBS=""
+
+############################################################### messages
+info ()    { local fmt="$1"; shift; printf "I: $fmt\n" "$@" >&4; }
+warning () { local fmt="$1"; shift; printf "W: $fmt\n" "$@" >&4; }
+error ()   { local fmt="$1"; shift; printf "E: $fmt\n" "$@" >&4; exit 1; }
+
+in_path () { command -v "$1" >/dev/null 2>&1; }
+
+smallyes () { while echo "${1-y}" 2>/dev/null; do :; done; }
+
+# without "a b c" "a d" -> "b c"   (sorted, deduplicated)
+without () {
+	(echo "$1" | tr ' ' '\n' | sort -u
+	 echo "$2" "$2" | tr ' ' '\n') | sort | uniq -u | grep -v '^$' | tr '\n' ' '
+	echo
+}
+
+repeatn () {
+	local n="$1"; shift
+	while [ "$n" -gt 0 ]; do
+		if "$@"; then return 0; fi
+		n=$((n - 1)); sleep 1
+	done
+	return 1
+}
+
+usage () {
+	cat <<EOF
+Usage: ${0##*/} [--print-debs] <target>
+EOF
+}
+
+
+############################################################### cleanup
+
+UMOUNT_DIRS=""
+umount_on_exit () { UMOUNT_DIRS="$1 $UMOUNT_DIRS"; }
+
+cleanup () {
+	local dir
+	for dir in $UMOUNT_DIRS; do
+		if mountpoint -q "$TARGET$dir" 2>/dev/null; then
+			if [ "$dir" = /proc ]; then
+				umount --lazy "$TARGET$dir" || true
+			else
+				umount "$TARGET$dir" || true
+			fi
+		fi
+	done
+	if [ -f "$TARGET/etc/mtab" ] && [ ! -h "$TARGET/etc/mtab" ]; then
+		rm -f "$TARGET/etc/mtab"
+	fi
+}
+
+############################################################### downloading
+
+# apt's file naming in lists/: strip scheme, '/' -> '_'
+list_name () { echo "${MIRROR}_$1" | sed -e 's,^[^:]\+://,,' -e 's,/,_,g'; }
+
+just_get () {
+	# from dest
+	mkdir -p "${2%/*}"
+	if wget -nv --timeout=60 -O "$2" "$1"; then
+		return 0
+	fi
+	rm -f "$2"
+	return 1
+}
+
+verify_checksum () {
+	# file sha256 size
+	[ "$(wc -c < "$1")" -eq "$3" ] &&
+	[ "$(sha256sum < "$1" | sed 's/ .*//')" = "$2" ]
+}
+
+get () {
+	# from dest sha256 size [byhash-url]
+	local from="$1" dest="$2" sum="$3" size="$4" byhash="${5-}" tries=0
+	local part="${dest%/*}/partial/${dest##*/}"
+	[ -d "${dest%/*}/partial" ] || part="$dest.part"
+
+	if [ -e "$dest" ] && verify_checksum "$dest" "$sum" "$size"; then
+		return 0
+	fi
+	rm -f "$dest"
+	while [ "$tries" -lt 10 ]; do
+		info "Retrieving %s" "${from##*/}"
+		if { [ -n "$byhash" ] && just_get "$byhash" "$part"; } || just_get "$from" "$part"; then
+			info "Validating %s" "${from##*/}"
+			if verify_checksum "$part" "$sum" "$size"; then
+				mv "$part" "$dest"
+				return 0
+			fi
+		fi
+		rm -f "$part"
+		warning "Retrying failed download of %s" "$from"
+		tries=$((tries + 1))
+	done
+	warning "%s was corrupt" "$from"
+	return 1
+}
+
+# print "sha256 size" of $2 from the SHA256 section of Release file $1
+release_checksum () {
+	sed -n '/^[Ss][Hh][Aa]256:/,/^[^ ]/p' "$1" |
+		while read -r a b c; do
+			if [ "$c" = "$2" ]; then echo "$a $b"; fi
+		done | head -n 1
+}
+
+PKGFILE=""
+
+download_indices () {
+	local rel path ent byhash hashurl ext unpack
+	rel="$LISTS/$(list_name "dists/$SUITE/Release")"
+
+	# the Release file is trusted as is: no signature verification
+	just_get "$MIRROR/dists/$SUITE/Release" "$rel" ||
+		error "Failed getting release file %s" "$MIRROR/dists/$SUITE/Release"
+
+
+	byhash="$(grep -q '^Acquire-By-Hash: yes$' "$rel" && echo yes || true)"
+
+	# prefer Packages.xz, fall back to Packages.gz
+	if in_path unxz; then ext=xz; unpack=unxz; else ext=gz; unpack=gunzip; fi
+
+	path="dists/$SUITE/$COMPONENT/binary-$ARCH/Packages"
+	PKGFILE="$LISTS/$(list_name "$path")"
+	ent="$(release_checksum "$rel" "$COMPONENT/binary-$ARCH/Packages.$ext")"
+	[ -n "$ent" ] || error "Invalid Release file, no entry for %s" "$COMPONENT/binary-$ARCH/Packages.$ext"
+	hashurl=""
+	[ -n "$byhash" ] && hashurl="$MIRROR/dists/$SUITE/$COMPONENT/binary-$ARCH/by-hash/SHA256/${ent% *}"
+	get "$MIRROR/$path.$ext" "$PKGFILE.$ext" ${ent% *} ${ent#* } $hashurl ||
+		error "Couldn't download %s" "$MIRROR/$path.$ext"
+	rm -f "$PKGFILE"
+	$unpack "$PKGFILE.$ext"
+}
+
+############################################################### Packages parsing
+# All helpers read the Packages index in awk paragraph mode (one stanza
+# per record). They replace upstream's perl "pkgdetails".
+
+# packages whose <field> equals <value>, e.g. get_debs Priority required
+get_debs () {
+	awk -v field="$1" -v value="$2" 'BEGIN { RS = ""; FS = "\n"; field = tolower(field) ":" }
+	{
+		pkg = ""; val = ""
+		for (i = 1; i <= NF; i++) {
+			split($i, kv, ":")
+			f = tolower(kv[1]) ":"
+			v = substr($i, length(kv[1]) + 2); sub(/^[ \t]+/, "", v)
+			if (f == "package:") pkg = v
+			else if (f == field) val = v
+		}
+		if (val == value) print pkg
+	}' "$PKGFILE" | sort -u
+}
+
+# transitive closure over Depends/Pre-Depends (first alternative only,
+# real packages only) -- like resolve_deps
+resolve_deps () {
+	awk -v want="$*" 'BEGIN { RS = ""; FS = "\n" }
+	{
+		pkg = ""; deps = ""
+		for (i = 1; i <= NF; i++) {
+			if ($i ~ /^Package:/) { pkg = $i; sub(/^Package:[ \t]*/, "", pkg) }
+			else if ($i ~ /^(Pre-)?Depends:/) { d = $i; sub(/^[^:]*:[ \t]*/, "", d); deps = deps "," d }
+		}
+		real[pkg] = 1
+		depends[pkg] = depends[pkg] deps
+	}
+	END {
+		qn = split(want, q, " ")
+		for (i = 1; i <= qn; i++) seen[q[i]] = 1
+		for (qi = 1; qi <= qn; qi++) {
+			dn = split(depends[q[qi]], ds, ",")
+			for (j = 1; j <= dn; j++) {
+				d = ds[j]
+				sub(/\|.*/, "", d); sub(/\(.*\)/, "", d); sub(/:.*/, "", d)
+				gsub(/[ \t]/, "", d)
+				if (d == "" || !(d in real) || (d in seen)) continue
+				seen[d] = 1; q[++qn] = d
+			}
+		}
+		for (p in seen) print p
+	}' "$PKGFILE" | sort -u | tr '\n' ' '
+}
+
+# "pkg version arch filename sha256 size" for each requested package
+pkg_details () {
+	awk -v want="$*" 'BEGIN { RS = ""; FS = "\n"
+		n = split(want, w, " "); for (i = 1; i <= n; i++) wanted[w[i]] = 1 }
+	{
+		pkg = ver = arc = fil = sum = siz = ""
+		for (i = 1; i <= NF; i++) {
+			v = $i; sub(/^[^:]*:[ \t]*/, "", v)
+			if ($i ~ /^Package:/) pkg = v
+			else if ($i ~ /^Version:/) ver = v
+			else if ($i ~ /^Architecture:/) arc = v
+			else if ($i ~ /^Filename:/) fil = v
+			else if ($i ~ /^SHA256:/) sum = v
+			else if ($i ~ /^Size:/) siz = v
+		}
+		if (pkg in wanted) out[pkg] = pkg " " ver " " arc " " fil " " sum " " siz
+	}
+	END {
+		for (p in wanted) print ((p in out) ? out[p] : p " -")
+	}' "$PKGFILE" | sort
+}
+
+# full stanzas of the given packages (for /var/lib/dpkg/available)
+pkg_stanzas () {
+	awk -v want="$*" 'BEGIN { RS = ""; FS = "\n"
+		n = split(want, w, " "); for (i = 1; i <= n; i++) wanted[w[i]] = 1 }
+	{
+		pkg = $1; sub(/^Package:[ \t]*/, "", pkg)
+		if (pkg in wanted) { print; print "" }
+	}' "$PKGFILE"
+}
+
+############################################################### .deb download
+
+declare -A DEBPATH	# package -> path of .deb inside $TARGET
+
+download_debs () {
+	local p ver arc fil sum siz debdest missing=""
+	while read -r p ver arc fil sum siz; do
+		if [ "$ver" = "-" ]; then missing="$missing $p"; continue; fi
+		debdest="$(echo "$ARCHIVES/${p}_${ver}_${arc}.deb" | sed 's/:/%3a/')"
+		get "$MIRROR/$fil" "$TARGET$debdest" "$sum" "$siz" ||
+			error "Couldn't download package %s (ver %s arch %s) at %s" "$p" "$ver" "$arc" "$MIRROR/$fil"
+		echo "$p $debdest" >> "$TARGET/debootstrap/debpaths"
+	done < <(pkg_details "$@")
+	[ -z "$missing" ] || error "Couldn't find these debs:%s" "$missing"
+	while read -r p debdest; do DEBPATH[$p]="$debdest"; done < "$TARGET/debootstrap/debpaths"
+}
+
+debfor () {
+	local p
+	for p in "$@"; do
+		[ -n "${DEBPATH[$p]-}" ] && echo "${DEBPATH[$p]}"
+	done
+	return 0
+}
+
+############################################################### first stage
+
+if in_path dpkg-deb; then
+	extract_deb_data () { dpkg-deb --fsys-tarfile "$1" | tar -k -xf -; }
+else
+	extract_deb_data () {
+		local tarball cat_cmd
+		tarball="$(ar -t "$1" | grep '^data\.tar')"
+		case "$tarball" in
+			data.tar.gz)  cat_cmd=zcat ;;
+			data.tar.xz)  cat_cmd=xzcat ;;
+			data.tar.zst) cat_cmd=zstdcat ;;
+			data.tar)     cat_cmd=cat ;;
+			*) error "Unknown compression type for %s in %s" "$tarball" "$1" ;;
+		esac
+		ar -p "$1" "$tarball" | $cat_cmd | tar -k -xf -
+	}
+fi
+
+extract () { (
+	cd "$TARGET"
+	local deb
+	for deb in $(debfor "$@"); do
+		info "Extracting %s..." "$(echo "$deb" | sed 's,^.*/,,;s,_.*$,,')"
+		extract_deb_data ".$deb" || error "Tried to extract package, but tar failed. Exit..."
+	done
+); }
+
+# --- merged /usr: move /bin, /lib*, /sbin into /usr and symlink them
+
+can_usrmerge_symlink () {
+	# Absolute symlinks can be relocated without problems.
+	test "${2#/}" = "$2" || return 0
+	while :; do
+		if test "${2#/}" != "$2"; then
+			set -- "$1" "${2#/}"
+		elif test "${2#./}" != "$2"; then
+			set -- "$1" "${2#./}"
+		elif test "$2" = ..; then
+			test "${1%/*/*}" != "$1" -a -n "${1%/*/*}"
+			return $?
+		elif test "${2#../}" != "$2"; then
+			test "${1%/*/*}" = "$1" -o -z "${1%/*/*}" && return 1
+			set -- "${1%/*}" "${2#../}"
+		else
+			test "${2#*/../}" = "$2"
+			return $?
+		fi
+	done
+}
+
+merge_usr_entry () {
+	local entry canon
+	canon="$TARGET/usr/${1#"$TARGET/"}"
+	test -h "$canon" &&
+		error "cannot move %s as its destination exists as a symlink" "${1#"$TARGET"}"
+	if ! test -e "$canon"; then
+		mv "$1" "$canon"
+		return 0
+	fi
+	test -d "$1" ||
+		error "cannot move non-directory %s as its destination exists" "${1#"$TARGET"}"
+	test -d "$canon" ||
+		error "cannot move directory %s as its destination is not a directory" "${1#"$TARGET"}"
+	for entry in "$1/"* "$1/."*; do
+		test "${entry%/.}" != "${entry%/..}" && continue
+		if test -h "$entry" && ! can_usrmerge_symlink "${entry#"$TARGET"}" "$(readlink "$entry")"; then
+			error "cannot move relative symlink crossing top-level directory %s" "${entry#"$TARGET"}"
+		fi
+		if test "${entry%'/*'}" != "${entry%'/.*'}" && ! test -e "$entry"; then
+			continue
+		fi
+		merge_usr_entry "$entry"
+	done
+	rmdir "$1"
+}
+
+merge_usr () {
+	local dir
+	for dir in bin lib lib32 lib64 libo32 libx32 sbin; do
+		test -h "$TARGET/$dir" && continue
+		test -e "$TARGET/$dir" || continue
+		merge_usr_entry "$TARGET/$dir"
+		ln -s "usr/$dir" "$TARGET/$dir"
+	done
+}
+
+# --- /dev
+
+mknod_if_needed () {
+	[ -e "$1" ] || mknod -m "${5:-666}" "$1" "$2" "$3" "$4"
+}
+
+setup_devices_simple () {
+	mknod_if_needed "$TARGET/dev/null"    c 1 3
+	mknod_if_needed "$TARGET/dev/zero"    c 1 5
+	mknod_if_needed "$TARGET/dev/full"    c 1 7
+	mknod_if_needed "$TARGET/dev/random"  c 1 8
+	mknod_if_needed "$TARGET/dev/urandom" c 1 9
+	mknod_if_needed "$TARGET/dev/tty"     c 5 0
+	mknod_if_needed "$TARGET/dev/console" c 5 1
+	mkdir -p "$TARGET/dev/pts/" "$TARGET/dev/shm/"
+	if ! mknod_if_needed "$TARGET/dev/ptmx" c 5 2; then
+		warning "Could not create /dev/ptmx, falling back to symlink. This chroot will require /dev/pts mounted with ptmxmode=666"
+		ln -sf pts/ptmx "$TARGET/dev/ptmx"
+	fi
+	ln -sfT /proc/self/fd  "$TARGET/dev/fd"
+	ln -sf /proc/self/fd/0 "$TARGET/dev/stdin"
+	ln -sf /proc/self/fd/1 "$TARGET/dev/stdout"
+	ln -sf /proc/self/fd/2 "$TARGET/dev/stderr"
+}
+
+# fallback when mknod is not permitted (e.g. some containers)
+setup_devices_bind () {
+	local device
+	mount -t tmpfs nodev "$TARGET/dev"
+	umount_on_exit /dev
+	for device in null zero full random urandom tty pts shm ptmx; do
+		if [ -d "/dev/$device" ]; then
+			mkdir "$TARGET/dev/$device"
+		elif [ -c "/dev/$device" ]; then
+			touch "$TARGET/dev/$device"
+		else
+			continue
+		fi
+		mount -o bind "/dev/$device" "$TARGET/dev/$device"
+		umount_on_exit "/dev/$device"
+	done
+	ln -s /proc/self/fd   "$TARGET/dev/fd"
+	ln -s /proc/self/fd/0 "$TARGET/dev/stdin"
+	ln -s /proc/self/fd/1 "$TARGET/dev/stdout"
+	ln -s /proc/self/fd/2 "$TARGET/dev/stderr"
+}
+
+setup_devices () {
+	mkdir -p "$TARGET/dev"
+	if ! setup_devices_simple 2>/dev/null ||
+	   ! sh -c ': >"$1"' -- "$TARGET/dev/null" 2>/dev/null; then
+		setup_devices_bind
+	fi
+}
+
+conditional_cp () {
+	if [ ! -e "$2/$1" ]; then
+		if [ -L "$1" ] && [ -e "$1" ]; then
+			cat "$1" > "$2/$1"
+		elif [ -e "$1" ]; then
+			cp "$1" "$2/$1"
+		fi
+	fi
+	return 0
+}
+
+first_stage_install () {
+	extract $required
+	merge_usr
+
+	# without dash nothing ships /bin/sh
+	[ -e "$TARGET/usr/bin/sh" ] || ln -s bash "$TARGET/usr/bin/sh"
+
+	mkdir -p "$TARGET/var/lib/dpkg"
+	: > "$TARGET/var/lib/dpkg/status"
+	: > "$TARGET/var/lib/dpkg/available"
+
+	mkdir -p "$TARGET/etc"
+	conditional_cp /etc/resolv.conf "$TARGET"
+	conditional_cp /etc/hostname "$TARGET"
+
+	mkdir -p "$TARGET/etc/apt/apt.conf.d" "$TARGET/etc/dpkg/dpkg.cfg.d"
+	cat > "$TARGET/etc/apt/apt.conf.d/00minimal" <<'EOF'
+APT::Install-Recommends "false";
+Acquire::Languages "none";
+APT::Keep-Downloaded-Packages "false";
+DPkg::Post-Invoke { "apt-get clean || true"; };
+EOF
+	cat > "$TARGET/etc/dpkg/dpkg.cfg.d/01-minimal" <<'EOF'
+# Drop all documentation
+path-exclude /usr/share/doc/*
+
+# Drop manual pages and info files
+path-exclude /usr/share/man/*
+path-exclude /usr/share/info/*
+
+# Drop global translations (Keep only what you need, e.g., English)
+path-exclude /usr/share/locale/*
+path-include /usr/share/locale/en*
+EOF
+
+	if [ ! -e "$TARGET/etc/fstab" ]; then
+		cat > "$TARGET/etc/fstab" <<EOF
+# UNCONFIGURED FSTAB FOR BASE SYSTEM
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+EOF
+		chown 0:0 "$TARGET/etc/fstab"; chmod 644 "$TARGET/etc/fstab"
+	fi
+
+	setup_devices
+}
+
+setup_apt_sources () {
+	mkdir -p "$TARGET/etc/apt"
+	echo "deb $MIRROR $SUITE $COMPONENT" > "$TARGET/etc/apt/sources.list"
+}
+
+############################################################### second stage
+
+in_target () {
+	if ! PATH=/sbin:/usr/sbin:/bin:/usr/bin chroot "$TARGET" "$@"; then
+		warning "Failure trying to run: chroot \"%s\" %s" "$TARGET" "$*"
+		local pkg
+		pkg="$(grep '^dpkg: error processing ' "$TARGET/debootstrap/debootstrap.log" | head -n 1 |
+			sed 's/\(error processing \)\(package \|archive \)/\1/' | cut -d ' ' -f 4)"
+		warning "See %s for details%s" "$TARGET/debootstrap/debootstrap.log" \
+			"${pkg:+ (possibly the package $pkg is at fault)}"
+		return 1
+	fi
+}
+
+# like in_target, but silent and never fails
+in_target_nofail () {
+	PATH=/sbin:/usr/sbin:/bin:/usr/bin chroot "$TARGET" "$@" 2>/dev/null || true
+}
+
+# reads "dpkg --status-fd" lines and prints Unpacking/Configuring messages
+dpkg_progress () {
+	local action="$1" status pkg qstate expect
+	case "$action" in
+		UNPACKING)   expect=half-installed ;;
+		CONFIGURING) expect=half-configured ;;
+	esac
+	while read -r status pkg qstate; do
+		[ "$qstate" = "$expect" ] || continue
+		case $qstate in
+			half-installed)  info "Unpacking %s..." "${pkg%:}"; expect=unpacked ;;
+			unpacked)        expect=half-installed ;;
+			half-configured) info "Configuring %s..." "${pkg%:}"; expect=installed ;;
+			installed)       expect=half-configured ;;
+		esac
+	done
+}
+
+# dpkg_run UNPACKING|CONFIGURING <dpkg args...>
+dpkg_run () {
+	local action="$1"; shift
+	in_target dpkg --status-fd 8 "$@" < <(smallyes '') 8> >(dpkg_progress "$action")
+}
+
+setup_proc () {
+	umount_on_exit /dev/pts
+	umount_on_exit /dev/shm
+	umount_on_exit /proc/bus/usb
+	umount_on_exit /proc
+	umount_on_exit /sys
+	umount "$TARGET/proc" 2>/dev/null || true
+	mkdir -p "$TARGET/proc" "$TARGET/sys"
+	mount -t proc proc "$TARGET/proc" || mount -o rbind /proc "$TARGET/proc" || true
+	if ! mountpoint -q "$TARGET/sys"; then
+		mount -t sysfs sysfs "$TARGET/sys" || true
+	fi
+}
+
+x_feign_install () {
+	local pkg="$1" ver
+	ver="$(in_target dpkg-deb -f "$(debfor "$pkg")" Version)"
+	mkdir -p "$TARGET/var/lib/dpkg/info"
+	printf 'Package: %s\nVersion: %s\nMaintainer: unknown\nStatus: install ok installed\n' \
+		"$pkg" "$ver" >> "$TARGET/var/lib/dpkg/status"
+	touch "$TARGET/var/lib/dpkg/info/${pkg}.list"
+}
+
+x_core_install () {
+	in_target dpkg --force-depends --install $(debfor "$@") < <(smallyes '')
+}
+
+second_stage_install () {
+	local predep done_predeps=""
+
+	in_target /bin/true
+
+	# make dpkg believe it is installed so it can install itself
+	x_feign_install dpkg
+
+	setup_proc
+	in_target /sbin/ldconfig
+
+	export DEBIAN_FRONTEND=noninteractive
+	export DEBCONF_NONINTERACTIVE_SEEN=true
+
+	info "Installing core packages..."
+	# base-files needs awk before the awk alternative exists
+	ln -sf gawk "$TARGET/usr/bin/awk"
+	x_core_install base-passwd
+	x_core_install base-files
+	x_core_install dpkg
+
+	# no tzdata, so no /etc/localtime (glibc then defaults to UTC)
+
+	x_core_install libc6
+	x_core_install perl-base
+	rm "$TARGET/usr/bin/awk"
+	x_core_install gawk
+
+	info "Unpacking required packages..."
+	repeatn 5 dpkg_run UNPACKING --force-depends --unpack $(debfor $required) ||
+		error "Failure while unpacking required packages."
+
+	info "Configuring required packages..."
+	printf '#!/bin/sh\nexit 101\n' > "$TARGET/usr/sbin/policy-rc.d"
+	chmod 755 "$TARGET/usr/sbin/policy-rc.d"
+
+	echo "apt apt" > "$TARGET/var/lib/dpkg/cmethopt"
+	chmod 644 "$TARGET/var/lib/dpkg/cmethopt"
+
+	dpkg_run CONFIGURING --configure --pending --force-configure-any --force-depends ||
+		error "Failure while configuring required packages."
+
+	info "Unpacking the base system..."
+
+	pkg_stanzas $required $base > "$TARGET/var/lib/dpkg/available"
+	for p in $required $base; do echo "$p install"; done | in_target dpkg --set-selections
+
+	# dpkg --predep-package doesn't resolve dependencies of pre-depends,
+	# so install those first, one by one
+	while predep="$(in_target_nofail dpkg --predep-package | sed -n 's/^Package: *//p')" &&
+	      [ -n "$predep" ]; do
+		predep="$(without "$(without "$(resolve_deps $predep)" "$required")" "$done_predeps")"
+		in_target dpkg --force-overwrite --force-confold --skip-same-version --install $(debfor $predep) < <(smallyes '')
+		base="$(without "$base" "$predep")"
+		done_predeps="$done_predeps $predep"
+	done
+
+	if [ -n "${base// /}" ]; then
+		repeatn 5 dpkg_run UNPACKING --force-overwrite --force-confold --skip-same-version --unpack $(debfor $base) ||
+			error "Failure while installing base packages."
+
+		info "Configuring the base system..."
+		repeatn 5 dpkg_run CONFIGURING --force-confold --skip-same-version --configure -a ||
+			error "Failure while configuring base packages."
+	fi
+
+	rm -f "$TARGET/usr/sbin/policy-rc.d"
+
+	# perl-base is only needed while bootstrapping (debconf's frontend is
+	# Perl), so remove it now, together with init-system-helpers
+	# (update-rc.d etc. are Perl). libpam-runtime stays for /etc/pam.d,
+	# only its Perl pam-auth-update is deleted.
+	# The debconf package stays (its shell confmodule and the package
+	# dependencies on it), but questions are answered by cdebconf (C):
+	# confmodule uses cdebconf when /usr/share/debconf/frontend is not a
+	# regular file, so divert the Perl frontend away and symlink cdebconf.
+	info "Removing init-system-helpers and perl-base..."
+	in_target dpkg --purge --force-depends --force-remove-essential init-system-helpers
+	in_target dpkg --purge --force-depends --force-remove-essential perl-base
+	rm -f "$TARGET/usr/sbin/pam-auth-update"
+
+	info "Switching debconf to cdebconf..."
+	in_target dpkg-divert --local --rename \
+		--divert /usr/share/debconf/frontend.perl --add /usr/share/debconf/frontend
+	ln -s /usr/lib/cdebconf/debconf "$TARGET/usr/share/debconf/frontend"
+
+	info "Base system installed successfully."
+}
+
+bootstrap_main () {
+	# fd 4 = I:/W:/E: messages (terminal), fd 3 = original stdout;
+	# stdout/stderr go to $TARGET/debootstrap/debootstrap.log
+	exec 3>&1 4>&1
+
+	############################################################### arguments
+
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		    --print-debs) PRINT_DEBS=true ;;
+		    -*) error "unrecognized or invalid option %s" "$1" ;;
+		    *) break ;;
+		esac
+		shift
+	done
+
+	[ $# -eq 1 ] || { usage >&2; error "You must specify a target."; }
+	TARGET="${1%/}"
+	case "$TARGET" in
+		/*) ;;
+		*) TARGET="$(pwd)/$TARGET" ;;
+	esac
+	# --print-debs only needs a scratch area for the indices
+	if [ -n "$PRINT_DEBS" ]; then
+		TARGET="$(mktemp -d)"
+		exec 4>&2
+	fi
+
+	in_path wget || error "You must install wget to download packages."
+	in_path chroot || error "Cannot find chroot executable in \$PATH"
+	in_path sha256sum || error "sha256sum is required"
+	if [ -z "$PRINT_DEBS" ] && [ "$(id -u)" -ne 0 ]; then
+		error "debootstrap can only run as root"
+	fi
+
+	APTSTATE="var/lib/apt"
+	LISTS="$TARGET/$APTSTATE/lists"
+	ARCHIVES="/var/cache/apt/archives"	# relative to $TARGET
+
+	mkdir -p "$TARGET/debootstrap" "$LISTS/partial" "$TARGET$ARCHIVES/partial"
+	exec >>"$TARGET/debootstrap/debootstrap.log" 2>&1
+
+	trap cleanup EXIT
+	trap 'error "Command failed (line %s), see %s" "$LINENO" "$TARGET/debootstrap/debootstrap.log"' ERR
+	trap 'exit 129' HUP
+	trap 'error "Interrupt caught ... exiting"' INT
+	trap 'exit 143' TERM
+
+	download_indices
+
+	# work_out_debs (scripts/debian-common, variant minbase)
+	required="$(get_debs Priority required | tr '\n' ' ')"
+	# use gawk as the awk implementation instead of mawk, and bash as the
+	# only shell (no dash; /bin/sh -> bash is created in first_stage_install).
+	# tzdata is not installed at all.
+	required="$(without "$required" "mawk dash tzdata") gawk"
+	base="apt cdebconf systemd-sysv"
+
+	info "Resolving dependencies of required packages..."
+	required="$(resolve_deps $required)"
+	info "Resolving dependencies of base packages..."
+	base="$(resolve_deps $base)"
+	base="$(without "$base" "$required")"
+
+	if [ -n "$PRINT_DEBS" ]; then
+		echo $required $base >&3
+		rm -rf "$TARGET"
+		exit 0
+	fi
+
+	: > "$TARGET/debootstrap/debpaths"
+	download_debs $required $base
+
+	first_stage_install
+	setup_apt_sources
+	second_stage_install
+
+	rm -rf "$TARGET/usr/share/man" "$TARGET/usr/share/info"
+	rm -rf "$TARGET/usr/share/doc"
+
+	mv "$TARGET/debootstrap/debootstrap.log" "$TARGET/var/log/bootstrap.log"
+	sync
+	rm -rf "$TARGET/debootstrap"
+}
+
+############################################################### vm
+
+wait_for_node () {
+	local i
+	for i in $(seq 50); do [ -b "$1" ] && return 0; sleep 0.1; done
+	die "$1 did not appear"
+}
+
+vm_cleanup () {
+	local rc=$?
+	set +e
+	mountpoint -q "$MNT" && umount -R "$MNT"
+	[ -n "$LOOP" ] && losetup -d "$LOOP"
+	if [ $rc -eq 0 ]; then
+		rm -rf "$W"
+	else
+		echo "failed; work directory kept for inspection: $W" >&2
+	fi
+}
+
+vm_check () {
+	[ "$(id -u)" -eq 0 ] || die "must run as root"
+	[ -x "$ROOTFS/usr/bin/bash" ] || die "$ROOTFS does not look like a rootfs"
+	local cmd
+	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat blkid chroot mountpoint; do
+		command -v "$cmd" >/dev/null || die "missing command: $cmd"
+	done
+	qm status "$VMID" >/dev/null 2>&1 && die "VM $VMID already exists"
+
+	STYPE=$(pvesm status | awk -v s="$STORAGE" '$1==s {print $2}')
+	[ -n "$STYPE" ] || die "unknown storage: $STORAGE"
+	case "$STYPE" in
+		dir|nfs|cifs) FORMAT=qcow2 ;;
+		*) FORMAT=raw ;;
+	esac
+
+	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
+	[ "$USED_MB" -lt $(( DISK_GB * 1024 - 1024 )) ] \
+		|| die "rootfs needs ${USED_MB} MiB, leave 1 GiB headroom: raise DISK_GB"
+
+	if [ -z "${ROOT_PASSWORD:-}" ]; then
+		read -rsp "root password for $NAME: " ROOT_PASSWORD; echo
+	fi
+	[ -n "$ROOT_PASSWORD" ] || die "empty root password"
+}
+
+vm_make_disk () {
+	echo "creating ${DISK_GB} GiB disk image"
+	truncate -s "${DISK_GB}G" "$IMG"
+	sgdisk -Z -n1:0:+512M -t1:ef00 -c1:esp -n2:0:0 -t2:8300 -c2:root "$IMG" >/dev/null
+	LOOP=$(losetup -f --show -P "$IMG")
+	wait_for_node "${LOOP}p1"
+	wait_for_node "${LOOP}p2"
+	mkfs.vfat -F 32 -n ESP "${LOOP}p1" >/dev/null
+	mkfs.ext4 -q -L rootfs "${LOOP}p2"
+	mkdir -p "$MNT"
+	mount "${LOOP}p2" "$MNT"
+
+	echo "copying rootfs"
+	cp -a "$ROOTFS/." "$MNT/"
+	mkdir -p "$MNT/boot/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
+	mount "${LOOP}p1" "$MNT/boot/efi"
+	mount -t proc proc "$MNT/proc"
+	mount --rbind /sys "$MNT/sys"
+	mount --rbind /dev "$MNT/dev"
+	cp /etc/resolv.conf "$MNT/etc/resolv.conf"
+}
+
+vm_install_packages () {
+	echo "installing kernel, bootloader and guest agent"
+	chroot "$MNT" apt-get update
+	# The rootfs has no Perl and no init-system-helpers, but the kernel and service
+	# packages need them (dpkg-preconfigure, update-rc.d, deb-systemd-helper). Both
+	# are put back for this install and purged again below, like the bootstrap does.
+	DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get install -y \
+		--no-install-recommends perl-base init-system-helpers
+	mkdir -p "$MNT/etc/dracut.conf.d"
+	echo 'hostonly="no"' > "$MNT/etc/dracut.conf.d/10-vm.conf"
+	DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get install -y \
+		--no-install-recommends dracut linux-image-cloud-amd64 grub-efi-amd64-bin qemu-guest-agent systemd-resolved
+	chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
+}
+
+vm_install_bootloader () {
+	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p2")
+	ESP_UUID=$(blkid -s UUID -o value "${LOOP}p1")
+
+	echo "installing bootloader"
+	cp "$MNT/usr/share/grub/default/grub" "$MNT/etc/default/grub"
+	sed -i 's/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200"/' \
+		"$MNT/etc/default/grub"
+	chroot "$MNT" grub-install --target=x86_64-efi --efi-directory=/boot/efi \
+		--bootloader-id=debian --removable --no-nvram
+	chroot "$MNT" update-grub
+}
+
+vm_configure () {
+	echo "configuring system"
+	cat > "$MNT/etc/fstab" <<EOF
+UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
+UUID=$ESP_UUID /boot/efi vfat umask=0077 0 2
+EOF
+	echo "$NAME" > "$MNT/etc/hostname"
+	cat > "$MNT/etc/hosts" <<EOF
+127.0.0.1 localhost
+127.0.1.1 $NAME
+EOF
+	mkdir -p "$MNT/etc/systemd/network"
+	cat > "$MNT/etc/systemd/network/10-wired.network" <<'EOF'
+[Match]
+Name=en* eth*
+
+[Network]
+DHCP=yes
+EOF
+	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
+	rm -f "$MNT/etc/resolv.conf"
+	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
+	: > "$MNT/etc/machine-id"
+	printf 'root:%s\n' "$ROOT_PASSWORD" | chroot "$MNT" chpasswd
+	unset ROOT_PASSWORD
+
+	chroot "$MNT" apt-get clean
+	rm -rf "$MNT/var/lib/apt/lists/"*
+
+	sync
+	umount -R "$MNT"
+	losetup -d "$LOOP"
+	LOOP=""
+}
+
+vm_create () {
+	echo "creating VM $VMID"
+	qm create "$VMID" --name "$NAME" --memory "$MEMORY" --cores "$CORES" \
+		--machine q35 --bios ovmf --ostype l26 --cpu host \
+		--net0 "virtio,bridge=$BRIDGE" --scsihw virtio-scsi-pci \
+		--agent enabled=1 --tablet 0 --onboot 1 --serial0 socket \
+		--tags debian-minimal
+	qm set "$VMID" --efidisk0 "$STORAGE:1,efitype=4m,pre-enrolled-keys=0" >/dev/null
+	OUT=$(qm importdisk "$VMID" "$IMG" "$STORAGE" --format "$FORMAT" 2>&1) \
+		|| { echo "$OUT" >&2; die "importdisk failed"; }
+	echo "$OUT"
+	VOLID=$(printf '%s\n' "$OUT" | sed -n "s/.*as 'unused[0-9]*:\([^']*\)'.*/\1/p")
+	[ -n "$VOLID" ] || die "could not find the imported disk in importdisk output"
+	qm set "$VMID" --scsi0 "$VOLID" --boot order=scsi0
+
+	if [ "$START" = 1 ]; then
+		qm start "$VMID"
+	fi
+
+	echo "VM $VMID ($NAME) is ready. Console: qm terminal $VMID"
+}
+
+vm_main () {
+	[ $# -eq 4 ] || die "usage: ${0##*/} <rootfs-dir> <vmid> <storage> <name>"
+	ROOTFS="$1"; VMID="$2"; STORAGE="$3"; NAME="$4"
+	DISK_GB="${DISK_GB:-8}"
+	MEMORY="${MEMORY:-2048}"
+	CORES="${CORES:-2}"
+	BRIDGE="${BRIDGE:-vmbr0}"
+	WORKDIR="${WORKDIR:-/var/tmp}"
+	START="${START:-1}"
+	LOOP=""
+
+	vm_check
+
+	W=$(mktemp -d "$WORKDIR/make-pve-vm.XXXXXX")
+	IMG="$W/disk.raw"
+	MNT="$W/mnt"
+	trap vm_cleanup EXIT
+
+	vm_make_disk
+	vm_install_packages
+	vm_install_bootloader
+	vm_configure
+	vm_create
+}
+
+############################################################### main
+
+main () {
+	local mode="${SCRIPT_MODE:-}"
+	if [ -z "$mode" ]; then
+		if in_path qm; then mode=vm; else mode=bootstrap; fi
+	fi
+	case "$mode" in
+		vm) vm_main "$@" ;;
+		bootstrap) bootstrap_main "$@" ;;
+		*) die "SCRIPT_MODE must be vm or bootstrap, not '$mode'" ;;
+	esac
+}
+
+main "$@"
