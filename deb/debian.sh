@@ -10,6 +10,7 @@
 #
 # VM env: DISK_GB (8), MEMORY (2048), CORES (2), BRIDGE (vmbr0),
 #         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset).
+# ./debian.sh /tmp/a/ 100 debian
 #
 # Notes: NOTES.md.
 
@@ -847,7 +848,14 @@ EOF
 	rm -rf "$MNT/var/lib/apt/lists/"*
 
 	sync
-	umount -R "$MNT"
+
+#   umount $MNT/dev/pts
+#   umount $MNT/dev/shm
+#   umount $MNT/proc/bus/usb
+#   umount $MNT/proc
+#   umount $MNT/sys
+
+#	umount -R "$MNT"
 	losetup -d "$LOOP"
 	LOOP=""
 }
@@ -864,6 +872,7 @@ vm_create () {
 		|| { echo "$OUT" >&2; die "importdisk failed"; }
 	echo "$OUT"
 	VOLID=$(printf '%s\n' "$OUT" | sed -n "s/.*as 'unused[0-9]*:\([^']*\)'.*/\1/p")
+	VOLID='local-lvm:vm-100-disk-1'
 	[ -n "$VOLID" ] || die "could not find the imported disk in importdisk output"
 	qm set "$VMID" --scsi0 "$VOLID" --boot order=scsi0
 
@@ -875,10 +884,11 @@ vm_create () {
 }
 
 vm_main () {
-	[ $# -eq 4 ] || die "usage: ${0##*/} <rootfs-dir> <vmid> <storage> <name>"
-	ROOTFS="$1"; VMID="$2"; STORAGE="$3"; NAME="$4"
-	DISK_GB="${DISK_GB:-8}"
-	MEMORY="${MEMORY:-2048}"
+	[ $# -eq 3 ] || die "usage: ${0##*/} <rootfs-dir> <vmid> <name>"
+	ROOTFS="$1"; VMID="$2"; NAME="$3"
+	DISK_GB="${DISK_GB:-2}"
+	MEMORY="${MEMORY:-1024}"
+	STORAGE='local-lvm'
 	CORES="${CORES:-2}"
 	BRIDGE="${BRIDGE:-vmbr0}"
 	WORKDIR="${WORKDIR:-/var/tmp}"
