@@ -19,7 +19,7 @@ ok vm_scsi1_root     has "$conf" "scsi1: local-lvm:vm-100-disk-2"
 ok vm_scsi2_usr      has "$conf" "scsi2: local-lvm:vm-100-disk-3"
 nok vm_unused_left   has "$conf" "unused"
 nok vm_no_tags        has "$conf" "--tags"
-ok vm_boot_order     has "$conf" "boot: order=scsi0;scsi1"
+ok vm_boot_order     grep -qx "boot: order=scsi0" /tmp/qm/100.conf
 ok vm_started        [ -f /tmp/qm/100.log ]
 ok images_imported   [ -s /tmp/qm/vm-100-disk-1.raw -a -s /tmp/qm/vm-100-disk-2.raw -a -s /tmp/qm/vm-100-disk-3.raw ]
 ok workdir_removed   [ -z "$(ls -A /tmp/work)" ]

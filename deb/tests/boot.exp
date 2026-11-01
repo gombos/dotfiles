@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 # boot.exp ESP_IMG ROOT_IMG USR_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
-# virtio-scsi, boot order ESP + root disk, virtio-net, guest agent channel), log in on the serial console
+# virtio-scsi, boot order ESP disk only, virtio-net, guest agent channel), log in on the serial console
 # and check the running system. Prints PASS/FAIL lines.
 lassign $argv espimg img usrimg name pw
 set accel tcg; set cpu max; set timeout 900
@@ -18,7 +18,7 @@ spawn qemu-system-x86_64 -machine q35,accel=$accel -cpu $cpu -m 1024 -smp 2 -nog
 	-drive if=pflash,format=raw,file=/tmp/vars.fd \
 	-device virtio-scsi-pci \
 	-drive file=$espimg,if=none,id=d0,format=raw -device scsi-hd,drive=d0,bootindex=100 \
-	-drive file=$img,if=none,id=d1,format=raw -device scsi-hd,drive=d1,bootindex=101 \
+	-drive file=$img,if=none,id=d1,format=raw -device scsi-hd,drive=d1 \
 	-drive file=$usrimg,if=none,id=d2,format=raw -device scsi-hd,drive=d2 \
 	-netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
 	-chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \

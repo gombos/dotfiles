@@ -1,5 +1,5 @@
 #!/bin/bash
-# run.sh [quick|full] : test debian.sh in a privileged Debian 13 container.
+# run.sh [quick|full] : test debian.sh in a privileged Debian forky container.
 #   quick  shellcheck, error paths, --print-debs, unit tests        (~2 min)
 #   full   also bootstrap + VM build with stub qm/pvesm, rootfs and image
 #          checks, unmount tests, QEMU boot of the image             (~10 min)

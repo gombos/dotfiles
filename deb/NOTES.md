@@ -171,36 +171,46 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    (`ESP_DISK_MB`, 64 MiB, FAT32), root (`ROOT_DISK_MB`, 512 MiB, ext4 `/`, type
    "Linux x86-64 root") and `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64
    /usr"). `/usr` and `/boot/efi` are mounted before the copy, so their files land
-   on their own disks; fstab lists them and the initramfs (dracut) mounts `/usr`
-   before switching to the real root. Kernel, initrd and `/boot/grub` stay on root.
+   on their own disks; fstab lists them and the initramfs (dracut `usrmount`)
+   mounts `/usr` before switching to the real root. The root filesystem label is
+   `root` (the UKI command line uses `root=LABEL=root`).
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
    mounts the ESP at /boot/efi.
 4. In the chroot:
    - `apt-get update` with normal signature checks (no overrides).
    - Installs `perl-base init-system-helpers` (temporarily, see caveats).
-   - Writes `/etc/dracut.conf.d/10-vm.conf` with `hostonly="no"`.
-   - Installs `dracut linux-image-cloud-amd64 grub-efi-amd64-bin qemu-guest-agent systemd-resolved`.
-   - Purges `perl-base init-system-helpers` again with `--force-depends --force-remove-essential`.
-   - Copies `/usr/share/grub/default/grub` to `/etc/default/grub`, sets the serial console,
-     runs `grub-install --target=x86_64-efi --removable --no-nvram`, then `update-grub`.
-5. Writes fstab (UUIDs of root and ESP), hostname, hosts, systemd-networkd DHCP
-   on `en* eth*`, enables networkd and resolved, points `/etc/resolv.conf` at the
-   resolved stub, empties `machine-id`, sets the root password, cleans apt.
-6. Stops processes still running inside the image, unmounts, runs `e2fsck`,
+   - Installs a local `no-initramfs-tool` package (Provides `linux-initramfs-tool`)
+     so the kernel pulls in no initramfs generator and no hook builds an initrd.
+   - Installs `linux-image-cloud-amd64 qemu-guest-agent systemd-resolved`.
+5. Writes fstab (UUIDs of root, `/usr` and ESP), hostname, hosts,
+   systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
+   root password.
+6. Builds the unified kernel image last (copy of `bin/uki.sh` and
+   `bin/uki-dracut.sh`): installs `dracut-core dracut-network systemd-ukify
+   systemd-boot-efi`, runs `dracut --no-hostonly` directly with the module list
+   `usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net
+   virtfs virtiofs shutdown overlayfs` and `--drivers virtio-balloon`, then
+   `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
+   ro rd.driver.pre=...` plus the serial console) to `/boot/efi/EFI/BOOT/BOOTX64.EFI`.
+   The tools and their dependencies (python3, iproute2, ...) are purged again.
+   No GRUB; `/boot` only keeps the kernel package files.
+7. Purges `perl-base init-system-helpers` (`--force-depends
+   --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
+   empties `machine-id`, cleans apt.
+8. Stops processes still running inside the image, unmounts, runs `e2fsck`,
    detaches the loop device, deletes the old VM if it is being replaced, then
    `qm create` (q35, OVMF, virtio-scsi,
    agent, tablet off, onboot, serial socket, no tags), `qm set --efidisk0`
    (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw) for each disk, reading
    the new `unusedN` volume from `qm config`: ESP as `scsi0`, root as `scsi1`,
-   `/usr` as `scsi2`, `--boot order=scsi0;scsi1` (OVMF only connects disks in
-   the boot order, and GRUB on the ESP reads `/boot` from the root disk),
+   `/usr` as `scsi2`, `--boot order=scsi0`,
    and `qm start` if `START=1`.
 
 ### Tests
 
 `tests/run.sh quick` (~2 min) or `tests/run.sh full` (~10 min) runs the suite
-in a privileged Debian 13 container with stub `qm`/`pvesm`: error paths,
+in a privileged Debian forky container with stub `qm`/`pvesm`: error paths,
 `--print-debs`, unit tests, bootstrap + VM build, rootfs and image checks,
 unmount tests in a systemd-like mount namespace, and a QEMU/OVMF boot of the
 image (KVM when available). Logs and a line coverage report go to
@@ -209,11 +219,13 @@ image (KVM when available). Logs and a line coverage report go to
 ### Decisions (in order)
 
 1. **UEFI, not BIOS.** Matches the reference (q35 + OVMF + efidisk).
-2. **GRUB to the removable path** (`\EFI\BOOT\BOOTX64.EFI`) so no NVRAM entry is needed.
+2. **Unified kernel image at the removable path** (`\EFI\BOOT\BOOTX64.EFI`), no
+   GRUB and no NVRAM entry. It replaced GRUB when the initramfs moved to a direct
+   dracut call (copy of the repo's `bin/uki*.sh`).
 3. **Kernel: `linux-image-cloud-amd64`** (asked for explicitly).
-4. **initramfs: dracut**, requested explicitly. It was already pulled in as a
-   kernel dependency; the explicit install plus `hostonly="no"` makes the initrd
-   contain the virtio drivers for any VM, not just the build host.
+4. **initramfs: dracut, called directly, last.** Not installed as the kernel's
+   initramfs tool; `--no-hostonly` makes the initrd generic (virtio drivers for any
+   VM). dracut and ukify are removed again after the build.
 5. **Signature checks stay on** in the image. No `AllowInsecureRepositories`,
    no `AllowUnauthenticated`. The rootfs already has `apt`, `sqv` and
    `debian-archive-keyring` (apt depends on them), so nothing extra is needed.

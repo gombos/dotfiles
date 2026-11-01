@@ -651,9 +651,9 @@ bootstrap_main () {
 }
 
 ############################################################### vm
-# Copy the rootfs into a GPT image (512 MiB ESP + ext4 root), add kernel,
-# dracut initramfs, GRUB and guest agent through chroot, configure it, then
-# import the image into a new Proxmox VM.
+# Copy the rootfs onto three disk images (ESP, root, /usr), add kernel and
+# guest agent through chroot, configure it, build a unified kernel image with
+# dracut + ukify, then import the disks into a new Proxmox VM.
 
 # partition nodes of a fresh loop device show up asynchronously (udev)
 wait_for_node () {
@@ -742,8 +742,8 @@ vm_make_disk () {
 	LOOP=$(vm_new_disk "$IMG" "${ROOT_DISK_MB}M" 8304 root)
 	LOOP_USR=$(vm_new_disk "$USR_IMG" "${USR_DISK_GB}G" 8314 usr)
 	mkfs.vfat -F 32 -n ESP "${LOOP_ESP}p1" >/dev/null
-	mkfs.ext4 -q -L rootfs "${LOOP}p1"
-	mkfs.ext4 -q -L usr "${LOOP_USR}p1"
+	mkfs.ext4 -q -L "$ROOT_LABEL" "${LOOP}p1"
+	mkfs.ext4 -q -L "$USR_LABEL" "${LOOP_USR}p1"
 	mkdir -p "$MNT"
 	mount "${LOOP}p1" "$MNT"
 	mkdir "$MNT/usr"
@@ -764,39 +764,41 @@ vm_make_disk () {
 	cp /etc/resolv.conf "$MNT/etc/resolv.conf"
 }
 
+vm_apt () { DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get -y --no-install-recommends "$@"; }
+
 vm_install_packages () {
-	echo "installing kernel, bootloader and guest agent"
+	echo "installing kernel and guest agent"
 	chroot "$MNT" apt-get update
 	# The rootfs has no Perl and no init-system-helpers, but the kernel and service
 	# packages need them (dpkg-preconfigure, update-rc.d, deb-systemd-helper). Both
-	# are put back for this install and purged again below, like the bootstrap does.
-	DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get install -y \
-		--no-install-recommends perl-base init-system-helpers
-	mkdir -p "$MNT/etc/dracut.conf.d"
-	echo 'hostonly="no"' > "$MNT/etc/dracut.conf.d/10-vm.conf"
-	DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get install -y \
-		--no-install-recommends dracut linux-image-cloud-amd64 grub-efi-amd64-bin qemu-guest-agent systemd-resolved
-	chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
-}
-
-vm_install_bootloader () {
-	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p1")
-	ESP_UUID=$(blkid -s UUID -o value "${LOOP_ESP}p1")
-	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
-
-	echo "installing bootloader"
-	# --removable puts GRUB at \EFI\BOOT\BOOTX64.EFI, which OVMF boots without
-	# an NVRAM entry (the VM's efidisk starts empty)
-	cp "$MNT/usr/share/grub/default/grub" "$MNT/etc/default/grub"
-	sed -i 's/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200"/' \
-		"$MNT/etc/default/grub"
-	chroot "$MNT" grub-install --target=x86_64-efi --efi-directory=/boot/efi \
-		--bootloader-id=debian --removable --no-nvram
-	chroot "$MNT" update-grub
+	# are put back for the build and purged again in vm_finish.
+	vm_apt install perl-base init-system-helpers
+	# A local package providing linux-initramfs-tool satisfies the kernel's
+	# "dracut | initramfs-tools | linux-initramfs-tool" dependency, so no
+	# initramfs generator is installed and no kernel hook builds an initrd;
+	# vm_build_uki builds it once, at the end, by calling dracut directly.
+	mkdir -p "$W/no-initramfs-tool/DEBIAN"
+	cat > "$W/no-initramfs-tool/DEBIAN/control" <<EOF
+Package: no-initramfs-tool
+Version: 1
+Architecture: all
+Maintainer: debian.sh <root@localhost>
+Provides: linux-initramfs-tool
+Description: initramfs is built by debian.sh (dracut + ukify, unified kernel image)
+EOF
+	dpkg-deb --root-owner-group --build "$W/no-initramfs-tool" "$MNT/tmp/no-initramfs-tool.deb" >/dev/null
+	chroot "$MNT" dpkg -i /tmp/no-initramfs-tool.deb
+	rm -f "$MNT/tmp/no-initramfs-tool.deb"
+	# udev explicitly: otherwise it only comes in as a dependency of dracut and
+	# leaves again with it
+	vm_apt install linux-image-cloud-amd64 udev qemu-guest-agent systemd-resolved
 }
 
 vm_configure () {
 	echo "configuring system"
+	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p1")
+	ESP_UUID=$(blkid -s UUID -o value "${LOOP_ESP}p1")
+	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
 	cat > "$MNT/etc/fstab" <<EOF
 UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
 UUID=$USR_UUID /usr ext4 defaults 0 2
@@ -816,18 +818,44 @@ Name=en* eth*
 DHCP=yes
 EOF
 	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
+	printf 'root:%s\n' "$ROOT_PASSWORD" | chroot "$MNT" chpasswd
+	unset ROOT_PASSWORD
+}
+
+# Unified kernel image (kernel + initrd + command line in one EFI binary) at
+# the removable path \EFI\BOOT\BOOTX64.EFI, which OVMF boots without GRUB or an
+# NVRAM entry. Copy of bin/uki.sh and bin/uki-dracut.sh: dracut builds a
+# generic initrd that mounts /usr from /etc/fstab (usrmount); ukify combines
+# it with the kernel. dracut, ukify and their dependencies are only installed
+# for this step.
+vm_build_uki () {
+	local kver
+	echo "building the unified kernel image"
+	vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
+	kver=$(ls "$MNT/usr/lib/modules")
+	chroot "$MNT" dracut --no-hostonly --force --kver "$kver" \
+		--modules 'usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net virtfs virtiofs shutdown overlayfs' \
+		--drivers 'virtio-balloon' /tmp/initrd
+	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; virtio_net and
+	# autofs4 so they are there right after switch_root
+	mkdir -p "$MNT/boot/efi/EFI/BOOT"
+	chroot "$MNT" ukify build --linux="/boot/vmlinuz-$kver" --initrd=/tmp/initrd --uname="$kver" \
+		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=virtio_net rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
+		--output=/boot/efi/EFI/BOOT/BOOTX64.EFI
+	echo "unified kernel image: $(du -h "$MNT/boot/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
+	rm -f "$MNT/tmp/initrd"
+	vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
+}
+
+vm_finish () {
+	chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
 	# the host's resolv.conf was only needed for apt during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
 	# empty machine-id: systemd generates a unique one on first boot
 	: > "$MNT/etc/machine-id"
-	printf 'root:%s\n' "$ROOT_PASSWORD" | chroot "$MNT" chpasswd
-	unset ROOT_PASSWORD
-
 	chroot "$MNT" apt-get clean
 	rm -rf "$MNT/var/lib/apt/lists/"*
-
-	vm_detach
 }
 
 # Daemons started by package scripts inside the chroot keep the mounts busy.
@@ -915,9 +943,7 @@ vm_create () {
 	qm set "$VMID" --scsi1 "$VOLID"
 	USR_VOLID=$(vm_import_disk "$USR_IMG")
 	qm set "$VMID" --scsi2 "$USR_VOLID"
-	# OVMF only connects disks in the boot order; GRUB on the ESP disk needs the
-	# root disk too, for /boot
-	qm set "$VMID" --boot "order=scsi0;scsi1"
+	qm set "$VMID" --boot order=scsi0
 
 	if [ "$START" = 1 ]; then
 		# QEMU must not inherit our private mount namespace (see vm_main)
@@ -945,6 +971,8 @@ vm_main () {
 	ROOT_DISK_MB="${ROOT_DISK_MB:-512}"
 	USR_DISK_GB="${USR_DISK_GB:-4}"
 	ESP_DISK_MB="${ESP_DISK_MB:-64}"
+	ROOT_LABEL=root	# filesystem label, also root=LABEL= on the kernel command line
+	USR_LABEL=usr	# fstab mounts /usr by UUID
 	MEMORY="${MEMORY:-1024}"
 	STORAGE='local-lvm'
 	CORES="${CORES:-2}"
@@ -971,8 +999,10 @@ vm_main () {
 
 	vm_make_disk
 	vm_install_packages
-	vm_install_bootloader
 	vm_configure
+	vm_build_uki
+	vm_finish
+	vm_detach
 	vm_create
 }
 

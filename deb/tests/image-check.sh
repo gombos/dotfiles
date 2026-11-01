@@ -30,18 +30,28 @@ echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /u
 ok fstab_root grep -q "^UUID=$ROOT_UUID / ext4 " $M/etc/fstab
 ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 " $M/etc/fstab
 ok fstab_esp  grep -q "^UUID=$ESP_UUID /boot/efi vfat " $M/etc/fstab
-ok efi_removable [ -s $M/boot/efi/EFI/BOOT/BOOTX64.EFI ]
-ok grub_cfg_root    grep -q "root=UUID=$ROOT_UUID" $M/boot/grub/grub.cfg
-ok grub_cfg_console grep -q 'console=ttyS0,115200' $M/boot/grub/grub.cfg
-ok kernel [ -n "$(ls $M/boot/vmlinuz-*-cloud-amd64 2>/dev/null)" ]
-initrd=$(ls $M/boot/initrd.img-* 2>/dev/null | head -n 1)
-ok initrd [ -s "$initrd" ]
-mods=$(chroot $M lsinitrd "${initrd#$M}" 2>/dev/null)
-kver=${initrd##*initrd.img-}
-for m in virtio_scsi sd_mod ext4; do
-	ok "initrd_or_builtin_$m" eval "has \"\$mods\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
+uki=$M/boot/efi/EFI/BOOT/BOOTX64.EFI
+ok uki_present [ -s "$uki" ]
+echo "INFO unified kernel image: $(du -h "$uki" | cut -f1)"
+sections=$(objdump -h "$uki" 2>/dev/null)
+for s in .linux .initrd .cmdline .osrel .uname; do ok "uki_section_$s" has "$sections" " $s "; done
+cmdline=$(objcopy -O binary -j .cmdline "$uki" /dev/stdout 2>/dev/null | tr -d '\0')
+ok uki_cmdline_root    has "$cmdline" "root=LABEL=root"
+ok uki_cmdline_console has "$cmdline" "console=ttyS0,115200"
+ok root_fs_label [ "$(blkid -s LABEL -o value "${L}p1")" = root ]
+ok usr_fs_label  [ "$(blkid -s LABEL -o value "${LU}p1")" = usr ]
+objcopy -O binary -j .initrd "$uki" /tmp/uki.initrd 2>/dev/null
+# lsinitrd lists all concatenated archives (early cpio + compressed parts)
+files=$(lsinitrd /tmp/uki.initrd 2>/dev/null)
+ok uki_initrd_switch_root has "$files" "bin/switch_root"
+kver=$(ls $M/usr/lib/modules)
+ok uki_initrd_usrmount has "$files" "mount-usr.sh"
+for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon; do
+	ok "uki_initrd_or_builtin_$m" eval "has \"\$files\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
 done
-ok dracut_hostonly_no grep -qx 'hostonly="no"' $M/etc/dracut.conf.d/10-vm.conf
+ok kernel [ -n "$(ls $M/boot/vmlinuz-*-cloud-amd64 2>/dev/null)" ]
+nok initrd_in_boot [ -n "$(ls $M/boot/initrd.img-* 2>/dev/null)" ]
+nok grub_left [ -e $M/boot/grub ]
 
 ok hostname [ "$(cat $M/etc/hostname)" = "$NAME" ]
 ok hosts grep -q "127.0.1.1 $NAME" $M/etc/hosts
@@ -57,10 +67,11 @@ ok apt_archives_empty [ -z "$(find $M/var/cache/apt/archives -name '*.deb')" ]
 status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 echo "INFO packages installed: $(printf '%s\n' "$status" | grep -c ' ii '); used: $(df -h --output=used $M | tail -n 1 | tr -d ' ')"
 ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
-for p in linux-image-cloud-amd64 grub-efi-amd64-bin dracut qemu-guest-agent systemd-resolved; do
+for p in linux-image-cloud-amd64 udev no-initramfs-tool qemu-guest-agent systemd-resolved; do
 	ok "installed_$p" eval "printf '%s\n' \"\$status\" | grep -q '^$p '"
 done
-for p in perl-base init-system-helpers; do
+for p in perl-base init-system-helpers dracut dracut-core dracut-network systemd-ukify systemd-boot-efi \
+	python3 iproute2 util-linux-extra grub-efi-amd64-bin initramfs-tools; do
 	nok "not_installed_$p" eval "printf '%s\n' \"\$status\" | grep -q '^$p '"
 done
 nok no_perl [ -e $M/usr/bin/perl ]
