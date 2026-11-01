@@ -969,7 +969,7 @@ vm_build_uki () {
 	local kver kernel
 	echo "building the unified kernel image"
 	case "$DISTRO" in
-		debian) vm_apt install dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
+		debian) vm_apt install systemd-ukify systemd-boot-efi util-linux-extra ;;
 		arch) : ;; # dracut and systemd-ukify came with pacstrap (ARCH_PACKAGES)
 	esac
 	kver=$(cd "$MNT/usr/lib/modules" 2>/dev/null && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1) || kver=""
@@ -981,13 +981,13 @@ vm_build_uki () {
 	kernel="/usr/lib/modules/$kver/vmlinuz"
 	[ -e "$MNT$kernel" ] || kernel="/boot/vmlinuz-$kver"
 	chroot "$MNT" dracut --no-hostonly --force --kver "$kver" \
-		--modules 'usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net virtfs virtiofs shutdown overlayfs' \
+		--modules 'usrmount bash rootfs-block kernel-modules qemu virtfs virtiofs shutdown overlayfs' \
 		--drivers 'virtio-balloon autofs4 vfat' /tmp/initrd
-	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; virtio_net and
-	# autofs4 so they are there right after switch_root
+	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; autofs4 so it
+	# is there right after switch_root
 	mkdir -p "$MNT/efi/EFI/BOOT"
 	chroot "$MNT" ukify build --linux="$kernel" --initrd=/tmp/initrd --uname="$kver" \
-		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=virtio_net rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
+		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
 		--output=/efi/EFI/BOOT/BOOTX64.EFI
 	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
@@ -1019,7 +1019,7 @@ vm_remove_kernel () {
 	debian)
 		vm_apt purge --autoremove \
 			$(chroot "$MNT" dpkg-query -W -f '${Package}\n' 'linux-image-*' 'linux-binary-*' 'linux-modules-*' 2>/dev/null) \
-			dracut dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
+			dracut dracut-core systemd-ukify systemd-boot-efi util-linux-extra
 		# apt never autoremoves kernels (linux-binary-*, linux-modules-*), so they
 		# are named above; the kernel postinst also left this protection list
 		rm -f "$MNT/etc/apt/apt.conf.d/01autoremove-kernels"

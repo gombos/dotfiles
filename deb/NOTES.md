@@ -270,10 +270,16 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
-   `bin/uki-dracut.sh`): installs `dracut-network systemd-ukify systemd-boot-efi
-   util-linux-extra`, runs `dracut --no-hostonly` directly with the module list
-   `usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net
-   virtfs virtiofs shutdown overlayfs` and `--drivers "virtio-balloon autofs4 vfat"` (autofs4 for systemd and vfat for `/efi` are needed right after `switch_root`), then
+   `bin/uki-dracut.sh`): installs `systemd-ukify systemd-boot-efi util-linux-extra`
+   (dracut is already there), runs `dracut --no-hostonly` directly with the module
+   list `usrmount bash rootfs-block kernel-modules qemu virtfs virtiofs shutdown
+   overlayfs` and `--drivers "virtio-balloon autofs4 vfat"` (autofs4 for systemd
+   and vfat for `/efi` are needed right after `switch_root`). Compared with
+   `bin/uki-dracut.sh`, `kernel-modules-export` is left out (not needed: the
+   `/usr` disk has the modules), and so are `qemu-net` and
+   `rd.driver.pre=virtio_net`: the network driver is not needed in the initrd,
+   udev loads it after `switch_root` (on Debian `qemu-net` would also need
+   `dracut-network`, which is not installed). Then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
    ro rd.driver.pre=...` plus the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
    No GRUB.
