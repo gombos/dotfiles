@@ -1019,7 +1019,7 @@ vm_remove_kernel () {
 	debian)
 		vm_apt purge --autoremove \
 			$(chroot "$MNT" dpkg-query -W -f '${Package}\n' 'linux-image-*' 'linux-binary-*' 'linux-modules-*' 'linux-base-*' 2>/dev/null) \
-			dracut dracut-core systemd-ukify systemd-boot-efi util-linux-extra dbus
+			dracut dracut-core systemd-ukify systemd-boot-efi util-linux-extra
 		# apt never autoremoves kernels (linux-binary-*, linux-modules-*), so they
 		# are named above; the kernel postinst also left this protection list
 		rm -f "$MNT/etc/apt/apt.conf.d/01autoremove-kernels"
