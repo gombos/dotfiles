@@ -181,8 +181,8 @@ earlier would otherwise meet packager keys it does not know, "unknown trust",
 and Arch does not support partial upgrades). Nothing else is installed: the
 kernel, guest agent, dracut and ukify come with pacstrap (udev and
 systemd-resolved are part of systemd). After the UKI is built,
-`systemd-ukify` is removed with `pacman -Rns`; dracut stays, because it provides
-the kernel's `initramfs` dependency (there is no placeholder package on Arch). Downloads go
+`linux dracut systemd-ukify` are removed with `pacman -Rns` the same way (`/efi`
+unmounted, `/usr/lib/modules` moved aside; no placeholder package). Downloads go
 to a tmpfs over `/var/cache/pacman/pkg` so the 512 MiB root disk is not used.
 The build runs pacman with a temporary `/etc/pacman-build.conf` (no sandbox,
 see above); the image keeps the stock `pacman.conf`, whose sandbox works with
@@ -249,9 +249,10 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    /usr") and `/usr/lib/modules` (`MODULES_DISK_MB`, 512 MiB, ext4, label
    `modules`). `/usr` and `/efi` are mounted before the copy, so their files land
    on their own disks. The kernel modules stay on the `/usr` disk as well and
-   are copied to the modules disk at the end (`vm_copy_modules`): `switch_root`
-   and early units load modules (autofs4, vfat for `/efi`) before systemd mounts
-   the modules disk over `/usr/lib/modules`. fstab lists all of them; the
+   are copied to the modules disk after the UKI is built (`vm_copy_modules`):
+   `switch_root` and early units load modules (autofs4, vfat for `/efi`) before
+   systemd mounts the modules disk over `/usr/lib/modules`. fstab lists all of
+   them; the
    initramfs (dracut `usrmount`) mounts `/usr` before switching to the real root;
    systemd mounts `/usr/lib/modules` with
    `x-systemd.before=systemd-modules-load.service,nofail`. The root filesystem label is
@@ -262,25 +263,30 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 4. In the chroot:
    - `apt-get update` with normal signature checks (no overrides).
    - Installs `perl-base init-system-helpers` (temporarily, see caveats).
-   - Installs a local `no-initramfs-tool` package (Provides `linux-initramfs-tool`)
-     so the kernel pulls in no initramfs generator and no hook builds an initrd.
-   - Installs `linux-image-cloud-amd64 qemu-guest-agent systemd-resolved`.
+   - Installs `linux-image-cloud-amd64 dracut kmod udev qemu-guest-agent
+     systemd-resolved` (dracut satisfies the kernel's initramfs dependency; kmod
+     and udev explicitly so they stay when the kernel and dracut go).
 5. Writes fstab (UUIDs of root, `/usr` read-only, `/usr/lib/modules`, and ESP at `/efi`), hostname, hosts,
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
-   `bin/uki-dracut.sh`): installs `dracut-core dracut-network systemd-ukify
-   systemd-boot-efi`, runs `dracut --no-hostonly` directly with the module list
+   `bin/uki-dracut.sh`): installs `dracut-network systemd-ukify systemd-boot-efi
+   util-linux-extra`, runs `dracut --no-hostonly` directly with the module list
    `usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net
    virtfs virtiofs shutdown overlayfs` and `--drivers "virtio-balloon autofs4 vfat"` (autofs4 for systemd and vfat for `/efi` are needed right after `switch_root`), then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
    ro rd.driver.pre=...` plus the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
-   The tools and their dependencies (python3, iproute2, ...) are purged again.
-   No GRUB; `/boot` only keeps the kernel package files.
-7. Purges `perl-base init-system-helpers` (`--force-depends
+   No GRUB.
+7. Copies the modules to the modules disk, then removes the kernel
+   (`linux-image-*`, `linux-binary-*`, `linux-modules-*`: apt never autoremoves
+   kernels), dracut, ukify and their dependencies (`vm_remove_kernel`). `/efi` is
+   unmounted and `/usr/lib/modules` moved aside during the removal (empty
+   version directories stay for the `linux-modules` prerm), so neither the UKI
+   nor the modules are deleted. No placeholder package is needed.
+8. Purges `perl-base init-system-helpers` (`--force-depends
    --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
    empties `machine-id`, cleans apt.
-8. Stops processes still running inside the image, unmounts, runs `e2fsck`,
+9. Stops processes still running inside the image, unmounts, runs `e2fsck`,
    detaches the loop device, deletes the old VM if it is being replaced, then
    `qm create` (q35, OVMF, virtio-scsi,
    agent, tablet off, onboot, serial socket, no tags), `qm set --efidisk0`
@@ -308,8 +314,9 @@ tests in a systemd-like mount namespace, once. Logs and a line coverage report g
    dracut call (copy of the repo's `bin/uki*.sh`).
 3. **Kernel: `linux-image-cloud-amd64`** (asked for explicitly).
 4. **initramfs: dracut, called directly, last.** Not installed as the kernel's
-   initramfs tool; `--no-hostonly` makes the initrd generic (virtio drivers for any
-   VM). dracut and ukify are removed again after the build.
+   initramfs tool for later kernel updates; `--no-hostonly` makes the initrd
+   generic (virtio drivers for any VM). The kernel package, dracut and ukify are
+   removed after the build; the UKI and the modules disk carry the kernel.
 5. **Signature checks stay on** in the image. No `AllowInsecureRepositories`,
    no `AllowUnauthenticated`. The rootfs already has `apt`, `sqv` and
    `debian-archive-keyring` (apt depends on them), so nothing extra is needed.

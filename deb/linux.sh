@@ -77,7 +77,6 @@ Usage: ${0##*/} [--print-debs] [target]
 EOF
 }
 
-
 ############################################################### cleanup
 
 # mounts below $TARGET, newest first, unmounted by the EXIT trap
@@ -167,7 +166,6 @@ download_indices () {
 	# the Release file is trusted as is: no signature verification
 	just_get "$MIRROR/dists/$SUITE/Release" "$rel" ||
 		error "Failed getting release file %s" "$MIRROR/dists/$SUITE/Release"
-
 
 	byhash="$(grep -q '^Acquire-By-Hash: yes$' "$rel" && echo yes || true)"
 
@@ -827,8 +825,8 @@ vm_check_rootfs () {
 	[ "$id" = "$DISTRO" ] || die "$ROOTFS is a '${id:-unknown}' rootfs, not $DISTRO (see --distro)"
 	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
 	USR_MB=$(du -sxm "$ROOTFS/usr" | cut -f1)
-	# /usr/lib/modules is on the /usr disk and copied to its own disk (Arch brings
-	# the kernel with the rootfs)
+	# /usr/lib/modules is on the /usr disk and copied to its own disk (Arch
+	# brings the kernel with the rootfs)
 	MODULES_MB=$(du -sxm "$ROOTFS/usr/lib/modules" 2>/dev/null | cut -f1)
 	MODULES_MB=${MODULES_MB:-0}
 	# package lists and caches are not copied into the image (the package
@@ -898,9 +896,9 @@ vm_apt () { DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get -y --no-install
 # the build uses /etc/pacman-build.conf (no download sandbox, see arch_nosandbox)
 vm_pacman () { chroot "$MNT" pacman --config /etc/pacman-build.conf --noconfirm "$@"; }
 
-# A local package providing the kernel's initramfs dependency means no
-# initramfs generator is installed and no kernel hook builds an initrd;
-# vm_build_uki builds it once, at the end, by calling dracut directly.
+# The kernel and dracut are only needed to build the unified kernel image;
+# vm_remove_kernel removes them again afterwards. While installed, dracut also
+# satisfies the kernel's initramfs dependency.
 vm_install_packages () {
 	echo "installing packages"
 	case "$DISTRO" in
@@ -911,21 +909,9 @@ vm_install_packages () {
 		# deb-systemd-helper). Both are put back for the build and purged again
 		# in vm_finish.
 		vm_apt install perl-base init-system-helpers
-		mkdir -p "$W/no-initramfs-tool/DEBIAN"
-		cat > "$W/no-initramfs-tool/DEBIAN/control" <<EOF
-Package: no-initramfs-tool
-Version: 1
-Architecture: all
-Maintainer: linux.sh <root@localhost>
-Provides: linux-initramfs-tool
-Description: initramfs is built by linux.sh (dracut + ukify, unified kernel image)
-EOF
-		dpkg-deb --root-owner-group --build "$W/no-initramfs-tool" "$MNT/tmp/no-initramfs-tool.deb" >/dev/null
-		chroot "$MNT" dpkg -i /tmp/no-initramfs-tool.deb
-		rm -f "$MNT/tmp/no-initramfs-tool.deb"
-		# udev explicitly: otherwise it only comes in as a dependency of dracut
-		# and leaves again with it
-		vm_apt install linux-image-cloud-amd64 udev qemu-guest-agent systemd-resolved
+		# udev and kmod (modprobe) explicitly: otherwise they only come in as
+		# dependencies of dracut and the kernel and leave again with them
+		vm_apt install linux-image-cloud-amd64 dracut kmod udev qemu-guest-agent systemd-resolved
 		;;
 	arch)
 		# downloads go to memory, not to the small root disk
@@ -983,7 +969,7 @@ vm_build_uki () {
 	local kver kernel
 	echo "building the unified kernel image"
 	case "$DISTRO" in
-		debian) vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
+		debian) vm_apt install dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
 		arch) : ;; # dracut and systemd-ukify came with pacstrap (ARCH_PACKAGES)
 	esac
 	kver=$(cd "$MNT/usr/lib/modules" 2>/dev/null && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1) || kver=""
@@ -1005,13 +991,47 @@ vm_build_uki () {
 		--output=/efi/EFI/BOOT/BOOTX64.EFI
 	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
+}
+
+# The kernel modules stay on the /usr disk as well: switch_root and early units
+# load modules (autofs4, vfat for /efi) before systemd mounts the modules disk
+# over /usr/lib/modules. The modules disk gets a copy.
+vm_copy_modules () {
+	echo "copying kernel modules to the modules disk"
+	mkdir -p "$W/modules"
+	mount "${LOOP_MOD}p1" "$W/modules"
+	cp -a "$MNT/usr/lib/modules/." "$W/modules/"
+	umount "$W/modules"
+}
+
+# The UKI on the ESP and the modules (on their disk and below it on /usr) are
+# all the VM needs of the kernel: remove the kernel, dracut and ukify. /efi is
+# unmounted and /usr/lib/modules moved out of the way, so the removal cannot
+# delete either.
+vm_remove_kernel () {
+	echo "removing the kernel and dracut (keeping the UKI and the modules)"
+	umount "$MNT/efi"
+	mv "$MNT/usr/lib/modules" "$MNT/usr/lib/modules.keep"
+	mkdir "$MNT/usr/lib/modules"
+	# empty version directories: Debian's linux-modules prerm runs find in it
+	( cd "$MNT/usr/lib/modules.keep" && for d in */; do mkdir "$MNT/usr/lib/modules/$d"; done )
 	case "$DISTRO" in
-		debian) vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
-		arch)
-			# dracut stays: it provides the kernel's initramfs dependency
-			vm_pacman -Rns systemd-ukify
-			;;
+	debian)
+		vm_apt purge --autoremove \
+			$(chroot "$MNT" dpkg-query -W -f '${Package}\n' 'linux-image-*' 'linux-binary-*' 'linux-modules-*' 2>/dev/null) \
+			dracut dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
+		# apt never autoremoves kernels (linux-binary-*, linux-modules-*), so they
+		# are named above; the kernel postinst also left this protection list
+		rm -f "$MNT/etc/apt/apt.conf.d/01autoremove-kernels"
+		# the initrd dracut's kernel hook built
+		rm -f "$MNT/boot/initrd.img-"*
+		;;
+	arch)
+		vm_pacman -Rns linux dracut systemd-ukify
+		;;
 	esac
+	rm -rf "$MNT/usr/lib/modules"
+	mv "$MNT/usr/lib/modules.keep" "$MNT/usr/lib/modules"
 }
 
 vm_finish () {
@@ -1030,17 +1050,6 @@ vm_finish () {
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
 	# empty machine-id: systemd generates a unique one on first boot
 	: > "$MNT/etc/machine-id"
-}
-
-# The kernel modules stay on the /usr disk as well: switch_root and early units
-# load modules (autofs4, vfat for /efi) before systemd mounts the modules disk
-# over /usr/lib/modules. The modules disk gets a copy.
-vm_copy_modules () {
-	echo "copying kernel modules to the modules disk"
-	mkdir -p "$W/modules"
-	mount "${LOOP_MOD}p1" "$W/modules"
-	cp -a "$MNT/usr/lib/modules/." "$W/modules/"
-	umount "$W/modules"
 }
 
 # kill_procs_under DIR : daemons started by package scripts in a chroot keep
@@ -1192,8 +1201,9 @@ vm_main () {
 	vm_install_packages
 	vm_configure
 	vm_build_uki
-	vm_finish
 	vm_copy_modules
+	vm_remove_kernel
+	vm_finish
 	vm_detach
 	vm_create
 }

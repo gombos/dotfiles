@@ -40,6 +40,7 @@ echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /u
 ok fstab_root grep -q "^UUID=$ROOT_UUID / ext4 " $M/etc/fstab
 ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 ro " $M/etc/fstab
 ok fstab_modules grep -qxF "UUID=$MOD_UUID /usr/lib/modules ext4 x-systemd.before=systemd-modules-load.service,nofail 0 2" $M/etc/fstab
+ok usr_and_modules_different_disks [ -n "$USR_UUID" -a -n "$MOD_UUID" -a "$USR_UUID" != "$MOD_UUID" ]
 ok fstab_esp  grep -q "^UUID=$ESP_UUID /efi vfat " $M/etc/fstab
 ok modules_on_modules_disk [ -n "$(ls $M/usr/lib/modules/*/modules.dep 2>/dev/null)" ]
 uki=$M/efi/EFI/BOOT/BOOTX64.EFI
@@ -61,7 +62,7 @@ ok uki_initrd_usrmount has "$files" "mount-usr.sh"
 for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon autofs4 vfat; do
 	ok "uki_initrd_or_builtin_$m" eval "has \"\$files\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
 done
-ok kernel [ -n "$(ls $M/boot/vmlinuz-* $M/usr/lib/modules/*/vmlinuz 2>/dev/null)" ]
+nok kernel_in_boot [ -n "$(ls $M/boot/vmlinuz-* 2>/dev/null)" ]
 nok initrd_in_boot [ -n "$(ls $M/boot/initrd.img-* $M/boot/initramfs-* 2>/dev/null)" ]
 nok grub_left [ -e $M/boot/grub ]
 
@@ -80,9 +81,12 @@ debian)
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
-	want="linux-image-cloud-amd64 udev no-initramfs-tool qemu-guest-agent systemd-resolved"
-	gone="perl-base init-system-helpers dracut dracut-core dracut-network systemd-ukify systemd-boot-efi
-		python3 iproute2 util-linux-extra grub-efi-amd64-bin initramfs-tools"
+	want="kmod udev qemu-guest-agent systemd-resolved"
+	gone="linux-image-cloud-amd64 no-initramfs-tool perl-base init-system-helpers dracut dracut-core
+		dracut-network systemd-ukify systemd-boot-efi python3 iproute2 util-linux-extra grub-efi-amd64-bin
+		initramfs-tools"
+	nok no_kernel_packages eval 'printf "%s\n" "$pkgs" | grep -qE "^linux-(image|binary|modules)-"'
+	nok autoremove_kernels_left [ -e $M/etc/apt/apt.conf.d/01autoremove-kernels ]
 	ok dpkg_audit [ -z "$(chroot $M dpkg --audit 2>&1)" ]
 	out=$(chroot $M apt-get check 2>&1); rc=$?
 	note=$(printf "%s\n" "$out" | grep -m1 -E "Depends|^E:")
@@ -94,8 +98,8 @@ arch)
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)
-	want="linux dracut qemu-guest-agent systemd base"
-	gone="no-initramfs systemd-ukify mkinitcpio python perl grub"
+	want="kmod qemu-guest-agent systemd base"
+	gone="linux dracut systemd-ukify no-initramfs mkinitcpio python perl grub"
 	out=$(chroot $M pacman -Dk 2>&1); rc=$?
 	ok "pacman_dk${out:+ ($(printf '%s' "$out" | head -n 1))}" [ $rc -eq 0 ]
 	;;
