@@ -60,7 +60,9 @@ arch)
 	ok usrmerge_sbin  [ "$(readlink "$R/sbin")" = usr/bin ]
 	ok usrmerge_lib   [ "$(readlink "$R/lib")" = usr/lib ]
 	ok usrmerge_lib64 [ "$(readlink "$R/lib64")" = usr/lib ]
-	ok pacman_noextract grep -qx 'NoExtract = usr/share/doc/\* usr/share/man/\* usr/share/info/\* usr/share/locale/\* !usr/share/locale/en\*' "$R/etc/pacman.conf"
+	ok pacman_noextract grep -qxF 'NoExtract = usr/share/doc/* usr/share/man/* usr/share/info/* usr/share/locale/* !usr/share/locale/en* usr/share/libalpm/hooks/*dracut*' "$R/etc/pacman.conf"
+	nok dracut_hooks [ -n "$(ls "$R"/usr/share/libalpm/hooks/*dracut* 2>/dev/null)" ]
+	nok boot_initramfs [ -n "$(ls "$R"/boot/initramfs-* 2>/dev/null)" ]
 	ok mirrorlist_http grep -qx 'Server = http://geo.mirror.pkgbuild.com/$repo/os/$arch' "$R/etc/pacman.d/mirrorlist"
 	ok keyring_populated [ -s "$R/etc/pacman.d/gnupg/pubring.gpg" ]
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" "$R/etc/pacman.conf" && ! grep -q "^DisableSandbox" "$R/etc/pacman.conf"'
@@ -69,10 +71,10 @@ arch)
 	nok bootstrap_env_left eval 'ls -d "${R%/*}"/.arch-bootstrap.* >/dev/null 2>&1'
 	pkgs=$(in_root pacman -Qq)
 	echo "INFO packages installed: $(printf '%s\n' "$pkgs" | wc -l); size: $(du -sxh "$R" | cut -f1)"
-	for p in base pacman systemd archlinux-keyring; do
+	for p in base pacman systemd archlinux-keyring linux qemu-guest-agent dracut systemd-ukify; do
 		ok "installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"
 	done
-	for p in mkinitcpio linux perl; do
+	for p in mkinitcpio perl; do
 		nok "not_installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"
 	done
 	out=$(in_root pacman -Dk 2>&1); rc=$?

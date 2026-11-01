@@ -668,7 +668,12 @@ rootfs_trim () {
 # against the mirror's sha256sums.txt; pacman checks package signatures.
 
 ARCH_TARBALL=archlinux-bootstrap-x86_64.tar.zst
-ARCH_NOEXTRACT='usr/share/doc/* usr/share/man/* usr/share/info/* usr/share/locale/* !usr/share/locale/en*'
+# everything the VM needs comes with pacstrap, where the bootstrap keyring
+# verifies it; dracut (not mkinitcpio) provides the kernel's initramfs dependency
+ARCH_PACKAGES="base linux qemu-guest-agent dracut systemd-ukify"
+# docs and locales as on Debian; dracut's pacman hooks, which would build an
+# initramfs in /boot on every kernel install (linux.sh calls dracut itself)
+ARCH_NOEXTRACT='usr/share/doc/* usr/share/man/* usr/share/info/* usr/share/locale/* !usr/share/locale/en* usr/share/libalpm/hooks/*dracut*'
 ARCH_BOOT=""
 
 # arch_noextract PACMAN_CONF : same exclusions as Debian's dpkg path-exclude
@@ -739,9 +744,9 @@ arch_bootstrap_main () {
 	# arch-chroot and pacstrap expect mount points
 	mount --bind "$b" "$b"
 	mount --bind "$target" "$b/mnt"
-	info "Installing base with pacstrap (log: %s)" "$target/var/log/bootstrap.log"
+	info "Installing %s with pacstrap (log: %s)" "$ARCH_PACKAGES" "$target/var/log/bootstrap.log"
 	"$b/usr/bin/arch-chroot" "$b" sh -c \
-		'pacman-key --init && pacman-key --populate archlinux && pacstrap -K /mnt base' \
+		'pacman-key --init && pacman-key --populate archlinux && pacstrap -K /mnt "$@"' sh $ARCH_PACKAGES \
 		>>"$log" 2>&1 || { tail -n 20 "$log" >&2; die "pacstrap failed, see $log"; }
 	kill_procs_under "$b"
 	umount -R "$b"
@@ -884,7 +889,7 @@ vm_pacman () { chroot "$MNT" pacman --config /etc/pacman-build.conf --noconfirm 
 # initramfs generator is installed and no kernel hook builds an initrd;
 # vm_build_uki builds it once, at the end, by calling dracut directly.
 vm_install_packages () {
-	echo "installing kernel and guest agent"
+	echo "installing packages"
 	case "$DISTRO" in
 	debian)
 		chroot "$MNT" apt-get update
@@ -920,23 +925,7 @@ EOF
 		vm_pacman -Sy
 		vm_pacman -S --needed archlinux-keyring
 		vm_pacman -Su
-		mkdir -p "$MNT/tmp/no-initramfs"
-		cat > "$MNT/tmp/no-initramfs/.PKGINFO" <<EOF
-pkgname = no-initramfs
-pkgbase = no-initramfs
-pkgver = 1-1
-pkgdesc = initramfs is built by linux.sh (dracut + ukify, unified kernel image)
-builddate = 0
-packager = linux.sh
-size = 0
-arch = any
-provides = initramfs
-EOF
-		chroot "$MNT" bsdtar -cf /tmp/no-initramfs-1-1-any.pkg.tar -C /tmp/no-initramfs .PKGINFO
-		# disabled: vm_pacman -U /tmp/no-initramfs-1-1-any.pkg.tar
-		rm -rf "$MNT/tmp/no-initramfs" "$MNT/tmp/no-initramfs-1-1-any.pkg.tar"
-		# udev and systemd-resolved are part of systemd
-		# disabled: vm_pacman -S --needed linux qemu-guest-agent
+		# the kernel, guest agent, dracut and ukify came with pacstrap (ARCH_PACKAGES)
 		;;
 	esac
 }
@@ -980,7 +969,7 @@ vm_build_uki () {
 	echo "building the unified kernel image"
 	case "$DISTRO" in
 		debian) vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
-		arch) : ;; # disabled: vm_pacman -S --needed dracut systemd-ukify
+		arch) : ;; # dracut and systemd-ukify came with pacstrap (ARCH_PACKAGES)
 	esac
 	kver=$(cd "$MNT/usr/lib/modules" 2>/dev/null && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1) || kver=""
 	if [ -z "$kver" ]; then
@@ -1003,7 +992,10 @@ vm_build_uki () {
 	rm -f "$MNT/tmp/initrd"
 	case "$DISTRO" in
 		debian) vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
-		arch) : ;; # disabled: vm_pacman -Rns dracut systemd-ukify
+		arch)
+			# dracut stays: it provides the kernel's initramfs dependency
+			vm_pacman -Rns systemd-ukify
+			;;
 	esac
 }
 

@@ -119,7 +119,7 @@ ok trim_keeps_locale_conf grep -qx 'LANG=de_DE.UTF-8' $TARGET/etc/locale.conf
 # arch_noextract: replaces the commented NoExtract line of pacman.conf
 printf '[options]\n#NoUpgrade   =\n#NoExtract   =\n' > /tmp/pacman.conf
 run arch_noextract /tmp/pacman.conf
-ok noextract_set  grep -qx 'NoExtract = usr/share/doc/\* usr/share/man/\* usr/share/info/\* usr/share/locale/\* !usr/share/locale/en\*' /tmp/pacman.conf
+ok noextract_set  grep -qxF "NoExtract = $ARCH_NOEXTRACT" /tmp/pacman.conf
 ok noextract_once [ "$(grep -c NoExtract /tmp/pacman.conf)" -eq 1 ]
 run arch_noextract /tmp/pacman.conf; ok noextract_idempotent [ "$(grep -c '^NoExtract' /tmp/pacman.conf)" -eq 1 ]
 

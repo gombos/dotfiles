@@ -155,7 +155,13 @@ Following the Arch wiki page "Install Arch Linux from existing Linux":
    supported by the kernel").
 3. Bind-mount the bootstrap root onto itself and the target onto its `/mnt`,
    then in `arch-chroot`: `pacman-key --init`, `pacman-key --populate archlinux`,
-   `pacstrap -K /mnt base`. pacman checks package signatures; `-K` gives the
+   `pacstrap -K /mnt $ARCH_PACKAGES` (`base linux qemu-guest-agent dracut
+   systemd-ukify`: everything the VM needs, verified by the bootstrap keyring;
+   dracut provides the kernel's `initramfs` dependency, so no mkinitcpio).
+   dracut's own pacman hooks (`*dracut*.hook`, which would build an initramfs
+   in `/boot` on every kernel install) are in `NoExtract`; linux.sh calls dracut
+   itself, once.
+   pacman checks package signatures; `-K` gives the
    target its own keyring.
 4. Unmount (leftover processes below the bootstrap root are stopped first; the
    directory is only removed when nothing is mounted below it, so a failed
@@ -165,17 +171,18 @@ Following the Arch wiki page "Install Arch Linux from existing Linux":
    non-English locales, empty `/usr/local` etc., `/etc/locale.conf`).
    The log is in `/var/log/bootstrap.log`.
 
-Result: `base` (about 137 packages, ~440 MB).
+Result: `base` plus the kernel, guest agent, dracut and ukify.
 
 ### VM differences
 
 Same disks, UKI and configuration as Debian. Package steps use pacman:
 `pacman -Sy`, then `archlinux-keyring` and a full `-Su` (a rootfs bootstrapped
 earlier would otherwise meet packager keys it does not know, "unknown trust",
-and Arch does not support partial upgrades); a local `no-initramfs` package (built with `bsdtar`, `provides =
-initramfs`) so `linux` pulls in neither mkinitcpio nor any other generator;
-`linux qemu-guest-agent` (udev and systemd-resolved are part of systemd); for
-the UKI `dracut systemd-ukify`, removed again with `pacman -Rns`. Downloads go
+and Arch does not support partial upgrades). Nothing else is installed: the
+kernel, guest agent, dracut and ukify come with pacstrap (udev and
+systemd-resolved are part of systemd). After the UKI is built,
+`systemd-ukify` is removed with `pacman -Rns`; dracut stays, because it provides
+the kernel's `initramfs` dependency (there is no placeholder package on Arch). Downloads go
 to a tmpfs over `/var/cache/pacman/pkg` so the 512 MiB root disk is not used.
 The build runs pacman with a temporary `/etc/pacman-build.conf` (no sandbox,
 see above); the image keeps the stock `pacman.conf`, whose sandbox works with
