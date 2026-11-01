@@ -676,6 +676,13 @@ arch_noextract () {
 	sed -i "s|^#\?NoExtract *=.*|NoExtract = $ARCH_NOEXTRACT|" "$1"
 }
 
+# arch_nosandbox PACMAN_CONF : pacman 7 downloads in a sandbox (Landlock, user
+# alpm). The Proxmox kernel has no Landlock, so pacman running on the host
+# (bootstrap environment, VM build chroot) must do without it.
+arch_nosandbox () {
+	sed -i -e 's/^DownloadUser/#&/' -e '/^\[options\]/a DisableSandbox' "$1"
+}
+
 arch_cleanup () {
 	set +e
 	[ -n "$ARCH_BOOT" ] || return 0
@@ -728,6 +735,7 @@ arch_bootstrap_main () {
 
 	echo "Server = $MIRROR_ARCH/\$repo/os/\$arch" > "$b/etc/pacman.d/mirrorlist"
 	arch_noextract "$b/etc/pacman.conf"
+	arch_nosandbox "$b/etc/pacman.conf"
 	# arch-chroot and pacstrap expect mount points
 	mount --bind "$b" "$b"
 	mount --bind "$target" "$b/mnt"
@@ -869,7 +877,8 @@ vm_make_disk () {
 }
 
 vm_apt () { DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get -y --no-install-recommends "$@"; }
-vm_pacman () { chroot "$MNT" pacman --noconfirm "$@"; }
+# the build uses /etc/pacman-build.conf (no download sandbox, see arch_nosandbox)
+vm_pacman () { chroot "$MNT" pacman --config /etc/pacman-build.conf --noconfirm "$@"; }
 
 # A local package providing the kernel's initramfs dependency means no
 # initramfs generator is installed and no kernel hook builds an initrd;
@@ -903,6 +912,8 @@ EOF
 	arch)
 		# downloads go to memory, not to the small root disk
 		mount -t tmpfs tmpfs "$MNT/var/cache/pacman/pkg"
+		cp "$MNT/etc/pacman.conf" "$MNT/etc/pacman-build.conf"
+		arch_nosandbox "$MNT/etc/pacman-build.conf"
 		vm_pacman -Sy
 		mkdir -p "$MNT/tmp/no-initramfs"
 		cat > "$MNT/tmp/no-initramfs/.PKGINFO" <<EOF
@@ -995,7 +1006,7 @@ vm_finish () {
 		rm -rf "$MNT/var/lib/apt/lists/"*
 		;;
 	arch)
-		rm -rf "$MNT/var/lib/pacman/sync/"*
+		rm -rf "$MNT/var/lib/pacman/sync/"* "$MNT/etc/pacman-build.conf"
 		;;
 	esac
 	# the host's resolv.conf was only needed for downloads during the build

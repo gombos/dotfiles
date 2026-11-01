@@ -79,6 +79,8 @@ debian)
 arch)
 	ok pacman_sync_empty  [ -z "$(ls -A $M/var/lib/pacman/sync)" ]
 	ok pacman_cache_empty [ -z "$(ls -A $M/var/cache/pacman/pkg)" ]
+	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
+	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)
 	want="linux no-initramfs qemu-guest-agent systemd base"
 	gone="dracut systemd-ukify mkinitcpio python perl grub"

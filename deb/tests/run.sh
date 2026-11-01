@@ -15,7 +15,9 @@ name=linux-sh-test-$$
 docker build -q -t linux-sh-test "$here" >/dev/null
 trap 'docker rm -f "$name" >/dev/null 2>&1' EXIT
 rc=0
-docker run --name "$name" --privileged -v /dev:/dev -v "$here/..:/src:ro" \
+# nolandlock.json makes the Landlock syscalls fail like on the Proxmox kernel
+docker run --name "$name" --privileged --security-opt seccomp="$here/nolandlock.json" \
+	-v /dev:/dev -v "$here/..:/src:ro" \
 	linux-sh-test bash /src/tests/container.sh "$mode" "$distros" || rc=$?
 rm -rf "$out"
 docker cp "$name:/tmp/out" "$out" >/dev/null && echo "logs and coverage report: $out"

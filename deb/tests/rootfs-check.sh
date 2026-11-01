@@ -63,6 +63,7 @@ arch)
 	ok pacman_noextract grep -qx 'NoExtract = usr/share/doc/\* usr/share/man/\* usr/share/info/\* usr/share/locale/\* !usr/share/locale/en\*' "$R/etc/pacman.conf"
 	ok mirrorlist_http grep -qx 'Server = http://geo.mirror.pkgbuild.com/$repo/os/$arch' "$R/etc/pacman.d/mirrorlist"
 	ok keyring_populated [ -s "$R/etc/pacman.d/gnupg/pubring.gpg" ]
+	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" "$R/etc/pacman.conf" && ! grep -q "^DisableSandbox" "$R/etc/pacman.conf"'
 	ok no_package_cache [ -z "$(ls -A "$R/var/cache/pacman/pkg")" ]
 	ok no_sync_dbs      [ -z "$(ls -A "$R/var/lib/pacman/sync")" ]
 	nok bootstrap_env_left eval 'ls -d "${R%/*}"/.arch-bootstrap.* >/dev/null 2>&1'

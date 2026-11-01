@@ -123,6 +123,12 @@ ok noextract_set  grep -qx 'NoExtract = usr/share/doc/\* usr/share/man/\* usr/sh
 ok noextract_once [ "$(grep -c NoExtract /tmp/pacman.conf)" -eq 1 ]
 run arch_noextract /tmp/pacman.conf; ok noextract_idempotent [ "$(grep -c '^NoExtract' /tmp/pacman.conf)" -eq 1 ]
 
+# arch_nosandbox: no download user, sandbox disabled, in [options]
+printf '[options]\nDownloadUser = alpm\n#DisableSandboxFilesystem\n\n[core]\nInclude = x\n' > /tmp/pacman2.conf
+run arch_nosandbox /tmp/pacman2.conf
+ok nosandbox_user    grep -qx '#DownloadUser = alpm' /tmp/pacman2.conf
+ok nosandbox_option  [ "$(sed -n 2p /tmp/pacman2.conf)" = DisableSandbox ]
+
 # arch_cleanup must never rm -rf through a still mounted bind of the target
 ARCH_BOOT=/tmp/ab; rm -rf /tmp/ab /tmp/abt; mkdir -p /tmp/ab/root.x86_64/mnt /tmp/abt; echo keep > /tmp/abt/file
 mount --bind /tmp/ab/root.x86_64 /tmp/ab/root.x86_64; mount --bind /tmp/abt /tmp/ab/root.x86_64/mnt

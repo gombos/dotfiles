@@ -148,7 +148,11 @@ Following the Arch wiki page "Install Arch Linux from existing Linux":
 2. Extract it into a throwaway `.arch-bootstrap.*` directory next to the
    target, set the mirror in its `mirrorlist`, and add `NoExtract` for docs,
    man/info pages and non-English locales to its `pacman.conf` (the
-   counterpart of Debian's dpkg `path-exclude`).
+   counterpart of Debian's dpkg `path-exclude`). Its pacman runs without the
+   download sandbox (`DisableSandbox`, no `DownloadUser`): pacman 7 sandboxes
+   downloads with Landlock and the `alpm` user, and the Proxmox kernel has no
+   Landlock ("restricting filesystem access failed because Landlock is not
+   supported by the kernel").
 3. Bind-mount the bootstrap root onto itself and the target onto its `/mnt`,
    then in `arch-chroot`: `pacman-key --init`, `pacman-key --populate archlinux`,
    `pacstrap -K /mnt base`. pacman checks package signatures; `-K` gives the
@@ -171,6 +175,10 @@ initramfs`) so `linux` pulls in neither mkinitcpio nor any other generator;
 `linux qemu-guest-agent` (udev and systemd-resolved are part of systemd); for
 the UKI `dracut systemd-ukify`, removed again with `pacman -Rns`. Downloads go
 to a tmpfs over `/var/cache/pacman/pkg` so the 512 MiB root disk is not used.
+The build runs pacman with a temporary `/etc/pacman-build.conf` (no sandbox,
+see above); the image keeps the stock `pacman.conf`, whose sandbox works with
+the VM's Arch kernel. The tests run with a seccomp profile
+(`tests/nolandlock.json`) that makes Landlock unavailable, as on Proxmox.
 The kernel comes from `/usr/lib/modules/<kver>/vmlinuz`. VM mode checks the
 rootfs's `os-release` `ID` against `--distro`.
 

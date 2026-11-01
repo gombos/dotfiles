@@ -19,6 +19,7 @@ suite () {	# NAME cmd... : run a test script, keep its log, show results
 	grep -E '^(PASS|FAIL|INFO|==)' "$OUT/$name.log"
 }
 
+echo "INFO seccomp: $(awk '/^Seccomp:/ {print $2}' /proc/self/status) (2: Landlock blocked as on Proxmox)"
 echo "### shellcheck"
 shellcheck -s bash -f gcc /tmp/src/linux.sh > $OUT/shellcheck.txt
 sed -n 's/.*\[\(SC[0-9]*\)\]$/\1/p' $OUT/shellcheck.txt | sort | uniq -c | sed 's/^/INFO /'
