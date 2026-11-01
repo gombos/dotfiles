@@ -1,14 +1,17 @@
 #!/bin/bash
 # Minimal qm stand-in. State lives in $QM_STATE; disk names follow Proxmox
 # (efidisk0 gets vm-ID-disk-0, the imported disk the next free index).
+# Every call is logged to $QM_STATE/calls.
 ST=${QM_STATE:-/tmp/qm}; mkdir -p "$ST"
+echo "$*" >> "$ST/calls"
 conf=$ST/$2.conf
 next_disk () { echo $(( $(grep -c "vm-$1-disk-" "$ST/$1.conf") )); }
 case "$1" in
-status) [ -f "$conf" ] && { echo "status: stopped"; exit 0; }
-	echo "Configuration file 'nodes/pve/qemu-server/$2.conf' does not exist" >&2; exit 2 ;;
+status) [ -f "$conf" ] || { echo "Configuration file 'nodes/pve/qemu-server/$2.conf' does not exist" >&2; exit 2; }
+	[ -f "$ST/$2.running" ] && echo "status: running" || echo "status: stopped" ;;
 create) [ -f "$conf" ] && { echo "VM $2 already exists" >&2; exit 255; }
-	id=$2; shift 2; echo "create: $*" > "$conf" ;;
+	id=$2; shift 2; echo "create: $*" > "$conf"
+	while [ $# -gt 0 ]; do [ "$1" = --name ] && echo "name: $2" >> "$conf"; shift; done ;;
 set) id=$2; shift 2
 	while [ $# -gt 0 ]; do
 		case "$1" in
@@ -24,6 +27,9 @@ importdisk) id=$2; img=$3; st=$4; vol="$st:vm-$id-disk-$(next_disk "$id")"
 	echo "Successfully imported disk as 'unused0:$vol'"
 	echo "unused0: $vol" >> "$conf" ;;
 config) cat "$conf" ;;
-start) echo "start" >> "$ST/$2.log" ;;
+start) [ -f "$conf" ] || exit 2; touch "$ST/$2.running"; echo "start" >> "$ST/$2.log" ;;
+stop) rm -f "$ST/$2.running" ;;
+destroy) [ -f "$conf" ] || exit 2; [ -f "$ST/$2.running" ] && { echo "VM $2 is running" >&2; exit 255; }
+	rm -f "$conf" "$ST/vm-$2-disk-"*.raw ;;
 *) echo "qm stub: unsupported: $*" >&2; exit 1 ;;
 esac

@@ -13,7 +13,8 @@
 # bootstrap. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm overrides this.
 #
 # VM env: DISK_GB (2), MEMORY (1024), CORES (2), BRIDGE (vmbr0),
-#         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset).
+#         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset),
+#         REPLACE_VM (1: delete an existing VM with the same VMID without asking).
 # The VM storage is local-lvm (set in vm_main).
 #
 # Notes: NOTES.md. Tests: tests/run.sh [quick|full].
@@ -668,7 +669,16 @@ vm_check () {
 	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat e2fsck blkid chroot mountpoint; do
 		command -v "$cmd" >/dev/null || die "missing command: $cmd"
 	done
-	qm status "$VMID" >/dev/null 2>&1 && die "VM $VMID already exists"
+	# an existing VM is only deleted in vm_create, once the new image is built
+	if qm status "$VMID" >/dev/null 2>&1 && [ "${REPLACE_VM:-}" != 1 ]; then
+		local answer=""
+		echo "VM $VMID already exists: $(qm config "$VMID" | sed -n 's/^name: //p'), $(qm status "$VMID")" >&2
+		read -rp "stop and delete VM $VMID and its disks after the new image is built? [y/N] " answer || true
+		case "$answer" in
+			[yY]|[yY][eE][sS]) REPLACE_VM=1 ;;
+			*) die "VM $VMID already exists" ;;
+		esac
+	fi
 
 	STYPE=$(pvesm status | awk -v s="$STORAGE" '$1==s {print $2}')
 	[ -n "$STYPE" ] || die "unknown storage: $STORAGE"
@@ -798,17 +808,47 @@ vm_kill_chroot_procs () {
 	kill -KILL $pids 2>/dev/null || true
 }
 
+# Debug output when the image cannot be released: which mount namespaces
+# still have its root filesystem mounted, who uses $MNT, block-device holders.
+vm_debug_busy () {
+	local dev="${LOOP}p2" mm p ns seen="" where
+	mm=$(cat "/sys/class/block/${dev##*/}/dev" 2>/dev/null)
+	echo "debug: $dev (dev $mm) is still in use" >&2
+	for p in /proc/[0-9]*; do
+		where=$(awk -v mm="$mm" '$3 == mm {printf "%s ", $5}' "$p/mountinfo" 2>/dev/null)
+		[ -n "$where" ] || continue
+		ns=$(readlink "$p/ns/mnt" 2>/dev/null)
+		case " $seen " in *" $ns "*) continue ;; esac
+		seen="$seen $ns"
+		echo "debug: mounted in $ns (pid ${p#/proc/} $(cat "$p/comm" 2>/dev/null)) at $where" >&2
+	done
+	for p in /proc/[0-9]*; do
+		where=$( { readlink "$p/cwd"; readlink "$p/root"; ls -l "$p/fd" 2>/dev/null | sed 's/.* -> //'; } 2>/dev/null |
+			grep -E -m 1 "^($MNT(/|$)|$dev$)")
+		[ -z "$where" ] || echo "debug: pid ${p#/proc/} ($(cat "$p/comm" 2>/dev/null)) uses $where" >&2
+	done
+	echo "debug: holders of $dev: $(ls "/sys/class/block/${dev##*/}/holders" 2>/dev/null | tr '\n' ' ')" >&2
+	losetup -l "$LOOP" >&2 2>/dev/null
+}
+
 vm_detach () {
 	sync
 	vm_kill_chroot_procs
-	umount -R "$MNT" || die "could not unmount $MNT"
+	echo "unmounting image"
+	umount -R "$MNT" || { vm_debug_busy; die "could not unmount $MNT"; }
+	echo "checking root filesystem"
 	# e2fsck exit code 1: errors were corrected
-	e2fsck -fp "${LOOP}p2" || [ $? -eq 1 ] || die "root filesystem check failed"
+	e2fsck -fp "${LOOP}p2" || [ $? -eq 1 ] || { vm_debug_busy; die "root filesystem check failed"; }
 	losetup -d "$LOOP"
 	LOOP=""
 }
 
 vm_create () {
+	if [ "${REPLACE_VM:-}" = 1 ] && qm status "$VMID" >/dev/null 2>&1; then
+		echo "deleting existing VM $VMID"
+		if qm status "$VMID" | grep -q running; then qm stop "$VMID"; fi
+		qm destroy "$VMID" --purge 1 --destroy-unreferenced-disks 1
+	fi
 	echo "creating VM $VMID"
 	qm create "$VMID" --name "$NAME" --memory "$MEMORY" --cores "$CORES" \
 		--machine q35 --bios ovmf --ostype l26 --cpu host \
@@ -826,13 +866,20 @@ vm_create () {
 	qm set "$VMID" --scsi0 "$VOLID" --boot order=scsi0
 
 	if [ "$START" = 1 ]; then
-		qm start "$VMID"
+		# QEMU must not inherit our private mount namespace (see vm_main)
+		nsenter --mount=/proc/1/ns/mnt -- qm start "$VMID"
 	fi
 
 	echo "VM $VMID ($NAME) is ready. Console: qm terminal $VMID"
 }
 
 vm_main () {
+	# Re-run in a private mount namespace. On systemd hosts mounts propagate
+	# into the namespaces of services started meanwhile; such a copy can
+	# survive our umount and keep the image busy (e2fsck: "in use").
+	if [ -z "${DEBIAN_SH_PRIVATE_NS:-}" ] && [ "$(id -u)" -eq 0 ]; then
+		DEBIAN_SH_PRIVATE_NS=1 exec unshare --mount --propagation private -- bash "$0" "$@"
+	fi
 	case $# in
 		0) in_path pvesh || die "missing command: pvesh"
 		   ROOTFS="$ROOTFS_DEFAULT"; VMID=$(pvesh get /cluster/nextid | tr -d '"')

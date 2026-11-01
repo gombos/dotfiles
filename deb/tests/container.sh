@@ -31,6 +31,7 @@ if [ "$mode" = full ]; then
 	cp --sparse=always /tmp/qm/vm-100-disk-1.raw /tmp/boot.raw
 	suite image  bash $TESTS/image-check.sh /tmp/qm/vm-100-disk-1.raw debian
 	suite detach unshare -m --propagation unchanged bash $TESTS/detach.sh /tmp/rootfs
+	suite isolation unshare -m --propagation unchanged bash $TESTS/isolation.sh /tmp/rootfs
 	suite boot   expect -f $TESTS/boot.exp /tmp/boot.raw debian test
 	cp /tmp/boot-console.log $OUT/ 2>/dev/null
 fi

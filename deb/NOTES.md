@@ -138,7 +138,22 @@ so a mistake does not cost a bootstrap run.
 
 Environment overrides: `DISK_GB` (2), `MEMORY` (1024), `CORES` (2),
 `BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD` (asked
-on the terminal if unset; without a terminal the script stops with a message).
+on the terminal if unset; without a terminal the script stops with a message),
+`REPLACE_VM` (1: replace an existing VM with the same VMID without asking).
+
+If the VMID already exists, the script shows its name and status and asks
+whether to stop and delete it. Deletion (`qm stop`, `qm destroy --purge 1
+--destroy-unreferenced-disks 1`) happens only after the new image is built, just
+before `qm create`. Without a terminal it refuses unless `REPLACE_VM=1`.
+
+VM mode re-executes itself in a private mount namespace (`unshare --mount
+--propagation private`). On systemd hosts, mounts otherwise propagate into the
+namespaces of services or timers started during the build; such a copy can
+survive the `umount` and keep the image busy (`e2fsck: /dev/loopNp2 is in use`).
+`qm start` runs through `nsenter` in PID 1's mount namespace so QEMU does not
+inherit the private one. If unmounting or `e2fsck` still fails, `debug:` lines
+show which mount namespaces still have the filesystem mounted, which processes
+use the mount point, and the block-device holders.
 
 Console: `qm terminal <vmid>` (serial, `console=ttyS0,115200` on the kernel line).
 
@@ -146,8 +161,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 
 ### What the script does
 
-1. Checks: root, rootfs shape, required commands, VMID free, storage type
-   (`pvesm status`), rootfs size fits `DISK_GB`.
+1. Re-runs itself in a private mount namespace. Checks: root, required
+   commands, VMID (asks before replacing), storage (`pvesm status`), root
+   password; bootstraps the rootfs if needed; then rootfs shape and size.
 2. Creates a sparse raw disk: GPT, p1 = 512 MiB ESP (FAT32), p2 = ext4 root.
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
@@ -164,7 +180,8 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    on `en* eth*`, enables networkd and resolved, points `/etc/resolv.conf` at the
    resolved stub, empties `machine-id`, sets the root password, cleans apt.
 6. Stops processes still running inside the image, unmounts, runs `e2fsck`,
-   detaches the loop device, then `qm create` (q35, OVMF, virtio-scsi,
+   detaches the loop device, deletes the old VM if it is being replaced, then
+   `qm create` (q35, OVMF, virtio-scsi,
    agent, tablet off, onboot, serial socket, tag `debian-minimal`), `qm set --efidisk0`
    (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw), reads the new
    `unusedN` volume from `qm config`, `qm set --scsi0 <volid> --boot order=scsi0`,

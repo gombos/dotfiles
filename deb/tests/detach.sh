@@ -40,7 +40,21 @@ new_disk
 sleep 0.5
 out=$( (cap vm_detach) ); rc=$?
 ok detach_cwd_fails_cleanly eval '[ $rc -ne 0 ] && has "$out" "could not unmount"'
+ok detach_cwd_debug_names_process has "$out" "(sleep) uses $MNT/tmp"
 kill $holder; wait $holder 2>/dev/null
+umount -R "$MNT" 2>/dev/null; [ -n "$LOOP" ] && losetup -d "$LOOP"; rm -rf "$W"
+
+# a namespace created while the image is mounted (as systemd does for
+# services) keeps a copy the unmount cannot reach: e2fsck finds the device in
+# use; the debug output must name that namespace. vm_main avoids this case by
+# running in a private mount namespace.
+new_disk
+unshare -m --propagation slave bash -c "mount -t tmpfs spy '$MNT/tmp' && exec sleep 600" & spy=$!
+sleep 0.5
+out=$( (cap vm_detach) ); rc=$?
+ok detach_nscopy_fails_cleanly eval '[ $rc -ne 0 ] && has "$out" "root filesystem check failed"'
+ok detach_nscopy_debug_names_ns has "$out" "debug: mounted in mnt:["
+kill $spy; wait $spy 2>/dev/null
 umount -R "$MNT" 2>/dev/null; [ -n "$LOOP" ] && losetup -d "$LOOP"; rm -rf "$W"
 
 exec 9>&-

@@ -32,6 +32,8 @@ expect vm_missing_cmd   "missing command: sgdisk"              env SCRIPT_MODE=v
 mv /usr/sbin/sgdisk.hidden /usr/sbin/sgdisk
 mkdir -p "$QM_STATE"; : > "$QM_STATE/300.conf"
 expect vm_exists        "VM 300 already exists"                env SCRIPT_MODE=vm "$T" E-exists /tmp/fake 300 x
+expect vm_exists_answer_no "VM 300 already exists" \
+	bash -c 'printf "n\n" | SCRIPT_MODE=vm "$0" E-existsn /tmp/fake 300 x' "$T"
 # <vmid> <name> uses the default rootfs; the VM check comes before any bootstrap
 expect vm_exists_first  "VM 300 already exists"                env SCRIPT_MODE=vm "$T" E-exists2 300 x
 nok vm_exists_no_bootstrap [ -e /tmp/rootfs ]
