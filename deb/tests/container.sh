@@ -33,9 +33,9 @@ if [ "$mode" = full ]; then
 		Q=/tmp/qm-$D
 		suite "build-$D"  bash $TESTS/build.sh "$D"
 		suite "rootfs-$D" bash $TESTS/rootfs-check.sh "$D" "$R" $([ "$D" = debian ] && echo $OUT/print-debs.txt)
-		for d in 1:esp 2:root 3:usr; do cp --sparse=always $Q/vm-100-disk-${d%:*}.raw /tmp/boot-${d#*:}.raw; done
-		suite "image-$D"  bash $TESTS/image-check.sh "$D" $Q/vm-100-disk-1.raw $Q/vm-100-disk-2.raw $Q/vm-100-disk-3.raw "$D"
-		suite "boot-$D"   expect -f $TESTS/boot.exp "$D" /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw "$D" root
+		for d in 1:esp 2:root 3:usr 4:modules; do cp --sparse=always $Q/vm-100-disk-${d%:*}.raw /tmp/boot-${d#*:}.raw; done
+		suite "image-$D"  bash $TESTS/image-check.sh "$D" $Q/vm-100-disk-1.raw $Q/vm-100-disk-2.raw $Q/vm-100-disk-3.raw $Q/vm-100-disk-4.raw "$D"
+		suite "boot-$D"   expect -f $TESTS/boot.exp "$D" /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw /tmp/boot-modules.raw "$D" root
 		cp /tmp/boot-console.log "$OUT/boot-$D-console.log" 2>/dev/null
 		first=${first:-$D} first_rootfs=${first_rootfs:-$R}
 	done

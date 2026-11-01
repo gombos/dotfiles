@@ -211,7 +211,8 @@ arguments the VMID is the next free one and the name is `VM_NAME_DEFAULT`
 the VMID and the storage are checked before the bootstrap,
 so a mistake does not cost a bootstrap run.
 
-Environment overrides: `ESP_DISK_MB` (64), `ROOT_DISK_MB` (512), `USR_DISK_GB` (4), `MEMORY` (1024), `CORES` (2),
+Environment overrides: `ESP_DISK_MB` (64), `ROOT_DISK_MB` (512), `USR_DISK_GB` (4),
+`MODULES_DISK_MB` (512), `MEMORY` (1024), `CORES` (2),
 `BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD`
 (default `ROOT_PASSWORD_DEFAULT`, `root`; never asked),
 `REPLACE_VM` (1: replace an existing VM with the same VMID without asking).
@@ -242,12 +243,18 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 1. Re-runs itself in a private mount namespace. Checks: root, required
    commands, VMID (asks before replacing), storage (`pvesm status`);
    bootstraps the rootfs if needed; then rootfs shape and size.
-2. Creates three sparse raw disks, each GPT with one partition: ESP
+2. Creates four sparse raw disks, each GPT with one partition: ESP
    (`ESP_DISK_MB`, 64 MiB, FAT32), root (`ROOT_DISK_MB`, 512 MiB, ext4 `/`, type
-   "Linux x86-64 root") and `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64
-   /usr"). `/usr` and `/efi` are mounted before the copy, so their files land
-   on their own disks; fstab lists them and the initramfs (dracut `usrmount`)
-   mounts `/usr` before switching to the real root. The root filesystem label is
+   "Linux x86-64 root"), `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64
+   /usr") and `/usr/lib/modules` (`MODULES_DISK_MB`, 512 MiB, ext4, label
+   `modules`). `/usr` and `/efi` are mounted before the copy, so their files land
+   on their own disks. The kernel modules stay on the `/usr` disk as well and
+   are copied to the modules disk at the end (`vm_copy_modules`): `switch_root`
+   and early units load modules (autofs4, vfat for `/efi`) before systemd mounts
+   the modules disk over `/usr/lib/modules`. fstab lists all of them; the
+   initramfs (dracut `usrmount`) mounts `/usr` before switching to the real root;
+   systemd mounts `/usr/lib/modules` with
+   `x-systemd.before=systemd-modules-load.service,nofail`. The root filesystem label is
    `root` (the UKI command line uses `root=LABEL=root`).
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
@@ -258,7 +265,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    - Installs a local `no-initramfs-tool` package (Provides `linux-initramfs-tool`)
      so the kernel pulls in no initramfs generator and no hook builds an initrd.
    - Installs `linux-image-cloud-amd64 qemu-guest-agent systemd-resolved`.
-5. Writes fstab (UUIDs of root, `/usr` read-only, and ESP at `/efi`), hostname, hosts,
+5. Writes fstab (UUIDs of root, `/usr` read-only, `/usr/lib/modules`, and ESP at `/efi`), hostname, hosts,
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
@@ -279,7 +286,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    agent, tablet off, onboot, serial socket, no tags), `qm set --efidisk0`
    (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw) for each disk, reading
    the new `unusedN` volume from `qm config`: ESP as `scsi0`, root as `scsi1`,
-   `/usr` as `scsi2`, `--boot order=scsi0`,
+   `/usr` as `scsi2`, `/usr/lib/modules` as `scsi3`, `--boot order=scsi0`,
    and `qm start` if `START=1`.
 
 ### Tests

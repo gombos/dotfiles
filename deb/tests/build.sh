@@ -23,11 +23,12 @@ ok vm_efidisk        has "$conf" "efidisk0: local-lvm:vm-100-disk-0,efitype=4m,p
 ok vm_scsi0_esp      has "$conf" "scsi0: local-lvm:vm-100-disk-1"
 ok vm_scsi1_root     has "$conf" "scsi1: local-lvm:vm-100-disk-2"
 ok vm_scsi2_usr      has "$conf" "scsi2: local-lvm:vm-100-disk-3"
+ok vm_scsi3_modules  has "$conf" "scsi3: local-lvm:vm-100-disk-4"
 nok vm_unused_left   has "$conf" "unused"
 nok vm_no_tags       has "$conf" "--tags"
 ok vm_boot_order     grep -qx "boot: order=scsi0" "$Q/100.conf"
 ok vm_started        [ -f "$Q/100.log" ]
-ok images_imported   [ -s "$Q/vm-100-disk-1.raw" -a -s "$Q/vm-100-disk-2.raw" -a -s "$Q/vm-100-disk-3.raw" ]
+ok images_imported   [ -s "$Q/vm-100-disk-1.raw" -a -s "$Q/vm-100-disk-2.raw" -a -s "$Q/vm-100-disk-3.raw" -a -s "$Q/vm-100-disk-4.raw" ]
 ok workdir_removed   [ -z "$(ls -A /tmp/work)" ]
 nok loop_left        eval 'losetup -a | grep -q /tmp/work'
 nok mounts_left      eval 'grep -q /tmp/work /proc/mounts'

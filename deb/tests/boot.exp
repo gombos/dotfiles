@@ -1,8 +1,8 @@
 #!/usr/bin/expect -f
-# boot.exp DISTRO ESP_IMG ROOT_IMG USR_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
+# boot.exp DISTRO ESP_IMG ROOT_IMG USR_IMG MODULES_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
 # virtio-scsi, boot order ESP disk only, virtio-net, guest agent channel), log in on the serial console
 # and check the running system. Prints PASS/FAIL lines.
-lassign $argv distro espimg img usrimg name pw
+lassign $argv distro espimg img usrimg modimg name pw
 set accel tcg; set cpu max; set timeout 900
 if {[file writable /dev/kvm]} { set accel kvm; set cpu host; set timeout 180 }
 file copy -force /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/vars.fd
@@ -20,6 +20,7 @@ spawn qemu-system-x86_64 -machine q35,accel=$accel -cpu $cpu -m 1024 -smp 2 -nog
 	-drive file=$espimg,if=none,id=d0,format=raw -device scsi-hd,drive=d0,bootindex=100 \
 	-drive file=$img,if=none,id=d1,format=raw -device scsi-hd,drive=d1 \
 	-drive file=$usrimg,if=none,id=d2,format=raw -device scsi-hd,drive=d2 \
+	-drive file=$modimg,if=none,id=d3,format=raw -device scsi-hd,drive=d3 \
 	-netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
 	-chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \
 	-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0
@@ -67,6 +68,9 @@ check root_on_own_disk "findmnt -no SOURCE,FSTYPE /" {/dev/sd.1 ext4}
 check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
 check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
 check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
+check modules_on_own_disk "findmnt -no SOURCE,FSTYPE /usr/lib/modules" {/dev/sd.1 ext4}
+check modules_before_modules_load "systemctl show -p Before --value usr-lib-modules.mount" {systemd-modules-load\.service}
+check modules_usable   "test -e /usr/lib/modules/\$(uname -r)/modules.dep && modinfo -n virtio_net"
 check hostname         "uname -n" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}

@@ -16,7 +16,7 @@
 # bootstrap. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm overrides this.
 #
 # VM disks: scsi0 ESP ESP_DISK_MB (64, boot disk), scsi1 root ROOT_DISK_MB (512),
-#           scsi2 /usr USR_DISK_GB (4).
+#           scsi2 /usr USR_DISK_GB (4), scsi3 /usr/lib/modules MODULES_DISK_MB (512).
 # VM env: MEMORY (1024), CORES (2), BRIDGE (vmbr0),
 #         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (ROOT_PASSWORD_DEFAULT: root),
 #         REPLACE_VM (1: delete an existing VM with the same VMID without asking).
@@ -784,8 +784,10 @@ vm_cleanup () {
 	local rc=$?
 	set +e
 	mountpoint -q "$MNT" && umount -R "$MNT"
+	mountpoint -q "$W/modules" && umount "$W/modules"
 	[ -n "$LOOP" ] && losetup -d "$LOOP"
 	[ -n "$LOOP_USR" ] && losetup -d "$LOOP_USR"
+	[ -n "$LOOP_MOD" ] && losetup -d "$LOOP_MOD"
 	[ -n "$LOOP_ESP" ] && losetup -d "$LOOP_ESP"
 	if [ $rc -eq 0 ]; then
 		rm -rf "$W"
@@ -825,6 +827,10 @@ vm_check_rootfs () {
 	[ "$id" = "$DISTRO" ] || die "$ROOTFS is a '${id:-unknown}' rootfs, not $DISTRO (see --distro)"
 	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
 	USR_MB=$(du -sxm "$ROOTFS/usr" | cut -f1)
+	# /usr/lib/modules is on the /usr disk and copied to its own disk (Arch brings
+	# the kernel with the rootfs)
+	MODULES_MB=$(du -sxm "$ROOTFS/usr/lib/modules" 2>/dev/null | cut -f1)
+	MODULES_MB=${MODULES_MB:-0}
 	# package lists and caches are not copied into the image (the package
 	# manager renews them); the root disk also holds the kernel, initrd and,
 	# during the build, package lists and downloads
@@ -835,6 +841,8 @@ vm_check_rootfs () {
 		|| die "rootfs without /usr needs ${ROOT_MB} MiB, leave 320 MiB headroom: raise ROOT_DISK_MB"
 	[ "$USR_MB" -lt $(( USR_DISK_GB * 1024 - 1024 )) ] \
 		|| die "/usr needs ${USR_MB} MiB, leave 1 GiB headroom: raise USR_DISK_GB"
+	[ "$MODULES_MB" -lt $(( MODULES_DISK_MB - 64 )) ] \
+		|| die "/usr/lib/modules needs ${MODULES_MB} MiB, leave 64 MiB headroom: raise MODULES_DISK_MB"
 }
 
 # vm_new_disk IMAGE SIZE TYPE LABEL : sparse image with GPT and one partition;
@@ -848,21 +856,26 @@ vm_new_disk () {
 	echo "$loop"
 }
 
-# Three disks, each GPT with one partition: the ESP (FAT32), root (ext4 /)
-# and /usr (ext4, "Linux x86-64 /usr" type). The initramfs mounts /usr from
-# /etc/fstab before switching to the real root.
+# Four disks, each GPT with one partition: the ESP (FAT32), root (ext4 /),
+# /usr (ext4, "Linux x86-64 /usr" type) and /usr/lib/modules (ext4). The
+# initramfs mounts /usr from /etc/fstab before switching to the real root;
+# systemd mounts /usr/lib/modules before systemd-modules-load.service; the
+# /usr disk keeps a copy below it for what loads earlier (see vm_copy_modules).
 vm_make_disk () {
-	echo "creating disk images: ESP ${ESP_DISK_MB} MiB, root ${ROOT_DISK_MB} MiB, /usr ${USR_DISK_GB} GiB"
+	echo "creating disk images: ESP ${ESP_DISK_MB} MiB, root ${ROOT_DISK_MB} MiB, /usr ${USR_DISK_GB} GiB, modules ${MODULES_DISK_MB} MiB"
 	LOOP_ESP=$(vm_new_disk "$ESP_IMG" "${ESP_DISK_MB}M" ef00 esp)
 	LOOP=$(vm_new_disk "$IMG" "${ROOT_DISK_MB}M" 8304 root)
 	LOOP_USR=$(vm_new_disk "$USR_IMG" "${USR_DISK_GB}G" 8314 usr)
+	LOOP_MOD=$(vm_new_disk "$MODULES_IMG" "${MODULES_DISK_MB}M" 8300 modules)
 	mkfs.vfat -F 32 -n ESP "${LOOP_ESP}p1" >/dev/null
 	mkfs.ext4 -q -L "$ROOT_LABEL" "${LOOP}p1"
 	mkfs.ext4 -q -L "$USR_LABEL" "${LOOP_USR}p1"
+	mkfs.ext4 -q -L "$MODULES_LABEL" "${LOOP_MOD}p1"
 	mkdir -p "$MNT"
 	mount "${LOOP}p1" "$MNT"
 	mkdir "$MNT/usr"
 	mount "${LOOP_USR}p1" "$MNT/usr"
+	mkdir -p "$MNT/usr/lib/modules"
 
 	echo "copying rootfs"
 	cp -a "$ROOTFS/." "$MNT/"
@@ -935,9 +948,11 @@ vm_configure () {
 	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p1")
 	ESP_UUID=$(blkid -s UUID -o value "${LOOP_ESP}p1")
 	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
+	MODULES_UUID=$(blkid -s UUID -o value "${LOOP_MOD}p1")
 	cat > "$MNT/etc/fstab" <<EOF
 UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
 UUID=$USR_UUID /usr ext4 ro 0 2
+UUID=$MODULES_UUID /usr/lib/modules ext4 x-systemd.before=systemd-modules-load.service,nofail 0 2
 UUID=$ESP_UUID /efi vfat umask=0077 0 2
 EOF
 	echo "$NAME" > "$MNT/etc/hostname"
@@ -1017,6 +1032,17 @@ vm_finish () {
 	: > "$MNT/etc/machine-id"
 }
 
+# The kernel modules stay on the /usr disk as well: switch_root and early units
+# load modules (autofs4, vfat for /efi) before systemd mounts the modules disk
+# over /usr/lib/modules. The modules disk gets a copy.
+vm_copy_modules () {
+	echo "copying kernel modules to the modules disk"
+	mkdir -p "$W/modules"
+	mount "${LOOP_MOD}p1" "$W/modules"
+	cp -a "$MNT/usr/lib/modules/." "$W/modules/"
+	umount "$W/modules"
+}
+
 # kill_procs_under DIR : daemons started by package scripts in a chroot keep
 # its mounts busy. Only processes whose root is below DIR are found, not ones
 # whose working directory is there.
@@ -1067,8 +1093,9 @@ vm_detach () {
 	# e2fsck exit code 1: errors were corrected
 	e2fsck -fp "${LOOP}p1" || [ $? -eq 1 ] || { vm_debug_busy "${LOOP}p1"; die "root filesystem check failed"; }
 	e2fsck -fp "${LOOP_USR}p1" || [ $? -eq 1 ] || { vm_debug_busy "${LOOP_USR}p1"; die "/usr filesystem check failed"; }
-	losetup -d "$LOOP_ESP" "$LOOP" "$LOOP_USR"
-	LOOP_ESP="" LOOP="" LOOP_USR=""
+	e2fsck -fp "${LOOP_MOD}p1" || [ $? -eq 1 ] || { vm_debug_busy "${LOOP_MOD}p1"; die "/usr/lib/modules filesystem check failed"; }
+	losetup -d "$LOOP_ESP" "$LOOP" "$LOOP_USR" "$LOOP_MOD"
+	LOOP_ESP="" LOOP="" LOOP_USR="" LOOP_MOD=""
 }
 
 # vm_import_disk IMAGE : import into the VM and print the volume ID.
@@ -1102,6 +1129,8 @@ vm_create () {
 	qm set "$VMID" --scsi1 "$VOLID"
 	USR_VOLID=$(vm_import_disk "$USR_IMG")
 	qm set "$VMID" --scsi2 "$USR_VOLID"
+	MODULES_VOLID=$(vm_import_disk "$MODULES_IMG")
+	qm set "$VMID" --scsi3 "$MODULES_VOLID"
 	qm set "$VMID" --boot order=scsi0
 
 	if [ "$START" = 1 ]; then
@@ -1129,16 +1158,18 @@ vm_main () {
 	esac
 	ROOT_DISK_MB="${ROOT_DISK_MB:-512}"
 	USR_DISK_GB="${USR_DISK_GB:-4}"
+	MODULES_DISK_MB="${MODULES_DISK_MB:-512}"
 	ESP_DISK_MB="${ESP_DISK_MB:-64}"
 	ROOT_LABEL=root	# filesystem label, also root=LABEL= on the kernel command line
 	USR_LABEL=usr	# fstab mounts /usr by UUID
+	MODULES_LABEL=modules
 	MEMORY="${MEMORY:-1024}"
 	STORAGE='local-lvm'
 	CORES="${CORES:-2}"
 	BRIDGE="${BRIDGE:-vmbr0}"
 	WORKDIR="${WORKDIR:-/var/tmp}"
 	START="${START:-1}"
-	LOOP="" LOOP_USR="" LOOP_ESP=""
+	LOOP="" LOOP_USR="" LOOP_ESP="" LOOP_MOD=""
 
 	vm_check
 	if [ ! -e "$ROOTFS" ] || [ -z "$(ls -A "$ROOTFS")" ]; then
@@ -1153,6 +1184,7 @@ vm_main () {
 	ESP_IMG="$W/esp.raw"
 	IMG="$W/root.raw"
 	USR_IMG="$W/usr.raw"
+	MODULES_IMG="$W/modules.raw"
 	MNT="$W/mnt"
 	trap vm_cleanup EXIT
 
@@ -1161,6 +1193,7 @@ vm_main () {
 	vm_configure
 	vm_build_uki
 	vm_finish
+	vm_copy_modules
 	vm_detach
 	vm_create
 }
