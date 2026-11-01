@@ -752,8 +752,8 @@ vm_make_disk () {
 	echo "copying rootfs"
 	cp -a "$ROOTFS/." "$MNT/"
 	rm -rf "$MNT/var/lib/apt/lists/"* "$MNT/var/cache/apt/"*
-	mkdir -p "$MNT/boot/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
-	mount "${LOOP_ESP}p1" "$MNT/boot/efi"
+	mkdir -p "$MNT/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
+	mount "${LOOP_ESP}p1" "$MNT/efi"
 	mount -t proc proc "$MNT/proc"
 	# rslave: with shared propagation (systemd hosts) umount -R would otherwise
 	# also unmount the host's /dev/pts, /sys/fs/cgroup, ...
@@ -801,8 +801,8 @@ vm_configure () {
 	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
 	cat > "$MNT/etc/fstab" <<EOF
 UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
-UUID=$USR_UUID /usr ext4 defaults 0 2
-UUID=$ESP_UUID /boot/efi vfat umask=0077 0 2
+UUID=$USR_UUID /usr ext4 ro 0 2
+UUID=$ESP_UUID /efi vfat umask=0077 0 2
 EOF
 	echo "$NAME" > "$MNT/etc/hostname"
 	cat > "$MNT/etc/hosts" <<EOF
@@ -838,11 +838,11 @@ vm_build_uki () {
 		--drivers 'virtio-balloon' /tmp/initrd
 	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; virtio_net and
 	# autofs4 so they are there right after switch_root
-	mkdir -p "$MNT/boot/efi/EFI/BOOT"
+	mkdir -p "$MNT/efi/EFI/BOOT"
 	chroot "$MNT" ukify build --linux="/boot/vmlinuz-$kver" --initrd=/tmp/initrd --uname="$kver" \
 		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=virtio_net rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
-		--output=/boot/efi/EFI/BOOT/BOOTX64.EFI
-	echo "unified kernel image: $(du -h "$MNT/boot/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
+		--output=/efi/EFI/BOOT/BOOTX64.EFI
+	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
 	vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
 }

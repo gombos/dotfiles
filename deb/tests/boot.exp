@@ -64,8 +64,9 @@ check system_running   "timeout 120 systemctl is-system-running --wait" {^runnin
 check no_failed_units  "systemctl --failed --no-legend --plain | wc -l" {^0$}
 check cmdline_serial   "cat /proc/cmdline" {console=ttyS0,115200}
 check root_on_own_disk "findmnt -no SOURCE,FSTYPE /" {/dev/sd.1 ext4}
-check esp_mounted      "findmnt -no FSTYPE /boot/efi" {^vfat$}
+check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
 check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
+check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
 check hostname         "hostname" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}

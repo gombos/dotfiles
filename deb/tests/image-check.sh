@@ -20,17 +20,17 @@ ok fsck_root e2fsck -fn "${L}p1" >/dev/null 2>&1
 ok fsck_usr  e2fsck -fn "${LU}p1" >/dev/null 2>&1
 mkdir -p $M; mount "${L}p1" $M
 ok root_fs_usr_dir_empty  [ -d $M/usr -a -z "$(ls -A $M/usr)" ]
-ok root_fs_esp_dir_empty  [ -d $M/boot/efi -a -z "$(ls -A $M/boot/efi)" ]
-mount "${LU}p1" $M/usr; mount "${LE}p1" $M/boot/efi
+ok root_fs_esp_dir_empty  [ -d $M/efi -a -z "$(ls -A $M/efi)" ]
+mount "${LU}p1" $M/usr; mount "${LE}p1" $M/efi
 mount -t proc proc $M/proc; mount --bind /dev $M/dev; mount --make-private $M/dev
 ROOT_UUID=$(blkid -s UUID -o value "${L}p1") ESP_UUID=$(blkid -s UUID -o value "${LE}p1")
 USR_UUID=$(blkid -s UUID -o value "${LU}p1")
-echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /usr $(df -h --output=used $M/usr | tail -n 1 | tr -d ' '), ESP $(df -h --output=used $M/boot/efi | tail -n 1 | tr -d ' ')"
+echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /usr $(df -h --output=used $M/usr | tail -n 1 | tr -d ' '), ESP $(df -h --output=used $M/efi | tail -n 1 | tr -d ' ')"
 
 ok fstab_root grep -q "^UUID=$ROOT_UUID / ext4 " $M/etc/fstab
-ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 " $M/etc/fstab
-ok fstab_esp  grep -q "^UUID=$ESP_UUID /boot/efi vfat " $M/etc/fstab
-uki=$M/boot/efi/EFI/BOOT/BOOTX64.EFI
+ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 ro " $M/etc/fstab
+ok fstab_esp  grep -q "^UUID=$ESP_UUID /efi vfat " $M/etc/fstab
+uki=$M/efi/EFI/BOOT/BOOTX64.EFI
 ok uki_present [ -s "$uki" ]
 echo "INFO unified kernel image: $(du -h "$uki" | cut -f1)"
 sections=$(objdump -h "$uki" 2>/dev/null)

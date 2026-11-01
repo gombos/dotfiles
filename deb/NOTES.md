@@ -160,6 +160,9 @@ use the mount point, and the block-device holders.
 
 Console: `qm terminal <vmid>` (serial, `console=ttyS0,115200` on the kernel line).
 
+`/usr` is mounted read-only. To install or upgrade packages in the VM, run
+`mount -o remount,rw /usr` first (and `mount -o remount,ro /usr` afterwards).
+
 On failure the work directory under `WORKDIR` is kept and its path is printed.
 
 ### What the script does
@@ -170,20 +173,20 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 2. Creates three sparse raw disks, each GPT with one partition: ESP
    (`ESP_DISK_MB`, 64 MiB, FAT32), root (`ROOT_DISK_MB`, 512 MiB, ext4 `/`, type
    "Linux x86-64 root") and `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64
-   /usr"). `/usr` and `/boot/efi` are mounted before the copy, so their files land
+   /usr"). `/usr` and `/efi` are mounted before the copy, so their files land
    on their own disks; fstab lists them and the initramfs (dracut `usrmount`)
    mounts `/usr` before switching to the real root. The root filesystem label is
    `root` (the UKI command line uses `root=LABEL=root`).
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
-   mounts the ESP at /boot/efi.
+   mounts the ESP at /efi.
 4. In the chroot:
    - `apt-get update` with normal signature checks (no overrides).
    - Installs `perl-base init-system-helpers` (temporarily, see caveats).
    - Installs a local `no-initramfs-tool` package (Provides `linux-initramfs-tool`)
      so the kernel pulls in no initramfs generator and no hook builds an initrd.
    - Installs `linux-image-cloud-amd64 qemu-guest-agent systemd-resolved`.
-5. Writes fstab (UUIDs of root, `/usr` and ESP), hostname, hosts,
+5. Writes fstab (UUIDs of root, `/usr` read-only, and ESP at `/efi`), hostname, hosts,
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
@@ -192,7 +195,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    `usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net
    virtfs virtiofs shutdown overlayfs` and `--drivers virtio-balloon`, then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
-   ro rd.driver.pre=...` plus the serial console) to `/boot/efi/EFI/BOOT/BOOTX64.EFI`.
+   ro rd.driver.pre=...` plus the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
    The tools and their dependencies (python3, iproute2, ...) are purged again.
    No GRUB; `/boot` only keeps the kernel package files.
 7. Purges `perl-base init-system-helpers` (`--force-depends
