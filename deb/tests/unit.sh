@@ -104,6 +104,37 @@ ok setup_proc [ -e $TARGET/proc/self ]
 ok setup_sys  mountpoint -q $TARGET/sys
 run cleanup;  ok proc_cleanup [ -z "$(grep " $TARGET" /proc/mounts)" ]
 
+# rootfs_trim: docs, man, empty dirs and non-English locales go, locale.conf is set
+TARGET=/tmp/trim; rm -rf $TARGET
+mkdir -p $TARGET/usr/share/doc/x $TARGET/usr/share/man/man1 $TARGET/usr/share/locale/de $TARGET/usr/share/locale/en_GB \
+	$TARGET/usr/local/bin $TARGET/usr/games $TARGET/usr/share/misc $TARGET/etc
+run rootfs_trim $TARGET
+ok trim_docs     [ ! -e $TARGET/usr/share/doc -a ! -e $TARGET/usr/share/man ]
+ok trim_dirs     [ ! -e $TARGET/usr/local -a ! -e $TARGET/usr/games -a ! -e $TARGET/usr/share/misc ]
+ok trim_locales  [ "$(ls $TARGET/usr/share/locale)" = en_GB ]
+ok trim_locale_conf grep -qx 'LANG=C.UTF-8' $TARGET/etc/locale.conf
+echo LANG=de_DE.UTF-8 > $TARGET/etc/locale.conf; run rootfs_trim $TARGET
+ok trim_keeps_locale_conf grep -qx 'LANG=de_DE.UTF-8' $TARGET/etc/locale.conf
+
+# arch_noextract: replaces the commented NoExtract line of pacman.conf
+printf '[options]\n#NoUpgrade   =\n#NoExtract   =\n' > /tmp/pacman.conf
+run arch_noextract /tmp/pacman.conf
+ok noextract_set  grep -qx 'NoExtract = usr/share/doc/\* usr/share/man/\* usr/share/info/\* usr/share/locale/\* !usr/share/locale/en\*' /tmp/pacman.conf
+ok noextract_once [ "$(grep -c NoExtract /tmp/pacman.conf)" -eq 1 ]
+run arch_noextract /tmp/pacman.conf; ok noextract_idempotent [ "$(grep -c '^NoExtract' /tmp/pacman.conf)" -eq 1 ]
+
+# arch_cleanup must never rm -rf through a still mounted bind of the target
+ARCH_BOOT=/tmp/ab; rm -rf /tmp/ab /tmp/abt; mkdir -p /tmp/ab/root.x86_64/mnt /tmp/abt; echo keep > /tmp/abt/file
+mount --bind /tmp/ab/root.x86_64 /tmp/ab/root.x86_64; mount --bind /tmp/abt /tmp/ab/root.x86_64/mnt
+(cd /tmp/ab/root.x86_64/mnt && exec sleep 30) & holder=$!; sleep 0.3
+out=$(cap arch_cleanup)
+ok arch_cleanup_keeps_target [ -f /tmp/abt/file ]
+ok arch_cleanup_message has "$out" "not removing"
+kill $holder; wait $holder 2>/dev/null
+umount -R /tmp/ab/root.x86_64 2>/dev/null
+run arch_cleanup; ok arch_cleanup_removes [ ! -e /tmp/ab -a -f /tmp/abt/file ]
+ARCH_BOOT=""
+
 out=$( ( cap wait_for_node /dev/does-not-exist ) ); ok wait_for_node_fail has "$out" "did not appear"
 
 # vm_cleanup after a failure: unmount, detach, keep the work directory

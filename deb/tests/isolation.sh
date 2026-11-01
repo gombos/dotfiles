@@ -1,5 +1,5 @@
 #!/bin/bash
-# isolation.sh ROOTFS : VM build on a host-like mount namespace (shared
+# isolation.sh DISTRO ROOTFS : VM build on a host-like mount namespace (shared
 # propagation) while a "service" namespace is created mid-build, as systemd
 # does for services and timers. That namespace gets a copy of the image mounts
 # plus a mount of its own on top, so an unmount cannot reach it; the image must
@@ -24,7 +24,7 @@ spy=$!
 mkdir -p "$QM_STATE"; printf "create: --name old\nname: old\n" > "$QM_STATE/200.conf"
 touch "$QM_STATE/200.running" "$QM_STATE/vm-200-disk-5.raw"
 
-out=$(printf "y\n" | ROOT_PASSWORD=test WORKDIR=/tmp/work-iso "$T" iso "$1" 200 iso 2>&1); rc=$?
+out=$(printf "y\n" | ROOT_PASSWORD=test WORKDIR=/tmp/work-iso "$T" iso --distro "$1" "$2" 200 iso 2>&1); rc=$?
 printf '%s\n' "$out" > "$OUT/isolation-output.log"
 ok  isolated_build_rc [ $rc -eq 0 ]
 [ $rc -eq 0 ] || printf '%s\n' "$out" | tail -n 3 | sed 's/^/INFO /'

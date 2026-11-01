@@ -1,8 +1,8 @@
 #!/usr/bin/expect -f
-# boot.exp ESP_IMG ROOT_IMG USR_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
+# boot.exp DISTRO ESP_IMG ROOT_IMG USR_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
 # virtio-scsi, boot order ESP disk only, virtio-net, guest agent channel), log in on the serial console
 # and check the running system. Prints PASS/FAIL lines.
-lassign $argv espimg img usrimg name pw
+lassign $argv distro espimg img usrimg name pw
 set accel tcg; set cpu max; set timeout 900
 if {[file writable /dev/kvm]} { set accel kvm; set cpu host; set timeout 180 }
 file copy -force /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/vars.fd
@@ -67,19 +67,23 @@ check root_on_own_disk "findmnt -no SOURCE,FSTYPE /" {/dev/sd.1 ext4}
 check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
 check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
 check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
-check hostname         "hostname" "^$name$"
+check hostname         "uname -n" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
 check dns              "getent hosts deb.debian.org"
-check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
+if {$distro eq "debian"} {
+	check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
+	check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
+} else {
+	check pacman_sync_signed "pacman -Sy && ! pacman -Sy 2>&1 | grep -iE 'error|warning'"
+}
 check guest_agent      "systemctl is-active qemu-guest-agent" {^active$}
-check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
 check no_perl          "! command -v perl"
 check no_errors_in_log "journalctl -b -p err -q --no-pager | grep -v -e 'kernel:' | head -n 5 | wc -l" {^0$}
 lassign [sh "journalctl -b -p err -q --no-pager | head -n 8"] rc out
 if {$out ne ""} { puts "INFO boot errors: [string map {"\r" "" "\n" " | "} $out]" }
 lassign [sh "df -h --output=target,used,avail / /usr | tail -n 2 | tr -s ' '"] rc out
-puts "INFO used/avail after apt update: [string map {"\r" "" "\n" " | "} [string trim $out]]"
+puts "INFO used/avail after the package sync: [string map {"\r" "" "\n" " | "} [string trim $out]]"
 
 send "poweroff\r"
 set timeout 120

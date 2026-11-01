@@ -1,7 +1,8 @@
 #!/bin/bash
-# container.sh quick|full : runs inside the test container (see run.sh)
+# container.sh quick|full [debian|arch|all] : runs inside the test container (see run.sh)
 set -u
-mode=${1:-quick}
+mode=${1:-quick} distros=${2:-all}
+[ "$distros" = all ] && distros="debian arch"
 cp -a /src /tmp/src; chmod -R a+rX /tmp/src	# readable for the non-root tests
 export TESTS=/tmp/src/tests COV=/tmp/cov OUT=/tmp/out LINUX_COV=/tmp/src/linux.cov.sh
 mkdir -p $COV $OUT; chmod 1777 $COV /tmp
@@ -26,14 +27,20 @@ sed -n 's/.*\[\(SC[0-9]*\)\]$/\1/p' $OUT/shellcheck.txt | sort | uniq -c | sed '
 suite errors bash $TESTS/errors.sh
 suite unit   bash $TESTS/unit.sh
 if [ "$mode" = full ]; then
-	suite build  bash $TESTS/build.sh
-	suite rootfs bash $TESTS/rootfs-check.sh /tmp/rootfs $OUT/print-debs.txt
-	for d in 1:esp 2:root 3:usr; do cp --sparse=always /tmp/qm/vm-100-disk-${d%:*}.raw /tmp/boot-${d#*:}.raw; done
-	suite image  bash $TESTS/image-check.sh /tmp/qm/vm-100-disk-1.raw /tmp/qm/vm-100-disk-2.raw /tmp/qm/vm-100-disk-3.raw debian
-	suite detach unshare -m --propagation unchanged bash $TESTS/detach.sh /tmp/rootfs
-	suite isolation unshare -m --propagation unchanged bash $TESTS/isolation.sh /tmp/rootfs
-	suite boot   expect -f $TESTS/boot.exp /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw debian root
-	cp /tmp/boot-console.log $OUT/ 2>/dev/null
+	for D in $distros; do
+		case "$D" in debian) R=/tmp/rootfs ;; *) R=/tmp/rootfs-$D ;; esac
+		Q=/tmp/qm-$D
+		suite "build-$D"  bash $TESTS/build.sh "$D"
+		suite "rootfs-$D" bash $TESTS/rootfs-check.sh "$D" "$R" $([ "$D" = debian ] && echo $OUT/print-debs.txt)
+		for d in 1:esp 2:root 3:usr; do cp --sparse=always $Q/vm-100-disk-${d%:*}.raw /tmp/boot-${d#*:}.raw; done
+		suite "image-$D"  bash $TESTS/image-check.sh "$D" $Q/vm-100-disk-1.raw $Q/vm-100-disk-2.raw $Q/vm-100-disk-3.raw "$D"
+		suite "boot-$D"   expect -f $TESTS/boot.exp "$D" /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw "$D" root
+		cp /tmp/boot-console.log "$OUT/boot-$D-console.log" 2>/dev/null
+		first=${first:-$D} first_rootfs=${first_rootfs:-$R}
+	done
+	# mount handling does not depend on the distribution: run once
+	suite detach    unshare -m --propagation unchanged bash $TESTS/detach.sh "$first_rootfs"
+	suite isolation unshare -m --propagation unchanged bash $TESTS/isolation.sh "$first" "$first_rootfs"
 fi
 
 echo; echo "### coverage ($mode)"

@@ -1,8 +1,8 @@
 #!/bin/bash
-# image-check.sh ESP_IMAGE ROOT_IMAGE USR_IMAGE NAME : check the disk images
-# built by VM mode (offline)
+# image-check.sh DISTRO ESP_IMAGE ROOT_IMAGE USR_IMAGE NAME : check the disk
+# images built by VM mode (offline)
 . "${0%/*}/lib.sh"
-ESP_IMG=$1 IMG=$2 USR_IMG=$3 NAME=$4 M=/tmp/imgcheck
+D=$1 ESP_IMG=$2 IMG=$3 USR_IMG=$4 NAME=$5 M=/tmp/imgcheck
 LE=$(losetup -f --show -P "$ESP_IMG")
 L=$(losetup -f --show -P "$IMG")
 LU=$(losetup -f --show -P "$USR_IMG")
@@ -49,8 +49,8 @@ ok uki_initrd_usrmount has "$files" "mount-usr.sh"
 for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon; do
 	ok "uki_initrd_or_builtin_$m" eval "has \"\$files\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
 done
-ok kernel [ -n "$(ls $M/boot/vmlinuz-*-cloud-amd64 2>/dev/null)" ]
-nok initrd_in_boot [ -n "$(ls $M/boot/initrd.img-* 2>/dev/null)" ]
+ok kernel [ -n "$(ls $M/boot/vmlinuz-* $M/usr/lib/modules/*/vmlinuz 2>/dev/null)" ]
+nok initrd_in_boot [ -n "$(ls $M/boot/initrd.img-* $M/boot/initramfs-* 2>/dev/null)" ]
 nok grub_left [ -e $M/boot/grub ]
 
 ok hostname [ "$(cat $M/etc/hostname)" = "$NAME" ]
@@ -61,22 +61,33 @@ ok resolved_enabled [ -n "$(find $M/etc/systemd/system -name systemd-resolved.se
 ok resolv_conf_stub [ "$(readlink $M/etc/resolv.conf)" = ../run/systemd/resolve/stub-resolv.conf ]
 ok machine_id_empty [ -f $M/etc/machine-id -a ! -s $M/etc/machine-id ]
 ok root_password_set eval "grep '^root:' $M/etc/shadow | cut -d: -f2 | grep -q '^\\\$'"
-ok apt_lists_empty [ -z "$(ls -A $M/var/lib/apt/lists | grep -v -e '^lock$' -e '^partial$' -e '^auxfiles$')" ]
-ok apt_archives_empty [ -z "$(find $M/var/cache/apt/archives -name '*.deb')" ]
-
-status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
-echo "INFO packages installed: $(printf '%s\n' "$status" | grep -c ' ii '); used: $(df -h --output=used $M | tail -n 1 | tr -d ' ')"
-ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
-for p in linux-image-cloud-amd64 udev no-initramfs-tool qemu-guest-agent systemd-resolved; do
-	ok "installed_$p" eval "printf '%s\n' \"\$status\" | grep -q '^$p '"
-done
-for p in perl-base init-system-helpers dracut dracut-core dracut-network systemd-ukify systemd-boot-efi \
-	python3 iproute2 util-linux-extra grub-efi-amd64-bin initramfs-tools; do
-	nok "not_installed_$p" eval "printf '%s\n' \"\$status\" | grep -q '^$p '"
-done
+case "$D" in
+debian)
+	ok apt_lists_empty [ -z "$(ls -A $M/var/lib/apt/lists | grep -v -e '^lock$' -e '^partial$' -e '^auxfiles$')" ]
+	ok apt_archives_empty [ -z "$(find $M/var/cache/apt/archives -name '*.deb')" ]
+	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
+	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
+	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
+	want="linux-image-cloud-amd64 udev no-initramfs-tool qemu-guest-agent systemd-resolved"
+	gone="perl-base init-system-helpers dracut dracut-core dracut-network systemd-ukify systemd-boot-efi
+		python3 iproute2 util-linux-extra grub-efi-amd64-bin initramfs-tools"
+	ok dpkg_audit [ -z "$(chroot $M dpkg --audit 2>&1)" ]
+	out=$(chroot $M apt-get check 2>&1); rc=$?
+	note=$(printf "%s\n" "$out" | grep -m1 -E "Depends|^E:")
+	ok "apt_get_check${note:+ ($note)}" [ $rc -eq 0 ]
+	;;
+arch)
+	ok pacman_sync_empty  [ -z "$(ls -A $M/var/lib/pacman/sync)" ]
+	ok pacman_cache_empty [ -z "$(ls -A $M/var/cache/pacman/pkg)" ]
+	pkgs=$(chroot $M pacman -Qq)
+	want="linux no-initramfs qemu-guest-agent systemd base"
+	gone="dracut systemd-ukify mkinitcpio python perl grub"
+	out=$(chroot $M pacman -Dk 2>&1); rc=$?
+	ok "pacman_dk${out:+ ($(printf '%s' "$out" | head -n 1))}" [ $rc -eq 0 ]
+	;;
+esac
+echo "INFO packages installed: $(printf '%s\n' "$pkgs" | wc -l); used: $(df -h --output=used $M | tail -n 1 | tr -d ' ')"
+for p in $want; do ok "installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
+for p in $gone; do nok "not_installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
 nok no_perl [ -e $M/usr/bin/perl ]
-ok dpkg_audit [ -z "$(chroot $M dpkg --audit 2>&1)" ]
-out=$(chroot $M apt-get check 2>&1); rc=$?
-note=$(printf "%s\n" "$out" | grep -m1 -E "Depends|^E:")
-ok "apt_get_check${note:+ ($note)}" [ $rc -eq 0 ]
 summary

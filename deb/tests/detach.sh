@@ -20,7 +20,7 @@ chroot "$MNT" sleep 600 & sleeper=$!
 sleep 0.5
 out=$( (cap vm_detach) ); rc=$?
 ok  detach_busy_rc       [ $rc -eq 0 ]
-ok  detach_busy_message  has "$out" "stopping processes left in the image"
+ok  detach_busy_message  has "$out" "stopping processes left in $MNT"
 state=$(awk '{print $3}' /proc/$sleeper/stat 2>/dev/null)
 ok  detach_busy_killed   [ -z "$state" -o "$state" = Z ]
 nok detach_unmounted     mountpoint -q "$MNT"

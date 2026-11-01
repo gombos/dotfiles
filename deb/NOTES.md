@@ -1,9 +1,10 @@
-# Debian minimal rootfs and Proxmox VM – working notes
+# Minimal Debian / Arch Linux rootfs and Proxmox VM – working notes
 
 `./linux.sh` (called `debian.sh` until 2026-10-31) does two things, and picks one
 by checking for `qm` on the PATH:
 
-- **Bootstrap mode** (no `qm`): builds a minimal Debian forky rootfs. It started as
+- **Bootstrap mode** (no `qm`): builds a minimal Debian forky rootfs, or with
+  `--distro arch` an Arch Linux rootfs (see [Arch Linux](#arch-linux)). The Debian part started as
   a reimplementation of upstream debootstrap 1.0.145
   (https://salsa.debian.org/installer-team/debootstrap), reduced to
   `LANG=C debootstrap --variant=minbase --components=main`, and has been customised since.
@@ -11,13 +12,15 @@ by checking for `qm` on the PATH:
   into a bootable UEFI VM. Reference for the VM conventions: community-scripts
   `vm/debian-vm.sh`. Its `install/debian-install.sh` is an LXC script, so it was not used.
 
-On a Proxmox host, `./linux.sh` without arguments does both: it bootstraps
-`/tmp/rootfs` (when empty) and builds a VM from it, using the next free VMID
-(`pvesh get /cluster/nextid`) and the name `debian`. A leading option such as
+`--distro debian|arch` (default `debian`) selects the distribution; it may stand
+anywhere among the arguments. On a Proxmox host, `./linux.sh` without other
+arguments does both: it bootstraps the default rootfs (`/tmp/rootfs`, for Arch
+`/tmp/rootfs-arch`) when empty and builds a VM from it, using the next free VMID
+(`pvesh get /cluster/nextid`) and the distribution name as VM name. A leading option such as
 `--print-debs` always means bootstrap mode.
 `SCRIPT_MODE=bootstrap` or `SCRIPT_MODE=vm` overrides the automatic choice.
 
-Contents: [Bootstrap mode](#bootstrap-mode) · [VM mode](#vm-mode) · [Status](#status) · [How it was tested](#how-it-was-tested) · [Resume checklist](#resume-checklist)
+Contents: [Bootstrap mode](#bootstrap-mode) · [Arch Linux](#arch-linux) · [VM mode](#vm-mode) · [Status](#status) · [How it was tested](#how-it-was-tested) · [Resume checklist](#resume-checklist)
 
 ---
 
@@ -122,6 +125,57 @@ tailscale-archive-keyring.
 
 ---
 
+## Arch Linux
+
+### Usage
+
+```
+sudo ./linux.sh --distro arch [target]            # rootfs only (default /tmp/rootfs-arch)
+sudo ./linux.sh --distro arch [[rootfs] vmid name] # on Proxmox: rootfs + VM
+```
+
+`--print-debs` is Debian only. The build host stays Debian 13 or later; it needs
+`wget`, `zstd`, `sha256sum` and `chroot`.
+
+### How the rootfs is built
+
+Following the Arch wiki page "Install Arch Linux from existing Linux":
+
+1. Download `sha256sums.txt` and `archlinux-bootstrap-x86_64.tar.zst` from
+   `$MIRROR_ARCH/iso/latest/` (`http://geo.mirror.pkgbuild.com`, plain http like
+   the Debian mirror) and check the tarball's SHA256 (no gpg on the host, like
+   the unsigned Debian Release).
+2. Extract it into a throwaway `.arch-bootstrap.*` directory next to the
+   target, set the mirror in its `mirrorlist`, and add `NoExtract` for docs,
+   man/info pages and non-English locales to its `pacman.conf` (the
+   counterpart of Debian's dpkg `path-exclude`).
+3. Bind-mount the bootstrap root onto itself and the target onto its `/mnt`,
+   then in `arch-chroot`: `pacman-key --init`, `pacman-key --populate archlinux`,
+   `pacstrap -K /mnt base`. pacman checks package signatures; `-K` gives the
+   target its own keyring.
+4. Unmount (leftover processes below the bootstrap root are stopped first; the
+   directory is only removed when nothing is mounted below it, so a failed
+   unmount can never delete the target through the bind mount).
+5. In the target: same mirrorlist and `NoExtract`, empty package cache and sync
+   databases, then the same trimming as Debian (`rootfs_trim`: docs, man/info,
+   non-English locales, empty `/usr/local` etc., `/etc/locale.conf`).
+   The log is in `/var/log/bootstrap.log`.
+
+Result: `base` (about 137 packages, ~440 MB).
+
+### VM differences
+
+Same disks, UKI and configuration as Debian. Package steps use pacman:
+`pacman -Sy`; a local `no-initramfs` package (built with `bsdtar`, `provides =
+initramfs`) so `linux` pulls in neither mkinitcpio nor any other generator;
+`linux qemu-guest-agent` (udev and systemd-resolved are part of systemd); for
+the UKI `dracut systemd-ukify`, removed again with `pacman -Rns`. Downloads go
+to a tmpfs over `/var/cache/pacman/pkg` so the 512 MiB root disk is not used.
+The kernel comes from `/usr/lib/modules/<kver>/vmlinuz`. VM mode checks the
+rootfs's `os-release` `ID` against `--distro`.
+
+---
+
 ## VM mode
 
 ### Usage
@@ -213,11 +267,13 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 
 ### Tests
 
-`tests/run.sh quick` (~2 min) or `tests/run.sh full` (~10 min) runs the suite
-in a privileged Debian forky container with stub `qm`/`pvesm`: error paths,
-`--print-debs`, unit tests, bootstrap + VM build, rootfs and image checks,
-unmount tests in a systemd-like mount namespace, and a QEMU/OVMF boot of the
-image (KVM when available). Logs and a line coverage report go to
+`tests/run.sh quick` (~2 min) or `tests/run.sh full [debian|arch|all]` (~10 min
+per distribution, default all) runs the suite in a privileged Debian forky
+container with stub `qm`/`pvesm`/`pvesh`: error paths (including `--distro`),
+`--print-debs`, unit tests; then per distribution a bootstrap + VM build with
+only `--distro`, rootfs and image checks (dpkg/apt or pacman specific parts)
+and a QEMU/OVMF boot of the image (KVM when available); finally the unmount
+tests in a systemd-like mount namespace, once. Logs and a line coverage report go to
 `/tmp/linux-sh-tests`.
 
 ### Decisions (in order)

@@ -1,12 +1,15 @@
 #!/bin/bash
-# Builds a minimal Debian rootfs, or turns one into a UEFI Proxmox VM.
+# Builds a minimal Debian or Arch Linux rootfs, or turns one into a UEFI
+# Proxmox VM.
 #
-#   sudo ./linux.sh [--print-debs] [target]              build a rootfs
-#   sudo ./linux.sh [[rootfs-dir] <vmid> <name>]         build a VM
+#   sudo ./linux.sh [--distro D] [--print-debs] [target]   build a rootfs
+#   sudo ./linux.sh [--distro D] [[rootfs-dir] <vmid> <name>]  build a VM
 #
-# rootfs-dir and target default to ROOTFS_DEFAULT (/tmp/rootfs); VM mode
-# bootstraps it first when it is empty. Without arguments VM mode uses the next
-# free VMID and the name VM_NAME_DEFAULT (debian).
+# --distro is debian (default) or arch; --print-debs is Debian only.
+# rootfs-dir and target default to ROOTFS_DEFAULT (/tmp/rootfs, for Arch
+# /tmp/rootfs-arch); VM mode bootstraps it first when it is empty. Without
+# arguments VM mode uses the next free VMID and the name VM_NAME_DEFAULT (the
+# distribution name).
 #
 # With no SCRIPT_MODE set, VM mode is used when qm is available (a Proxmox
 # host) and the bootstrap mode otherwise; a leading option always means the
@@ -19,7 +22,7 @@
 #         REPLACE_VM (1: delete an existing VM with the same VMID without asking).
 # The VM storage is local-lvm (set in vm_main).
 #
-# Notes: NOTES.md. Tests: tests/run.sh [quick|full].
+# Notes: NOTES.md. Tests: tests/run.sh [quick|full] [debian|arch|all].
 
 die () { echo "error: $*" >&2; exit 1; }
 
@@ -35,8 +38,10 @@ SUITE=forky
 COMPONENT=main
 ARCH=amd64
 PRINT_DEBS=""
+MIRROR_ARCH="http://geo.mirror.pkgbuild.com"
+DISTRO=debian
 ROOTFS_DEFAULT=/tmp/rootfs
-VM_NAME_DEFAULT=debian
+VM_NAME_DEFAULT=""	# empty: the distribution name
 ROOT_PASSWORD_DEFAULT=root
 
 ############################################################### messages
@@ -633,22 +638,121 @@ bootstrap_main () {
 	setup_apt_sources
 	second_stage_install
 
-	# docs: the first stage unpacked with tar, which ignores dpkg's path-exclude
-	# rules; the rest are empty directories from base-files
-	rm -rf "$TARGET/usr/share/doc" "$TARGET/usr/share/man" "$TARGET/usr/share/info" \
-		"$TARGET/usr/share/dict" "$TARGET/usr/share/misc" \
-		"$TARGET/usr/local" "$TARGET/usr/src" "$TARGET/usr/games"
-	[ ! -d "$TARGET/usr/share/locale" ] ||
-		find "$TARGET/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
+	# the first stage unpacked with tar, which ignores dpkg's path-exclude rules
+	rootfs_trim "$TARGET"
 	rm -f "$TARGET$ARCHIVES"/*.deb
-
-	# /etc/default/locale is shipped as a symlink to ../locale.conf; without
-	# the target pam_env logs an error at every login (C.UTF-8 is in glibc)
-	[ -e "$TARGET/etc/locale.conf" ] || echo 'LANG=C.UTF-8' > "$TARGET/etc/locale.conf"
 
 	mv "$TARGET/debootstrap/debootstrap.log" "$TARGET/var/log/bootstrap.log"
 	sync
 	rm -rf "$TARGET/debootstrap"
+}
+
+# rootfs_trim DIR : drop docs, man/info pages and non-English locales (what the
+# package managers' exclude rules miss), and directories that are empty in a
+# minimal system; set a default locale
+rootfs_trim () {
+	rm -rf "$1/usr/share/doc" "$1/usr/share/man" "$1/usr/share/info" \
+		"$1/usr/share/dict" "$1/usr/share/misc" \
+		"$1/usr/local" "$1/usr/src" "$1/usr/games"
+	[ ! -d "$1/usr/share/locale" ] ||
+		find "$1/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
+	# Debian ships /etc/default/locale as a symlink to ../locale.conf; without a
+	# locale pam_env logs an error at every login (C.UTF-8 is in glibc)
+	[ -e "$1/etc/locale.conf" ] || echo 'LANG=C.UTF-8' > "$1/etc/locale.conf"
+}
+
+############################################################### arch
+# Following "Install Arch Linux from existing Linux" (Arch wiki): the official
+# bootstrap tarball provides pacman, pacstrap and arch-chroot; pacstrap -K
+# installs base into the target with its own keyring. The tarball is checked
+# against the mirror's sha256sums.txt; pacman checks package signatures.
+
+ARCH_TARBALL=archlinux-bootstrap-x86_64.tar.zst
+ARCH_NOEXTRACT='usr/share/doc/* usr/share/man/* usr/share/info/* usr/share/locale/* !usr/share/locale/en*'
+ARCH_BOOT=""
+
+# arch_noextract PACMAN_CONF : same exclusions as Debian's dpkg path-exclude
+arch_noextract () {
+	sed -i "s|^#\?NoExtract *=.*|NoExtract = $ARCH_NOEXTRACT|" "$1"
+}
+
+arch_cleanup () {
+	set +e
+	[ -n "$ARCH_BOOT" ] || return 0
+	kill_procs_under "$ARCH_BOOT/root.x86_64"
+	mountpoint -q "$ARCH_BOOT/root.x86_64" && umount -R "$ARCH_BOOT/root.x86_64"
+	# never rm -rf through a bind mount of the target
+	if awk -v d="$ARCH_BOOT/" 'index($5 "/", d) == 1 { found = 1 } END { exit !found }' /proc/self/mountinfo; then
+		echo "still mounted below $ARCH_BOOT, not removing it" >&2
+	else
+		rm -rf "$ARCH_BOOT"
+	fi
+}
+
+arch_bootstrap_main () {
+	local target b sum cmd log
+	exec 3>&1 4>&1
+	case "${1-}" in -*) die "$1: not supported for --distro arch" ;; esac
+	[ $# -le 1 ] || die "usage: ${0##*/} --distro arch [target]"
+	target="${1:-$ROOTFS_DEFAULT}"
+	target="${target%/}"
+	case "$target" in /*) ;; *) target="$(pwd)/$target" ;; esac
+	[ "$(id -u)" -eq 0 ] || die "the bootstrap needs root"
+	for cmd in wget zstd sha256sum chroot mountpoint; do
+		in_path "$cmd" || die "missing command: $cmd"
+	done
+
+	mkdir -p "$target"
+	ARCH_BOOT=$(mktemp -d "${target%/*}/.arch-bootstrap.XXXXXX")
+	trap arch_cleanup EXIT
+	log="$ARCH_BOOT/bootstrap.log"
+	b="$ARCH_BOOT/root.x86_64"
+
+	info "Retrieving sha256sums.txt"
+	just_get "$MIRROR_ARCH/iso/latest/sha256sums.txt" "$ARCH_BOOT/sha256sums.txt" 2>>"$log" ||
+		die "failed getting $MIRROR_ARCH/iso/latest/sha256sums.txt"
+	sum=$(awk -v f="$ARCH_TARBALL" '$2 == f {print $1}' "$ARCH_BOOT/sha256sums.txt")
+	[ -n "$sum" ] || die "no checksum for $ARCH_TARBALL in sha256sums.txt"
+	info "Retrieving %s" "$ARCH_TARBALL"
+	just_get "$MIRROR_ARCH/iso/latest/$ARCH_TARBALL" "$ARCH_BOOT/$ARCH_TARBALL" 2>>"$log" ||
+		die "failed getting $ARCH_TARBALL"
+	info "Validating %s" "$ARCH_TARBALL"
+	[ "$(sha256sum < "$ARCH_BOOT/$ARCH_TARBALL" | cut -d' ' -f1)" = "$sum" ] ||
+		die "$ARCH_TARBALL does not match its checksum"
+	info "Extracting %s" "$ARCH_TARBALL"
+	# GNU tar does not know libarchive's xattr headers; they only matter for
+	# the throwaway bootstrap environment
+	tar --zstd -xf "$ARCH_BOOT/$ARCH_TARBALL" --numeric-owner \
+		--warning=no-unknown-keyword -C "$ARCH_BOOT"
+	rm -f "$ARCH_BOOT/$ARCH_TARBALL"
+
+	echo "Server = $MIRROR_ARCH/\$repo/os/\$arch" > "$b/etc/pacman.d/mirrorlist"
+	arch_noextract "$b/etc/pacman.conf"
+	# arch-chroot and pacstrap expect mount points
+	mount --bind "$b" "$b"
+	mount --bind "$target" "$b/mnt"
+	info "Installing base with pacstrap (log: %s)" "$target/var/log/bootstrap.log"
+	"$b/usr/bin/arch-chroot" "$b" sh -c \
+		'pacman-key --init && pacman-key --populate archlinux && pacstrap -K /mnt base' \
+		>>"$log" 2>&1 || { tail -n 20 "$log" >&2; die "pacstrap failed, see $log"; }
+	kill_procs_under "$b"
+	umount -R "$b"
+
+	echo "Server = $MIRROR_ARCH/\$repo/os/\$arch" > "$target/etc/pacman.d/mirrorlist"
+	arch_noextract "$target/etc/pacman.conf"
+	rm -rf "$target/var/cache/pacman/pkg/"* "$target/var/lib/pacman/sync/"*
+	rootfs_trim "$target"
+	mkdir -p "$target/var/log"
+	cp "$log" "$target/var/log/bootstrap.log"
+	info "Base system installed successfully."
+}
+
+# bootstrap [args] : the bootstrap of the selected distribution
+bootstrap () {
+	case "$DISTRO" in
+		debian) bootstrap_main "$@" ;;
+		arch) arch_bootstrap_main "$@" ;;
+	esac
 }
 
 ############################################################### vm
@@ -702,13 +806,17 @@ vm_check () {
 }
 
 vm_check_rootfs () {
+	local id
 	[ -x "$ROOTFS/usr/bin/bash" ] || die "$ROOTFS does not look like a rootfs"
+	id=$(sed -n 's/^ID=//p' "$ROOTFS/usr/lib/os-release" 2>/dev/null | tr -d '"')
+	[ "$id" = "$DISTRO" ] || die "$ROOTFS is a '${id:-unknown}' rootfs, not $DISTRO (see --distro)"
 	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
 	USR_MB=$(du -sxm "$ROOTFS/usr" | cut -f1)
-	# apt's lists and caches are not copied into the image (apt-get update
-	# renews them); the root disk also holds the kernel, initrd and, during the
-	# build, apt's lists and downloads
-	APT_MB=$(du -sxmc "$ROOTFS/var/lib/apt/lists" "$ROOTFS/var/cache/apt" 2>/dev/null | tail -n 1 | cut -f1)
+	# package lists and caches are not copied into the image (the package
+	# manager renews them); the root disk also holds the kernel, initrd and,
+	# during the build, package lists and downloads
+	APT_MB=$(du -sxmc "$ROOTFS/var/lib/apt/lists" "$ROOTFS/var/cache/apt" \
+		"$ROOTFS/var/lib/pacman/sync" "$ROOTFS/var/cache/pacman" 2>/dev/null | tail -n 1 | cut -f1)
 	ROOT_MB=$(( USED_MB - USR_MB - APT_MB ))
 	[ "$ROOT_MB" -lt $(( ROOT_DISK_MB - 320 )) ] \
 		|| die "rootfs without /usr needs ${ROOT_MB} MiB, leave 320 MiB headroom: raise ROOT_DISK_MB"
@@ -745,7 +853,8 @@ vm_make_disk () {
 
 	echo "copying rootfs"
 	cp -a "$ROOTFS/." "$MNT/"
-	rm -rf "$MNT/var/lib/apt/lists/"* "$MNT/var/cache/apt/"*
+	rm -rf "$MNT/var/lib/apt/lists/"* "$MNT/var/cache/apt/"* \
+		"$MNT/var/lib/pacman/sync/"* "$MNT/var/cache/pacman/pkg/"*
 	mkdir -p "$MNT/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
 	mount "${LOOP_ESP}p1" "$MNT/efi"
 	mount -t proc proc "$MNT/proc"
@@ -755,24 +864,28 @@ vm_make_disk () {
 	mount --make-rslave "$MNT/sys"
 	mount --rbind /dev "$MNT/dev"
 	mount --make-rslave "$MNT/dev"
+	rm -f "$MNT/etc/resolv.conf"
 	cp /etc/resolv.conf "$MNT/etc/resolv.conf"
 }
 
 vm_apt () { DEBIAN_FRONTEND=noninteractive chroot "$MNT" apt-get -y --no-install-recommends "$@"; }
+vm_pacman () { chroot "$MNT" pacman --noconfirm "$@"; }
 
+# A local package providing the kernel's initramfs dependency means no
+# initramfs generator is installed and no kernel hook builds an initrd;
+# vm_build_uki builds it once, at the end, by calling dracut directly.
 vm_install_packages () {
 	echo "installing kernel and guest agent"
-	chroot "$MNT" apt-get update
-	# The rootfs has no Perl and no init-system-helpers, but the kernel and service
-	# packages need them (dpkg-preconfigure, update-rc.d, deb-systemd-helper). Both
-	# are put back for the build and purged again in vm_finish.
-	vm_apt install perl-base init-system-helpers
-	# A local package providing linux-initramfs-tool satisfies the kernel's
-	# "dracut | initramfs-tools | linux-initramfs-tool" dependency, so no
-	# initramfs generator is installed and no kernel hook builds an initrd;
-	# vm_build_uki builds it once, at the end, by calling dracut directly.
-	mkdir -p "$W/no-initramfs-tool/DEBIAN"
-	cat > "$W/no-initramfs-tool/DEBIAN/control" <<EOF
+	case "$DISTRO" in
+	debian)
+		chroot "$MNT" apt-get update
+		# The rootfs has no Perl and no init-system-helpers, but the kernel and
+		# service packages need them (dpkg-preconfigure, update-rc.d,
+		# deb-systemd-helper). Both are put back for the build and purged again
+		# in vm_finish.
+		vm_apt install perl-base init-system-helpers
+		mkdir -p "$W/no-initramfs-tool/DEBIAN"
+		cat > "$W/no-initramfs-tool/DEBIAN/control" <<EOF
 Package: no-initramfs-tool
 Version: 1
 Architecture: all
@@ -780,12 +893,36 @@ Maintainer: linux.sh <root@localhost>
 Provides: linux-initramfs-tool
 Description: initramfs is built by linux.sh (dracut + ukify, unified kernel image)
 EOF
-	dpkg-deb --root-owner-group --build "$W/no-initramfs-tool" "$MNT/tmp/no-initramfs-tool.deb" >/dev/null
-	chroot "$MNT" dpkg -i /tmp/no-initramfs-tool.deb
-	rm -f "$MNT/tmp/no-initramfs-tool.deb"
-	# udev explicitly: otherwise it only comes in as a dependency of dracut and
-	# leaves again with it
-	vm_apt install linux-image-cloud-amd64 udev qemu-guest-agent systemd-resolved
+		dpkg-deb --root-owner-group --build "$W/no-initramfs-tool" "$MNT/tmp/no-initramfs-tool.deb" >/dev/null
+		chroot "$MNT" dpkg -i /tmp/no-initramfs-tool.deb
+		rm -f "$MNT/tmp/no-initramfs-tool.deb"
+		# udev explicitly: otherwise it only comes in as a dependency of dracut
+		# and leaves again with it
+		vm_apt install linux-image-cloud-amd64 udev qemu-guest-agent systemd-resolved
+		;;
+	arch)
+		# downloads go to memory, not to the small root disk
+		mount -t tmpfs tmpfs "$MNT/var/cache/pacman/pkg"
+		vm_pacman -Sy
+		mkdir -p "$MNT/tmp/no-initramfs"
+		cat > "$MNT/tmp/no-initramfs/.PKGINFO" <<EOF
+pkgname = no-initramfs
+pkgbase = no-initramfs
+pkgver = 1-1
+pkgdesc = initramfs is built by linux.sh (dracut + ukify, unified kernel image)
+builddate = 0
+packager = linux.sh
+size = 0
+arch = any
+provides = initramfs
+EOF
+		chroot "$MNT" bsdtar -cf /tmp/no-initramfs-1-1-any.pkg.tar -C /tmp/no-initramfs .PKGINFO
+		vm_pacman -U /tmp/no-initramfs-1-1-any.pkg.tar
+		rm -rf "$MNT/tmp/no-initramfs" "$MNT/tmp/no-initramfs-1-1-any.pkg.tar"
+		# udev and systemd-resolved are part of systemd
+		vm_pacman -S --needed linux qemu-guest-agent
+		;;
+	esac
 }
 
 vm_configure () {
@@ -821,50 +958,66 @@ EOF
 # NVRAM entry. Copy of bin/uki.sh and bin/uki-dracut.sh: dracut builds a
 # generic initrd that mounts /usr from /etc/fstab (usrmount); ukify combines
 # it with the kernel. dracut, ukify and their dependencies are only installed
-# for this step.
+# for this step (on Debian also util-linux-extra, for switch_root).
 vm_build_uki () {
-	local kver
+	local kver kernel
 	echo "building the unified kernel image"
-	vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
-	kver=$(ls "$MNT/usr/lib/modules")
+	case "$DISTRO" in
+		debian) vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
+		arch) vm_pacman -S --needed dracut systemd-ukify ;;
+	esac
+	kver=$(cd "$MNT/usr/lib/modules" && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1)
+	# Arch keeps the kernel next to its modules, Debian in /boot
+	kernel="/usr/lib/modules/$kver/vmlinuz"
+	[ -e "$MNT$kernel" ] || kernel="/boot/vmlinuz-$kver"
 	chroot "$MNT" dracut --no-hostonly --force --kver "$kver" \
 		--modules 'usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net virtfs virtiofs shutdown overlayfs' \
 		--drivers 'virtio-balloon' /tmp/initrd
 	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; virtio_net and
 	# autofs4 so they are there right after switch_root
 	mkdir -p "$MNT/efi/EFI/BOOT"
-	chroot "$MNT" ukify build --linux="/boot/vmlinuz-$kver" --initrd=/tmp/initrd --uname="$kver" \
+	chroot "$MNT" ukify build --linux="$kernel" --initrd=/tmp/initrd --uname="$kver" \
 		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=virtio_net rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
 		--output=/efi/EFI/BOOT/BOOTX64.EFI
 	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
-	vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra
+	case "$DISTRO" in
+		debian) vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
+		arch) vm_pacman -Rns dracut systemd-ukify ;;
+	esac
 }
 
 vm_finish () {
-	chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
-	# the host's resolv.conf was only needed for apt during the build
+	case "$DISTRO" in
+	debian)
+		chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
+		chroot "$MNT" apt-get clean
+		rm -rf "$MNT/var/lib/apt/lists/"*
+		;;
+	arch)
+		rm -rf "$MNT/var/lib/pacman/sync/"*
+		;;
+	esac
+	# the host's resolv.conf was only needed for downloads during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
 	# empty machine-id: systemd generates a unique one on first boot
 	: > "$MNT/etc/machine-id"
-	chroot "$MNT" apt-get clean
-	rm -rf "$MNT/var/lib/apt/lists/"*
 }
 
-# Daemons started by package scripts inside the chroot keep the mounts busy.
-# Only processes whose root is in the image are found, not ones whose
-# working directory is there.
-vm_kill_chroot_procs () {
+# kill_procs_under DIR : daemons started by package scripts in a chroot keep
+# its mounts busy. Only processes whose root is below DIR are found, not ones
+# whose working directory is there.
+kill_procs_under () {
 	local p root pids=""
 	for p in /proc/[0-9]*; do
 		root=$(readlink "$p/root" 2>/dev/null) || continue
 		case "$root" in
-			"$MNT"|"$MNT"/*) pids="$pids ${p#/proc/}" ;;
+			"$1"|"$1"/*) pids="$pids ${p#/proc/}" ;;
 		esac
 	done
 	[ -n "$pids" ] || return 0
-	echo "stopping processes left in the image:$pids"
+	echo "stopping processes left in $1:$pids"
 	kill -TERM $pids 2>/dev/null || true
 	sleep 2
 	kill -KILL $pids 2>/dev/null || true
@@ -895,7 +1048,7 @@ vm_debug_busy () {
 
 vm_detach () {
 	sync
-	vm_kill_chroot_procs
+	kill_procs_under "$MNT"
 	echo "unmounting image"
 	umount -R "$MNT" || { vm_debug_busy "${LOOP}p1"; die "could not unmount $MNT"; }
 	echo "checking filesystems"
@@ -952,7 +1105,7 @@ vm_main () {
 	# into the namespaces of services started meanwhile; such a copy can
 	# survive our umount and keep the image busy (e2fsck: "in use").
 	if [ -z "${LINUX_SH_PRIVATE_NS:-}" ] && [ "$(id -u)" -eq 0 ]; then
-		LINUX_SH_PRIVATE_NS=1 exec unshare --mount --propagation private -- bash "$0" "$@"
+		LINUX_SH_PRIVATE_NS=1 exec unshare --mount --propagation private -- bash "$0" --distro "$DISTRO" "$@"
 	fi
 	case $# in
 		0) in_path pvesh || die "missing command: pvesh"
@@ -960,7 +1113,7 @@ vm_main () {
 		   NAME="$VM_NAME_DEFAULT" ;;
 		2) ROOTFS="$ROOTFS_DEFAULT"; VMID="$1"; NAME="$2" ;;
 		3) ROOTFS="$1"; VMID="$2"; NAME="$3" ;;
-		*) die "usage: ${0##*/} [[rootfs-dir] <vmid> <name>]" ;;
+		*) die "usage: ${0##*/} [--distro D] [[rootfs-dir] <vmid> <name>]" ;;
 	esac
 	ROOT_DISK_MB="${ROOT_DISK_MB:-512}"
 	USR_DISK_GB="${USR_DISK_GB:-4}"
@@ -979,7 +1132,7 @@ vm_main () {
 	if [ ! -e "$ROOTFS" ] || [ -z "$(ls -A "$ROOTFS")" ]; then
 		echo "$ROOTFS is empty, bootstrapping it first"
 		# subshell: keeps bootstrap's traps and log redirection out of VM mode
-		( bootstrap_main "$ROOTFS" )
+		( bootstrap "$ROOTFS" )
 	fi
 	vm_check_rootfs
 	echo "building VM $VMID ($NAME) from $ROOTFS"
@@ -1003,7 +1156,21 @@ vm_main () {
 ############################################################### main
 
 main () {
-	local mode="${SCRIPT_MODE:-}"
+	local mode="${SCRIPT_MODE:-}" args=()
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--distro) [ $# -ge 2 ] || die "--distro needs debian or arch"; DISTRO="$2"; shift 2 ;;
+			--distro=*) DISTRO="${1#*=}"; shift ;;
+			*) args+=("$1"); shift ;;
+		esac
+	done
+	set -- "${args[@]}"
+	case "$DISTRO" in
+		debian) ;;
+		arch) ROOTFS_DEFAULT="$ROOTFS_DEFAULT-arch" ;;
+		*) die "--distro must be debian or arch, not '$DISTRO'" ;;
+	esac
+	VM_NAME_DEFAULT="${VM_NAME_DEFAULT:-$DISTRO}"
 	if [ -z "$mode" ]; then
 		# only the bootstrap takes options
 		if [ "${1#-}" != "${1-}" ]; then mode=bootstrap
@@ -1012,7 +1179,7 @@ main () {
 	fi
 	case "$mode" in
 		vm) vm_main "$@" ;;
-		bootstrap) bootstrap_main "$@" ;;
+		bootstrap) bootstrap "$@" ;;
 		*) die "SCRIPT_MODE must be vm or bootstrap, not '$mode'" ;;
 	esac
 }

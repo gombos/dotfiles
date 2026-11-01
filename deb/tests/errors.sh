@@ -5,6 +5,7 @@ cd /
 
 mkdir -p /tmp/fake/usr/bin /tmp/notroot
 cp /bin/bash /tmp/fake/usr/bin/bash
+mkdir -p /tmp/fake/usr/lib; echo ID=debian > /tmp/fake/usr/lib/os-release
 touch /tmp/notroot/x
 export PATH=$TESTS/stubs:$PATH QM_STATE=/tmp/qm-err ROOT_PASSWORD=test
 NOBODY="setpriv --reuid=65534 --regid=65534 --clear-groups"
@@ -18,6 +19,13 @@ expect () {
 }
 
 expect mode_invalid     "SCRIPT_MODE must be vm or bootstrap"  env SCRIPT_MODE=bad "$T" E-mode
+expect distro_invalid   "--distro must be debian or arch"     env SCRIPT_MODE=bootstrap "$T" E-distro --distro fedora
+expect distro_no_value  "--distro needs"                       env SCRIPT_MODE=bootstrap "$T" E-distro2 --distro
+expect arch_print_debs  "not supported for --distro arch"      env SCRIPT_MODE=bootstrap "$T" E-archpd --distro arch --print-debs
+expect arch_too_many    "usage:"                               env SCRIPT_MODE=bootstrap "$T" E-archmany --distro arch a b
+expect arch_not_root    "the bootstrap needs root" $NOBODY env SCRIPT_MODE=bootstrap "$T" E-archroot --distro=arch /tmp/nr
+expect vm_distro_mismatch "is a 'debian' rootfs, not arch"  env SCRIPT_MODE=vm "$T" E-mismatch --distro arch /tmp/fake 101 x
+expect vm_distro_last   "is a 'debian' rootfs, not arch"    env SCRIPT_MODE=vm "$T" E-mismatch2 /tmp/fake 101 x --distro arch
 expect bs_bad_option    "unrecognized or invalid option --foo" env SCRIPT_MODE=bootstrap "$T" E-opt --foo
 expect bs_too_many      "too many arguments"                   env SCRIPT_MODE=bootstrap "$T" E-many a b
 expect bs_not_root      "can only run as root" $NOBODY env SCRIPT_MODE=bootstrap "$T" E-bsroot /tmp/nr
