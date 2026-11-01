@@ -996,7 +996,7 @@ vm_build_uki () {
 	[ -e "$MNT$kernel" ] || kernel="/boot/vmlinuz-$kver"
 	chroot "$MNT" dracut --no-hostonly --force --kver "$kver" \
 		--modules 'usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net virtfs virtiofs shutdown overlayfs' \
-		--drivers 'virtio-balloon' /tmp/initrd
+		--drivers 'virtio-balloon autofs4 vfat' /tmp/initrd
 	# rd.driver.pre: disks (sd_mod, virtio_scsi) for / and /usr; virtio_net and
 	# autofs4 so they are there right after switch_root
 	mkdir -p "$MNT/efi/EFI/BOOT"

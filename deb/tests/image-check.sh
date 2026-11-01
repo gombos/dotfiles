@@ -58,7 +58,7 @@ files=$(lsinitrd /tmp/uki.initrd 2>/dev/null)
 ok uki_initrd_switch_root has "$files" "bin/switch_root"
 kver=$(cd $M/usr/lib/modules && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1)
 ok uki_initrd_usrmount has "$files" "mount-usr.sh"
-for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon; do
+for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon autofs4 vfat; do
 	ok "uki_initrd_or_builtin_$m" eval "has \"\$files\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
 done
 ok kernel [ -n "$(ls $M/boot/vmlinuz-* $M/usr/lib/modules/*/vmlinuz 2>/dev/null)" ]

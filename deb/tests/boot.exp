@@ -71,6 +71,7 @@ check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
 check modules_on_own_disk "findmnt -no SOURCE,FSTYPE /usr/lib/modules" {/dev/sd.1 ext4}
 check modules_before_modules_load "systemctl show -p Before --value usr-lib-modules.mount" {systemd-modules-load\.service}
 check modules_usable   "test -e /usr/lib/modules/\$(uname -r)/modules.dep && modinfo -n virtio_net"
+check no_missing_modules "journalctl -b -q --no-pager | grep -c 'Failed to find module'" {^0$}
 check hostname         "uname -n" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}

@@ -272,7 +272,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    `bin/uki-dracut.sh`): installs `dracut-core dracut-network systemd-ukify
    systemd-boot-efi`, runs `dracut --no-hostonly` directly with the module list
    `usrmount kernel-modules-export bash rootfs-block kernel-modules qemu qemu-net
-   virtfs virtiofs shutdown overlayfs` and `--drivers virtio-balloon`, then
+   virtfs virtiofs shutdown overlayfs` and `--drivers "virtio-balloon autofs4 vfat"` (autofs4 for systemd and vfat for `/efi` are needed right after `switch_root`), then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
    ro rd.driver.pre=...` plus the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
    The tools and their dependencies (python3, iproute2, ...) are purged again.
