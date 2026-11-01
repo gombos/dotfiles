@@ -48,7 +48,8 @@ ok uki_present [ -s "$uki" ]
 echo "INFO unified kernel image: $(du -h "$uki" | cut -f1)"
 sections=$(objdump -h "$uki" 2>/dev/null)
 for s in .linux .initrd .cmdline .osrel .uname; do ok "uki_section_$s" has "$sections" " $s "; done
-cmdline=$(objcopy -O binary -j .cmdline "$uki" /dev/stdout 2>/dev/null | tr -d '\0')
+objcopy -O binary -j .cmdline "$uki" /tmp/uki.cmdline 2>/dev/null
+cmdline=$(tr -d "\0" < /tmp/uki.cmdline)
 ok uki_cmdline_root    has "$cmdline" "root=LABEL=root"
 ok uki_cmdline_console has "$cmdline" "console=ttyS0,115200"
 ok root_fs_label [ "$(blkid -s LABEL -o value "${L}p1")" = root ]
@@ -63,6 +64,7 @@ for m in virtio_scsi sd_mod ext4 virtio_net virtio_balloon autofs4 vfat; do
 	ok "uki_initrd_or_builtin_$m" eval "has \"\$files\" \"/$m.ko\" || grep -q \"/$m.ko\" $M/usr/lib/modules/$kver/modules.builtin"
 done
 nok kernel_in_boot [ -n "$(ls $M/boot/vmlinuz-* 2>/dev/null)" ]
+nok kernel_symlinks_left [ -e $M/vmlinuz -o -L $M/vmlinuz -o -L $M/initrd.img ]
 nok initrd_in_boot [ -n "$(ls $M/boot/initrd.img-* $M/boot/initramfs-* 2>/dev/null)" ]
 nok grub_left [ -e $M/boot/grub ]
 

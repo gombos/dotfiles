@@ -1023,8 +1023,11 @@ vm_remove_kernel () {
 		# apt never autoremoves kernels (linux-binary-*, linux-modules-*), so they
 		# are named above; the kernel postinst also left this protection list
 		rm -f "$MNT/etc/apt/apt.conf.d/01autoremove-kernels"
-		# the initrd dracut's kernel hook built
-		rm -f "$MNT/boot/initrd.img-"*
+		# files the kernel install created outside the packages: /boot copies, the
+		# initrd of dracut's kernel hook, the /vmlinuz and /initrd.img symlinks
+		rm -f "$MNT"/boot/vmlinuz-* "$MNT"/boot/config-* "$MNT"/boot/System.map-* \
+			"$MNT"/boot/initrd.img-* "$MNT"/vmlinuz "$MNT"/vmlinuz.old \
+			"$MNT"/initrd.img "$MNT"/initrd.img.old
 		;;
 	arch)
 		vm_pacman -Rns linux dracut systemd-ukify
