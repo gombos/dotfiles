@@ -1,0 +1,5 @@
+#!/bin/bash
+# pvesm status stand-in; STUB_NO_LVM hides local-lvm, STUB_STORAGE_TYPE changes its type
+echo "Name             Type     Status           Total            Used       Available        %"
+[ -n "${STUB_NO_LVM:-}" ] || echo "local-lvm    ${STUB_STORAGE_TYPE:-lvmthin}     active       100000000         0       100000000    0.00%"
+echo "local              dir     active       100000000         0       100000000    0.00%"

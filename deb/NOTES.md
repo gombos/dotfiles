@@ -10,6 +10,10 @@
   into a bootable UEFI VM. Reference for the VM conventions: community-scripts
   `vm/debian-vm.sh`. Its `install/debian-install.sh` is an LXC script, so it was not used.
 
+On a Proxmox host, `./debian.sh` without arguments does both: it bootstraps
+`/tmp/rootfs` (when empty) and builds a VM from it, using the next free VMID
+(`pvesh get /cluster/nextid`) and the name `debian`. A leading option such as
+`--print-debs` always means bootstrap mode.
 `SCRIPT_MODE=bootstrap` or `SCRIPT_MODE=vm` overrides the automatic choice.
 
 Contents: [Bootstrap mode](#bootstrap-mode) · [VM mode](#vm-mode) · [Status](#status) · [How it was tested](#how-it-was-tested) · [Resume checklist](#resume-checklist)
@@ -65,7 +69,8 @@ sudo LANG=C ./debian.sh [--print-debs] <target>
 Written by `first_stage_install` into the rootfs:
 
 - `/etc/apt/apt.conf.d/00minimal`: no recommends, `Acquire::Languages "none"`,
-  `APT::Keep-Downloaded-Packages "false"`, `DPkg::Post-Invoke` running `apt-get clean`.
+  `APT::Keep-Downloaded-Packages "false"`. (A `DPkg::Post-Invoke` running
+  `apt-get clean` was dropped: it could never get apt's archive lock.)
 - `/etc/dpkg/dpkg.cfg.d/01-minimal`: `path-exclude` for `/usr/share/doc`, `man`, `info`
   and locales, keeping `en*` locales. It no longer keeps copyright files.
 
@@ -73,9 +78,17 @@ Caveat: the first stage unpacks the required debs with `tar`, not dpkg, so
 the path rules do not apply to those files. They do apply to everything dpkg
 installs afterwards.
 
-Explicit cleanup: after the second stage, `/usr/share/man`, `/usr/share/info` and
-`/usr/share/doc` (including copyright files) are removed with `rm -rf`, because the
-dpkg rules miss the tar-extracted files.
+Explicit cleanup: after the second stage, `/usr/share/man`, `/usr/share/info`,
+`/usr/share/doc` (including copyright files) and all non-`en*` entries of
+`/usr/share/locale` are removed, because the dpkg rules miss the tar-extracted
+files. The downloaded `.deb`s are deleted from `/var/cache/apt/archives`.
+`/etc/locale.conf` is written with `LANG=C.UTF-8`: `/etc/default/locale` is a
+symlink to it, and pam_env logs an error at every login when it is missing.
+
+Merged /usr is not done by the script: base-files ships the `/bin`, `/lib`,
+`/lib64`, `/sbin` symlinks and the first stage only checks they are symlinks.
+Device nodes are created with mknod; unprivileged containers are not supported.
+The build host must be Debian 13 or later (dpkg-deb is required).
 
 ### Known caveats
 
@@ -109,18 +122,23 @@ tailscale-archive-keyring.
 
 ### Usage
 
-Run as root on the Proxmox host (needs `qm`, `pvesm`, `sgdisk`, `losetup`,
+Run as root on the Proxmox host (needs `qm`, `pvesm`, `pvesh`, `sgdisk`, `losetup`,
 `mkfs.ext4`, `mkfs.vfat`, `blkid`):
 
 ```
-sudo ./debian.sh <rootfs-dir> <vmid> <storage> <name>
+sudo ./debian.sh [[rootfs-dir] <vmid> <name>]
 ```
 
-The rootfs is the output of bootstrap mode.
+The rootfs is the output of bootstrap mode; it defaults to `ROOTFS_DEFAULT`
+(`/tmp/rootfs`) and is bootstrapped first when empty or missing. Without
+arguments the VMID is the next free one and the name is `VM_NAME_DEFAULT`
+(`debian`). Storage is `local-lvm` (set in `vm_main`). Root, required commands,
+the VMID, the storage and the root password are checked before the bootstrap,
+so a mistake does not cost a bootstrap run.
 
-Environment overrides: `DISK_GB` (8), `MEMORY` (2048), `CORES` (2),
+Environment overrides: `DISK_GB` (2), `MEMORY` (1024), `CORES` (2),
 `BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD` (asked
-on the terminal if unset).
+on the terminal if unset; without a terminal the script stops with a message).
 
 Console: `qm terminal <vmid>` (serial, `console=ttyS0,115200` on the kernel line).
 
@@ -131,7 +149,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 1. Checks: root, rootfs shape, required commands, VMID free, storage type
    (`pvesm status`), rootfs size fits `DISK_GB`.
 2. Creates a sparse raw disk: GPT, p1 = 512 MiB ESP (FAT32), p2 = ext4 root.
-3. Copies the rootfs in, bind-mounts proc/sys/dev, mounts the ESP at /boot/efi.
+3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
+   later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
+   mounts the ESP at /boot/efi.
 4. In the chroot:
    - `apt-get update` with normal signature checks (no overrides).
    - Installs `perl-base init-system-helpers` (temporarily, see caveats).
@@ -143,11 +163,21 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 5. Writes fstab (UUIDs of root and ESP), hostname, hosts, systemd-networkd DHCP
    on `en* eth*`, enables networkd and resolved, points `/etc/resolv.conf` at the
    resolved stub, empties `machine-id`, sets the root password, cleans apt.
-6. Unmounts, detaches the loop device, then `qm create` (q35, OVMF, virtio-scsi,
+6. Stops processes still running inside the image, unmounts, runs `e2fsck`,
+   detaches the loop device, then `qm create` (q35, OVMF, virtio-scsi,
    agent, tablet off, onboot, serial socket, tag `debian-minimal`), `qm set --efidisk0`
-   (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (qcow2 for dir/nfs/cifs
-   storage, raw otherwise), `qm set --scsi0 <volid> --boot order=scsi0`, and
-   `qm start` if `START=1`.
+   (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw), reads the new
+   `unusedN` volume from `qm config`, `qm set --scsi0 <volid> --boot order=scsi0`,
+   and `qm start` if `START=1`.
+
+### Tests
+
+`tests/run.sh quick` (~2 min) or `tests/run.sh full` (~10 min) runs the suite
+in a privileged Debian 13 container with stub `qm`/`pvesm`: error paths,
+`--print-debs`, unit tests, bootstrap + VM build, rootfs and image checks,
+unmount tests in a systemd-like mount namespace, and a QEMU/OVMF boot of the
+image (KVM when available). Logs and a line coverage report go to
+`/tmp/debian-sh-tests`.
 
 ### Decisions (in order)
 

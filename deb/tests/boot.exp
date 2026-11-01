@@ -1,0 +1,84 @@
+#!/usr/bin/expect -f
+# boot.exp IMAGE NAME PASSWORD : boot the image like Proxmox does (q35, OVMF,
+# virtio-scsi, virtio-net, guest agent channel), log in on the serial console
+# and check the running system. Prints PASS/FAIL lines.
+lassign $argv img name pw
+set accel tcg; set cpu max; set timeout 900
+if {[file writable /dev/kvm]} { set accel kvm; set cpu host; set timeout 180 }
+file copy -force /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/vars.fd
+log_user 0
+log_file -noappend /tmp/boot-console.log
+set fails 0
+proc result {ok name {detail ""}} {
+	global fails
+	if {$ok} { puts "PASS $name" } else { puts "FAIL $name $detail"; incr fails }
+}
+spawn qemu-system-x86_64 -machine q35,accel=$accel -cpu $cpu -m 1024 -smp 2 -nographic -no-reboot \
+	-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+	-drive if=pflash,format=raw,file=/tmp/vars.fd \
+	-device virtio-scsi-pci -drive file=$img,if=none,id=d0,format=raw -device scsi-hd,drive=d0 \
+	-netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
+	-chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \
+	-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0
+puts "INFO accel=$accel"
+set t0 [clock seconds]
+expect {
+	"$name login:" { result 1 boot_to_login; puts "INFO seconds to login: [expr {[clock seconds] - $t0}]" }
+	timeout { result 0 boot_to_login "(no login prompt, see /tmp/boot-console.log)"; exit 1 }
+	eof { result 0 boot_to_login "(qemu exited)"; exit 1 }
+}
+send "root\r"; expect "Password:"; send "$pw\r"
+expect {
+	-re {# $} { result 1 root_login }
+	"Login incorrect" { result 0 root_login; exit 1 }
+	timeout { result 0 root_login "(timeout)"; exit 1 }
+}
+send "stty -echo\r"
+expect -re {# $}
+send "export PS1='PROMPT> ' TERM=dumb SYSTEMD_COLORS=0 PAGER=cat\r"
+expect "PROMPT> "
+
+# sh CMD : run CMD in the VM, return {rc output}
+proc sh {cmd} {
+	send -- "$cmd 2>&1; echo __RC=\$?__\r"
+	expect {
+		-re {__RC=([0-9]+)__} { set rc $expect_out(1,string); set out $expect_out(buffer) }
+		timeout { return [list timeout ""] }
+	}
+	expect "PROMPT> "
+	# drop systemd's OSC 3008 context sequences
+	regsub -all {\x1b\][^\x07\x1b]*(\x1b\\|\x07)} $out "" out
+	regsub {__RC=[0-9]+__$} $out "" out
+	return [list $rc [string trim $out]]
+}
+proc check {name cmd {pattern ""}} {
+	lassign [sh $cmd] rc out
+	if {$pattern eq ""} { set ok [expr {$rc == 0}] } else { set ok [regexp -- $pattern $out] }
+	result $ok $name "(rc=$rc: [string range [string map {"\r" "" "\n" " | "} $out] 0 300])"
+}
+
+check system_running   "timeout 120 systemctl is-system-running --wait" {^running}
+check no_failed_units  "systemctl --failed --no-legend --plain | wc -l" {^0$}
+check cmdline_serial   "cat /proc/cmdline" {console=ttyS0,115200}
+check root_on_uuid     "findmnt -no SOURCE,FSTYPE /" {/dev/sd.2 ext4}
+check esp_mounted      "findmnt -no FSTYPE /boot/efi" {^vfat$}
+check hostname         "hostname" "^$name$"
+check machine_id       "test -s /etc/machine-id"
+check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
+check dns              "getent hosts deb.debian.org"
+check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
+check guest_agent      "systemctl is-active qemu-guest-agent" {^active$}
+check no_perl          "! command -v perl"
+check no_errors_in_log "journalctl -b -p err -q --no-pager | grep -v -e 'kernel:' | head -n 5 | wc -l" {^0$}
+lassign [sh "journalctl -b -p err -q --no-pager | head -n 8"] rc out
+if {$out ne ""} { puts "INFO boot errors: [string map {"\r" "" "\n" " | "} $out]" }
+lassign [sh "df -h --output=used / | tail -n 1"] rc out
+puts "INFO root used after boot: [string trim $out]"
+
+send "poweroff\r"
+set timeout 120
+expect {
+	eof { result 1 clean_poweroff }
+	timeout { result 0 clean_poweroff "(still running after 120s)" }
+}
+exit [expr {$fails > 0}]

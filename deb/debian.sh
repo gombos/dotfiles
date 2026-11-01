@@ -1,18 +1,22 @@
 #!/bin/bash
 # Builds a minimal Debian rootfs, or turns one into a UEFI Proxmox VM.
 #
-#   sudo ./debian.sh [--print-debs] <target>              build a rootfs
-#   sudo ./debian.sh <rootfs-dir> <vmid> <storage> <name> build a VM
+#   sudo ./debian.sh [--print-debs] [target]              build a rootfs
+#   sudo ./debian.sh [[rootfs-dir] <vmid> <name>]         build a VM
 #
-# With no SCRIPT_MODE set, the VM mode is used when qm is available (a Proxmox
-# host) and the bootstrap mode otherwise. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm
-# overrides this.
+# rootfs-dir and target default to ROOTFS_DEFAULT (/tmp/rootfs); VM mode
+# bootstraps it first when it is empty. Without arguments VM mode uses the next
+# free VMID and the name VM_NAME_DEFAULT (debian).
 #
-# VM env: DISK_GB (8), MEMORY (2048), CORES (2), BRIDGE (vmbr0),
+# With no SCRIPT_MODE set, VM mode is used when qm is available (a Proxmox
+# host) and the bootstrap mode otherwise; a leading option always means the
+# bootstrap. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm overrides this.
+#
+# VM env: DISK_GB (2), MEMORY (1024), CORES (2), BRIDGE (vmbr0),
 #         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset).
-# ./debian.sh /tmp/a/ 100 debian
+# The VM storage is local-lvm (set in vm_main).
 #
-# Notes: NOTES.md.
+# Notes: NOTES.md. Tests: tests/run.sh [quick|full].
 
 die () { echo "error: $*" >&2; exit 1; }
 
@@ -28,6 +32,8 @@ SUITE=forky
 COMPONENT=main
 ARCH=amd64
 PRINT_DEBS=""
+ROOTFS_DEFAULT=/tmp/rootfs
+VM_NAME_DEFAULT=debian
 
 ############################################################### messages
 info ()    { local fmt="$1"; shift; printf "I: $fmt\n" "$@" >&4; }
@@ -36,6 +42,7 @@ error ()   { local fmt="$1"; shift; printf "E: $fmt\n" "$@" >&4; exit 1; }
 
 in_path () { command -v "$1" >/dev/null 2>&1; }
 
+# endless answers on dpkg's stdin, so no prompt can block the bootstrap
 smallyes () { while echo "${1-y}" 2>/dev/null; do :; done; }
 
 # without "a b c" "a d" -> "b c"   (sorted, deduplicated)
@@ -45,6 +52,7 @@ without () {
 	echo
 }
 
+# repeatn N cmd... : retry, as debootstrap does around dpkg runs
 repeatn () {
 	local n="$1"; shift
 	while [ "$n" -gt 0 ]; do
@@ -56,13 +64,14 @@ repeatn () {
 
 usage () {
 	cat <<EOF
-Usage: ${0##*/} [--print-debs] <target>
+Usage: ${0##*/} [--print-debs] [target]
 EOF
 }
 
 
 ############################################################### cleanup
 
+# mounts below $TARGET, newest first, unmounted by the EXIT trap
 UMOUNT_DIRS=""
 umount_on_exit () { UMOUNT_DIRS="$1 $UMOUNT_DIRS"; }
 
@@ -77,9 +86,6 @@ cleanup () {
 			fi
 		fi
 	done
-	if [ -f "$TARGET/etc/mtab" ] && [ ! -h "$TARGET/etc/mtab" ]; then
-		rm -f "$TARGET/etc/mtab"
-	fi
 }
 
 ############################################################### downloading
@@ -103,6 +109,9 @@ verify_checksum () {
 	[ "$(sha256sum < "$1" | sed 's/ .*//')" = "$2" ]
 }
 
+# Download into partial/ and move into place only once size and SHA256 match.
+# The by-hash URL is tried first when offered: it cannot change while the
+# mirror updates, unlike the plain file name.
 get () {
 	# from dest sha256 size [byhash-url]
 	local from="$1" dest="$2" sum="$3" size="$4" byhash="${5-}" tries=0
@@ -140,6 +149,8 @@ release_checksum () {
 
 PKGFILE=""
 
+# Release, then the Packages index it lists (checked against the Release
+# SHA256), unpacked to $PKGFILE in the target's apt lists directory.
 download_indices () {
 	local rel path ent byhash hashurl ext unpack
 	rel="$LISTS/$(list_name "dists/$SUITE/Release")"
@@ -252,6 +263,8 @@ pkg_stanzas () {
 
 declare -A DEBPATH	# package -> path of .deb inside $TARGET
 
+# Fetch the .debs into the target's apt archive (epoch ':' stored as %3a, like
+# apt) and record "package path" in debootstrap/debpaths for debfor.
 download_debs () {
 	local p ver arc fil sum siz debdest missing=""
 	while read -r p ver arc fil sum siz; do
@@ -274,23 +287,10 @@ debfor () {
 }
 
 ############################################################### first stage
+# Unpack the required packages' files with tar (no maintainer scripts yet) and
+# prepare just enough of /etc and /dev for chroot + dpkg to work.
 
-if in_path dpkg-deb; then
-	extract_deb_data () { dpkg-deb --fsys-tarfile "$1" | tar -k -xf -; }
-else
-	extract_deb_data () {
-		local tarball cat_cmd
-		tarball="$(ar -t "$1" | grep '^data\.tar')"
-		case "$tarball" in
-			data.tar.gz)  cat_cmd=zcat ;;
-			data.tar.xz)  cat_cmd=xzcat ;;
-			data.tar.zst) cat_cmd=zstdcat ;;
-			data.tar)     cat_cmd=cat ;;
-			*) error "Unknown compression type for %s in %s" "$tarball" "$1" ;;
-		esac
-		ar -p "$1" "$tarball" | $cat_cmd | tar -k -xf -
-	}
-fi
+extract_deb_data () { dpkg-deb --fsys-tarfile "$1" | tar -k -xf -; }
 
 extract () { (
 	cd "$TARGET"
@@ -301,118 +301,20 @@ extract () { (
 	done
 ); }
 
-# --- merged /usr: move /bin, /lib*, /sbin into /usr and symlink them
-
-can_usrmerge_symlink () {
-	# Absolute symlinks can be relocated without problems.
-	test "${2#/}" = "$2" || return 0
-	while :; do
-		if test "${2#/}" != "$2"; then
-			set -- "$1" "${2#/}"
-		elif test "${2#./}" != "$2"; then
-			set -- "$1" "${2#./}"
-		elif test "$2" = ..; then
-			test "${1%/*/*}" != "$1" -a -n "${1%/*/*}"
-			return $?
-		elif test "${2#../}" != "$2"; then
-			test "${1%/*/*}" = "$1" -o -z "${1%/*/*}" && return 1
-			set -- "${1%/*}" "${2#../}"
-		else
-			test "${2#*/../}" = "$2"
-			return $?
-		fi
+# device nodes for the chroot; mknod needs a real root (not an unprivileged container)
+setup_devices () {
+	local node
+	mkdir -p "$TARGET/dev/pts" "$TARGET/dev/shm"
+	for node in "null 1 3" "zero 1 5" "full 1 7" "random 1 8" "urandom 1 9" \
+	            "tty 5 0" "console 5 1" "ptmx 5 2"; do
+		set -- $node
+		[ -e "$TARGET/dev/$1" ] || mknod -m 666 "$TARGET/dev/$1" c "$2" "$3" ||
+			error "cannot create %s (unprivileged container?)" "$TARGET/dev/$1"
 	done
-}
-
-merge_usr_entry () {
-	local entry canon
-	canon="$TARGET/usr/${1#"$TARGET/"}"
-	test -h "$canon" &&
-		error "cannot move %s as its destination exists as a symlink" "${1#"$TARGET"}"
-	if ! test -e "$canon"; then
-		mv "$1" "$canon"
-		return 0
-	fi
-	test -d "$1" ||
-		error "cannot move non-directory %s as its destination exists" "${1#"$TARGET"}"
-	test -d "$canon" ||
-		error "cannot move directory %s as its destination is not a directory" "${1#"$TARGET"}"
-	for entry in "$1/"* "$1/."*; do
-		test "${entry%/.}" != "${entry%/..}" && continue
-		if test -h "$entry" && ! can_usrmerge_symlink "${entry#"$TARGET"}" "$(readlink "$entry")"; then
-			error "cannot move relative symlink crossing top-level directory %s" "${entry#"$TARGET"}"
-		fi
-		if test "${entry%'/*'}" != "${entry%'/.*'}" && ! test -e "$entry"; then
-			continue
-		fi
-		merge_usr_entry "$entry"
-	done
-	rmdir "$1"
-}
-
-merge_usr () {
-	local dir
-	for dir in bin lib lib32 lib64 libo32 libx32 sbin; do
-		test -h "$TARGET/$dir" && continue
-		test -e "$TARGET/$dir" || continue
-		merge_usr_entry "$TARGET/$dir"
-		ln -s "usr/$dir" "$TARGET/$dir"
-	done
-}
-
-# --- /dev
-
-mknod_if_needed () {
-	[ -e "$1" ] || mknod -m "${5:-666}" "$1" "$2" "$3" "$4"
-}
-
-setup_devices_simple () {
-	mknod_if_needed "$TARGET/dev/null"    c 1 3
-	mknod_if_needed "$TARGET/dev/zero"    c 1 5
-	mknod_if_needed "$TARGET/dev/full"    c 1 7
-	mknod_if_needed "$TARGET/dev/random"  c 1 8
-	mknod_if_needed "$TARGET/dev/urandom" c 1 9
-	mknod_if_needed "$TARGET/dev/tty"     c 5 0
-	mknod_if_needed "$TARGET/dev/console" c 5 1
-	mkdir -p "$TARGET/dev/pts/" "$TARGET/dev/shm/"
-	if ! mknod_if_needed "$TARGET/dev/ptmx" c 5 2; then
-		warning "Could not create /dev/ptmx, falling back to symlink. This chroot will require /dev/pts mounted with ptmxmode=666"
-		ln -sf pts/ptmx "$TARGET/dev/ptmx"
-	fi
 	ln -sfT /proc/self/fd  "$TARGET/dev/fd"
 	ln -sf /proc/self/fd/0 "$TARGET/dev/stdin"
 	ln -sf /proc/self/fd/1 "$TARGET/dev/stdout"
 	ln -sf /proc/self/fd/2 "$TARGET/dev/stderr"
-}
-
-# fallback when mknod is not permitted (e.g. some containers)
-setup_devices_bind () {
-	local device
-	mount -t tmpfs nodev "$TARGET/dev"
-	umount_on_exit /dev
-	for device in null zero full random urandom tty pts shm ptmx; do
-		if [ -d "/dev/$device" ]; then
-			mkdir "$TARGET/dev/$device"
-		elif [ -c "/dev/$device" ]; then
-			touch "$TARGET/dev/$device"
-		else
-			continue
-		fi
-		mount -o bind "/dev/$device" "$TARGET/dev/$device"
-		umount_on_exit "/dev/$device"
-	done
-	ln -s /proc/self/fd   "$TARGET/dev/fd"
-	ln -s /proc/self/fd/0 "$TARGET/dev/stdin"
-	ln -s /proc/self/fd/1 "$TARGET/dev/stdout"
-	ln -s /proc/self/fd/2 "$TARGET/dev/stderr"
-}
-
-setup_devices () {
-	mkdir -p "$TARGET/dev"
-	if ! setup_devices_simple 2>/dev/null ||
-	   ! sh -c ': >"$1"' -- "$TARGET/dev/null" 2>/dev/null; then
-		setup_devices_bind
-	fi
 }
 
 conditional_cp () {
@@ -428,7 +330,12 @@ conditional_cp () {
 
 first_stage_install () {
 	extract $required
-	merge_usr
+	# merged /usr: base-files ships these as symlinks; a package with files in
+	# /bin etc. unpacked before it would have made a real directory instead
+	local dir
+	for dir in bin lib lib64 sbin; do
+		[ -L "$TARGET/$dir" ] || error "/%s is not a symlink to usr/%s" "$dir" "$dir"
+	done
 
 	# without dash nothing ships /bin/sh
 	[ -e "$TARGET/usr/bin/sh" ] || ln -s bash "$TARGET/usr/bin/sh"
@@ -446,7 +353,6 @@ first_stage_install () {
 APT::Install-Recommends "false";
 Acquire::Languages "none";
 APT::Keep-Downloaded-Packages "false";
-DPkg::Post-Invoke { "apt-get clean || true"; };
 EOF
 	cat > "$TARGET/etc/dpkg/dpkg.cfg.d/01-minimal" <<'EOF'
 # Drop all documentation
@@ -479,7 +385,10 @@ setup_apt_sources () {
 }
 
 ############################################################### second stage
+# Inside the chroot: bring up dpkg by hand, then unpack and configure the
+# required packages, then the base packages (debootstrap's minbase order).
 
+# chroot with a sane PATH; on failure point at the package dpkg blamed
 in_target () {
 	if ! PATH=/sbin:/usr/sbin:/bin:/usr/bin chroot "$TARGET" "$@"; then
 		warning "Failure trying to run: chroot \"%s\" %s" "$TARGET" "$*"
@@ -516,25 +425,22 @@ dpkg_progress () {
 }
 
 # dpkg_run UNPACKING|CONFIGURING <dpkg args...>
+# dpkg reports state changes on fd 8, turned into I: lines by dpkg_progress
 dpkg_run () {
 	local action="$1"; shift
 	in_target dpkg --status-fd 8 "$@" < <(smallyes '') 8> >(dpkg_progress "$action")
 }
 
 setup_proc () {
-	umount_on_exit /dev/pts
-	umount_on_exit /dev/shm
-	umount_on_exit /proc/bus/usb
 	umount_on_exit /proc
 	umount_on_exit /sys
 	umount "$TARGET/proc" 2>/dev/null || true
 	mkdir -p "$TARGET/proc" "$TARGET/sys"
-	mount -t proc proc "$TARGET/proc" || mount -o rbind /proc "$TARGET/proc" || true
-	if ! mountpoint -q "$TARGET/sys"; then
-		mount -t sysfs sysfs "$TARGET/sys" || true
-	fi
+	mount -t proc proc "$TARGET/proc"
+	mountpoint -q "$TARGET/sys" || mount -t sysfs sysfs "$TARGET/sys"
 }
 
+# register a package as installed without running dpkg (bootstraps dpkg itself)
 x_feign_install () {
 	local pkg="$1" ver
 	ver="$(in_target dpkg-deb -f "$(debfor "$pkg")" Version)"
@@ -581,11 +487,9 @@ second_stage_install () {
 		error "Failure while unpacking required packages."
 
 	info "Configuring required packages..."
+	# exit 101: maintainer scripts must not start services in the chroot
 	printf '#!/bin/sh\nexit 101\n' > "$TARGET/usr/sbin/policy-rc.d"
 	chmod 755 "$TARGET/usr/sbin/policy-rc.d"
-
-	echo "apt apt" > "$TARGET/var/lib/dpkg/cmethopt"
-	chmod 644 "$TARGET/var/lib/dpkg/cmethopt"
 
 	dpkg_run CONFIGURING --configure --pending --force-configure-any --force-depends ||
 		error "Failure while configuring required packages."
@@ -653,8 +557,9 @@ bootstrap_main () {
 		shift
 	done
 
-	[ $# -eq 1 ] || { usage >&2; error "You must specify a target."; }
-	TARGET="${1%/}"
+	[ $# -le 1 ] || { usage >&2; error "too many arguments"; }
+	TARGET="${1:-$ROOTFS_DEFAULT}"
+	TARGET="${TARGET%/}"
 	case "$TARGET" in
 		/*) ;;
 		*) TARGET="$(pwd)/$TARGET" ;;
@@ -668,6 +573,7 @@ bootstrap_main () {
 	in_path wget || error "You must install wget to download packages."
 	in_path chroot || error "Cannot find chroot executable in \$PATH"
 	in_path sha256sum || error "sha256sum is required"
+	in_path dpkg-deb || error "dpkg-deb is required"
 	if [ -z "$PRINT_DEBS" ] && [ "$(id -u)" -ne 0 ]; then
 		error "debootstrap can only run as root"
 	fi
@@ -680,6 +586,7 @@ bootstrap_main () {
 	exec >>"$TARGET/debootstrap/debootstrap.log" 2>&1
 
 	trap cleanup EXIT
+	# ERR only fires for commands directly in this function (no set -E)
 	trap 'error "Command failed (line %s), see %s" "$LINENO" "$TARGET/debootstrap/debootstrap.log"' ERR
 	trap 'exit 129' HUP
 	trap 'error "Interrupt caught ... exiting"' INT
@@ -714,8 +621,16 @@ bootstrap_main () {
 	setup_apt_sources
 	second_stage_install
 
+	# the first stage unpacked with tar, which ignores dpkg's path-exclude rules
 	rm -rf "$TARGET/usr/share/man" "$TARGET/usr/share/info"
 	rm -rf "$TARGET/usr/share/doc"
+	[ ! -d "$TARGET/usr/share/locale" ] ||
+		find "$TARGET/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
+	rm -f "$TARGET$ARCHIVES"/*.deb
+
+	# /etc/default/locale is shipped as a symlink to ../locale.conf; without
+	# the target pam_env logs an error at every login (C.UTF-8 is in glibc)
+	[ -e "$TARGET/etc/locale.conf" ] || echo 'LANG=C.UTF-8' > "$TARGET/etc/locale.conf"
 
 	mv "$TARGET/debootstrap/debootstrap.log" "$TARGET/var/log/bootstrap.log"
 	sync
@@ -723,7 +638,11 @@ bootstrap_main () {
 }
 
 ############################################################### vm
+# Copy the rootfs into a GPT image (512 MiB ESP + ext4 root), add kernel,
+# dracut initramfs, GRUB and guest agent through chroot, configure it, then
+# import the image into a new Proxmox VM.
 
+# partition nodes of a fresh loop device show up asynchronously (udev)
 wait_for_node () {
 	local i
 	for i in $(seq 50); do [ -b "$1" ] && return 0; sleep 0.1; done
@@ -742,30 +661,33 @@ vm_cleanup () {
 	fi
 }
 
+# checks that do not need the rootfs, so they run before a bootstrap
 vm_check () {
 	[ "$(id -u)" -eq 0 ] || die "must run as root"
-	[ -x "$ROOTFS/usr/bin/bash" ] || die "$ROOTFS does not look like a rootfs"
 	local cmd
-	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat blkid chroot mountpoint; do
+	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat e2fsck blkid chroot mountpoint; do
 		command -v "$cmd" >/dev/null || die "missing command: $cmd"
 	done
 	qm status "$VMID" >/dev/null 2>&1 && die "VM $VMID already exists"
 
 	STYPE=$(pvesm status | awk -v s="$STORAGE" '$1==s {print $2}')
 	[ -n "$STYPE" ] || die "unknown storage: $STORAGE"
-	case "$STYPE" in
-		dir|nfs|cifs) FORMAT=qcow2 ;;
-		*) FORMAT=raw ;;
-	esac
+	# raw is accepted by every storage type
+	FORMAT=raw
 
+	if [ -z "${ROOT_PASSWORD:-}" ]; then
+		read -rsp "root password for $NAME: " ROOT_PASSWORD ||
+			die "no root password: set ROOT_PASSWORD or run from a terminal"
+		echo
+	fi
+	[ -n "$ROOT_PASSWORD" ] || die "empty root password"
+}
+
+vm_check_rootfs () {
+	[ -x "$ROOTFS/usr/bin/bash" ] || die "$ROOTFS does not look like a rootfs"
 	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
 	[ "$USED_MB" -lt $(( DISK_GB * 1024 - 1024 )) ] \
 		|| die "rootfs needs ${USED_MB} MiB, leave 1 GiB headroom: raise DISK_GB"
-
-	if [ -z "${ROOT_PASSWORD:-}" ]; then
-		read -rsp "root password for $NAME: " ROOT_PASSWORD; echo
-	fi
-	[ -n "$ROOT_PASSWORD" ] || die "empty root password"
 }
 
 vm_make_disk () {
@@ -785,8 +707,12 @@ vm_make_disk () {
 	mkdir -p "$MNT/boot/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
 	mount "${LOOP}p1" "$MNT/boot/efi"
 	mount -t proc proc "$MNT/proc"
+	# rslave: with shared propagation (systemd hosts) umount -R would otherwise
+	# also unmount the host's /dev/pts, /sys/fs/cgroup, ...
 	mount --rbind /sys "$MNT/sys"
+	mount --make-rslave "$MNT/sys"
 	mount --rbind /dev "$MNT/dev"
+	mount --make-rslave "$MNT/dev"
 	cp /etc/resolv.conf "$MNT/etc/resolv.conf"
 }
 
@@ -810,6 +736,8 @@ vm_install_bootloader () {
 	ESP_UUID=$(blkid -s UUID -o value "${LOOP}p1")
 
 	echo "installing bootloader"
+	# --removable puts GRUB at \EFI\BOOT\BOOTX64.EFI, which OVMF boots without
+	# an NVRAM entry (the VM's efidisk starts empty)
 	cp "$MNT/usr/share/grub/default/grub" "$MNT/etc/default/grub"
 	sed -i 's/^GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200"/' \
 		"$MNT/etc/default/grub"
@@ -838,8 +766,10 @@ Name=en* eth*
 DHCP=yes
 EOF
 	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
+	# the host's resolv.conf was only needed for apt during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
+	# empty machine-id: systemd generates a unique one on first boot
 	: > "$MNT/etc/machine-id"
 	printf 'root:%s\n' "$ROOT_PASSWORD" | chroot "$MNT" chpasswd
 	unset ROOT_PASSWORD
@@ -847,15 +777,33 @@ EOF
 	chroot "$MNT" apt-get clean
 	rm -rf "$MNT/var/lib/apt/lists/"*
 
+	vm_detach
+}
+
+# Daemons started by package scripts inside the chroot keep the mounts busy.
+# Only processes whose root is in the image are found, not ones whose
+# working directory is there.
+vm_kill_chroot_procs () {
+	local p root pids=""
+	for p in /proc/[0-9]*; do
+		root=$(readlink "$p/root" 2>/dev/null) || continue
+		case "$root" in
+			"$MNT"|"$MNT"/*) pids="$pids ${p#/proc/}" ;;
+		esac
+	done
+	[ -n "$pids" ] || return 0
+	echo "stopping processes left in the image:$pids"
+	kill -TERM $pids 2>/dev/null || true
+	sleep 2
+	kill -KILL $pids 2>/dev/null || true
+}
+
+vm_detach () {
 	sync
-
-#   umount $MNT/dev/pts
-#   umount $MNT/dev/shm
-#   umount $MNT/proc/bus/usb
-#   umount $MNT/proc
-#   umount $MNT/sys
-
-#	umount -R "$MNT"
+	vm_kill_chroot_procs
+	umount -R "$MNT" || die "could not unmount $MNT"
+	# e2fsck exit code 1: errors were corrected
+	e2fsck -fp "${LOOP}p2" || [ $? -eq 1 ] || die "root filesystem check failed"
 	losetup -d "$LOOP"
 	LOOP=""
 }
@@ -871,9 +819,10 @@ vm_create () {
 	OUT=$(qm importdisk "$VMID" "$IMG" "$STORAGE" --format "$FORMAT" 2>&1) \
 		|| { echo "$OUT" >&2; die "importdisk failed"; }
 	echo "$OUT"
-	VOLID=$(printf '%s\n' "$OUT" | sed -n "s/.*as 'unused[0-9]*:\([^']*\)'.*/\1/p")
-	VOLID='local-lvm:vm-100-disk-1'
-	[ -n "$VOLID" ] || die "could not find the imported disk in importdisk output"
+	# importdisk attaches the volume as unusedN; its name (vm-ID-disk-N) depends
+	# on the disks the VM already has, so read it back from the config
+	VOLID=$(qm config "$VMID" | sed -n 's/^unused[0-9]*: //p' | head -n 1)
+	[ -n "$VOLID" ] || die "could not find the imported disk in the VM config"
 	qm set "$VMID" --scsi0 "$VOLID" --boot order=scsi0
 
 	if [ "$START" = 1 ]; then
@@ -884,8 +833,14 @@ vm_create () {
 }
 
 vm_main () {
-	[ $# -eq 3 ] || die "usage: ${0##*/} <rootfs-dir> <vmid> <name>"
-	ROOTFS="$1"; VMID="$2"; NAME="$3"
+	case $# in
+		0) in_path pvesh || die "missing command: pvesh"
+		   ROOTFS="$ROOTFS_DEFAULT"; VMID=$(pvesh get /cluster/nextid | tr -d '"')
+		   NAME="$VM_NAME_DEFAULT" ;;
+		2) ROOTFS="$ROOTFS_DEFAULT"; VMID="$1"; NAME="$2" ;;
+		3) ROOTFS="$1"; VMID="$2"; NAME="$3" ;;
+		*) die "usage: ${0##*/} [[rootfs-dir] <vmid> <name>]" ;;
+	esac
 	DISK_GB="${DISK_GB:-2}"
 	MEMORY="${MEMORY:-1024}"
 	STORAGE='local-lvm'
@@ -896,6 +851,13 @@ vm_main () {
 	LOOP=""
 
 	vm_check
+	if [ ! -e "$ROOTFS" ] || [ -z "$(ls -A "$ROOTFS")" ]; then
+		echo "$ROOTFS is empty, bootstrapping it first"
+		# subshell: keeps bootstrap's traps and log redirection out of VM mode
+		( bootstrap_main "$ROOTFS" )
+	fi
+	vm_check_rootfs
+	echo "building VM $VMID ($NAME) from $ROOTFS"
 
 	W=$(mktemp -d "$WORKDIR/make-pve-vm.XXXXXX")
 	IMG="$W/disk.raw"
@@ -914,7 +876,10 @@ vm_main () {
 main () {
 	local mode="${SCRIPT_MODE:-}"
 	if [ -z "$mode" ]; then
-		if in_path qm; then mode=vm; else mode=bootstrap; fi
+		# only the bootstrap takes options
+		if [ "${1#-}" != "${1-}" ]; then mode=bootstrap
+		elif in_path qm; then mode=vm
+		else mode=bootstrap; fi
 	fi
 	case "$mode" in
 		vm) vm_main "$@" ;;

@@ -1,0 +1,29 @@
+#!/bin/bash
+# Minimal qm stand-in. State lives in $QM_STATE; disk names follow Proxmox
+# (efidisk0 gets vm-ID-disk-0, the imported disk the next free index).
+ST=${QM_STATE:-/tmp/qm}; mkdir -p "$ST"
+conf=$ST/$2.conf
+next_disk () { echo $(( $(grep -c "vm-$1-disk-" "$ST/$1.conf") )); }
+case "$1" in
+status) [ -f "$conf" ] && { echo "status: stopped"; exit 0; }
+	echo "Configuration file 'nodes/pve/qemu-server/$2.conf' does not exist" >&2; exit 2 ;;
+create) [ -f "$conf" ] && { echo "VM $2 already exists" >&2; exit 255; }
+	id=$2; shift 2; echo "create: $*" > "$conf" ;;
+set) id=$2; shift 2
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		--efidisk0) echo "efidisk0: ${2%%:*}:vm-$id-disk-$(next_disk "$id"),${2#*,}" >> "$conf" ;;
+		--scsi0) echo "scsi0: $2" >> "$conf"; sed -i "\|^unused[0-9]*: $2\$|d" "$conf" ;;
+		--boot) echo "boot: $2" >> "$conf" ;;
+		esac; shift
+	done ;;
+importdisk) id=$2; img=$3; st=$4; vol="$st:vm-$id-disk-$(next_disk "$id")"
+	cp --sparse=always "$img" "$ST/${vol#*:}.raw"
+	echo "importing disk '$img' to VM $id ..."
+	echo "transferred 0.0 B of 2.0 GiB (0.00%)"
+	echo "Successfully imported disk as 'unused0:$vol'"
+	echo "unused0: $vol" >> "$conf" ;;
+config) cat "$conf" ;;
+start) echo "start" >> "$ST/$2.log" ;;
+*) echo "qm stub: unsupported: $*" >&2; exit 1 ;;
+esac

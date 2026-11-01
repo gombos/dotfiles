@@ -1,0 +1,6 @@
+#!/bin/bash
+# pvesh stand-in: only "get /cluster/nextid" (first VMID >= 100 without a config)
+[ "$1 $2" = "get /cluster/nextid" ] || { echo "pvesh stub: unsupported: $*" >&2; exit 1; }
+ST=${QM_STATE:-/tmp/qm}; id=100
+while [ -f "$ST/$id.conf" ]; do id=$((id + 1)); done
+echo "$id"
