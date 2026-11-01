@@ -15,7 +15,7 @@
 # VM disks: scsi0 ESP ESP_DISK_MB (64, boot disk), scsi1 root ROOT_DISK_MB (512),
 #           scsi2 /usr USR_DISK_GB (4).
 # VM env: MEMORY (1024), CORES (2), BRIDGE (vmbr0),
-#         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset),
+#         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (ROOT_PASSWORD_DEFAULT: root),
 #         REPLACE_VM (1: delete an existing VM with the same VMID without asking).
 # The VM storage is local-lvm (set in vm_main).
 #
@@ -37,6 +37,7 @@ ARCH=amd64
 PRINT_DEBS=""
 ROOTFS_DEFAULT=/tmp/rootfs
 VM_NAME_DEFAULT=debian
+ROOT_PASSWORD_DEFAULT=root
 
 ############################################################### messages
 info ()    { local fmt="$1"; shift; printf "I: $fmt\n" "$@" >&4; }
@@ -698,13 +699,6 @@ vm_check () {
 	[ -n "$STYPE" ] || die "unknown storage: $STORAGE"
 	# raw is accepted by every storage type
 	FORMAT=raw
-
-	if [ -z "${ROOT_PASSWORD:-}" ]; then
-		read -rsp "root password for $NAME: " ROOT_PASSWORD ||
-			die "no root password: set ROOT_PASSWORD or run from a terminal"
-		echo
-	fi
-	[ -n "$ROOT_PASSWORD" ] || die "empty root password"
 }
 
 vm_check_rootfs () {
@@ -818,7 +812,7 @@ Name=en* eth*
 DHCP=yes
 EOF
 	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
-	printf 'root:%s\n' "$ROOT_PASSWORD" | chroot "$MNT" chpasswd
+	printf 'root:%s\n' "${ROOT_PASSWORD:-$ROOT_PASSWORD_DEFAULT}" | chroot "$MNT" chpasswd
 	unset ROOT_PASSWORD
 }
 

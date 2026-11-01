@@ -40,10 +40,9 @@ nok vm_exists_no_bootstrap [ -e /tmp/rootfs ]
 expect vm_no_storage    "unknown storage: local-lvm"  env SCRIPT_MODE=vm STUB_NO_LVM=1 "$T" E-stor /tmp/fake 101 x
 expect vm_usr_too_small "raise USR_DISK_GB" env SCRIPT_MODE=vm STUB_STORAGE_TYPE=dir USR_DISK_GB=1 "$T" E-small /tmp/fake 101 x
 expect vm_root_too_small "raise ROOT_DISK_MB" env SCRIPT_MODE=vm ROOT_DISK_MB=300 "$T" E-rootsmall /tmp/fake 101 x
-expect vm_pw_blank      "empty root password" \
-	bash -c 'printf "\n" | SCRIPT_MODE=vm ROOT_PASSWORD= "$0" E-pwblank /tmp/fake 101 x' "$T"
-# no terminal and no ROOT_PASSWORD: must fail with a message, not silently
-expect vm_pw_no_stdin   "root password"                        env SCRIPT_MODE=vm ROOT_PASSWORD= "$T" E-pweof /tmp/fake 101 x
+# no ROOT_PASSWORD and no terminal: no prompt, the default is used and the run
+# goes on to the rootfs check
+expect vm_no_password_prompt "does not look like a rootfs"     env SCRIPT_MODE=vm ROOT_PASSWORD= "$T" E-nopw /tmp/notroot 101 x
 
 # --print-debs: as non-root from the xz index, then from the gz index with a
 # relative target (ignored); both lists must match

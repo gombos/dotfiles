@@ -4,7 +4,7 @@
 . "${0%/*}/lib.sh"
 rm -rf /tmp/rootfs /tmp/qm /tmp/work; mkdir -p /tmp/rootfs /tmp/work
 export PATH=$TESTS/stubs:$PATH QM_STATE=/tmp/qm
-out=$(ROOT_PASSWORD=test WORKDIR=/tmp/work "$T" build 2>&1 </dev/null); rc=$?
+out=$(env -u ROOT_PASSWORD WORKDIR=/tmp/work "$T" build 2>&1 </dev/null); rc=$?
 printf '%s\n' "$out" > "$OUT/build-output.log"
 ok build_rc [ $rc -eq 0 ]
 ok build_bootstraps_empty_default has "$out" "/tmp/rootfs is empty, bootstrapping it first"

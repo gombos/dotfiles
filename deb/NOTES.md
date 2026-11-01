@@ -137,12 +137,12 @@ The rootfs is the output of bootstrap mode; it defaults to `ROOTFS_DEFAULT`
 (`/tmp/rootfs`) and is bootstrapped first when empty or missing. Without
 arguments the VMID is the next free one and the name is `VM_NAME_DEFAULT`
 (`debian`). Storage is `local-lvm` (set in `vm_main`). Root, required commands,
-the VMID, the storage and the root password are checked before the bootstrap,
+the VMID and the storage are checked before the bootstrap,
 so a mistake does not cost a bootstrap run.
 
 Environment overrides: `ESP_DISK_MB` (64), `ROOT_DISK_MB` (512), `USR_DISK_GB` (4), `MEMORY` (1024), `CORES` (2),
-`BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD` (asked
-on the terminal if unset; without a terminal the script stops with a message),
+`BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD`
+(default `ROOT_PASSWORD_DEFAULT`, `root`; never asked),
 `REPLACE_VM` (1: replace an existing VM with the same VMID without asking).
 
 If the VMID already exists, the script shows its name and status and asks
@@ -169,8 +169,8 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 ### What the script does
 
 1. Re-runs itself in a private mount namespace. Checks: root, required
-   commands, VMID (asks before replacing), storage (`pvesm status`), root
-   password; bootstraps the rootfs if needed; then rootfs shape and size.
+   commands, VMID (asks before replacing), storage (`pvesm status`);
+   bootstraps the rootfs if needed; then rootfs shape and size.
 2. Creates three sparse raw disks, each GPT with one partition: ESP
    (`ESP_DISK_MB`, 64 MiB, FAT32), root (`ROOT_DISK_MB`, 512 MiB, ext4 `/`, type
    "Linux x86-64 root") and `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64

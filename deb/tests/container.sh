@@ -32,7 +32,7 @@ if [ "$mode" = full ]; then
 	suite image  bash $TESTS/image-check.sh /tmp/qm/vm-100-disk-1.raw /tmp/qm/vm-100-disk-2.raw /tmp/qm/vm-100-disk-3.raw debian
 	suite detach unshare -m --propagation unchanged bash $TESTS/detach.sh /tmp/rootfs
 	suite isolation unshare -m --propagation unchanged bash $TESTS/isolation.sh /tmp/rootfs
-	suite boot   expect -f $TESTS/boot.exp /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw debian test
+	suite boot   expect -f $TESTS/boot.exp /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw debian root
 	cp /tmp/boot-console.log $OUT/ 2>/dev/null
 fi
 
