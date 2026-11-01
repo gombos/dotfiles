@@ -914,7 +914,12 @@ EOF
 		mount -t tmpfs tmpfs "$MNT/var/cache/pacman/pkg"
 		cp "$MNT/etc/pacman.conf" "$MNT/etc/pacman-build.conf"
 		arch_nosandbox "$MNT/etc/pacman-build.conf"
+		# keyring first, then the whole system: a rootfs bootstrapped some time
+		# ago does not know newer packager keys ("unknown trust"), and Arch
+		# does not support partial upgrades
 		vm_pacman -Sy
+		vm_pacman -S --needed archlinux-keyring
+		vm_pacman -Su
 		mkdir -p "$MNT/tmp/no-initramfs"
 		cat > "$MNT/tmp/no-initramfs/.PKGINFO" <<EOF
 pkgname = no-initramfs

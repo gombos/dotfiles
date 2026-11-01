@@ -170,7 +170,9 @@ Result: `base` (about 137 packages, ~440 MB).
 ### VM differences
 
 Same disks, UKI and configuration as Debian. Package steps use pacman:
-`pacman -Sy`; a local `no-initramfs` package (built with `bsdtar`, `provides =
+`pacman -Sy`, then `archlinux-keyring` and a full `-Su` (a rootfs bootstrapped
+earlier would otherwise meet packager keys it does not know, "unknown trust",
+and Arch does not support partial upgrades); a local `no-initramfs` package (built with `bsdtar`, `provides =
 initramfs`) so `linux` pulls in neither mkinitcpio nor any other generator;
 `linux qemu-guest-agent` (udev and systemd-resolved are part of systemd); for
 the UKI `dracut systemd-ukify`, removed again with `pacman -Rns`. Downloads go
