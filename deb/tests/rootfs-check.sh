@@ -9,6 +9,7 @@ for d in bin sbin lib lib64; do ok "usrmerge_$d" [ "$(readlink "$R/$d")" = "usr/
 ok sh_is_bash   [ "$(readlink "$R/usr/bin/sh")" = bash ]
 ok awk_is_gawk   [ "$(in_root readlink -f /usr/bin/awk)" = /usr/bin/gawk ]
 for f in usr/bin/perl usr/bin/dash usr/bin/mawk usr/share/zoneinfo usr/share/doc usr/share/man usr/share/info \
+	usr/share/dict usr/share/misc usr/local usr/src usr/games \
 	usr/sbin/policy-rc.d usr/sbin/pam-auth-update debootstrap; do
 	nok "absent_${f//\//_}" [ -e "$R/$f" ]
 done
@@ -20,7 +21,9 @@ ok no_mounts_left [ -z "$(awk -v r="$R" 'index($2, r) == 1' /proc/mounts)" ]
 debs=$(find "$R/var/cache/apt/archives" -name '*.deb' | wc -l)
 ok "no_debs_left_in_archives($debs)" [ "$debs" -eq 0 ]
 
-ok sources_list [ "$(cat "$R/etc/apt/sources.list")" = "deb http://deb.debian.org/debian forky main" ]
+ok sources_deb822 [ "$(cat "$R/etc/apt/sources.list.d/debian.sources")" = "$(printf 'Types: deb\nURIs: http://deb.debian.org/debian\nSuites: forky\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.pgp')" ]
+nok sources_list_oneline [ -e "$R/etc/apt/sources.list" ]
+ok signed_by_keyring [ -s "$R/usr/share/keyrings/debian-archive-keyring.pgp" ]
 ok apt_minimal  grep -q 'APT::Install-Recommends "false"' "$R/etc/apt/apt.conf.d/00minimal"
 nok apt_no_postinvoke grep -q Post-Invoke "$R/etc/apt/apt.conf.d/00minimal"
 ok dpkg_minimal grep -q 'path-exclude /usr/share/doc/\*' "$R/etc/dpkg/dpkg.cfg.d/01-minimal"

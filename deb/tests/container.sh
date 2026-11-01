@@ -28,11 +28,11 @@ suite unit   bash $TESTS/unit.sh
 if [ "$mode" = full ]; then
 	suite build  bash $TESTS/build.sh
 	suite rootfs bash $TESTS/rootfs-check.sh /tmp/rootfs $OUT/print-debs.txt
-	cp --sparse=always /tmp/qm/vm-100-disk-1.raw /tmp/boot.raw
-	suite image  bash $TESTS/image-check.sh /tmp/qm/vm-100-disk-1.raw debian
+	for d in 1:esp 2:root 3:usr; do cp --sparse=always /tmp/qm/vm-100-disk-${d%:*}.raw /tmp/boot-${d#*:}.raw; done
+	suite image  bash $TESTS/image-check.sh /tmp/qm/vm-100-disk-1.raw /tmp/qm/vm-100-disk-2.raw /tmp/qm/vm-100-disk-3.raw debian
 	suite detach unshare -m --propagation unchanged bash $TESTS/detach.sh /tmp/rootfs
 	suite isolation unshare -m --propagation unchanged bash $TESTS/isolation.sh /tmp/rootfs
-	suite boot   expect -f $TESTS/boot.exp /tmp/boot.raw debian test
+	suite boot   expect -f $TESTS/boot.exp /tmp/boot-esp.raw /tmp/boot-root.raw /tmp/boot-usr.raw debian test
 	cp /tmp/boot-console.log $OUT/ 2>/dev/null
 fi
 

@@ -38,7 +38,8 @@ expect vm_exists_answer_no "VM 300 already exists" \
 expect vm_exists_first  "VM 300 already exists"                env SCRIPT_MODE=vm "$T" E-exists2 300 x
 nok vm_exists_no_bootstrap [ -e /tmp/rootfs ]
 expect vm_no_storage    "unknown storage: local-lvm"  env SCRIPT_MODE=vm STUB_NO_LVM=1 "$T" E-stor /tmp/fake 101 x
-expect vm_dir_too_small "raise DISK_GB" env SCRIPT_MODE=vm STUB_STORAGE_TYPE=dir DISK_GB=1 "$T" E-small /tmp/fake 101 x
+expect vm_usr_too_small "raise USR_DISK_GB" env SCRIPT_MODE=vm STUB_STORAGE_TYPE=dir USR_DISK_GB=1 "$T" E-small /tmp/fake 101 x
+expect vm_root_too_small "raise ROOT_DISK_MB" env SCRIPT_MODE=vm ROOT_DISK_MB=300 "$T" E-rootsmall /tmp/fake 101 x
 expect vm_pw_blank      "empty root password" \
 	bash -c 'printf "\n" | SCRIPT_MODE=vm ROOT_PASSWORD= "$0" E-pwblank /tmp/fake 101 x' "$T"
 # no terminal and no ROOT_PASSWORD: must fail with a message, not silently

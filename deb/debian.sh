@@ -12,7 +12,9 @@
 # host) and the bootstrap mode otherwise; a leading option always means the
 # bootstrap. SCRIPT_MODE=bootstrap or SCRIPT_MODE=vm overrides this.
 #
-# VM env: DISK_GB (2), MEMORY (1024), CORES (2), BRIDGE (vmbr0),
+# VM disks: scsi0 ESP ESP_DISK_MB (64, boot disk), scsi1 root ROOT_DISK_MB (512),
+#           scsi2 /usr USR_DISK_GB (4).
+# VM env: MEMORY (1024), CORES (2), BRIDGE (vmbr0),
 #         WORKDIR (/var/tmp), START (1), ROOT_PASSWORD (asked if unset),
 #         REPLACE_VM (1: delete an existing VM with the same VMID without asking).
 # The VM storage is local-lvm (set in vm_main).
@@ -380,9 +382,17 @@ EOF
 	setup_devices
 }
 
+# deb822 format: a one-line sources.list makes apt suggest "apt modernize-sources"
 setup_apt_sources () {
-	mkdir -p "$TARGET/etc/apt"
-	echo "deb $MIRROR $SUITE $COMPONENT" > "$TARGET/etc/apt/sources.list"
+	mkdir -p "$TARGET/etc/apt/sources.list.d"
+	rm -f "$TARGET/etc/apt/sources.list"
+	cat > "$TARGET/etc/apt/sources.list.d/debian.sources" <<EOF
+Types: deb
+URIs: $MIRROR
+Suites: $SUITE
+Components: $COMPONENT
+Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
+EOF
 }
 
 ############################################################### second stage
@@ -622,9 +632,11 @@ bootstrap_main () {
 	setup_apt_sources
 	second_stage_install
 
-	# the first stage unpacked with tar, which ignores dpkg's path-exclude rules
-	rm -rf "$TARGET/usr/share/man" "$TARGET/usr/share/info"
-	rm -rf "$TARGET/usr/share/doc"
+	# docs: the first stage unpacked with tar, which ignores dpkg's path-exclude
+	# rules; the rest are empty directories from base-files
+	rm -rf "$TARGET/usr/share/doc" "$TARGET/usr/share/man" "$TARGET/usr/share/info" \
+		"$TARGET/usr/share/dict" "$TARGET/usr/share/misc" \
+		"$TARGET/usr/local" "$TARGET/usr/src" "$TARGET/usr/games"
 	[ ! -d "$TARGET/usr/share/locale" ] ||
 		find "$TARGET/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
 	rm -f "$TARGET$ARCHIVES"/*.deb
@@ -655,6 +667,8 @@ vm_cleanup () {
 	set +e
 	mountpoint -q "$MNT" && umount -R "$MNT"
 	[ -n "$LOOP" ] && losetup -d "$LOOP"
+	[ -n "$LOOP_USR" ] && losetup -d "$LOOP_USR"
+	[ -n "$LOOP_ESP" ] && losetup -d "$LOOP_ESP"
 	if [ $rc -eq 0 ]; then
 		rm -rf "$W"
 	else
@@ -696,26 +710,50 @@ vm_check () {
 vm_check_rootfs () {
 	[ -x "$ROOTFS/usr/bin/bash" ] || die "$ROOTFS does not look like a rootfs"
 	USED_MB=$(du -sxm "$ROOTFS" | cut -f1)
-	[ "$USED_MB" -lt $(( DISK_GB * 1024 - 1024 )) ] \
-		|| die "rootfs needs ${USED_MB} MiB, leave 1 GiB headroom: raise DISK_GB"
+	USR_MB=$(du -sxm "$ROOTFS/usr" | cut -f1)
+	# apt's lists and caches are not copied into the image (apt-get update
+	# renews them); the root disk also holds the kernel, initrd and, during the
+	# build, apt's lists and downloads
+	APT_MB=$(du -sxmc "$ROOTFS/var/lib/apt/lists" "$ROOTFS/var/cache/apt" 2>/dev/null | tail -n 1 | cut -f1)
+	ROOT_MB=$(( USED_MB - USR_MB - APT_MB ))
+	[ "$ROOT_MB" -lt $(( ROOT_DISK_MB - 320 )) ] \
+		|| die "rootfs without /usr needs ${ROOT_MB} MiB, leave 320 MiB headroom: raise ROOT_DISK_MB"
+	[ "$USR_MB" -lt $(( USR_DISK_GB * 1024 - 1024 )) ] \
+		|| die "/usr needs ${USR_MB} MiB, leave 1 GiB headroom: raise USR_DISK_GB"
 }
 
+# vm_new_disk IMAGE SIZE TYPE LABEL : sparse image with GPT and one partition;
+# prints the loop device
+vm_new_disk () {
+	local loop
+	truncate -s "$2" "$1"
+	sgdisk -Z -n1:0:0 -t1:"$3" -c1:"$4" "$1" >/dev/null
+	loop=$(losetup -f --show -P "$1")
+	wait_for_node "${loop}p1"
+	echo "$loop"
+}
+
+# Three disks, each GPT with one partition: the ESP (FAT32), root (ext4 /)
+# and /usr (ext4, "Linux x86-64 /usr" type). The initramfs mounts /usr from
+# /etc/fstab before switching to the real root.
 vm_make_disk () {
-	echo "creating ${DISK_GB} GiB disk image"
-	truncate -s "${DISK_GB}G" "$IMG"
-	sgdisk -Z -n1:0:+512M -t1:ef00 -c1:esp -n2:0:0 -t2:8300 -c2:root "$IMG" >/dev/null
-	LOOP=$(losetup -f --show -P "$IMG")
-	wait_for_node "${LOOP}p1"
-	wait_for_node "${LOOP}p2"
-	mkfs.vfat -F 32 -n ESP "${LOOP}p1" >/dev/null
-	mkfs.ext4 -q -L rootfs "${LOOP}p2"
+	echo "creating disk images: ESP ${ESP_DISK_MB} MiB, root ${ROOT_DISK_MB} MiB, /usr ${USR_DISK_GB} GiB"
+	LOOP_ESP=$(vm_new_disk "$ESP_IMG" "${ESP_DISK_MB}M" ef00 esp)
+	LOOP=$(vm_new_disk "$IMG" "${ROOT_DISK_MB}M" 8304 root)
+	LOOP_USR=$(vm_new_disk "$USR_IMG" "${USR_DISK_GB}G" 8314 usr)
+	mkfs.vfat -F 32 -n ESP "${LOOP_ESP}p1" >/dev/null
+	mkfs.ext4 -q -L rootfs "${LOOP}p1"
+	mkfs.ext4 -q -L usr "${LOOP_USR}p1"
 	mkdir -p "$MNT"
-	mount "${LOOP}p2" "$MNT"
+	mount "${LOOP}p1" "$MNT"
+	mkdir "$MNT/usr"
+	mount "${LOOP_USR}p1" "$MNT/usr"
 
 	echo "copying rootfs"
 	cp -a "$ROOTFS/." "$MNT/"
+	rm -rf "$MNT/var/lib/apt/lists/"* "$MNT/var/cache/apt/"*
 	mkdir -p "$MNT/boot/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
-	mount "${LOOP}p1" "$MNT/boot/efi"
+	mount "${LOOP_ESP}p1" "$MNT/boot/efi"
 	mount -t proc proc "$MNT/proc"
 	# rslave: with shared propagation (systemd hosts) umount -R would otherwise
 	# also unmount the host's /dev/pts, /sys/fs/cgroup, ...
@@ -742,8 +780,9 @@ vm_install_packages () {
 }
 
 vm_install_bootloader () {
-	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p2")
-	ESP_UUID=$(blkid -s UUID -o value "${LOOP}p1")
+	ROOT_UUID=$(blkid -s UUID -o value "${LOOP}p1")
+	ESP_UUID=$(blkid -s UUID -o value "${LOOP_ESP}p1")
+	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
 
 	echo "installing bootloader"
 	# --removable puts GRUB at \EFI\BOOT\BOOTX64.EFI, which OVMF boots without
@@ -760,6 +799,7 @@ vm_configure () {
 	echo "configuring system"
 	cat > "$MNT/etc/fstab" <<EOF
 UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
+UUID=$USR_UUID /usr ext4 defaults 0 2
 UUID=$ESP_UUID /boot/efi vfat umask=0077 0 2
 EOF
 	echo "$NAME" > "$MNT/etc/hostname"
@@ -808,10 +848,10 @@ vm_kill_chroot_procs () {
 	kill -KILL $pids 2>/dev/null || true
 }
 
-# Debug output when the image cannot be released: which mount namespaces
-# still have its root filesystem mounted, who uses $MNT, block-device holders.
+# vm_debug_busy DEV : debug output when an image partition cannot be released:
+# which mount namespaces still have it mounted, who uses $MNT, holders.
 vm_debug_busy () {
-	local dev="${LOOP}p2" mm p ns seen="" where
+	local dev="$1" mm p ns seen="" where
 	mm=$(cat "/sys/class/block/${dev##*/}/dev" 2>/dev/null)
 	echo "debug: $dev (dev $mm) is still in use" >&2
 	for p in /proc/[0-9]*; do
@@ -828,19 +868,33 @@ vm_debug_busy () {
 		[ -z "$where" ] || echo "debug: pid ${p#/proc/} ($(cat "$p/comm" 2>/dev/null)) uses $where" >&2
 	done
 	echo "debug: holders of $dev: $(ls "/sys/class/block/${dev##*/}/holders" 2>/dev/null | tr '\n' ' ')" >&2
-	losetup -l "$LOOP" >&2 2>/dev/null
+	losetup -l "${dev%p*}" >&2 2>/dev/null
 }
 
 vm_detach () {
 	sync
 	vm_kill_chroot_procs
 	echo "unmounting image"
-	umount -R "$MNT" || { vm_debug_busy; die "could not unmount $MNT"; }
-	echo "checking root filesystem"
+	umount -R "$MNT" || { vm_debug_busy "${LOOP}p1"; die "could not unmount $MNT"; }
+	echo "checking filesystems"
 	# e2fsck exit code 1: errors were corrected
-	e2fsck -fp "${LOOP}p2" || [ $? -eq 1 ] || { vm_debug_busy; die "root filesystem check failed"; }
-	losetup -d "$LOOP"
-	LOOP=""
+	e2fsck -fp "${LOOP}p1" || [ $? -eq 1 ] || { vm_debug_busy "${LOOP}p1"; die "root filesystem check failed"; }
+	e2fsck -fp "${LOOP_USR}p1" || [ $? -eq 1 ] || { vm_debug_busy "${LOOP_USR}p1"; die "/usr filesystem check failed"; }
+	losetup -d "$LOOP_ESP" "$LOOP" "$LOOP_USR"
+	LOOP_ESP="" LOOP="" LOOP_USR=""
+}
+
+# vm_import_disk IMAGE : import into the VM and print the volume ID.
+# importdisk attaches it as unusedN; its name (vm-ID-disk-N) depends on the
+# disks the VM already has, so read it back from the config.
+vm_import_disk () {
+	local out vol
+	out=$(qm importdisk "$VMID" "$1" "$STORAGE" --format "$FORMAT" 2>&1) \
+		|| { echo "$out" >&2; die "importdisk of $1 failed"; }
+	echo "$out" >&2
+	vol=$(qm config "$VMID" | sed -n 's/^unused[0-9]*: //p' | head -n 1)
+	[ -n "$vol" ] || die "could not find the imported disk in the VM config"
+	echo "$vol"
 }
 
 vm_create () {
@@ -853,17 +907,17 @@ vm_create () {
 	qm create "$VMID" --name "$NAME" --memory "$MEMORY" --cores "$CORES" \
 		--machine q35 --bios ovmf --ostype l26 --cpu host \
 		--net0 "virtio,bridge=$BRIDGE" --scsihw virtio-scsi-pci \
-		--agent enabled=1 --tablet 0 --onboot 1 --serial0 socket \
-		--tags debian-minimal
+		--agent enabled=1 --tablet 0 --onboot 1 --serial0 socket
 	qm set "$VMID" --efidisk0 "$STORAGE:1,efitype=4m,pre-enrolled-keys=0" >/dev/null
-	OUT=$(qm importdisk "$VMID" "$IMG" "$STORAGE" --format "$FORMAT" 2>&1) \
-		|| { echo "$OUT" >&2; die "importdisk failed"; }
-	echo "$OUT"
-	# importdisk attaches the volume as unusedN; its name (vm-ID-disk-N) depends
-	# on the disks the VM already has, so read it back from the config
-	VOLID=$(qm config "$VMID" | sed -n 's/^unused[0-9]*: //p' | head -n 1)
-	[ -n "$VOLID" ] || die "could not find the imported disk in the VM config"
-	qm set "$VMID" --scsi0 "$VOLID" --boot order=scsi0
+	ESP_VOLID=$(vm_import_disk "$ESP_IMG")
+	qm set "$VMID" --scsi0 "$ESP_VOLID"
+	VOLID=$(vm_import_disk "$IMG")
+	qm set "$VMID" --scsi1 "$VOLID"
+	USR_VOLID=$(vm_import_disk "$USR_IMG")
+	qm set "$VMID" --scsi2 "$USR_VOLID"
+	# OVMF only connects disks in the boot order; GRUB on the ESP disk needs the
+	# root disk too, for /boot
+	qm set "$VMID" --boot "order=scsi0;scsi1"
 
 	if [ "$START" = 1 ]; then
 		# QEMU must not inherit our private mount namespace (see vm_main)
@@ -888,14 +942,16 @@ vm_main () {
 		3) ROOTFS="$1"; VMID="$2"; NAME="$3" ;;
 		*) die "usage: ${0##*/} [[rootfs-dir] <vmid> <name>]" ;;
 	esac
-	DISK_GB="${DISK_GB:-2}"
+	ROOT_DISK_MB="${ROOT_DISK_MB:-512}"
+	USR_DISK_GB="${USR_DISK_GB:-4}"
+	ESP_DISK_MB="${ESP_DISK_MB:-64}"
 	MEMORY="${MEMORY:-1024}"
 	STORAGE='local-lvm'
 	CORES="${CORES:-2}"
 	BRIDGE="${BRIDGE:-vmbr0}"
 	WORKDIR="${WORKDIR:-/var/tmp}"
 	START="${START:-1}"
-	LOOP=""
+	LOOP="" LOOP_USR="" LOOP_ESP=""
 
 	vm_check
 	if [ ! -e "$ROOTFS" ] || [ -z "$(ls -A "$ROOTFS")" ]; then
@@ -907,7 +963,9 @@ vm_main () {
 	echo "building VM $VMID ($NAME) from $ROOTFS"
 
 	W=$(mktemp -d "$WORKDIR/make-pve-vm.XXXXXX")
-	IMG="$W/disk.raw"
+	ESP_IMG="$W/esp.raw"
+	IMG="$W/root.raw"
+	USR_IMG="$W/usr.raw"
 	MNT="$W/mnt"
 	trap vm_cleanup EXIT
 

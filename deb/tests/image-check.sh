@@ -1,19 +1,34 @@
 #!/bin/bash
-# image-check.sh IMAGE NAME : check the disk image built by VM mode (offline)
+# image-check.sh ESP_IMAGE ROOT_IMAGE USR_IMAGE NAME : check the disk images
+# built by VM mode (offline)
 . "${0%/*}/lib.sh"
-IMG=$1 NAME=$2 M=/tmp/imgcheck
+ESP_IMG=$1 IMG=$2 USR_IMG=$3 NAME=$4 M=/tmp/imgcheck
+LE=$(losetup -f --show -P "$ESP_IMG")
 L=$(losetup -f --show -P "$IMG")
-for i in $(seq 50); do [ -b "${L}p2" ] && break; sleep 0.1; done
-trap 'umount -R $M 2>/dev/null; losetup -d $L' EXIT
+LU=$(losetup -f --show -P "$USR_IMG")
+for i in $(seq 50); do [ -b "${LE}p1" ] && [ -b "${L}p1" ] && [ -b "${LU}p1" ] && break; sleep 0.1; done
+trap 'umount -R $M 2>/dev/null; losetup -d $LE $L $LU' EXIT
 
-ok gpt_esp  eval 'sgdisk -i 1 "$IMG" | grep -q "EFI system partition"'
-ok fsck_esp  fsck.vfat -n "${L}p1" >/dev/null
-ok fsck_root e2fsck -fn "${L}p2" >/dev/null 2>&1
-mkdir -p $M; mount "${L}p2" $M; mount "${L}p1" $M/boot/efi
+ok esp_disk_64M   [ "$(stat -c %s "$ESP_IMG")" -eq $((64 * 1024 * 1024)) ]
+ok root_disk_512M [ "$(stat -c %s "$IMG")" -eq $((512 * 1024 * 1024)) ]
+ok usr_disk_4G    [ "$(stat -c %s "$USR_IMG")" -eq $((4 * 1024 * 1024 * 1024)) ]
+ok gpt_esp  eval 'sgdisk -i 1 "$ESP_IMG" | grep -q "EFI system partition"'
+ok gpt_root eval 'sgdisk -i 1 "$IMG" | grep -q "Linux x86-64 root"'
+ok gpt_usr  eval 'sgdisk -i 1 "$USR_IMG" | grep -q "Linux x86-64 /usr"'
+ok fsck_esp  fsck.vfat -n "${LE}p1" >/dev/null
+ok fsck_root e2fsck -fn "${L}p1" >/dev/null 2>&1
+ok fsck_usr  e2fsck -fn "${LU}p1" >/dev/null 2>&1
+mkdir -p $M; mount "${L}p1" $M
+ok root_fs_usr_dir_empty  [ -d $M/usr -a -z "$(ls -A $M/usr)" ]
+ok root_fs_esp_dir_empty  [ -d $M/boot/efi -a -z "$(ls -A $M/boot/efi)" ]
+mount "${LU}p1" $M/usr; mount "${LE}p1" $M/boot/efi
 mount -t proc proc $M/proc; mount --bind /dev $M/dev; mount --make-private $M/dev
-ROOT_UUID=$(blkid -s UUID -o value "${L}p2") ESP_UUID=$(blkid -s UUID -o value "${L}p1")
+ROOT_UUID=$(blkid -s UUID -o value "${L}p1") ESP_UUID=$(blkid -s UUID -o value "${LE}p1")
+USR_UUID=$(blkid -s UUID -o value "${LU}p1")
+echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /usr $(df -h --output=used $M/usr | tail -n 1 | tr -d ' '), ESP $(df -h --output=used $M/boot/efi | tail -n 1 | tr -d ' ')"
 
 ok fstab_root grep -q "^UUID=$ROOT_UUID / ext4 " $M/etc/fstab
+ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 " $M/etc/fstab
 ok fstab_esp  grep -q "^UUID=$ESP_UUID /boot/efi vfat " $M/etc/fstab
 ok efi_removable [ -s $M/boot/efi/EFI/BOOT/BOOTX64.EFI ]
 ok grub_cfg_root    grep -q "root=UUID=$ROOT_UUID" $M/boot/grub/grub.cfg

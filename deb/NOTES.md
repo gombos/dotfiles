@@ -81,7 +81,9 @@ installs afterwards.
 Explicit cleanup: after the second stage, `/usr/share/man`, `/usr/share/info`,
 `/usr/share/doc` (including copyright files) and all non-`en*` entries of
 `/usr/share/locale` are removed, because the dpkg rules miss the tar-extracted
-files. The downloaded `.deb`s are deleted from `/var/cache/apt/archives`.
+files. The empty base-files directories `/usr/share/dict`, `/usr/share/misc`,
+`/usr/local`, `/usr/src` and `/usr/games` are removed too (a base-files upgrade
+may recreate them). The downloaded `.deb`s are deleted from `/var/cache/apt/archives`.
 `/etc/locale.conf` is written with `LANG=C.UTF-8`: `/etc/default/locale` is a
 symlink to it, and pam_env logs an error at every login when it is missing.
 
@@ -105,8 +107,9 @@ The build host must be Debian 13 or later (dpkg-deb is required).
 - `deb-systemd-helper: command not found` would appear if init-system-helpers
   were excluded entirely (that was tried and reverted).
 - Forky is testing: package sets change daily.
-- Sources: the bootstrap writes `deb http://deb.debian.org/debian forky main`
-  without `signed-by`.
+- Sources: the bootstrap writes `/etc/apt/sources.list.d/debian.sources` in
+  deb822 format with `Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp`
+  (no one-line `sources.list`, so apt does not suggest `apt modernize-sources`).
 
 ### Wanted packages not yet installed (from the user's target list)
 
@@ -136,7 +139,7 @@ arguments the VMID is the next free one and the name is `VM_NAME_DEFAULT`
 the VMID, the storage and the root password are checked before the bootstrap,
 so a mistake does not cost a bootstrap run.
 
-Environment overrides: `DISK_GB` (2), `MEMORY` (1024), `CORES` (2),
+Environment overrides: `ESP_DISK_MB` (64), `ROOT_DISK_MB` (512), `USR_DISK_GB` (4), `MEMORY` (1024), `CORES` (2),
 `BRIDGE` (vmbr0), `WORKDIR` (/var/tmp), `START` (1), `ROOT_PASSWORD` (asked
 on the terminal if unset; without a terminal the script stops with a message),
 `REPLACE_VM` (1: replace an existing VM with the same VMID without asking).
@@ -164,7 +167,12 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 1. Re-runs itself in a private mount namespace. Checks: root, required
    commands, VMID (asks before replacing), storage (`pvesm status`), root
    password; bootstraps the rootfs if needed; then rootfs shape and size.
-2. Creates a sparse raw disk: GPT, p1 = 512 MiB ESP (FAT32), p2 = ext4 root.
+2. Creates three sparse raw disks, each GPT with one partition: ESP
+   (`ESP_DISK_MB`, 64 MiB, FAT32), root (`ROOT_DISK_MB`, 512 MiB, ext4 `/`, type
+   "Linux x86-64 root") and `/usr` (`USR_DISK_GB`, 4 GiB, ext4, type "Linux x86-64
+   /usr"). `/usr` and `/boot/efi` are mounted before the copy, so their files land
+   on their own disks; fstab lists them and the initramfs (dracut) mounts `/usr`
+   before switching to the real root. Kernel, initrd and `/boot/grub` stay on root.
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
    mounts the ESP at /boot/efi.
@@ -182,9 +190,11 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 6. Stops processes still running inside the image, unmounts, runs `e2fsck`,
    detaches the loop device, deletes the old VM if it is being replaced, then
    `qm create` (q35, OVMF, virtio-scsi,
-   agent, tablet off, onboot, serial socket, tag `debian-minimal`), `qm set --efidisk0`
-   (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw), reads the new
-   `unusedN` volume from `qm config`, `qm set --scsi0 <volid> --boot order=scsi0`,
+   agent, tablet off, onboot, serial socket, no tags), `qm set --efidisk0`
+   (efitype=4m, pre-enrolled-keys=0), `qm importdisk` (raw) for each disk, reading
+   the new `unusedN` volume from `qm config`: ESP as `scsi0`, root as `scsi1`,
+   `/usr` as `scsi2`, `--boot order=scsi0;scsi1` (OVMF only connects disks in
+   the boot order, and GRUB on the ESP reads `/boot` from the root disk),
    and `qm start` if `START=1`.
 
 ### Tests
@@ -224,17 +234,18 @@ image (KVM when available). Logs and a line coverage report go to
   purged again before the image is finished, so the final image has neither,
   as the bootstrap intends. This temporarily breaks the earlier "no Perl" rule
   inside the build step only.
-- The VM mode relies on apt's default trusted keyrings (`/usr/share/keyrings`)
-  for the bootstrap's `sources.list`. Not yet confirmed by a test.
-- `qm importdisk` output is parsed with `sed` (`as 'unused0:<volid>'`). If the
-  Proxmox output format changes, the script fails with a clear message.
+- The VM image verifies the archive with the `Signed-By` keyring; the QEMU
+  boot test runs `apt-get update` and checks for warnings and the modernize notice.
+- The imported volume is read from `qm config` (`unusedN:`); if none is found the
+  script fails with a clear message.
 - `qm` options (`--machine`, `--bios`, `--efidisk0`, `--cpu host`) are untested on a
   real host. Only a stub `qm` was used.
 - Test host detail: the partition nodes (`/dev/loopNp1`, `p2`) only appear when the
   host's `/dev` is visible (udev). The test container uses `-v /dev:/dev`, which
   matches a real Proxmox host.
-- The script refuses a `DISK_GB` that leaves less than 1 GiB of headroom above
-  the rootfs size, because the kernel, modules and initramfs need room.
+- The script refuses sizes without headroom: the root disk needs 320 MiB free
+  beyond the rootfs without `/usr` (kernel, initrd and apt lists during the
+  build), the `/usr` disk 1 GiB beyond `/usr`.
 
 ---
 

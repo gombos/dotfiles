@@ -1,8 +1,8 @@
 #!/usr/bin/expect -f
-# boot.exp IMAGE NAME PASSWORD : boot the image like Proxmox does (q35, OVMF,
-# virtio-scsi, virtio-net, guest agent channel), log in on the serial console
+# boot.exp ESP_IMG ROOT_IMG USR_IMG NAME PASSWORD : boot like Proxmox does (q35, OVMF,
+# virtio-scsi, boot order ESP + root disk, virtio-net, guest agent channel), log in on the serial console
 # and check the running system. Prints PASS/FAIL lines.
-lassign $argv img name pw
+lassign $argv espimg img usrimg name pw
 set accel tcg; set cpu max; set timeout 900
 if {[file writable /dev/kvm]} { set accel kvm; set cpu host; set timeout 180 }
 file copy -force /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/vars.fd
@@ -16,7 +16,10 @@ proc result {ok name {detail ""}} {
 spawn qemu-system-x86_64 -machine q35,accel=$accel -cpu $cpu -m 1024 -smp 2 -nographic -no-reboot \
 	-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
 	-drive if=pflash,format=raw,file=/tmp/vars.fd \
-	-device virtio-scsi-pci -drive file=$img,if=none,id=d0,format=raw -device scsi-hd,drive=d0 \
+	-device virtio-scsi-pci \
+	-drive file=$espimg,if=none,id=d0,format=raw -device scsi-hd,drive=d0,bootindex=100 \
+	-drive file=$img,if=none,id=d1,format=raw -device scsi-hd,drive=d1,bootindex=101 \
+	-drive file=$usrimg,if=none,id=d2,format=raw -device scsi-hd,drive=d2 \
 	-netdev user,id=n0 -device virtio-net-pci,netdev=n0 \
 	-chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \
 	-device virtio-serial -device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0
@@ -60,20 +63,22 @@ proc check {name cmd {pattern ""}} {
 check system_running   "timeout 120 systemctl is-system-running --wait" {^running}
 check no_failed_units  "systemctl --failed --no-legend --plain | wc -l" {^0$}
 check cmdline_serial   "cat /proc/cmdline" {console=ttyS0,115200}
-check root_on_uuid     "findmnt -no SOURCE,FSTYPE /" {/dev/sd.2 ext4}
+check root_on_own_disk "findmnt -no SOURCE,FSTYPE /" {/dev/sd.1 ext4}
 check esp_mounted      "findmnt -no FSTYPE /boot/efi" {^vfat$}
+check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
 check hostname         "hostname" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
 check dns              "getent hosts deb.debian.org"
 check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
 check guest_agent      "systemctl is-active qemu-guest-agent" {^active$}
+check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
 check no_perl          "! command -v perl"
 check no_errors_in_log "journalctl -b -p err -q --no-pager | grep -v -e 'kernel:' | head -n 5 | wc -l" {^0$}
 lassign [sh "journalctl -b -p err -q --no-pager | head -n 8"] rc out
 if {$out ne ""} { puts "INFO boot errors: [string map {"\r" "" "\n" " | "} $out]" }
-lassign [sh "df -h --output=used / | tail -n 1"] rc out
-puts "INFO root used after boot: [string trim $out]"
+lassign [sh "df -h --output=target,used,avail / /usr | tail -n 2 | tr -s ' '"] rc out
+puts "INFO used/avail after apt update: [string map {"\r" "" "\n" " | "} [string trim $out]]"
 
 send "poweroff\r"
 set timeout 120
