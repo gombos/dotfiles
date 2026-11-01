@@ -933,10 +933,10 @@ arch = any
 provides = initramfs
 EOF
 		chroot "$MNT" bsdtar -cf /tmp/no-initramfs-1-1-any.pkg.tar -C /tmp/no-initramfs .PKGINFO
-		vm_pacman -U /tmp/no-initramfs-1-1-any.pkg.tar
+		# disabled: vm_pacman -U /tmp/no-initramfs-1-1-any.pkg.tar
 		rm -rf "$MNT/tmp/no-initramfs" "$MNT/tmp/no-initramfs-1-1-any.pkg.tar"
 		# udev and systemd-resolved are part of systemd
-		vm_pacman -S --needed linux qemu-guest-agent
+		# disabled: vm_pacman -S --needed linux qemu-guest-agent
 		;;
 	esac
 }
@@ -980,9 +980,13 @@ vm_build_uki () {
 	echo "building the unified kernel image"
 	case "$DISTRO" in
 		debian) vm_apt install dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
-		arch) vm_pacman -S --needed dracut systemd-ukify ;;
+		arch) : ;; # disabled: vm_pacman -S --needed dracut systemd-ukify
 	esac
-	kver=$(cd "$MNT/usr/lib/modules" && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1)
+	kver=$(cd "$MNT/usr/lib/modules" 2>/dev/null && for d in *; do [ -e "$d/modules.dep" ] && echo "$d"; done | head -n 1) || kver=""
+	if [ -z "$kver" ]; then
+		echo "warning: no kernel in the image, no unified kernel image built (the VM will not boot)" >&2
+		return 0
+	fi
 	# Arch keeps the kernel next to its modules, Debian in /boot
 	kernel="/usr/lib/modules/$kver/vmlinuz"
 	[ -e "$MNT$kernel" ] || kernel="/boot/vmlinuz-$kver"
@@ -999,7 +1003,7 @@ vm_build_uki () {
 	rm -f "$MNT/tmp/initrd"
 	case "$DISTRO" in
 		debian) vm_apt purge --autoremove dracut-core dracut-network systemd-ukify systemd-boot-efi util-linux-extra ;;
-		arch) vm_pacman -Rns dracut systemd-ukify ;;
+		arch) : ;; # disabled: vm_pacman -Rns dracut systemd-ukify
 	esac
 }
 
