@@ -3,12 +3,12 @@
 set -u
 mode=${1:-quick}
 cp -a /src /tmp/src; chmod -R a+rX /tmp/src	# readable for the non-root tests
-export TESTS=/tmp/src/tests COV=/tmp/cov OUT=/tmp/out DEBIAN_COV=/tmp/src/debian.cov.sh
+export TESTS=/tmp/src/tests COV=/tmp/cov OUT=/tmp/out LINUX_COV=/tmp/src/linux.cov.sh
 mkdir -p $COV $OUT; chmod 1777 $COV /tmp
 # instrumented copy: the shebang line becomes the xtrace setup, so line numbers
-# stay the same; tests run it as "bash $DEBIAN_COV"
-sed "1s/.*/PS4='+debian.sh:\${LINENO}:\${FUNCNAME[0]:-main}: '; BASH_XTRACEFD=9; set -x/" \
-	/tmp/src/debian.sh > $DEBIAN_COV
+# stay the same; tests run it as "bash $LINUX_COV"
+sed "1s/.*/PS4='+linux.sh:\${LINENO}:\${FUNCNAME[0]:-main}: '; BASH_XTRACEFD=9; set -x/" \
+	/tmp/src/linux.sh > $LINUX_COV
 
 suite () {	# NAME cmd... : run a test script, keep its log, show results
 	echo; echo "### $1"
@@ -19,7 +19,7 @@ suite () {	# NAME cmd... : run a test script, keep its log, show results
 }
 
 echo "### shellcheck"
-shellcheck -s bash -f gcc /tmp/src/debian.sh > $OUT/shellcheck.txt
+shellcheck -s bash -f gcc /tmp/src/linux.sh > $OUT/shellcheck.txt
 sed -n 's/.*\[\(SC[0-9]*\)\]$/\1/p' $OUT/shellcheck.txt | sort | uniq -c | sed 's/^/INFO /'
 { grep -q ': error:' $OUT/shellcheck.txt && echo "FAIL shellcheck_errors" || echo "PASS shellcheck_no_errors"; } | tee $OUT/shellcheck.log
 
@@ -37,7 +37,7 @@ if [ "$mode" = full ]; then
 fi
 
 echo; echo "### coverage ($mode)"
-bash $TESTS/coverage.sh /tmp/src/debian.sh $COV > $OUT/coverage.txt
+bash $TESTS/coverage.sh /tmp/src/linux.sh $COV > $OUT/coverage.txt
 sed -n '/^executable lines/p' $OUT/coverage.txt
 
 pass=$(cat $OUT/*.log | grep -c '^PASS') fail=$(cat $OUT/*.log | grep -c '^FAIL')

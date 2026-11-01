@@ -95,7 +95,7 @@ ok devices_ptmx  [ -c $TARGET/dev/ptmx ]
 ok devices_fd    [ "$(readlink $TARGET/dev/fd)" = /proc/self/fd ]
 ok devices_twice run setup_devices
 rm -rf /tmp/tdevu
-out=$(setpriv --bounding-set=-mknod bash -c 'exec 3>&1 4>&1; source <(sed "\$d" "$DEBIAN_COV"); set +e; TARGET=/tmp/tdevu; setup_devices' 2>&1)
+out=$(setpriv --bounding-set=-mknod bash -c 'exec 3>&1 4>&1; source <(sed "\$d" "$LINUX_COV"); set +e; TARGET=/tmp/tdevu; setup_devices' 2>&1)
 ok devices_no_mknod has "$out" "cannot create /tmp/tdevu/dev/null"
 
 TARGET=/tmp/tproc; rm -rf $TARGET; mkdir -p $TARGET; UMOUNT_DIRS=""

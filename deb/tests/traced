@@ -1,10 +1,10 @@
 #!/bin/bash
-# traced NAME args... : run the instrumented debian.sh ($DEBIAN_COV) and record
+# traced NAME args... : run the instrumented linux.sh ($LINUX_COV) and record
 # each executed "line function" pair in $COV/run-NAME.lines
 name=$1; shift
-exec 9> >(exec gawk 'match($0, /debian\.sh:([0-9]+):([^:]*):/, m) { k = m[1] " " m[2]; if (!seen[k]++) { print k; fflush() } }' > "$COV/run-$name.lines")
+exec 9> >(exec gawk 'match($0, /linux\.sh:([0-9]+):([^:]*):/, m) { k = m[1] " " m[2]; if (!seen[k]++) { print k; fflush() } }' > "$COV/run-$name.lines")
 awkpid=$!
-bash "$DEBIAN_COV" "$@"; rc=$?
+bash "$LINUX_COV" "$@"; rc=$?
 exec 9>&-
 for i in $(seq 20); do kill -0 "$awkpid" 2>/dev/null || break; sleep 0.5; done
 kill "$awkpid" 2>/dev/null

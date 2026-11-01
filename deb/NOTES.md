@@ -1,6 +1,7 @@
 # Debian minimal rootfs and Proxmox VM – working notes
 
-`./debian.sh` does two things, and picks one by checking for `qm` on the PATH:
+`./linux.sh` (called `debian.sh` until 2026-10-31) does two things, and picks one
+by checking for `qm` on the PATH:
 
 - **Bootstrap mode** (no `qm`): builds a minimal Debian forky rootfs. It started as
   a reimplementation of upstream debootstrap 1.0.145
@@ -10,7 +11,7 @@
   into a bootable UEFI VM. Reference for the VM conventions: community-scripts
   `vm/debian-vm.sh`. Its `install/debian-install.sh` is an LXC script, so it was not used.
 
-On a Proxmox host, `./debian.sh` without arguments does both: it bootstraps
+On a Proxmox host, `./linux.sh` without arguments does both: it bootstraps
 `/tmp/rootfs` (when empty) and builds a VM from it, using the next free VMID
 (`pvesh get /cluster/nextid`) and the name `debian`. A leading option such as
 `--print-debs` always means bootstrap mode.
@@ -25,7 +26,7 @@ Contents: [Bootstrap mode](#bootstrap-mode) · [VM mode](#vm-mode) · [Status](#
 ### Usage
 
 ```
-sudo LANG=C ./debian.sh [--print-debs] <target>
+sudo LANG=C ./linux.sh [--print-debs] <target>
 ```
 
 - `--print-debs` prints the package list (before the final purge) and exits;
@@ -129,7 +130,7 @@ Run as root on the Proxmox host (needs `qm`, `pvesm`, `pvesh`, `sgdisk`, `losetu
 `mkfs.ext4`, `mkfs.vfat`, `blkid`):
 
 ```
-sudo ./debian.sh [[rootfs-dir] <vmid> <name>]
+sudo ./linux.sh [[rootfs-dir] <vmid> <name>]
 ```
 
 The rootfs is the output of bootstrap mode; it defaults to `ROOTFS_DEFAULT`
@@ -217,7 +218,7 @@ in a privileged Debian forky container with stub `qm`/`pvesm`: error paths,
 `--print-debs`, unit tests, bootstrap + VM build, rootfs and image checks,
 unmount tests in a systemd-like mount namespace, and a QEMU/OVMF boot of the
 image (KVM when available). Logs and a line coverage report go to
-`/tmp/debian-sh-tests`.
+`/tmp/linux-sh-tests`.
 
 ### Decisions (in order)
 
@@ -270,7 +271,7 @@ image (KVM when available). Logs and a line coverage report go to
   "install ok installed", `apt-get check` passes, `su` works, no `/usr/bin/perl`,
   no man/info/`usr/share/doc`, both apt/dpkg config files present. Not installed:
   dash, mawk, tzdata, udev. Purged at the end: perl-base, init-system-helpers.
-- **`debian.sh` (combined), 2026-10-25:** `bash -n` passes. A fresh bootstrap build
+- **`linux.sh` (combined), 2026-10-25:** `bash -n` passes. A fresh bootstrap build
   through the combined script returned rc=0 with the same results. Mode routing was
   checked with a fake `qm`: no `qm` runs bootstrap, `qm` present runs VM, and
   `SCRIPT_MODE` overrides it. An invalid `SCRIPT_MODE` is rejected.
@@ -278,7 +279,7 @@ image (KVM when available). Logs and a line coverage report go to
   no-recommends file, cloud kernel + explicit dracut). The UEFI build completed, GRUB
   installed, and the image booted under QEMU (TCG, OVMF) to `testvm login:`.
 - **VM mode, current build: not run.** The VM build has not been run through
-  `debian.sh` on the current rootfs.
+  `linux.sh` on the current rootfs.
 - **Not tested at all:** a real `qm`/`pvesm` on Proxmox; `apt-get update` inside the
   VM after boot.
 - The old `scratchpad/vmtest/inner.sh` QEMU driver lived in a session scratchpad that
@@ -290,7 +291,7 @@ image (KVM when available). Logs and a line coverage report go to
 # rootfs (bootstrap mode, in a privileged container)
 docker run --rm --privileged -v "$PWD":/w debian:trixie bash -c '
   apt-get update -qq && apt-get install -y -qq wget
-  LANG=C /w/debian.sh /tmp/mine
+  LANG=C /w/linux.sh /tmp/mine
   chroot /tmp/mine dpkg-query -W -f="\${Status}\n" | sort | uniq -c
   chroot /tmp/mine apt-get check'
 ```
@@ -302,7 +303,7 @@ in the boot log. The container needs `-v /dev:/dev` so the loop partition nodes 
 
 ## Resume checklist
 
-1. Run the VM mode on a current rootfs: `debian.sh` with a stub `qm` and `pvesm`,
+1. Run the VM mode on a current rootfs: `linux.sh` with a stub `qm` and `pvesm`,
    then QEMU boot.
 2. Confirm: cloud kernel installed, initrd contains virtio drivers (`lsinitrd`),
    boot reaches login, `apt-get check` passes.

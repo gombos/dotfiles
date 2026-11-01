@@ -1,8 +1,8 @@
 #!/bin/bash
 # Builds a minimal Debian rootfs, or turns one into a UEFI Proxmox VM.
 #
-#   sudo ./debian.sh [--print-debs] [target]              build a rootfs
-#   sudo ./debian.sh [[rootfs-dir] <vmid> <name>]         build a VM
+#   sudo ./linux.sh [--print-debs] [target]              build a rootfs
+#   sudo ./linux.sh [[rootfs-dir] <vmid> <name>]         build a VM
 #
 # rootfs-dir and target default to ROOTFS_DEFAULT (/tmp/rootfs); VM mode
 # bootstraps it first when it is empty. Without arguments VM mode uses the next
@@ -782,9 +782,9 @@ vm_install_packages () {
 Package: no-initramfs-tool
 Version: 1
 Architecture: all
-Maintainer: debian.sh <root@localhost>
+Maintainer: linux.sh <root@localhost>
 Provides: linux-initramfs-tool
-Description: initramfs is built by debian.sh (dracut + ukify, unified kernel image)
+Description: initramfs is built by linux.sh (dracut + ukify, unified kernel image)
 EOF
 	dpkg-deb --root-owner-group --build "$W/no-initramfs-tool" "$MNT/tmp/no-initramfs-tool.deb" >/dev/null
 	chroot "$MNT" dpkg -i /tmp/no-initramfs-tool.deb
@@ -957,8 +957,8 @@ vm_main () {
 	# Re-run in a private mount namespace. On systemd hosts mounts propagate
 	# into the namespaces of services started meanwhile; such a copy can
 	# survive our umount and keep the image busy (e2fsck: "in use").
-	if [ -z "${DEBIAN_SH_PRIVATE_NS:-}" ] && [ "$(id -u)" -eq 0 ]; then
-		DEBIAN_SH_PRIVATE_NS=1 exec unshare --mount --propagation private -- bash "$0" "$@"
+	if [ -z "${LINUX_SH_PRIVATE_NS:-}" ] && [ "$(id -u)" -eq 0 ]; then
+		LINUX_SH_PRIVATE_NS=1 exec unshare --mount --propagation private -- bash "$0" "$@"
 	fi
 	case $# in
 		0) in_path pvesh || die "missing command: pvesh"
