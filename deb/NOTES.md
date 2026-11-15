@@ -282,7 +282,8 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    udev loads it after `switch_root` (on Debian `qemu-net` would also need
    `dracut-network`, which is not installed). Then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
-   ro rd.driver.pre=...` plus the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
+   ro rd.driver.pre=...` plus the serial console and `overlayfs=yes`; no
+   `quiet`, so the boot messages show on the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
    No GRUB.
 7. Copies the modules to the modules disk, then removes the kernel
    (`linux-image-*`, `linux-binary-*`, `linux-modules-*`: apt never autoremoves

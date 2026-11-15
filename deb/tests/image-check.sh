@@ -52,6 +52,8 @@ objcopy -O binary -j .cmdline "$uki" /tmp/uki.cmdline 2>/dev/null
 cmdline=$(tr -d "\0" < /tmp/uki.cmdline)
 ok uki_cmdline_root    has "$cmdline" "root=LABEL=root"
 ok uki_cmdline_console has "$cmdline" "console=ttyS0,115200"
+ok uki_cmdline_overlayfs has "$cmdline" "overlayfs=yes"
+nok uki_cmdline_unexpanded has "$cmdline" "\$"
 ok root_fs_label [ "$(blkid -s LABEL -o value "${L}p1")" = root ]
 ok usr_fs_label  [ "$(blkid -s LABEL -o value "${LU}p1")" = usr ]
 objcopy -O binary -j .initrd "$uki" /tmp/uki.initrd 2>/dev/null

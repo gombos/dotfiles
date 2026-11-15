@@ -996,7 +996,7 @@ vm_build_uki () {
 	# is there right after switch_root
 	mkdir -p "$MNT/efi/EFI/BOOT"
 	chroot "$MNT" ukify build --linux="$kernel" --initrd=/tmp/initrd --uname="$kver" \
-		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon quiet console=tty0 console=ttyS0,115200" \
+		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon console=tty0 console=ttyS0,115200 overlayfs=yes" \
 		--output=/efi/EFI/BOOT/BOOTX64.EFI
 	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
