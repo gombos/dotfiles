@@ -10,7 +10,8 @@ ok os_release_id grep -qx "ID=\"\\?$D\"\\?" "$R/usr/lib/os-release"
 ok sh_is_bash   [ "$(readlink "$R/usr/bin/sh")" = bash ]
 ok awk_is_gawk  [ "$(in_root readlink -f /usr/bin/awk)" = /usr/bin/gawk ]
 for f in usr/bin/perl usr/share/doc usr/share/man usr/share/info \
-	usr/share/dict usr/share/misc usr/local usr/src usr/games; do
+	usr/share/dict usr/share/misc usr/local usr/src usr/games \
+	var/backups var/cache var/local var/opt; do
 	nok "absent_${f//\//_}" [ -e "$R/$f" ]
 done
 ok locale_conf    grep -qx "LANG=C.UTF-8" "$R/etc/locale.conf"
@@ -27,8 +28,6 @@ debian)
 	done
 	ok etc_default_locale grep -qx "LANG=C.UTF-8" "$R/etc/default/locale"
 	nok mtab_regular [ -f "$R/etc/mtab" -a ! -L "$R/etc/mtab" ]
-	debs=$(find "$R/var/cache/apt/archives" -name '*.deb' | wc -l)
-	ok "no_debs_left_in_archives($debs)" [ "$debs" -eq 0 ]
 	ok sources_deb822 [ "$(cat "$R/etc/apt/sources.list.d/debian.sources")" = "$(printf 'Types: deb\nURIs: http://deb.debian.org/debian\nSuites: forky\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.pgp')" ]
 	nok sources_list_oneline [ -e "$R/etc/apt/sources.list" ]
 	ok signed_by_keyring [ -s "$R/usr/share/keyrings/debian-archive-keyring.pgp" ]
@@ -66,7 +65,6 @@ arch)
 	ok mirrorlist_http grep -qx 'Server = http://geo.mirror.pkgbuild.com/$repo/os/$arch' "$R/etc/pacman.d/mirrorlist"
 	ok keyring_populated [ -s "$R/etc/pacman.d/gnupg/pubring.gpg" ]
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" "$R/etc/pacman.conf" && ! grep -q "^DisableSandbox" "$R/etc/pacman.conf"'
-	ok no_package_cache [ -z "$(ls -A "$R/var/cache/pacman/pkg")" ]
 	ok no_sync_dbs      [ -z "$(ls -A "$R/var/lib/pacman/sync")" ]
 	nok bootstrap_env_left eval 'ls -d "${R%/*}"/.arch-bootstrap.* >/dev/null 2>&1'
 	pkgs=$(in_root pacman -Qq)

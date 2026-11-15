@@ -166,9 +166,10 @@ Following the Arch wiki page "Install Arch Linux from existing Linux":
 4. Unmount (leftover processes below the bootstrap root are stopped first; the
    directory is only removed when nothing is mounted below it, so a failed
    unmount can never delete the target through the bind mount).
-5. In the target: same mirrorlist and `NoExtract`, empty package cache and sync
-   databases, then the same trimming as Debian (`rootfs_trim`: docs, man/info,
-   non-English locales, empty `/usr/local` etc., `/etc/locale.conf`).
+5. In the target: same mirrorlist and `NoExtract`, empty sync databases, then
+   the same trimming as Debian (`rootfs_trim`: docs, man/info, non-English
+   locales, empty `/usr/local` etc., `/var/backups`, `/var/cache` (package
+   cache included), `/var/local`, `/var/opt`, `/etc/locale.conf`).
    The log is in `/var/log/bootstrap.log`.
 
 Result: `base` plus the kernel, guest agent, dracut and ukify.

@@ -107,10 +107,13 @@ run cleanup;  ok proc_cleanup [ -z "$(grep " $TARGET" /proc/mounts)" ]
 # rootfs_trim: docs, man, empty dirs and non-English locales go, locale.conf is set
 TARGET=/tmp/trim; rm -rf $TARGET
 mkdir -p $TARGET/usr/share/doc/x $TARGET/usr/share/man/man1 $TARGET/usr/share/locale/de $TARGET/usr/share/locale/en_GB \
-	$TARGET/usr/local/bin $TARGET/usr/games $TARGET/usr/share/misc $TARGET/etc
+	$TARGET/usr/local/bin $TARGET/usr/games $TARGET/usr/share/misc $TARGET/etc \
+	$TARGET/var/backups $TARGET/var/cache/apt/archives $TARGET/var/local $TARGET/var/opt $TARGET/var/lib/x
 run rootfs_trim $TARGET
 ok trim_docs     [ ! -e $TARGET/usr/share/doc -a ! -e $TARGET/usr/share/man ]
 ok trim_dirs     [ ! -e $TARGET/usr/local -a ! -e $TARGET/usr/games -a ! -e $TARGET/usr/share/misc ]
+ok trim_var      [ ! -e $TARGET/var/backups -a ! -e $TARGET/var/cache -a ! -e $TARGET/var/local -a ! -e $TARGET/var/opt ]
+ok trim_var_keep [ -d $TARGET/var/lib/x ]
 ok trim_locales  [ "$(ls $TARGET/usr/share/locale)" = en_GB ]
 ok trim_locale_conf grep -qx 'LANG=C.UTF-8' $TARGET/etc/locale.conf
 echo LANG=de_DE.UTF-8 > $TARGET/etc/locale.conf; run rootfs_trim $TARGET

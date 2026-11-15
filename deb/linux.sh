@@ -636,9 +636,9 @@ bootstrap_main () {
 	setup_apt_sources
 	second_stage_install
 
-	# the first stage unpacked with tar, which ignores dpkg's path-exclude rules
+	# the first stage unpacked with tar, which ignores dpkg's path-exclude
+	# rules; this also drops the downloaded debs in $ARCHIVES
 	rootfs_trim "$TARGET"
-	rm -f "$TARGET$ARCHIVES"/*.deb
 
 	mv "$TARGET/debootstrap/debootstrap.log" "$TARGET/var/log/bootstrap.log"
 	sync
@@ -646,12 +646,14 @@ bootstrap_main () {
 }
 
 # rootfs_trim DIR : drop docs, man/info pages and non-English locales (what the
-# package managers' exclude rules miss), and directories that are empty in a
-# minimal system; set a default locale
+# package managers' exclude rules miss), directories that are empty in a
+# minimal system and the package cache in /var/cache (the VM build recreates
+# what apt and pacman need); set a default locale
 rootfs_trim () {
 	rm -rf "$1/usr/share/doc" "$1/usr/share/man" "$1/usr/share/info" \
 		"$1/usr/share/dict" "$1/usr/share/misc" \
-		"$1/usr/local" "$1/usr/src" "$1/usr/games"
+		"$1/usr/local" "$1/usr/src" "$1/usr/games" \
+		"$1/var/backups" "$1/var/cache" "$1/var/local" "$1/var/opt"
 	[ ! -d "$1/usr/share/locale" ] ||
 		find "$1/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
 	# Debian ships /etc/default/locale as a symlink to ../locale.conf; without a
@@ -751,7 +753,7 @@ arch_bootstrap_main () {
 
 	echo "Server = $MIRROR_ARCH/\$repo/os/\$arch" > "$target/etc/pacman.d/mirrorlist"
 	arch_noextract "$target/etc/pacman.conf"
-	rm -rf "$target/var/cache/pacman/pkg/"* "$target/var/lib/pacman/sync/"*
+	rm -rf "$target/var/lib/pacman/sync/"*
 	rootfs_trim "$target"
 	mkdir -p "$target/var/log"
 	cp "$log" "$target/var/log/bootstrap.log"
@@ -903,6 +905,8 @@ vm_install_packages () {
 	echo "installing packages"
 	case "$DISTRO" in
 	debian)
+		# rootfs_trim removed /var/cache
+		mkdir -p "$MNT/var/cache/apt/archives/partial"
 		chroot "$MNT" apt-get update
 		# The rootfs has no Perl and no init-system-helpers, but the kernel and
 		# service packages need them (dpkg-preconfigure, update-rc.d,
@@ -914,7 +918,9 @@ vm_install_packages () {
 		vm_apt install linux-image-cloud-amd64 dracut kmod udev qemu-guest-agent systemd-resolved
 		;;
 	arch)
-		# downloads go to memory, not to the small root disk
+		# downloads go to memory, not to the small root disk (rootfs_trim
+		# removed /var/cache)
+		mkdir -p "$MNT/var/cache/pacman/pkg"
 		mount -t tmpfs tmpfs "$MNT/var/cache/pacman/pkg"
 		cp "$MNT/etc/pacman.conf" "$MNT/etc/pacman-build.conf"
 		arch_nosandbox "$MNT/etc/pacman-build.conf"
