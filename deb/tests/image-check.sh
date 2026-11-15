@@ -80,6 +80,7 @@ case "$D" in
 debian)
 	ok apt_lists_empty [ -z "$(ls -A $M/var/lib/apt/lists | grep -v -e '^lock$' -e '^partial$' -e '^auxfiles$')" ]
 	ok apt_archives_empty [ -z "$(find $M/var/cache/apt/archives -name '*.deb')" ]
+	ok dpkg_db_backup_masked [ "$(readlink $M/etc/systemd/system/dpkg-db-backup.timer)" = /dev/null ]
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]

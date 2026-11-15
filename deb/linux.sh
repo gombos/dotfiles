@@ -961,6 +961,9 @@ Name=en* eth*
 DHCP=yes
 EOF
 	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
+	# the daily dpkg database backup would write to /var/backups, which
+	# rootfs_trim removed
+	[ "$DISTRO" != debian ] || chroot "$MNT" systemctl mask dpkg-db-backup.timer
 	printf 'root:%s\n' "${ROOT_PASSWORD:-$ROOT_PASSWORD_DEFAULT}" | chroot "$MNT" chpasswd
 	unset ROOT_PASSWORD
 }
