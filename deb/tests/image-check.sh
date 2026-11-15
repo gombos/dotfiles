@@ -37,7 +37,7 @@ ROOT_UUID=$(blkid -s UUID -o value "${L}p1") ESP_UUID=$(blkid -s UUID -o value "
 USR_UUID=$(blkid -s UUID -o value "${LU}p1") MOD_UUID=$(blkid -s UUID -o value "${LM}p1")
 echo "INFO used: / $(df -h --output=used $M | tail -n 1 | tr -d ' ') of 512M, /usr $(df -h --output=used $M/usr | tail -n 1 | tr -d ' '), modules $(df -h --output=used $M/usr/lib/modules | tail -n 1 | tr -d ' '), ESP $(df -h --output=used $M/efi | tail -n 1 | tr -d ' ')"
 
-ok fstab_root grep -q "^UUID=$ROOT_UUID / ext4 " $M/etc/fstab
+ok fstab_root grep -qxF "UUID=$ROOT_UUID / ext4 defaults 0 0" $M/etc/fstab
 ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 ro " $M/etc/fstab
 ok fstab_modules grep -qxF "UUID=$MOD_UUID /usr/lib/modules ext4 x-systemd.before=systemd-modules-load.service,nofail 0 2" $M/etc/fstab
 ok usr_and_modules_different_disks [ -n "$USR_UUID" -a -n "$MOD_UUID" -a "$USR_UUID" != "$MOD_UUID" ]
@@ -52,7 +52,7 @@ objcopy -O binary -j .cmdline "$uki" /tmp/uki.cmdline 2>/dev/null
 cmdline=$(tr -d "\0" < /tmp/uki.cmdline)
 ok uki_cmdline_root    has "$cmdline" "root=LABEL=root"
 ok uki_cmdline_console has "$cmdline" "console=ttyS0,115200"
-ok uki_cmdline_overlayfs has "$cmdline" "overlayfs=yes"
+ok uki_cmdline_overlay has "$cmdline" "rd.overlay=1"
 nok uki_cmdline_unexpanded has "$cmdline" "\$"
 ok root_fs_label [ "$(blkid -s LABEL -o value "${L}p1")" = root ]
 ok usr_fs_label  [ "$(blkid -s LABEL -o value "${LU}p1")" = usr ]

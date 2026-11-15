@@ -257,7 +257,13 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    initramfs (dracut `usrmount`) mounts `/usr` before switching to the real root;
    systemd mounts `/usr/lib/modules` with
    `x-systemd.before=systemd-modules-load.service,nofail`. The root filesystem label is
-   `root` (the UKI command line uses `root=LABEL=root`).
+   `root` (the UKI command line uses `root=LABEL=root`). At boot `/` is an
+   overlay: dracut's `overlayfs` module (`rd.overlay=1`; it ignores a bare
+   `overlayfs=`) mounts the root disk read-only at `/run/rootfsbase` with the
+   upper layer on tmpfs (`/run/initramfs/overlay`), so changes to `/` are lost
+   at reboot and the root disk is never written. The fstab entry for `/` is
+   `defaults 0 0`: `systemd-remount-fs` remounts `/` with its options and
+   overlayfs rejects ext4 ones such as `errors=remount-ro`.
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
    mounts the ESP at /efi.
@@ -267,7 +273,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    - Installs `linux-image-cloud-amd64 dracut kmod udev qemu-guest-agent
      systemd-resolved` (dracut satisfies the kernel's initramfs dependency; kmod
      and udev explicitly so they stay when the kernel and dracut go).
-5. Writes fstab (UUIDs of root, `/usr` read-only, `/usr/lib/modules`, and ESP at `/efi`), hostname, hosts,
+5. Writes fstab (UUIDs of root with `defaults 0 0`, `/usr` read-only, `/usr/lib/modules`, and ESP at `/efi`), hostname, hosts,
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
@@ -282,7 +288,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    udev loads it after `switch_root` (on Debian `qemu-net` would also need
    `dracut-network`, which is not installed). Then
    `ukify build` with the kernel, that initrd and the command line (`root=LABEL=root
-   ro rd.driver.pre=...` plus the serial console and `overlayfs=yes`; no
+   ro rd.driver.pre=...` plus the serial console and `rd.overlay=1`; no
    `quiet`, so the boot messages show on the serial console) to `/efi/EFI/BOOT/BOOTX64.EFI`.
    No GRUB.
 7. Copies the modules to the modules disk, then removes the kernel

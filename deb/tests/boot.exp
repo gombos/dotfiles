@@ -64,7 +64,11 @@ proc check {name cmd {pattern ""}} {
 check system_running   "timeout 120 systemctl is-system-running --wait" {^running}
 check no_failed_units  "systemctl --failed --no-legend --plain | wc -l" {^0$}
 check cmdline_serial   "cat /proc/cmdline" {console=ttyS0,115200}
-check root_on_own_disk "findmnt -no SOURCE,FSTYPE /" {/dev/sd.1 ext4}
+check root_overlay     "findmnt -no FSTYPE /" {^overlay$}
+check root_upper_tmpfs "stat -f -c %T /run/initramfs/overlay/overlayfs" {^tmpfs$}
+check root_lower_on_own_disk "findmnt -no SOURCE,FSTYPE /run/rootfsbase" {/dev/sd.1 ext4}
+check root_lower_read_only "findmnt -no OPTIONS /run/rootfsbase" {^ro,}
+check root_writes_not_on_disk "touch /root/overlay-test && test -e /root/overlay-test && test ! -e /run/rootfsbase/root/overlay-test"
 check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
 check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
 check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}

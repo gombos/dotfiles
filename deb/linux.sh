@@ -941,8 +941,10 @@ vm_configure () {
 	ESP_UUID=$(blkid -s UUID -o value "${LOOP_ESP}p1")
 	USR_UUID=$(blkid -s UUID -o value "${LOOP_USR}p1")
 	MODULES_UUID=$(blkid -s UUID -o value "${LOOP_MOD}p1")
+	# / is an overlay on tmpfs (rd.overlay=1) over this disk mounted read-only:
+	# no ext4 options, systemd-remount-fs remounts / with them; nothing to fsck
 	cat > "$MNT/etc/fstab" <<EOF
-UUID=$ROOT_UUID / ext4 errors=remount-ro 0 1
+UUID=$ROOT_UUID / ext4 defaults 0 0
 UUID=$USR_UUID /usr ext4 ro 0 2
 UUID=$MODULES_UUID /usr/lib/modules ext4 x-systemd.before=systemd-modules-load.service,nofail 0 2
 UUID=$ESP_UUID /efi vfat umask=0077 0 2
@@ -996,7 +998,7 @@ vm_build_uki () {
 	# is there right after switch_root
 	mkdir -p "$MNT/efi/EFI/BOOT"
 	chroot "$MNT" ukify build --linux="$kernel" --initrd=/tmp/initrd --uname="$kver" \
-		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon console=tty0 console=ttyS0,115200 overlayfs=yes" \
+		--cmdline="root=LABEL=$ROOT_LABEL ro rd.driver.pre=sd_mod rd.driver.pre=virtio_scsi rd.driver.pre=autofs4 rd.driver.pre=virtio-balloon console=tty0 console=ttyS0,115200 rd.overlay=1" \
 		--output=/efi/EFI/BOOT/BOOTX64.EFI
 	echo "unified kernel image: $(du -h "$MNT/efi/EFI/BOOT/BOOTX64.EFI" | cut -f1)"
 	rm -f "$MNT/tmp/initrd"
