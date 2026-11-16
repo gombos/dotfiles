@@ -86,7 +86,7 @@ if {$distro eq "debian"} {
 	check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
 	check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
 } else {
-	check pacman_db_usable "pacman -Q systemd" {^systemd\s}
+	check pacman_db_usable "pacman -Q systemd" {(^|\n)systemd [0-9]}
 	check pacman_sync_signed "pacman -Sy && ! pacman -Sy 2>&1 | grep -iE 'error|warning'"
 }
 check guest_agent      "systemctl is-active qemu-guest-agent" {^active$}
