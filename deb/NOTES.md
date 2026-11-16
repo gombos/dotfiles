@@ -304,11 +304,11 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 8. Purges `perl-base init-system-helpers` (`--force-depends
    --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
    empties `machine-id`, empties `/var` except the package database (this
-   also drops apt's lists and cache). The `apt-daily`,
-   `apt-daily-upgrade` and `dpkg-db-backup` services and timers are deleted
-   (Debian-specific daily jobs). Debian only: the commands of apt and dpkg
-   (`SYSEXT_PACKAGES`: `apt*`, `dpkg*`, `update-alternatives`,
-   `start-stop-daemon`) and all `/usr` files of debconf and cdebconf
+   also drops apt's lists and cache). Debian only: the commands and systemd
+   units of apt and dpkg (`SYSEXT_PACKAGES`: `apt*`, `dpkg*`,
+   `update-alternatives`, `start-stop-daemon`; the `apt-daily`,
+   `apt-daily-upgrade` and `dpkg-db-backup` services and timers, whose
+   `timers.target.wants` links stay in `/etc`) and all `/usr` files of debconf and cdebconf
    (`SYSEXT_PACKAGES_ALL`; the diverted `frontend.perl` too, directories left
    empty are removed) move out of `/usr` into the systemd-sysext directory
    extension `/etc/extensions/tools` (`SYSEXT_NAME`) and

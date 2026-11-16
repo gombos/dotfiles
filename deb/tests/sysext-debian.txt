@@ -47,6 +47,14 @@ f usr/lib/cdebconf/frontend/text.so
 f usr/lib/cdebconf/libdebconf.so
 d usr/lib/extension-release.d
 f usr/lib/extension-release.d/extension-release.tools
+d usr/lib/systemd
+d usr/lib/systemd/system
+f usr/lib/systemd/system/apt-daily-upgrade.service
+f usr/lib/systemd/system/apt-daily-upgrade.timer
+f usr/lib/systemd/system/apt-daily.service
+f usr/lib/systemd/system/apt-daily.timer
+f usr/lib/systemd/system/dpkg-db-backup.service
+f usr/lib/systemd/system/dpkg-db-backup.timer
 d usr/sbin
 f usr/sbin/dpkg-preconfigure
 f usr/sbin/dpkg-reconfigure

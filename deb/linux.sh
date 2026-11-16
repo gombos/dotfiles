@@ -44,7 +44,7 @@ ROOTFS_DEFAULT=/tmp/rootfs
 VM_NAME_DEFAULT=""	# empty: the distribution name
 ROOT_PASSWORD_DEFAULT=root
 SYSEXT_NAME=tools	# Debian: systemd-sysext extension in /etc/extensions/
-SYSEXT_PACKAGES="apt dpkg"	# their commands move into it
+SYSEXT_PACKAGES="apt dpkg"	# their commands and systemd units move into it
 SYSEXT_PACKAGES_ALL="debconf cdebconf"	# all their files in /usr move into it
 
 ############################################################### messages
@@ -1047,7 +1047,9 @@ vm_remove_kernel () {
 	mv "$MNT/usr/lib/modules.keep" "$MNT/usr/lib/modules"
 }
 
-# vm_sysext : move the commands of SYSEXT_PACKAGES and all /usr files of
+# vm_sysext : move the commands and systemd units of SYSEXT_PACKAGES (apt's
+# and dpkg's daily timers; their timers.target.wants links stay in /etc and
+# work once the extension is merged) and all /usr files of
 # SYSEXT_PACKAGES_ALL (diverted ones under their diverted name too, directories
 # left empty are removed) out of /usr into the directory extension
 # /etc/extensions/SYSEXT_NAME, which systemd-sysext.service
@@ -1056,9 +1058,9 @@ vm_remove_kernel () {
 # VERSION_ID (none on testing) so that systemd-sysext accepts the extension.
 vm_sysext () {
 	local ext="$MNT/etc/extensions/$SYSEXT_NAME" paths f
-	echo "moving the commands of $SYSEXT_PACKAGES and the files of $SYSEXT_PACKAGES_ALL into the $SYSEXT_NAME extension"
+	echo "moving the commands and units of $SYSEXT_PACKAGES and the files of $SYSEXT_PACKAGES_ALL into the $SYSEXT_NAME extension"
 	# everything is listed first: dpkg and dpkg-divert move as well
-	paths=$({ chroot "$MNT" dpkg -L $SYSEXT_PACKAGES | grep -E '^/usr/s?bin/[^/]+$'
+	paths=$({ chroot "$MNT" dpkg -L $SYSEXT_PACKAGES | grep -E '^/usr/(s?bin|lib/systemd/system)/[^/]+$'
 		chroot "$MNT" dpkg -L $SYSEXT_PACKAGES_ALL | grep '^/usr/'; } |
 		awk -v divs="$(chroot "$MNT" dpkg-divert --list | sed -n 's/.* of \([^ ]*\) to \([^ ]*\).*/\1 \2/p')" '
 			BEGIN { n = split(divs, l, "\n"); for (i = 1; i <= n; i++) { split(l[i], p, " "); to[p[1]] = p[2] } }
@@ -1086,12 +1088,6 @@ vm_finish () {
 		# debconf's Perl modules (dpkg-preconfigure needed them during the
 		# build) cannot run without Perl
 		rm -rf "$MNT/usr/share/perl5"
-		# Debian's daily apt and dpkg-database-backup jobs: the units and their
-		# timers.target.wants links
-		for u in apt-daily apt-daily-upgrade dpkg-db-backup; do
-			rm -f "$MNT/usr/lib/systemd/system/$u.service" "$MNT/usr/lib/systemd/system/$u.timer" \
-				"$MNT/etc/systemd/system/timers.target.wants/$u.timer"
-		done
 		vm_sysext
 		;;
 	arch)

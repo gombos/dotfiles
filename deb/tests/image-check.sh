@@ -107,10 +107,12 @@ debian)
 	nok apt_dpkg_in_usr eval '[ -e $M/usr/bin/apt-get ] || [ -e $M/usr/bin/dpkg ] || [ -e $M/usr/sbin/start-stop-daemon ]'
 	ok sysext_has_debconf [ -f $ext/usr/share/debconf/confmodule -a -f $ext/usr/share/debconf/frontend.perl -a -x $ext/usr/lib/cdebconf/debconf ]
 	ok sysext_debconf_frontend [ "$(readlink $ext/usr/share/debconf/frontend)" = /usr/lib/cdebconf/debconf ]
+	ok sysext_has_daily_units eval 'for u in apt-daily apt-daily-upgrade dpkg-db-backup; do [ -f $ext/usr/lib/systemd/system/$u.service -a -f $ext/usr/lib/systemd/system/$u.timer ] || exit 1; done'
+	ok daily_timers_enabled eval 'for u in apt-daily apt-daily-upgrade dpkg-db-backup; do [ -L $M/etc/systemd/system/timers.target.wants/$u.timer ] || exit 1; done'
+	nok daily_units_in_usr eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* 2>/dev/null | grep -q .'
 	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
 	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr
-	nok daily_units_left eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* $M/etc/systemd/system/timers.target.wants/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.timer 2>/dev/null | grep -q .'
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
