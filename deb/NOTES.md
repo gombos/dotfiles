@@ -326,6 +326,15 @@ and a QEMU/OVMF boot of the image (KVM when available); finally the unmount
 tests in a systemd-like mount namespace, once. Logs and a line coverage report go to
 `/tmp/linux-sh-tests`.
 
+The image check compares the file lists (type and path, not contents) of the
+image's `/etc` and `/usr` with `tests/etc-DISTRO.txt` and
+`tests/usr-DISTRO.txt`, leaving out names that change with each build
+(pacman's generated keyring key, hashed CA certificate names) and
+`/usr/lib/modules` (own disk, named after the kernel version). Package updates
+change the lists (versioned library names, Python directories). Each run writes
+the actual lists to `/tmp/linux-sh-tests/{etc,usr}-DISTRO.txt`; after an
+intended change, copy them over the expected ones.
+
 ### Decisions (in order)
 
 1. **UEFI, not BIOS.** Matches the reference (q35 + OVMF + efidisk).

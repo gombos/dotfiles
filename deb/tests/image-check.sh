@@ -42,6 +42,22 @@ ok fstab_usr  grep -q "^UUID=$USR_UUID /usr ext4 ro " $M/etc/fstab
 ok fstab_modules grep -qxF "UUID=$MOD_UUID /usr/lib/modules ext4 x-systemd.before=systemd-modules-load.service,nofail 0 2" $M/etc/fstab
 ok usr_and_modules_different_disks [ -n "$USR_UUID" -a -n "$MOD_UUID" -a "$USR_UUID" != "$MOD_UUID" ]
 ok fstab_esp  grep -q "^UUID=$ESP_UUID /efi vfat " $M/etc/fstab
+# file_list NAME DIR SKIP : file list of DIR ("TYPE PATH", find -printf %y,
+# this filesystem only) against tests/NAME-DISTRO.txt, leaving out what is
+# below the paths matching SKIP (an ERE); the actual list goes to $OUT
+file_list () {
+	local name=$1 dir=$2 skip=$3 diff
+	(cd "$dir" && find . -xdev -mindepth 1 -printf '%y %P\n') | grep -vE "^. ($skip)/" |
+		LC_ALL=C sort -k2 > "$OUT/$name-$D.txt"
+	diff=$(diff "$TESTS/$name-$D.txt" "$OUT/$name-$D.txt" 2>/dev/null | grep '^[<>]')
+	ok "${name}_file_list" [ -f "$TESTS/$name-$D.txt" -a -z "$diff" ]
+	[ -z "$diff" ] || printf '%s\n' "$diff" | head -n 20 | sed "s/^</INFO $name missing:/; s/^>/INFO $name extra:/"
+}
+# names that change with each build (pacman's generated keyring key) or with
+# each CA bundle (hashed certificate names)
+file_list etc $M/etc 'ssl/certs|ca-certificates/extracted/cadir|pacman\.d/gnupg/(openpgp-revocs\.d|private-keys-v1\.d)'
+# the modules have their own disk, named after the kernel version
+file_list usr $M/usr 'lib/modules'
 ok modules_on_modules_disk [ -n "$(ls $M/usr/lib/modules/*/modules.dep 2>/dev/null)" ]
 uki=$M/efi/EFI/BOOT/BOOTX64.EFI
 ok uki_present [ -s "$uki" ]
