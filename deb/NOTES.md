@@ -309,7 +309,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    the image), and so are `/etc/init.d` and `/etc/rc?.d` (SysV scripts and
    runlevel links: no systemd-sysv-generator, dbus and qemu-guest-agent start
    from their units; without the scripts their maintainer scripts skip
-   `update-rc.d`), then all `/usr` files of `SYSEXT_PACKAGES` (apt, dpkg,
+   `update-rc.d`), and so are `/etc/cron.d`, `/etc/cron.daily` and
+   `/etc/logrotate.d` (no cron, no logrotate). On both distributions `*.bak`
+   files in `/etc` are deleted. Then all `/usr` files of `SYSEXT_PACKAGES` (apt, dpkg,
    libapt-pkg, sqv, debian-archive-keyring, debconf, cdebconf and its newt,
    slang, textwrap and debian-installer libraries, base-passwd and
    libdebconfclient0, which only base-passwd uses; diverted files such as

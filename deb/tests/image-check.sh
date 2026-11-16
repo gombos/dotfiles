@@ -93,6 +93,7 @@ ok network_file grep -q 'DHCP=yes' $M/etc/systemd/network/10-wired.network
 ok networkd_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/systemd-networkd.service ]
 ok resolved_enabled [ -n "$(find $M/etc/systemd/system -name systemd-resolved.service -type l)" ]
 ok resolv_conf_stub [ "$(readlink $M/etc/resolv.conf)" = ../run/systemd/resolve/stub-resolv.conf ]
+nok etc_bak_left eval 'find $M/etc -name "*.bak" | grep -q .'
 ok machine_id_empty [ -f $M/etc/machine-id -a ! -s $M/etc/machine-id ]
 ok root_password_set eval "grep '^root:' $M/etc/shadow | cut -d: -f2 | grep -q '^\\\$'"
 case "$D" in
@@ -114,6 +115,7 @@ debian)
 	nok more_in_usr eval 'ls -d $M/usr/share/keyrings $M/usr/lib/apt $M/usr/lib/lsb $M/usr/share/lintian $M/usr/share/common-licenses $M/usr/lib/x86_64-linux-gnu/libapt-pkg.so.* 2>/dev/null | grep -q .'
 	nok kernel_install_left [ -e $M/usr/lib/kernel ]
 	nok initramfs_tools_left [ -e $M/usr/share/initramfs-tools ]
+	nok cron_logrotate_left eval 'ls -d $M/etc/cron.d $M/etc/cron.daily $M/etc/logrotate.d 2>/dev/null | grep -q .'
 	nok sysv_init_left eval 'ls -d $M/etc/init.d $M/etc/rc?.d 2>/dev/null | grep -q .'
 	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does

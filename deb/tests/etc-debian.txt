@@ -1,5 +1,4 @@
 f .pwd.lock
-f .resolv.conf.systemd-resolved.bak
 d alternatives
 f alternatives/README
 l alternatives/awk
@@ -44,11 +43,6 @@ d binfmt.d
 f cdebconf.conf
 d credstore
 d credstore.encrypted
-d cron.d
-f cron.d/e2scrub_all
-d cron.daily
-f cron.daily/apt-compat
-f cron.daily/dpkg
 d dbus-1
 d dbus-1/session.d
 d dbus-1/system.d
@@ -94,10 +88,6 @@ f libaudit.conf
 f locale.conf
 l localtime
 f login.defs
-d logrotate.d
-f logrotate.d/alternatives
-f logrotate.d/apt
-f logrotate.d/dpkg
 f machine-id
 f mke2fs.conf
 d modprobe.d

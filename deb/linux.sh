@@ -1111,6 +1111,8 @@ vm_finish () {
 		# native units, and the image has no systemd-sysv-generator; without
 		# /etc/init.d the packages' maintainer scripts skip update-rc.d
 		rm -rf "$MNT/etc/init.d" "$MNT"/etc/rc[0-6S].d
+		# no cron and no logrotate in the image
+		rm -rf "$MNT/etc/cron.d" "$MNT/etc/cron.daily" "$MNT/etc/logrotate.d"
 		vm_sysext
 		;;
 	arch)
@@ -1130,6 +1132,8 @@ vm_finish () {
 		mkdir -p "$MNT/etc/tmpfiles.d"
 		echo 'd /var/lib/misc 0755 root root -' > "$MNT/etc/tmpfiles.d/var-lib-misc.conf"
 	fi
+	# backups left by package scripts (resolved's of resolv.conf)
+	find "$MNT/etc" -name '*.bak' -delete
 	# the host's resolv.conf was only needed for downloads during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
