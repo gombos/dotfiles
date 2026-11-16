@@ -365,7 +365,8 @@ intended change, copy them over the expected ones.
   qemu-guest-agent need `update-rc.d` and `deb-systemd-helper`. Both are
   purged again before the image is finished, so the final image has neither,
   as the bootstrap intends. This temporarily breaks the earlier "no Perl" rule
-  inside the build step only.
+  inside the build step only. debconf's Perl modules (`/usr/share/perl5`,
+  used by `dpkg-preconfigure`) are deleted with them.
 - The VM image verifies the archive with the `Signed-By` keyring; the QEMU
   boot test runs `apt-get update` and checks for warnings and the modernize notice.
 - The imported volume is read from `qm config` (`unusedN:`); if none is found the

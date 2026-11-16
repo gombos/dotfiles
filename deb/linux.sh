@@ -1049,6 +1049,9 @@ vm_finish () {
 	case "$DISTRO" in
 	debian)
 		chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
+		# debconf's Perl modules (dpkg-preconfigure needed them during the
+		# build) cannot run without Perl
+		rm -rf "$MNT/usr/share/perl5"
 		;;
 	arch)
 		rm -rf "$MNT/var/lib/pacman/sync/"* "$MNT/etc/pacman-build.conf"

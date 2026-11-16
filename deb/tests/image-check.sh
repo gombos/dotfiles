@@ -132,4 +132,5 @@ echo "INFO packages installed: $(printf '%s\n' "$pkgs" | wc -l); used: $(df -h -
 for p in $want; do ok "installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
 for p in $gone; do nok "not_installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
 nok no_perl [ -e $M/usr/bin/perl ]
+nok no_perl_modules [ -e $M/usr/share/perl5 ]
 summary
