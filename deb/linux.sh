@@ -43,6 +43,10 @@ DISTRO=debian
 ROOTFS_DEFAULT=/tmp/rootfs
 VM_NAME_DEFAULT=""	# empty: the distribution name
 ROOT_PASSWORD_DEFAULT=root
+# Debian: Tailscale's apt repository; its signing key (fingerprint
+# 2596A99EAAB33821893C0A79458CA832957F5868) is checked against this SHA256
+TAILSCALE_APT=https://pkgs.tailscale.com/stable/debian
+TAILSCALE_KEY_SHA256=3e03dacf222698c60b8e2f990b809ca1b3e104de127767864284e6c228f1fb39
 SYSEXT_NAME=tools	# Debian: systemd-sysext extension in /etc/extensions/
 # packages whose files in /usr move into it (dpkg-query patterns): apt and dpkg
 # with what only they use, debconf and cdebconf with their frontend libraries,
@@ -813,7 +817,7 @@ vm_cleanup () {
 vm_check () {
 	[ "$(id -u)" -eq 0 ] || die "must run as root"
 	local cmd
-	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat e2fsck blkid chroot mountpoint; do
+	for cmd in qm pvesm sgdisk losetup mkfs.ext4 mkfs.vfat e2fsck blkid chroot mountpoint wget sha256sum; do
 		command -v "$cmd" >/dev/null || die "missing command: $cmd"
 	done
 	# an existing VM is only deleted in vm_create, once the new image is built
@@ -944,6 +948,38 @@ vm_install_packages () {
 		# the kernel, guest agent, dracut and ukify came with pacstrap (ARCH_PACKAGES)
 		;;
 	esac
+}
+
+# vm_install_tailscale : from each distribution's signed source. Arch: the
+# tailscale package from extra (Arch keyring). Debian: Tailscale's apt
+# repository; its key, downloaded over HTTPS, must match TAILSCALE_KEY_SHA256
+# and goes to /etc/apt/keyrings (/usr/share/keyrings moves into the sysext
+# extension); only tailscale.sources signs with it. tailscaled.service is
+# enabled.
+vm_install_tailscale () {
+	echo "installing Tailscale"
+	case "$DISTRO" in
+	debian)
+		mkdir -p "$MNT/etc/apt/keyrings"
+		wget -nv --timeout=60 -O "$MNT/etc/apt/keyrings/tailscale.gpg" "$TAILSCALE_APT/$SUITE.noarmor.gpg"
+		[ "$(sha256sum < "$MNT/etc/apt/keyrings/tailscale.gpg" | sed 's/ .*//')" = "$TAILSCALE_KEY_SHA256" ] ||
+			die "Tailscale's apt signing key does not match TAILSCALE_KEY_SHA256"
+		chmod 644 "$MNT/etc/apt/keyrings/tailscale.gpg"
+		cat > "$MNT/etc/apt/sources.list.d/tailscale.sources" <<EOF
+Types: deb
+URIs: $TAILSCALE_APT
+Suites: $SUITE
+Components: main
+Signed-By: /etc/apt/keyrings/tailscale.gpg
+EOF
+		chroot "$MNT" apt-get update
+		vm_apt install tailscale
+		;;
+	arch)
+		vm_pacman -S --needed tailscale
+		;;
+	esac
+	chroot "$MNT" systemctl enable tailscaled.service
 }
 
 vm_configure () {
@@ -1288,6 +1324,7 @@ vm_main () {
 
 	vm_make_disk
 	vm_install_packages
+	vm_install_tailscale
 	vm_configure
 	vm_build_uki
 	vm_copy_modules

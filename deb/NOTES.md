@@ -280,6 +280,16 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 5. Writes fstab (UUIDs of root with `defaults 0 0`, `/usr` read-only, `/usr/lib/modules`, and ESP at `/efi`), hostname, hosts,
    systemd-networkd DHCP on `en* eth*`, enables networkd and resolved, sets the
    root password.
+   Tailscale (`vm_install_tailscale`), from each distribution's signed
+   source: on Arch the `tailscale` package from `extra`; on Debian
+   Tailscale's apt repository (`TAILSCALE_APT`, suite `$SUITE`), whose
+   signing key (fingerprint `2596A99EAAB33821893C0A79458CA832957F5868`) is
+   downloaded over HTTPS and must match `TAILSCALE_KEY_SHA256`; it goes to
+   `/etc/apt/keyrings/tailscale.gpg` (`/usr/share/keyrings` moves into the
+   sysext extension) and only `/etc/apt/sources.list.d/tailscale.sources`
+   uses it. `tailscaled.service` is enabled. Its state in
+   `/var/lib/tailscale` is on the tmpfs root, so a login does not survive a
+   reboot.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
    `bin/uki-dracut.sh`): installs `systemd-ukify systemd-boot-efi util-linux-extra`
    (dracut is already there), runs `dracut --no-hostonly` directly with the module

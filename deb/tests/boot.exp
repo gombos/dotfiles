@@ -86,6 +86,10 @@ check hostname         "uname -n" "^$name$"
 check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
 check dns              "getent hosts deb.debian.org"
+# tailscaled runs and waits for a login; its tun device is up
+check tailscaled_active "systemctl is-active tailscaled" {^active$}
+check tailscale_needs_login "tailscale status --json | grep BackendState" {NeedsLogin}
+check tailscale_tun    "test -d /sys/class/net/tailscale0"
 if {$distro eq "debian"} {
 	check var_lib_misc_created "stat -c '%F %a %U:%G' /var/lib/misc" {^directory 755 root:root$}
 	# merged by hand, the extension brings apt, dpkg, debconf and the timers

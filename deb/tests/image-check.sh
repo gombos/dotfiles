@@ -93,6 +93,8 @@ ok network_file grep -q 'DHCP=yes' $M/etc/systemd/network/10-wired.network
 ok networkd_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/systemd-networkd.service ]
 ok resolved_enabled [ -n "$(find $M/etc/systemd/system -name systemd-resolved.service -type l)" ]
 ok resolv_conf_stub [ "$(readlink $M/etc/resolv.conf)" = ../run/systemd/resolve/stub-resolv.conf ]
+ok tailscale_installed [ -x $M/usr/sbin/tailscaled -a -x $M/usr/bin/tailscale -a -f $M/usr/lib/systemd/system/tailscaled.service -a -f $M/etc/default/tailscaled ]
+ok tailscaled_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/tailscaled.service ]
 nok etc_bak_left eval 'find $M/etc -name "*.bak" | grep -q .'
 ok machine_id_empty [ -f $M/etc/machine-id -a ! -s $M/etc/machine-id ]
 ok root_password_set eval "grep '^root:' $M/etc/shadow | cut -d: -f2 | grep -q '^\\\$'"
@@ -123,7 +125,9 @@ debian)
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
-	want="kmod udev qemu-guest-agent systemd-resolved"
+	want="kmod udev qemu-guest-agent systemd-resolved tailscale"
+	ok tailscale_apt_key [ "$(sha256sum < $M/etc/apt/keyrings/tailscale.gpg | cut -d' ' -f1)" = 3e03dacf222698c60b8e2f990b809ca1b3e104de127767864284e6c228f1fb39 ]
+	ok tailscale_apt_source grep -qx 'Signed-By: /etc/apt/keyrings/tailscale.gpg' $M/etc/apt/sources.list.d/tailscale.sources
 	gone="linux-image-cloud-amd64 no-initramfs-tool perl-base init-system-helpers dracut dracut-core
 		dracut-network systemd-ukify systemd-boot-efi python3 iproute2 util-linux-extra grub-efi-amd64-bin
 		initramfs-tools"
@@ -143,7 +147,7 @@ arch)
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)
-	want="kmod qemu-guest-agent systemd base"
+	want="kmod qemu-guest-agent systemd base tailscale"
 	gone="linux dracut systemd-ukify no-initramfs mkinitcpio python perl grub"
 	out=$(chroot $M pacman -Dk 2>&1); rc=$?
 	ok "pacman_dk${out:+ ($(printf '%s' "$out" | head -n 1))}" [ $rc -eq 0 ]
