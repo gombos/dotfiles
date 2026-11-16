@@ -304,13 +304,17 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 8. Purges `perl-base init-system-helpers` (`--force-depends
    --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
    empties `machine-id`, empties `/var` except the package database (this
-   also drops apt's lists and cache). Debian only: the commands and systemd
-   units of apt and dpkg (`SYSEXT_PACKAGES`: `apt*`, `dpkg*`,
-   `update-alternatives`, `start-stop-daemon`; the `apt-daily`,
-   `apt-daily-upgrade` and `dpkg-db-backup` services and timers, whose
-   `timers.target.wants` links stay in `/etc`) and all `/usr` files of debconf and cdebconf
-   (`SYSEXT_PACKAGES_ALL`; the diverted `frontend.perl` too, directories left
-   empty are removed) move out of `/usr` into the systemd-sysext directory
+   also drops apt's lists and cache). Debian only: `/usr/lib/kernel` (kernel-install) and
+   `/usr/share/initramfs-tools` are deleted (no kernel, no initramfs-tools in
+   the image), then all `/usr` files of `SYSEXT_PACKAGES` (apt, dpkg,
+   libapt-pkg, sqv, debian-archive-keyring, debconf, cdebconf and its newt,
+   slang, textwrap and debian-installer libraries, base-passwd and
+   libdebconfclient0, which only base-passwd uses; diverted files such as
+   debconf's `frontend.perl` too, directories left empty are removed) and the
+   paths in `SYSEXT_PATHS`, whole (LSB init functions, `/etc` templates of
+   base-files, PAM and libc, debianutils' shell list tools, lintian, reportbug,
+   doc-base, menu, cruft, logcheck data, common-licenses, gcc/gdb debugger
+   helpers) move out of `/usr` into the systemd-sysext directory
    extension `/etc/extensions/tools` (`SYSEXT_NAME`). It is not merged at
    boot: `systemd-sysext.service` stays disabled, as these files are not wanted
    by default; `systemd-sysext merge` overlays it on `/usr` (read-only),

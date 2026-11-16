@@ -44,8 +44,17 @@ ROOTFS_DEFAULT=/tmp/rootfs
 VM_NAME_DEFAULT=""	# empty: the distribution name
 ROOT_PASSWORD_DEFAULT=root
 SYSEXT_NAME=tools	# Debian: systemd-sysext extension in /etc/extensions/
-SYSEXT_PACKAGES="apt dpkg"	# their commands and systemd units move into it
-SYSEXT_PACKAGES_ALL="debconf cdebconf"	# all their files in /usr move into it
+# packages whose files in /usr move into it (dpkg-query patterns): apt and dpkg
+# with what only they use, debconf and cdebconf with their frontend libraries,
+# base-passwd (update-passwd)
+SYSEXT_PACKAGES="apt dpkg libapt-pkg* sqv debian-archive-keyring debconf cdebconf libnewt* libslang2 libtextwrap1 libdebian-installer4 base-passwd libdebconfclient0"
+# more paths below /usr that move, whole: used only by package maintainer
+# scripts (LSB init functions, templates for /etc, shell list tools) or
+# packaging metadata nothing reads at runtime
+SYSEXT_PATHS="lib/lsb lib/init lib/mime share/base-files share/pam share/pam-configs
+	share/libc-bin share/debianutils sbin/add-shell sbin/remove-shell sbin/update-shells
+	sbin/shadowconfig share/lintian share/bug share/doc-base share/menu share/cruft
+	share/util-linux/logcheck share/common-licenses share/gcc share/gdb"
 
 ############################################################### messages
 info ()    { local fmt="$1"; shift; printf "I: $fmt\n" "$@" >&4; }
@@ -1047,32 +1056,38 @@ vm_remove_kernel () {
 	mv "$MNT/usr/lib/modules.keep" "$MNT/usr/lib/modules"
 }
 
-# vm_sysext : move the commands and systemd units of SYSEXT_PACKAGES (apt's
-# and dpkg's daily timers; their timers.target.wants links stay in /etc and
-# work once the extension is merged) and all /usr files of
-# SYSEXT_PACKAGES_ALL (diverted ones under their diverted name too, directories
-# left empty are removed) out of /usr into the directory extension
-# /etc/extensions/SYSEXT_NAME. It is not merged at boot (systemd-sysext.service
-# stays disabled, the files are not wanted by default): "systemd-sysext merge"
-# overlays it on /usr, read-only, "systemd-sysext unmerge" removes it again.
-# /etc, because /var is empty and /run is a tmpfs. The extension-release file
-# repeats the image's ID and VERSION_ID (none on testing) so that
-# systemd-sysext accepts the extension.
+# vm_sysext : move all /usr files of SYSEXT_PACKAGES (diverted ones under their
+# diverted name too, directories left empty are removed) and the paths in
+# SYSEXT_PATHS out of /usr into the directory extension
+# /etc/extensions/SYSEXT_NAME. apt's and dpkg's daily timers move as well;
+# their timers.target.wants links stay in /etc. The extension is not merged at
+# boot (systemd-sysext.service stays disabled, the files are not wanted by
+# default): "systemd-sysext merge" overlays it on /usr, read-only,
+# "systemd-sysext unmerge" removes it again. /etc, because /var is empty and
+# /run is a tmpfs. The extension-release file repeats the image's ID and
+# VERSION_ID (none on testing) so that systemd-sysext accepts the extension.
 vm_sysext () {
-	local ext="$MNT/etc/extensions/$SYSEXT_NAME" paths f
-	echo "moving the commands and units of $SYSEXT_PACKAGES and the files of $SYSEXT_PACKAGES_ALL into the $SYSEXT_NAME extension"
+	local ext="$MNT/etc/extensions/$SYSEXT_NAME" pkgs paths f
 	# everything is listed first: dpkg and dpkg-divert move as well
-	paths=$({ chroot "$MNT" dpkg -L $SYSEXT_PACKAGES | grep -E '^/usr/(s?bin|lib/systemd/system)/[^/]+$'
-		chroot "$MNT" dpkg -L $SYSEXT_PACKAGES_ALL | grep '^/usr/'; } |
+	pkgs=$(set -f; chroot "$MNT" dpkg-query -W -f '${Package}\n' $SYSEXT_PACKAGES)
+	echo "moving" $pkgs $SYSEXT_PATHS "into the $SYSEXT_NAME extension"
+	paths=$(chroot "$MNT" dpkg -L $pkgs | grep '^/usr/' |
 		awk -v divs="$(chroot "$MNT" dpkg-divert --list | sed -n 's/.* of \([^ ]*\) to \([^ ]*\).*/\1 \2/p')" '
 			BEGIN { n = split(divs, l, "\n"); for (i = 1; i <= n; i++) { split(l[i], p, " "); to[p[1]] = p[2] } }
 			{ print; if ($0 in to) print to[$0] }')
+	# the paths first, whole: package files below them are then gone already
+	for f in $SYSEXT_PATHS; do
+		[ -e "$MNT/usr/$f" ] || [ -L "$MNT/usr/$f" ] || continue
+		mkdir -p "$ext/usr/${f%/*}"
+		mv "$MNT/usr/$f" "$ext/usr/$f"
+		rmdir --ignore-fail-on-non-empty "$MNT/usr/${f%/*}"
+	done
 	for f in $paths; do
 		[ -f "$MNT$f" ] || [ -L "$MNT$f" ] || continue
 		mkdir -p "$ext${f%/*}"
 		mv "$MNT$f" "$ext$f"
 	done
-	# directories of SYSEXT_PACKAGES_ALL left empty, deepest first
+	# directories of SYSEXT_PACKAGES left empty, deepest first
 	printf '%s\n' $paths | sort -r | while read -r f; do
 		[ ! -d "$MNT$f" ] || rmdir --ignore-fail-on-non-empty "$MNT$f"
 	done
@@ -1089,6 +1104,9 @@ vm_finish () {
 		# debconf's Perl modules (dpkg-preconfigure needed them during the
 		# build) cannot run without Perl
 		rm -rf "$MNT/usr/share/perl5"
+		# no kernel and no initramfs-tools in the image: kernel-install's
+		# configuration and plugins and initramfs-tools hooks are of no use
+		rm -rf "$MNT/usr/lib/kernel" "$MNT/usr/share/initramfs-tools"
 		vm_sysext
 		;;
 	arch)

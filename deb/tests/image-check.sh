@@ -110,6 +110,10 @@ debian)
 	ok sysext_has_daily_units eval 'for u in apt-daily apt-daily-upgrade dpkg-db-backup; do [ -f $ext/usr/lib/systemd/system/$u.service -a -f $ext/usr/lib/systemd/system/$u.timer ] || exit 1; done'
 	ok daily_timers_enabled eval 'for u in apt-daily apt-daily-upgrade dpkg-db-backup; do [ -L $M/etc/systemd/system/timers.target.wants/$u.timer ] || exit 1; done'
 	nok daily_units_in_usr eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* 2>/dev/null | grep -q .'
+	ok sysext_has_more [ -s $ext/usr/share/keyrings/debian-archive-keyring.pgp -a -d $ext/usr/lib/apt/methods -a -x $ext/usr/sbin/update-passwd -a -f $ext/usr/lib/lsb/init-functions -a -d $ext/usr/share/lintian ]
+	nok more_in_usr eval 'ls -d $M/usr/share/keyrings $M/usr/lib/apt $M/usr/lib/lsb $M/usr/share/lintian $M/usr/share/common-licenses $M/usr/lib/x86_64-linux-gnu/libapt-pkg.so.* 2>/dev/null | grep -q .'
+	nok kernel_install_left [ -e $M/usr/lib/kernel ]
+	nok initramfs_tools_left [ -e $M/usr/share/initramfs-tools ]
 	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
 	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr
