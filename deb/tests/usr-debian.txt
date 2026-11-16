@@ -1,11 +1,5 @@
 d bin
 f bin/[
-f bin/apt
-f bin/apt-cache
-f bin/apt-cdrom
-f bin/apt-config
-f bin/apt-get
-f bin/apt-mark
 f bin/arch
 l bin/awk
 f bin/b2sum
@@ -61,15 +55,6 @@ f bin/dirname
 f bin/dmesg
 l bin/dnsdomainname
 l bin/domainname
-f bin/dpkg
-f bin/dpkg-deb
-f bin/dpkg-divert
-f bin/dpkg-maintscript-helper
-f bin/dpkg-query
-f bin/dpkg-realpath
-f bin/dpkg-split
-f bin/dpkg-statoverride
-f bin/dpkg-trigger
 f bin/du
 f bin/echo
 f bin/egrep
@@ -275,7 +260,6 @@ f bin/unexpand
 f bin/uniq
 f bin/unlink
 f bin/unshare
-f bin/update-alternatives
 f bin/users
 f bin/varlinkctl
 f bin/vdir
@@ -1589,7 +1573,6 @@ f sbin/rtcwake
 f sbin/runuser
 f sbin/shadowconfig
 l sbin/shutdown
-f sbin/start-stop-daemon
 f sbin/sulogin
 f sbin/swaplabel
 f sbin/swapoff

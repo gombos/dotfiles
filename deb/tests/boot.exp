@@ -70,7 +70,14 @@ check root_lower_on_own_disk "findmnt -no SOURCE,FSTYPE /run/rootfsbase" {/dev/s
 check root_lower_read_only "findmnt -no OPTIONS /run/rootfsbase" {^ro,}
 check root_writes_not_on_disk "touch /root/overlay-test && test -e /root/overlay-test && test ! -e /run/rootfsbase/root/overlay-test"
 check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
-check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
+if {$distro eq "debian"} {
+	# systemd-sysext merges the extension over the /usr disk
+	check usr_sysext_overlay "findmnt -no FSTYPE /usr | paste -sd' '" {^ext4 overlay$}
+	check sysext_merged    "systemd-sysext status --no-pager" {tools}
+	check apt_dpkg_from_sysext "test -x /usr/bin/apt-get && test -x /usr/bin/dpkg && test -x /usr/sbin/start-stop-daemon"
+} else {
+	check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
+}
 check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
 check modules_on_own_disk "findmnt -no SOURCE,FSTYPE /usr/lib/modules" {/dev/sd.1 ext4}
 check usr_modules_separate "test \"\$(findmnt -no SOURCE /usr)\" != \"\$(findmnt -no SOURCE /usr/lib/modules)\""

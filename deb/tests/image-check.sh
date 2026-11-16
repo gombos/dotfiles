@@ -44,9 +44,9 @@ ok usr_and_modules_different_disks [ -n "$USR_UUID" -a -n "$MOD_UUID" -a "$USR_U
 ok fstab_esp  grep -q "^UUID=$ESP_UUID /efi vfat " $M/etc/fstab
 # file_list NAME DIR SKIP : file list of DIR ("TYPE PATH", find -printf %y,
 # this filesystem only) against tests/NAME-DISTRO.txt, leaving out what is
-# below the paths matching SKIP (an ERE); the actual list goes to $OUT
+# below the paths matching SKIP (an ERE, optional); the actual list goes to $OUT
 file_list () {
-	local name=$1 dir=$2 skip=$3 diff
+	local name=$1 dir=$2 skip=${3:-'$^'} diff
 	(cd "$dir" && find . -xdev -mindepth 1 -printf '%y %P\n') | grep -vE "^. ($skip)/" |
 		LC_ALL=C sort -k2 > "$OUT/$name-$D.txt"
 	diff=$(diff "$TESTS/$name-$D.txt" "$OUT/$name-$D.txt" 2>/dev/null | grep '^[<>]')
@@ -54,8 +54,9 @@ file_list () {
 	[ -z "$diff" ] || printf '%s\n' "$diff" | head -n 20 | sed "s/^</INFO $name missing:/; s/^>/INFO $name extra:/"
 }
 # names that change with each build (pacman's generated keyring key) or with
-# each CA bundle (hashed certificate names)
-file_list etc $M/etc 'ssl/certs|ca-certificates/extracted/cadir|pacman\.d/gnupg/(openpgp-revocs\.d|private-keys-v1\.d)'
+# each CA bundle (hashed certificate names); the extensions have their own list
+file_list etc $M/etc 'extensions|ssl/certs|ca-certificates/extracted/cadir|pacman\.d/gnupg/(openpgp-revocs\.d|private-keys-v1\.d)'
+[ "$D" != debian ] || file_list sysext $M/etc/extensions/tools
 # the modules have their own disk, named after the kernel version
 file_list usr $M/usr 'lib/modules'
 ok modules_on_modules_disk [ -n "$(ls $M/usr/lib/modules/*/modules.dep 2>/dev/null)" ]
@@ -99,6 +100,13 @@ debian)
 	ok var_only_dpkg [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/dpkg')" ]
 	ok dpkg_status_kept [ -s $M/var/lib/dpkg/status ]
 	ok tmpfiles_var_lib_misc grep -qx 'd /var/lib/misc 0755 root root -' $M/etc/tmpfiles.d/var-lib-misc.conf
+	ext=$M/etc/extensions/tools
+	ok sysext_release [ "$(cat $ext/usr/lib/extension-release.d/extension-release.tools)" = "$(grep -E '^(ID|VERSION_ID|SYSEXT_LEVEL)=' $M/usr/lib/os-release)" ]
+	ok sysext_enabled [ -L $M/etc/systemd/system/sysinit.target.wants/systemd-sysext.service ]
+	ok sysext_has_apt_dpkg [ -x $ext/usr/bin/apt-get -a -x $ext/usr/bin/dpkg -a -x $ext/usr/sbin/start-stop-daemon ]
+	nok apt_dpkg_in_usr eval '[ -e $M/usr/bin/apt-get ] || [ -e $M/usr/bin/dpkg ] || [ -e $M/usr/sbin/start-stop-daemon ]'
+	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
+	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr
 	nok daily_units_left eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* $M/etc/systemd/system/timers.target.wants/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.timer 2>/dev/null | grep -q .'
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
@@ -119,6 +127,7 @@ arch)
 	ok pacman_sync_empty  [ -z "$(ls -A $M/var/lib/pacman/sync)" ]
 	ok pacman_local_kept  [ -n "$(ls -A $M/var/lib/pacman/local)" ]
 	nok tmpfiles_var_lib_misc [ -e $M/etc/tmpfiles.d/var-lib-misc.conf ]
+	nok no_extensions [ -e $M/etc/extensions ]
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)

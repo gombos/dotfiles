@@ -69,6 +69,7 @@ f dpkg/origins/debian
 l dpkg/origins/default
 f e2scrub.conf
 f environment
+d extensions
 f fstab
 f gai.conf
 f group
@@ -223,6 +224,7 @@ d systemd/system/sysinit.target.wants
 l systemd/system/sysinit.target.wants/systemd-network-generator.service
 l systemd/system/sysinit.target.wants/systemd-pstore.service
 l systemd/system/sysinit.target.wants/systemd-resolved.service
+l systemd/system/sysinit.target.wants/systemd-sysext.service
 d systemd/system/timers.target.wants
 l systemd/system/timers.target.wants/e2scrub_all.timer
 l systemd/system/timers.target.wants/fstrim.timer
