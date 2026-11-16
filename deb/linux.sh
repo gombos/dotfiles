@@ -1052,6 +1052,12 @@ vm_finish () {
 		# debconf's Perl modules (dpkg-preconfigure needed them during the
 		# build) cannot run without Perl
 		rm -rf "$MNT/usr/share/perl5"
+		# Debian's daily apt and dpkg-database-backup jobs: the units and their
+		# timers.target.wants links
+		for u in apt-daily apt-daily-upgrade dpkg-db-backup; do
+			rm -f "$MNT/usr/lib/systemd/system/$u.service" "$MNT/usr/lib/systemd/system/$u.timer" \
+				"$MNT/etc/systemd/system/timers.target.wants/$u.timer"
+		done
 		;;
 	arch)
 		rm -rf "$MNT/var/lib/pacman/sync/"* "$MNT/etc/pacman-build.conf"

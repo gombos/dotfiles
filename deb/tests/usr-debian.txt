@@ -473,10 +473,6 @@ d lib/systemd/system-preset
 f lib/systemd/system-preset/90-systemd.preset
 d lib/systemd/system.conf.d
 f lib/systemd/system.conf.d/10-coredump-debian.conf
-f lib/systemd/system/apt-daily-upgrade.service
-f lib/systemd/system/apt-daily-upgrade.timer
-f lib/systemd/system/apt-daily.service
-f lib/systemd/system/apt-daily.timer
 f lib/systemd/system/basic.target
 f lib/systemd/system/blockdev@.target
 f lib/systemd/system/bluetooth.target
@@ -500,8 +496,6 @@ f lib/systemd/system/debug-shell.service
 l lib/systemd/system/default.target
 f lib/systemd/system/dev-hugepages.mount
 f lib/systemd/system/dev-mqueue.mount
-f lib/systemd/system/dpkg-db-backup.service
-f lib/systemd/system/dpkg-db-backup.timer
 f lib/systemd/system/e2scrub@.service
 f lib/systemd/system/e2scrub_all.service
 f lib/systemd/system/e2scrub_all.timer

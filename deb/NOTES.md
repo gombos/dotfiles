@@ -304,8 +304,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
 8. Purges `perl-base init-system-helpers` (`--force-depends
    --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
    empties `machine-id`, empties `/var` except the package database (this
-   also drops apt's lists and cache). `dpkg-db-backup.timer` stays enabled:
-   without `/var/backups` the backup does nothing.
+   also drops apt's lists and cache). The `apt-daily`,
+   `apt-daily-upgrade` and `dpkg-db-backup` services and timers are deleted
+   (Debian-specific daily jobs).
 9. Stops processes still running inside the image, unmounts, runs `e2fsck`,
    detaches the loop device, deletes the old VM if it is being replaced, then
    `qm create` (q35, OVMF, virtio-scsi,

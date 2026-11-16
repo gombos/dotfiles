@@ -224,9 +224,6 @@ l systemd/system/sysinit.target.wants/systemd-network-generator.service
 l systemd/system/sysinit.target.wants/systemd-pstore.service
 l systemd/system/sysinit.target.wants/systemd-resolved.service
 d systemd/system/timers.target.wants
-l systemd/system/timers.target.wants/apt-daily-upgrade.timer
-l systemd/system/timers.target.wants/apt-daily.timer
-l systemd/system/timers.target.wants/dpkg-db-backup.timer
 l systemd/system/timers.target.wants/e2scrub_all.timer
 l systemd/system/timers.target.wants/fstrim.timer
 d systemd/user

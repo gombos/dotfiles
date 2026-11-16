@@ -99,7 +99,7 @@ debian)
 	ok var_only_dpkg [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/dpkg')" ]
 	ok dpkg_status_kept [ -s $M/var/lib/dpkg/status ]
 	ok tmpfiles_var_lib_misc grep -qx 'd /var/lib/misc 0755 root root -' $M/etc/tmpfiles.d/var-lib-misc.conf
-	nok dpkg_db_backup_masked [ -L $M/etc/systemd/system/dpkg-db-backup.timer ]
+	nok daily_units_left eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* $M/etc/systemd/system/timers.target.wants/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.timer 2>/dev/null | grep -q .'
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
