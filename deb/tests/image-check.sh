@@ -105,6 +105,9 @@ debian)
 	ok sysext_enabled [ -L $M/etc/systemd/system/sysinit.target.wants/systemd-sysext.service ]
 	ok sysext_has_apt_dpkg [ -x $ext/usr/bin/apt-get -a -x $ext/usr/bin/dpkg -a -x $ext/usr/sbin/start-stop-daemon ]
 	nok apt_dpkg_in_usr eval '[ -e $M/usr/bin/apt-get ] || [ -e $M/usr/bin/dpkg ] || [ -e $M/usr/sbin/start-stop-daemon ]'
+	ok sysext_has_debconf [ -f $ext/usr/share/debconf/confmodule -a -f $ext/usr/share/debconf/frontend.perl -a -x $ext/usr/lib/cdebconf/debconf ]
+	ok sysext_debconf_frontend [ "$(readlink $ext/usr/share/debconf/frontend)" = /usr/lib/cdebconf/debconf ]
+	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
 	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr
 	nok daily_units_left eval 'ls $M/usr/lib/systemd/system/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.* $M/etc/systemd/system/timers.target.wants/{apt-daily,apt-daily-upgrade,dpkg-db-backup}.timer 2>/dev/null | grep -q .'

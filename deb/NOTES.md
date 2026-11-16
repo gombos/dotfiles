@@ -308,7 +308,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    `apt-daily-upgrade` and `dpkg-db-backup` services and timers are deleted
    (Debian-specific daily jobs). Debian only: the commands of apt and dpkg
    (`SYSEXT_PACKAGES`: `apt*`, `dpkg*`, `update-alternatives`,
-   `start-stop-daemon`) move out of `/usr` into the systemd-sysext directory
+   `start-stop-daemon`) and all `/usr` files of debconf and cdebconf
+   (`SYSEXT_PACKAGES_ALL`; the diverted `frontend.perl` too, directories left
+   empty are removed) move out of `/usr` into the systemd-sysext directory
    extension `/etc/extensions/tools` (`SYSEXT_NAME`) and
    `systemd-sysext.service` is enabled, which merges it over `/usr` at boot as
    a read-only overlay. `/etc`, because `/var` is empty and `/run` is a tmpfs;

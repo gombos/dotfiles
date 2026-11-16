@@ -45,6 +45,7 @@ VM_NAME_DEFAULT=""	# empty: the distribution name
 ROOT_PASSWORD_DEFAULT=root
 SYSEXT_NAME=tools	# Debian: systemd-sysext extension in /etc/extensions/
 SYSEXT_PACKAGES="apt dpkg"	# their commands move into it
+SYSEXT_PACKAGES_ALL="debconf cdebconf"	# all their files in /usr move into it
 
 ############################################################### messages
 info ()    { local fmt="$1"; shift; printf "I: $fmt\n" "$@" >&4; }
@@ -1046,18 +1047,30 @@ vm_remove_kernel () {
 	mv "$MNT/usr/lib/modules.keep" "$MNT/usr/lib/modules"
 }
 
-# vm_sysext : move the commands of SYSEXT_PACKAGES out of /usr into the
-# directory extension /etc/extensions/SYSEXT_NAME, which systemd-sysext.service
+# vm_sysext : move the commands of SYSEXT_PACKAGES and all /usr files of
+# SYSEXT_PACKAGES_ALL (diverted ones under their diverted name too, directories
+# left empty are removed) out of /usr into the directory extension
+# /etc/extensions/SYSEXT_NAME, which systemd-sysext.service
 # merges over /usr at boot (read-only overlay). /etc, because /var is empty and
 # /run is a tmpfs. The extension-release file repeats the image's ID and
 # VERSION_ID (none on testing) so that systemd-sysext accepts the extension.
 vm_sysext () {
-	local ext="$MNT/etc/extensions/$SYSEXT_NAME" f
-	echo "moving the commands of $SYSEXT_PACKAGES into the $SYSEXT_NAME extension"
-	for f in $(chroot "$MNT" dpkg -L $SYSEXT_PACKAGES | grep -E '^/usr/s?bin/[^/]+$'); do
+	local ext="$MNT/etc/extensions/$SYSEXT_NAME" paths f
+	echo "moving the commands of $SYSEXT_PACKAGES and the files of $SYSEXT_PACKAGES_ALL into the $SYSEXT_NAME extension"
+	# everything is listed first: dpkg and dpkg-divert move as well
+	paths=$({ chroot "$MNT" dpkg -L $SYSEXT_PACKAGES | grep -E '^/usr/s?bin/[^/]+$'
+		chroot "$MNT" dpkg -L $SYSEXT_PACKAGES_ALL | grep '^/usr/'; } |
+		awk -v divs="$(chroot "$MNT" dpkg-divert --list | sed -n 's/.* of \([^ ]*\) to \([^ ]*\).*/\1 \2/p')" '
+			BEGIN { n = split(divs, l, "\n"); for (i = 1; i <= n; i++) { split(l[i], p, " "); to[p[1]] = p[2] } }
+			{ print; if ($0 in to) print to[$0] }')
+	for f in $paths; do
 		[ -f "$MNT$f" ] || [ -L "$MNT$f" ] || continue
 		mkdir -p "$ext${f%/*}"
 		mv "$MNT$f" "$ext$f"
+	done
+	# directories of SYSEXT_PACKAGES_ALL left empty, deepest first
+	printf '%s\n' $paths | sort -r | while read -r f; do
+		[ ! -d "$MNT$f" ] || rmdir --ignore-fail-on-non-empty "$MNT$f"
 	done
 	mkdir -p "$ext/usr/lib/extension-release.d"
 	grep -E '^(ID|VERSION_ID|SYSEXT_LEVEL)=' "$MNT/usr/lib/os-release" \

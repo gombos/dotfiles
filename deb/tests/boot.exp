@@ -75,6 +75,7 @@ if {$distro eq "debian"} {
 	check usr_sysext_overlay "findmnt -no FSTYPE /usr | paste -sd' '" {^ext4 overlay$}
 	check sysext_merged    "systemd-sysext status --no-pager" {tools}
 	check apt_dpkg_from_sysext "test -x /usr/bin/apt-get && test -x /usr/bin/dpkg && test -x /usr/sbin/start-stop-daemon"
+	check debconf_from_sysext "test -f /usr/share/debconf/confmodule && test -x \$(readlink -f /usr/share/debconf/frontend)"
 } else {
 	check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
 }
