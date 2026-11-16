@@ -648,12 +648,13 @@ bootstrap_main () {
 # rootfs_trim DIR : drop docs, man/info pages and non-English locales (what the
 # package managers' exclude rules miss), directories that are empty in a
 # minimal system and the package cache in /var/cache (the VM build recreates
-# what apt and pacman need); set a default locale
+# what apt and pacman need, vm_finish empties the rest of /var); set a default
+# locale
 rootfs_trim () {
 	rm -rf "$1/usr/share/doc" "$1/usr/share/man" "$1/usr/share/info" \
 		"$1/usr/share/dict" "$1/usr/share/misc" \
 		"$1/usr/local" "$1/usr/src" "$1/usr/games" \
-		"$1/var/backups" "$1/var/cache" "$1/var/local" "$1/var/opt"
+		"$1/var/cache"
 	[ ! -d "$1/usr/share/locale" ] ||
 		find "$1/usr/share/locale" -mindepth 1 -maxdepth 1 ! -name 'en*' -exec rm -rf {} +
 	# Debian ships /etc/default/locale as a symlink to ../locale.conf; without a
@@ -831,8 +832,8 @@ vm_check_rootfs () {
 	# brings the kernel with the rootfs)
 	MODULES_MB=$(du -sxm "$ROOTFS/usr/lib/modules" 2>/dev/null | cut -f1)
 	MODULES_MB=${MODULES_MB:-0}
-	# package lists and caches are not copied into the image (the package
-	# manager renews them); the root disk also holds the kernel, initrd and,
+	# package lists and caches are not kept in the image (vm_finish empties
+	# /var); the root disk also holds the kernel, initrd and,
 	# during the build, package lists and downloads
 	APT_MB=$(du -sxmc "$ROOTFS/var/lib/apt/lists" "$ROOTFS/var/cache/apt" \
 		"$ROOTFS/var/lib/pacman/sync" "$ROOTFS/var/cache/pacman" 2>/dev/null | tail -n 1 | cut -f1)
@@ -879,8 +880,6 @@ vm_make_disk () {
 
 	echo "copying rootfs"
 	cp -a "$ROOTFS/." "$MNT/"
-	rm -rf "$MNT/var/lib/apt/lists/"* "$MNT/var/cache/apt/"* \
-		"$MNT/var/lib/pacman/sync/"* "$MNT/var/cache/pacman/pkg/"*
 	mkdir -p "$MNT/efi" "$MNT/proc" "$MNT/sys" "$MNT/dev"
 	mount "${LOOP_ESP}p1" "$MNT/efi"
 	mount -t proc proc "$MNT/proc"
@@ -963,9 +962,6 @@ Name=en* eth*
 DHCP=yes
 EOF
 	chroot "$MNT" systemctl enable systemd-networkd.service systemd-resolved.service
-	# the daily dpkg database backup would write to /var/backups, which
-	# rootfs_trim removed
-	[ "$DISTRO" != debian ] || chroot "$MNT" systemctl mask dpkg-db-backup.timer
 	printf 'root:%s\n' "${ROOT_PASSWORD:-$ROOT_PASSWORD_DEFAULT}" | chroot "$MNT" chpasswd
 	unset ROOT_PASSWORD
 }
@@ -1053,8 +1049,6 @@ vm_finish () {
 	case "$DISTRO" in
 	debian)
 		chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
-		chroot "$MNT" apt-get clean
-		rm -rf "$MNT/var/lib/apt/lists/"*
 		;;
 	arch)
 		rm -rf "$MNT/var/lib/pacman/sync/"* "$MNT/etc/pacman-build.conf"

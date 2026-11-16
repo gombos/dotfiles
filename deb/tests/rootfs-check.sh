@@ -11,7 +11,7 @@ ok sh_is_bash   [ "$(readlink "$R/usr/bin/sh")" = bash ]
 ok awk_is_gawk  [ "$(in_root readlink -f /usr/bin/awk)" = /usr/bin/gawk ]
 for f in usr/bin/perl usr/share/doc usr/share/man usr/share/info \
 	usr/share/dict usr/share/misc usr/local usr/src usr/games \
-	var/backups var/cache var/local var/opt; do
+	var/cache; do
 	nok "absent_${f//\//_}" [ -e "$R/$f" ]
 done
 ok locale_conf    grep -qx "LANG=C.UTF-8" "$R/etc/locale.conf"

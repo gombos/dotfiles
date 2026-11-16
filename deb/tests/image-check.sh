@@ -83,7 +83,7 @@ debian)
 	ok var_only_dpkg [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/dpkg')" ]
 	ok dpkg_status_kept [ -s $M/var/lib/dpkg/status ]
 	ok tmpfiles_var_lib_misc grep -qx 'd /var/lib/misc 0755 root root -' $M/etc/tmpfiles.d/var-lib-misc.conf
-	ok dpkg_db_backup_masked [ "$(readlink $M/etc/systemd/system/dpkg-db-backup.timer)" = /dev/null ]
+	nok dpkg_db_backup_masked [ -L $M/etc/systemd/system/dpkg-db-backup.timer ]
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]

@@ -112,7 +112,7 @@ mkdir -p $TARGET/usr/share/doc/x $TARGET/usr/share/man/man1 $TARGET/usr/share/lo
 run rootfs_trim $TARGET
 ok trim_docs     [ ! -e $TARGET/usr/share/doc -a ! -e $TARGET/usr/share/man ]
 ok trim_dirs     [ ! -e $TARGET/usr/local -a ! -e $TARGET/usr/games -a ! -e $TARGET/usr/share/misc ]
-ok trim_var      [ ! -e $TARGET/var/backups -a ! -e $TARGET/var/cache -a ! -e $TARGET/var/local -a ! -e $TARGET/var/opt ]
+ok trim_var      [ ! -e $TARGET/var/cache ]
 ok trim_var_keep [ -d $TARGET/var/lib/x ]
 ok trim_locales  [ "$(ls $TARGET/usr/share/locale)" = en_GB ]
 ok trim_locale_conf grep -qx 'LANG=C.UTF-8' $TARGET/etc/locale.conf

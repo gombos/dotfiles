@@ -168,8 +168,8 @@ Following the Arch wiki page "Install Arch Linux from existing Linux":
    unmount can never delete the target through the bind mount).
 5. In the target: same mirrorlist and `NoExtract`, empty sync databases, then
    the same trimming as Debian (`rootfs_trim`: docs, man/info, non-English
-   locales, empty `/usr/local` etc., `/var/backups`, `/var/cache` (package
-   cache included), `/var/local`, `/var/opt`, `/etc/locale.conf`).
+   locales, empty `/usr/local` etc., `/var/cache` (package cache included),
+   `/etc/locale.conf`).
    The log is in `/var/log/bootstrap.log`.
 
 Result: `base` plus the kernel, guest agent, dracut and ukify.
@@ -303,7 +303,9 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    nor the modules are deleted. No placeholder package is needed.
 8. Purges `perl-base init-system-helpers` (`--force-depends
    --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
-   empties `machine-id`, cleans apt.
+   empties `machine-id`, empties `/var` except the package database (this
+   also drops apt's lists and cache). `dpkg-db-backup.timer` stays enabled:
+   without `/var/backups` the backup does nothing.
 9. Stops processes still running inside the image, unmounts, runs `e2fsck`,
    detaches the loop device, deletes the old VM if it is being replaced, then
    `qm create` (q35, OVMF, virtio-scsi,
