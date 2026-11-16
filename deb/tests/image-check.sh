@@ -80,8 +80,8 @@ ok machine_id_empty [ -f $M/etc/machine-id -a ! -s $M/etc/machine-id ]
 ok root_password_set eval "grep '^root:' $M/etc/shadow | cut -d: -f2 | grep -q '^\\\$'"
 case "$D" in
 debian)
-	ok apt_lists_empty [ -z "$(ls -A $M/var/lib/apt/lists | grep -v -e '^lock$' -e '^partial$' -e '^auxfiles$')" ]
-	ok apt_archives_empty [ -z "$(find $M/var/cache/apt/archives -name '*.deb')" ]
+	ok var_only_dpkg [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/dpkg')" ]
+	ok dpkg_status_kept [ -s $M/var/lib/dpkg/status ]
 	ok dpkg_db_backup_masked [ "$(readlink $M/etc/systemd/system/dpkg-db-backup.timer)" = /dev/null ]
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
@@ -98,8 +98,9 @@ debian)
 	ok "apt_get_check${note:+ ($note)}" [ $rc -eq 0 ]
 	;;
 arch)
+	ok var_only_pacman [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/pacman')" ]
 	ok pacman_sync_empty  [ -z "$(ls -A $M/var/lib/pacman/sync)" ]
-	ok pacman_cache_empty [ -z "$(ls -A $M/var/cache/pacman/pkg)" ]
+	ok pacman_local_kept  [ -n "$(ls -A $M/var/lib/pacman/local)" ]
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)

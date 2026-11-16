@@ -1049,6 +1049,7 @@ vm_remove_kernel () {
 }
 
 vm_finish () {
+	local pkgdb
 	case "$DISTRO" in
 	debian)
 		chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
@@ -1057,8 +1058,14 @@ vm_finish () {
 		;;
 	arch)
 		rm -rf "$MNT/var/lib/pacman/sync/"* "$MNT/etc/pacman-build.conf"
+		mountpoint -q "$MNT/var/cache/pacman/pkg" && umount "$MNT/var/cache/pacman/pkg"
 		;;
 	esac
+	# / is a tmpfs overlay (rd.overlay=1), systemd-tmpfiles creates what /var
+	# needs at boot: only the package database stays
+	case "$DISTRO" in debian) pkgdb=dpkg ;; arch) pkgdb=pacman ;; esac
+	find "$MNT/var" -mindepth 1 -maxdepth 1 ! -name lib -exec rm -rf {} +
+	find "$MNT/var/lib" -mindepth 1 -maxdepth 1 ! -name "$pkgdb" -exec rm -rf {} +
 	# the host's resolv.conf was only needed for downloads during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"
