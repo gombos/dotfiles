@@ -82,6 +82,7 @@ case "$D" in
 debian)
 	ok var_only_dpkg [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/dpkg')" ]
 	ok dpkg_status_kept [ -s $M/var/lib/dpkg/status ]
+	ok tmpfiles_var_lib_misc grep -qx 'd /var/lib/misc 0755 root root -' $M/etc/tmpfiles.d/var-lib-misc.conf
 	ok dpkg_db_backup_masked [ "$(readlink $M/etc/systemd/system/dpkg-db-backup.timer)" = /dev/null ]
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
@@ -101,6 +102,7 @@ arch)
 	ok var_only_pacman [ "$(cd $M/var && find . -mindepth 1 -maxdepth 2)" = "$(printf './lib\n./lib/pacman')" ]
 	ok pacman_sync_empty  [ -z "$(ls -A $M/var/lib/pacman/sync)" ]
 	ok pacman_local_kept  [ -n "$(ls -A $M/var/lib/pacman/local)" ]
+	nok tmpfiles_var_lib_misc [ -e $M/etc/tmpfiles.d/var-lib-misc.conf ]
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)

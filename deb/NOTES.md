@@ -263,7 +263,11 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    upper layer on tmpfs (`/run/initramfs/overlay`), so changes to `/` are lost
    at reboot and the root disk is never written. The fstab entry for `/` is
    `defaults 0 0`: `systemd-remount-fs` remounts `/` with its options and
-   overlayfs rejects ext4 ones such as `errors=remount-ro`.
+   overlayfs rejects ext4 ones such as `errors=remount-ro`. `/var` on the root
+   disk holds only the package database (`/var/lib/dpkg` or `/var/lib/pacman`);
+   systemd-tmpfiles creates the rest at boot. On Debian `/var/lib/misc` needs
+   `/etc/tmpfiles.d/var-lib-misc.conf` (workaround: base-files ships the
+   directory, but no tmpfiles.d entry creates it).
 3. Copies the rootfs in, mounts proc, rbind-mounts sys/dev as rslave (so the
    later `umount -R` cannot propagate to the host's /dev/pts, /sys/fs/cgroup...),
    mounts the ESP at /efi.

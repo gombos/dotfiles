@@ -1066,6 +1066,13 @@ vm_finish () {
 	case "$DISTRO" in debian) pkgdb=dpkg ;; arch) pkgdb=pacman ;; esac
 	find "$MNT/var" -mindepth 1 -maxdepth 1 ! -name lib -exec rm -rf {} +
 	find "$MNT/var/lib" -mindepth 1 -maxdepth 1 ! -name "$pkgdb" -exec rm -rf {} +
+	if [ "$DISTRO" = debian ]; then
+		# workaround for a Debian issue: base-files ships /var/lib/misc as a
+		# plain directory and no tmpfiles.d entry creates it, so it would be
+		# missing with an empty /var
+		mkdir -p "$MNT/etc/tmpfiles.d"
+		echo 'd /var/lib/misc 0755 root root -' > "$MNT/etc/tmpfiles.d/var-lib-misc.conf"
+	fi
 	# the host's resolv.conf was only needed for downloads during the build
 	rm -f "$MNT/etc/resolv.conf"
 	ln -s ../run/systemd/resolve/stub-resolv.conf "$MNT/etc/resolv.conf"

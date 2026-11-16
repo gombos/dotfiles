@@ -82,6 +82,7 @@ check machine_id       "test -s /etc/machine-id"
 check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
 check dns              "getent hosts deb.debian.org"
 if {$distro eq "debian"} {
+	check var_lib_misc_created "stat -c '%F %a %U:%G' /var/lib/misc" {^directory 755 root:root$}
 	check dpkg_db_usable "dpkg-query -W systemd" {^systemd\s}
 	check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
 	check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
