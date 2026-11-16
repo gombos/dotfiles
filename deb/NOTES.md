@@ -306,7 +306,10 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    empties `machine-id`, empties `/var` except the package database (this
    also drops apt's lists and cache). Debian only: `/usr/lib/kernel` (kernel-install) and
    `/usr/share/initramfs-tools` are deleted (no kernel, no initramfs-tools in
-   the image), then all `/usr` files of `SYSEXT_PACKAGES` (apt, dpkg,
+   the image), and so are `/etc/init.d` and `/etc/rc?.d` (SysV scripts and
+   runlevel links: no systemd-sysv-generator, dbus and qemu-guest-agent start
+   from their units; without the scripts their maintainer scripts skip
+   `update-rc.d`), then all `/usr` files of `SYSEXT_PACKAGES` (apt, dpkg,
    libapt-pkg, sqv, debian-archive-keyring, debconf, cdebconf and its newt,
    slang, textwrap and debian-installer libraries, base-passwd and
    libdebconfclient0, which only base-passwd uses; diverted files such as

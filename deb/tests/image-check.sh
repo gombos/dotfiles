@@ -114,6 +114,7 @@ debian)
 	nok more_in_usr eval 'ls -d $M/usr/share/keyrings $M/usr/lib/apt $M/usr/lib/lsb $M/usr/share/lintian $M/usr/share/common-licenses $M/usr/lib/x86_64-linux-gnu/libapt-pkg.so.* 2>/dev/null | grep -q .'
 	nok kernel_install_left [ -e $M/usr/lib/kernel ]
 	nok initramfs_tools_left [ -e $M/usr/share/initramfs-tools ]
+	nok sysv_init_left eval 'ls -d $M/etc/init.d $M/etc/rc?.d 2>/dev/null | grep -q .'
 	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
 	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr

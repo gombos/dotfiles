@@ -1107,6 +1107,10 @@ vm_finish () {
 		# no kernel and no initramfs-tools in the image: kernel-install's
 		# configuration and plugins and initramfs-tools hooks are of no use
 		rm -rf "$MNT/usr/lib/kernel" "$MNT/usr/share/initramfs-tools"
+		# SysV init scripts and their runlevel links: systemd starts the
+		# native units, and the image has no systemd-sysv-generator; without
+		# /etc/init.d the packages' maintainer scripts skip update-rc.d
+		rm -rf "$MNT/etc/init.d" "$MNT"/etc/rc[0-6S].d
 		vm_sysext
 		;;
 	arch)
