@@ -102,7 +102,7 @@ debian)
 	ok tmpfiles_var_lib_misc grep -qx 'd /var/lib/misc 0755 root root -' $M/etc/tmpfiles.d/var-lib-misc.conf
 	ext=$M/etc/extensions/tools
 	ok sysext_release [ "$(cat $ext/usr/lib/extension-release.d/extension-release.tools)" = "$(grep -E '^(ID|VERSION_ID|SYSEXT_LEVEL)=' $M/usr/lib/os-release)" ]
-	ok sysext_enabled [ -L $M/etc/systemd/system/sysinit.target.wants/systemd-sysext.service ]
+	nok sysext_merged_at_boot [ -e $M/etc/systemd/system/sysinit.target.wants/systemd-sysext.service ]
 	ok sysext_has_apt_dpkg [ -x $ext/usr/bin/apt-get -a -x $ext/usr/bin/dpkg -a -x $ext/usr/sbin/start-stop-daemon ]
 	nok apt_dpkg_in_usr eval '[ -e $M/usr/bin/apt-get ] || [ -e $M/usr/bin/dpkg ] || [ -e $M/usr/sbin/start-stop-daemon ]'
 	ok sysext_has_debconf [ -f $ext/usr/share/debconf/confmodule -a -f $ext/usr/share/debconf/frontend.perl -a -x $ext/usr/lib/cdebconf/debconf ]

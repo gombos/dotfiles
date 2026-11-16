@@ -1052,10 +1052,12 @@ vm_remove_kernel () {
 # work once the extension is merged) and all /usr files of
 # SYSEXT_PACKAGES_ALL (diverted ones under their diverted name too, directories
 # left empty are removed) out of /usr into the directory extension
-# /etc/extensions/SYSEXT_NAME, which systemd-sysext.service
-# merges over /usr at boot (read-only overlay). /etc, because /var is empty and
-# /run is a tmpfs. The extension-release file repeats the image's ID and
-# VERSION_ID (none on testing) so that systemd-sysext accepts the extension.
+# /etc/extensions/SYSEXT_NAME. It is not merged at boot (systemd-sysext.service
+# stays disabled, the files are not wanted by default): "systemd-sysext merge"
+# overlays it on /usr, read-only, "systemd-sysext unmerge" removes it again.
+# /etc, because /var is empty and /run is a tmpfs. The extension-release file
+# repeats the image's ID and VERSION_ID (none on testing) so that
+# systemd-sysext accepts the extension.
 vm_sysext () {
 	local ext="$MNT/etc/extensions/$SYSEXT_NAME" paths f
 	echo "moving the commands and units of $SYSEXT_PACKAGES and the files of $SYSEXT_PACKAGES_ALL into the $SYSEXT_NAME extension"
@@ -1077,7 +1079,6 @@ vm_sysext () {
 	mkdir -p "$ext/usr/lib/extension-release.d"
 	grep -E '^(ID|VERSION_ID|SYSEXT_LEVEL)=' "$MNT/usr/lib/os-release" \
 		> "$ext/usr/lib/extension-release.d/extension-release.$SYSEXT_NAME"
-	chroot "$MNT" systemctl enable systemd-sysext.service
 }
 
 vm_finish () {

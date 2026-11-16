@@ -311,9 +311,10 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    `timers.target.wants` links stay in `/etc`) and all `/usr` files of debconf and cdebconf
    (`SYSEXT_PACKAGES_ALL`; the diverted `frontend.perl` too, directories left
    empty are removed) move out of `/usr` into the systemd-sysext directory
-   extension `/etc/extensions/tools` (`SYSEXT_NAME`) and
-   `systemd-sysext.service` is enabled, which merges it over `/usr` at boot as
-   a read-only overlay. `/etc`, because `/var` is empty and `/run` is a tmpfs;
+   extension `/etc/extensions/tools` (`SYSEXT_NAME`). It is not merged at
+   boot: `systemd-sysext.service` stays disabled, as these files are not wanted
+   by default; `systemd-sysext merge` overlays it on `/usr` (read-only),
+   `systemd-sysext unmerge` removes it. `/etc`, because `/var` is empty and `/run` is a tmpfs;
    `usr/lib/extension-release.d/extension-release.tools` repeats the image's
    `ID`/`VERSION_ID` (testing has no `VERSION_ID`, then `ID` alone matches).
    Its file list is `tests/sysext-debian.txt`.

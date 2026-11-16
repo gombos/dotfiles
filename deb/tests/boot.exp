@@ -70,14 +70,11 @@ check root_lower_on_own_disk "findmnt -no SOURCE,FSTYPE /run/rootfsbase" {/dev/s
 check root_lower_read_only "findmnt -no OPTIONS /run/rootfsbase" {^ro,}
 check root_writes_not_on_disk "touch /root/overlay-test && test -e /root/overlay-test && test ! -e /run/rootfsbase/root/overlay-test"
 check esp_mounted      "findmnt -no FSTYPE /efi" {^vfat$}
+check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {^/dev/sd.1 ext4$}
 if {$distro eq "debian"} {
-	# systemd-sysext merges the extension over the /usr disk
-	check usr_sysext_overlay "findmnt -no FSTYPE /usr | paste -sd' '" {^ext4 overlay$}
-	check sysext_merged    "systemd-sysext status --no-pager" {tools}
-	check apt_dpkg_from_sysext "test -x /usr/bin/apt-get && test -x /usr/bin/dpkg && test -x /usr/sbin/start-stop-daemon"
-	check debconf_from_sysext "test -f /usr/share/debconf/confmodule && test -x \$(readlink -f /usr/share/debconf/frontend)"
-} else {
-	check usr_on_own_disk  "findmnt -no SOURCE,FSTYPE /usr" {/dev/sd.1 ext4}
+	# the extension is not merged at boot
+	check sysext_not_enabled "systemctl is-enabled systemd-sysext.service" {^disabled$}
+	check sysext_not_merged "! command -v dpkg && ! command -v apt-get && test ! -e /usr/share/debconf"
 }
 check usr_read_only     "findmnt -no OPTIONS /usr" {^ro,}
 check modules_on_own_disk "findmnt -no SOURCE,FSTYPE /usr/lib/modules" {/dev/sd.1 ext4}
@@ -91,7 +88,13 @@ check dhcp_address     "networkctl status --no-pager" {10\.0\.2\.15}
 check dns              "getent hosts deb.debian.org"
 if {$distro eq "debian"} {
 	check var_lib_misc_created "stat -c '%F %a %U:%G' /var/lib/misc" {^directory 755 root:root$}
-	check daily_timers_from_sysext "systemctl is-active apt-daily.timer apt-daily-upgrade.timer dpkg-db-backup.timer"
+	# merged by hand, the extension brings apt, dpkg, debconf and the timers
+	check sysext_merge     "systemd-sysext merge && systemd-sysext status --no-pager" {tools}
+	check usr_sysext_overlay "findmnt -no FSTYPE /usr | paste -sd' '" {^ext4 overlay$}
+	check modules_after_merge "findmnt -no SOURCE,FSTYPE /usr/lib/modules" {/dev/sd.1 ext4}
+	check apt_dpkg_from_sysext "test -x /usr/bin/apt-get && test -x /usr/bin/dpkg && test -x /usr/sbin/start-stop-daemon"
+	check debconf_from_sysext "test -f /usr/share/debconf/confmodule && test -x \$(readlink -f /usr/share/debconf/frontend)"
+	check daily_timers_from_sysext "systemctl is-enabled apt-daily.timer apt-daily-upgrade.timer dpkg-db-backup.timer"
 	check dpkg_db_usable "dpkg-query -W systemd" {^systemd\s}
 	check apt_update_signed "apt-get update -q && ! apt-get update -q 2>&1 | grep -E '^(W|E):'"
 	check apt_no_modernize_notice "! apt update 2>&1 | grep -i modernize"
