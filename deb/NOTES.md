@@ -273,7 +273,8 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    mounts the ESP at /efi.
 4. In the chroot:
    - `apt-get update` with normal signature checks (no overrides).
-   - Installs `perl-base init-system-helpers` (temporarily, see caveats).
+   - Installs `perl-base init-system-helpers` (they stay, their files move
+     into the sysext extension, see caveats).
    - Installs `linux-image-cloud-amd64 dracut kmod udev qemu-guest-agent
      systemd-resolved` (dracut satisfies the kernel's initramfs dependency; kmod
      and udev explicitly so they stay when the kernel and dracut go).
@@ -282,7 +283,8 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    root password.
    Tailscale (`vm_install_tailscale`), from each distribution's signed
    source: on Arch the `tailscale` package from `extra`; on Debian
-   Tailscale's apt repository (`TAILSCALE_APT`, suite `$SUITE`), whose
+   Tailscale's apt repository (`TAILSCALE_APT`, suite `$SUITE`; HTTPS only,
+   so `ca-certificates`, with `openssl`, is installed first), whose
    signing key (fingerprint `2596A99EAAB33821893C0A79458CA832957F5868`) is
    downloaded over HTTPS and must match `TAILSCALE_KEY_SHA256`; it goes to
    `/etc/apt/keyrings/tailscale.gpg` (`/usr/share/keyrings` moves into the
@@ -290,6 +292,17 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    uses it. `tailscaled.service` is enabled. Its state in
    `/var/lib/tailscale` is on the tmpfs root, so a login does not survive a
    reboot.
+   Docker Engine (`vm_install_docker`). Arch: Docker has no Arch packages,
+   so Arch's own from `extra` (Arch keyring): `docker` (with `containerd`
+   and `runc`), `docker-buildx`, `docker-compose`. Debian: as in
+   docs.docker.com/engine/install/debian: Docker's apt repository
+   (`DOCKER_APT`), its key at `/etc/apt/keyrings/docker.asc` (fingerprint
+   `9DC858229FC7DD38854AE2D88D81803C0EBFCD88`, must match
+   `DOCKER_KEY_SHA256`), `docker.sources`, then `DOCKER_PACKAGES`
+   (`docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-buildx-plugin`,
+   `docker-compose-plugin`); `docker.service` is enabled. Docker has no
+   suite for testing, so `DOCKER_SUITE` is `trixie`, the release Docker
+   supports.
 6. Builds the unified kernel image last (copy of `bin/uki.sh` and
    `bin/uki-dracut.sh`): installs `systemd-ukify systemd-boot-efi util-linux-extra`
    (dracut is already there), runs `dracut --no-hostonly` directly with the module
@@ -311,8 +324,7 @@ On failure the work directory under `WORKDIR` is kept and its path is printed.
    unmounted and `/usr/lib/modules` moved aside during the removal (empty
    version directories stay for the `linux-modules` prerm), so neither the UKI
    nor the modules are deleted. No placeholder package is needed.
-8. Purges `perl-base init-system-helpers` (`--force-depends
-   --force-remove-essential`), points `/etc/resolv.conf` at the resolved stub,
+8. Points `/etc/resolv.conf` at the resolved stub,
    empties `machine-id`, empties `/var` except the package database (this
    also drops apt's lists and cache). Debian only: `/usr/lib/kernel` (kernel-install) and
    `/usr/share/initramfs-tools` are deleted (no kernel, no initramfs-tools in
@@ -391,13 +403,14 @@ intended change, copy them over the expected ones.
 
 ### Caveats
 
-- **Perl and init-system-helpers are back during the install.** The kernel
-  postinst (`dpkg-preconfigure`) needs Perl, and dbus, udev and
-  qemu-guest-agent need `update-rc.d` and `deb-systemd-helper`. Both are
-  purged again before the image is finished, so the final image has neither,
-  as the bootstrap intends. This temporarily breaks the earlier "no Perl" rule
-  inside the build step only. debconf's Perl modules (`/usr/share/perl5`,
-  used by `dpkg-preconfigure`) are deleted with them.
+- **Perl and init-system-helpers are back in the VM image, in the sysext
+  extension.** The kernel postinst (`dpkg-preconfigure`) needs Perl, dbus,
+  udev and qemu-guest-agent need `update-rc.d` and `deb-systemd-helper`, and
+  `docker-ce` pre-depends on init-system-helpers, so purging them would leave
+  dpkg with an unmet dependency. Both stay installed and are in
+  `SYSEXT_PACKAGES`: the base `/usr` has no Perl, and once the extension is
+  merged apt, dpkg and maintainer scripts have Perl, debconf's Perl modules
+  and the helpers again.
 - The VM image verifies the archive with the `Signed-By` keyring; the QEMU
   boot test runs `apt-get update` and checks for warnings and the modernize notice.
 - The imported volume is read from `qm config` (`unusedN:`); if none is found the

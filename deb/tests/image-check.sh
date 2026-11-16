@@ -57,8 +57,9 @@ file_list () {
 # each CA bundle (hashed certificate names); the extensions have their own list
 file_list etc $M/etc 'extensions|ssl/certs|ca-certificates/extracted/cadir|pacman\.d/gnupg/(openpgp-revocs\.d|private-keys-v1\.d)'
 [ "$D" != debian ] || file_list sysext $M/etc/extensions/tools
-# the modules have their own disk, named after the kernel version
-file_list usr $M/usr 'lib/modules'
+# the modules have their own disk, named after the kernel version; Debian's
+# CA certificate names change with each CA bundle
+file_list usr $M/usr 'lib/modules|share/ca-certificates/mozilla'
 ok modules_on_modules_disk [ -n "$(ls $M/usr/lib/modules/*/modules.dep 2>/dev/null)" ]
 uki=$M/efi/EFI/BOOT/BOOTX64.EFI
 ok uki_present [ -s "$uki" ]
@@ -94,6 +95,7 @@ ok networkd_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/systemd-n
 ok resolved_enabled [ -n "$(find $M/etc/systemd/system -name systemd-resolved.service -type l)" ]
 ok resolv_conf_stub [ "$(readlink $M/etc/resolv.conf)" = ../run/systemd/resolve/stub-resolv.conf ]
 ok tailscale_installed [ -x $M/usr/sbin/tailscaled -a -x $M/usr/bin/tailscale -a -f $M/usr/lib/systemd/system/tailscaled.service -a -f $M/etc/default/tailscaled ]
+ok docker_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/docker.service ]
 ok tailscaled_enabled [ -L $M/etc/systemd/system/multi-user.target.wants/tailscaled.service ]
 nok etc_bak_left eval 'find $M/etc -name "*.bak" | grep -q .'
 ok machine_id_empty [ -f $M/etc/machine-id -a ! -s $M/etc/machine-id ]
@@ -119,16 +121,20 @@ debian)
 	nok initramfs_tools_left [ -e $M/usr/share/initramfs-tools ]
 	nok cron_logrotate_left eval 'ls -d $M/etc/cron.d $M/etc/cron.daily $M/etc/logrotate.d 2>/dev/null | grep -q .'
 	nok sysv_init_left eval 'ls -d $M/etc/init.d $M/etc/rc?.d 2>/dev/null | grep -q .'
+	ok sysext_has_perl [ -x $ext/usr/bin/perl -a -x $ext/usr/sbin/update-rc.d -a -x $ext/usr/bin/deb-systemd-helper -a -d $ext/usr/share/perl5/Debconf ]
+	nok perl_in_usr eval '[ -e $M/usr/bin/perl ] || [ -e $M/usr/share/perl5 ] || [ -e $M/usr/sbin/update-rc.d ]'
 	nok debconf_in_usr eval '[ -e $M/usr/share/debconf ] || [ -e $M/usr/lib/cdebconf ] || [ -e $M/usr/bin/debconf ]'
 	# the rest runs dpkg and apt: merge the extension like systemd-sysext does
 	mount -t overlay overlay -o ro,lowerdir=$ext/usr:$M/usr $M/usr
 	status=$(chroot $M dpkg-query -W -f '${Package} ${db:Status-Abbrev}\n')
 	pkgs=$(printf '%s\n' "$status" | cut -d' ' -f1 | sed 's/:.*//')
 	ok all_ii [ -z "$(printf '%s\n' "$status" | grep -v ' ii ')" ]
-	want="kmod udev qemu-guest-agent systemd-resolved tailscale"
+	want="kmod udev qemu-guest-agent systemd-resolved ca-certificates tailscale perl-base init-system-helpers docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
+	ok docker_apt_key [ "$(sha256sum < $M/etc/apt/keyrings/docker.asc | cut -d' ' -f1)" = 1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570 ]
+	ok docker_apt_source grep -qx 'Signed-By: /etc/apt/keyrings/docker.asc' $M/etc/apt/sources.list.d/docker.sources
 	ok tailscale_apt_key [ "$(sha256sum < $M/etc/apt/keyrings/tailscale.gpg | cut -d' ' -f1)" = 3e03dacf222698c60b8e2f990b809ca1b3e104de127767864284e6c228f1fb39 ]
 	ok tailscale_apt_source grep -qx 'Signed-By: /etc/apt/keyrings/tailscale.gpg' $M/etc/apt/sources.list.d/tailscale.sources
-	gone="linux-image-cloud-amd64 no-initramfs-tool perl-base init-system-helpers dracut dracut-core
+	gone="linux-image-cloud-amd64 no-initramfs-tool dracut dracut-core
 		dracut-network systemd-ukify systemd-boot-efi python3 iproute2 util-linux-extra grub-efi-amd64-bin
 		initramfs-tools"
 	nok no_kernel_packages eval 'printf "%s\n" "$pkgs" | grep -qE "^linux-(image|binary|modules)-"'
@@ -147,7 +153,7 @@ arch)
 	ok pacman_sandbox_stock eval 'grep -qx "DownloadUser = alpm" $M/etc/pacman.conf && ! grep -q "^DisableSandbox" $M/etc/pacman.conf'
 	nok pacman_build_conf_left [ -e $M/etc/pacman-build.conf ]
 	pkgs=$(chroot $M pacman -Qq)
-	want="kmod qemu-guest-agent systemd base tailscale"
+	want="kmod qemu-guest-agent systemd base tailscale docker docker-buildx docker-compose"
 	gone="linux dracut systemd-ukify no-initramfs mkinitcpio python perl grub"
 	out=$(chroot $M pacman -Dk 2>&1); rc=$?
 	ok "pacman_dk${out:+ ($(printf '%s' "$out" | head -n 1))}" [ $rc -eq 0 ]
@@ -156,6 +162,5 @@ esac
 echo "INFO packages installed: $(printf '%s\n' "$pkgs" | wc -l); used: $(df -h --output=used $M | tail -n 1 | tr -d ' ')"
 for p in $want; do ok "installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
 for p in $gone; do nok "not_installed_$p" eval "printf '%s\n' \"\$pkgs\" | grep -qx '$p'"; done
-nok no_perl [ -e $M/usr/bin/perl ]
-nok no_perl_modules [ -e $M/usr/share/perl5 ]
+[ "$D" = debian ] || nok no_perl [ -e $M/usr/bin/perl ]
 summary

@@ -47,11 +47,20 @@ ROOT_PASSWORD_DEFAULT=root
 # 2596A99EAAB33821893C0A79458CA832957F5868) is checked against this SHA256
 TAILSCALE_APT=https://pkgs.tailscale.com/stable/debian
 TAILSCALE_KEY_SHA256=3e03dacf222698c60b8e2f990b809ca1b3e104de127767864284e6c228f1fb39
+# Debian: Docker Engine from Docker's apt repository, as in
+# docs.docker.com/engine/install/debian. Docker has no suite for testing
+# (forky), so a supported release's is used. Its signing key (fingerprint
+# 9DC858229FC7DD38854AE2D88D81803C0EBFCD88) is checked against this SHA256.
+DOCKER_APT=https://download.docker.com/linux/debian
+DOCKER_SUITE=trixie
+DOCKER_KEY_SHA256=1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570
+DOCKER_PACKAGES="docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"
 SYSEXT_NAME=tools	# Debian: systemd-sysext extension in /etc/extensions/
 # packages whose files in /usr move into it (dpkg-query patterns): apt and dpkg
 # with what only they use, debconf and cdebconf with their frontend libraries,
-# base-passwd (update-passwd)
-SYSEXT_PACKAGES="apt dpkg libapt-pkg* sqv debian-archive-keyring debconf cdebconf libnewt* libslang2 libtextwrap1 libdebian-installer4 base-passwd libdebconfclient0"
+# base-passwd (update-passwd), Perl and init-system-helpers (update-rc.d,
+# deb-systemd-helper: maintainer scripts; docker-ce pre-depends on it)
+SYSEXT_PACKAGES="apt dpkg libapt-pkg* sqv debian-archive-keyring debconf cdebconf libnewt* libslang2 libtextwrap1 libdebian-installer4 base-passwd libdebconfclient0 perl-base init-system-helpers"
 # more paths below /usr that move, whole: used only by package maintainer
 # scripts (LSB init functions, templates for /etc, shell list tools) or
 # packaging metadata nothing reads at runtime
@@ -925,8 +934,9 @@ vm_install_packages () {
 		chroot "$MNT" apt-get update
 		# The rootfs has no Perl and no init-system-helpers, but the kernel and
 		# service packages need them (dpkg-preconfigure, update-rc.d,
-		# deb-systemd-helper). Both are put back for the build and purged again
-		# in vm_finish.
+		# deb-systemd-helper), and docker-ce pre-depends on init-system-helpers.
+		# Both are put back and stay installed; vm_sysext moves their files into
+		# the extension, so the base /usr has no Perl.
 		vm_apt install perl-base init-system-helpers
 		# udev and kmod (modprobe) explicitly: otherwise they only come in as
 		# dependencies of dracut and the kernel and leave again with them
@@ -960,6 +970,9 @@ vm_install_tailscale () {
 	echo "installing Tailscale"
 	case "$DISTRO" in
 	debian)
+		# the repository is HTTPS only (plain HTTP redirects), so apt needs
+		# the CA certificates, which the minimal image does not have
+		vm_apt install ca-certificates
 		mkdir -p "$MNT/etc/apt/keyrings"
 		wget -nv --timeout=60 -O "$MNT/etc/apt/keyrings/tailscale.gpg" "$TAILSCALE_APT/$SUITE.noarmor.gpg"
 		[ "$(sha256sum < "$MNT/etc/apt/keyrings/tailscale.gpg" | sed 's/ .*//')" = "$TAILSCALE_KEY_SHA256" ] ||
@@ -980,6 +993,38 @@ EOF
 		;;
 	esac
 	chroot "$MNT" systemctl enable tailscaled.service
+}
+
+# vm_install_docker : Debian: Docker's documented apt setup: its key to
+# /etc/apt/keyrings/docker.asc (must match DOCKER_KEY_SHA256), docker.sources
+# for DOCKER_SUITE, then DOCKER_PACKAGES. Arch: Docker has no Arch packages,
+# so Arch's own from extra (Arch keyring): docker (with containerd and runc),
+# docker-buildx, docker-compose. docker.service is enabled.
+vm_install_docker () {
+	if [ "$DISTRO" = arch ]; then
+		echo "installing Docker Engine (Arch packages)"
+		vm_pacman -S --needed docker docker-buildx docker-compose
+		chroot "$MNT" systemctl enable docker.service
+		return 0
+	fi
+	echo "installing Docker Engine ($DOCKER_SUITE packages)"
+	vm_apt install ca-certificates
+	install -m 0755 -d "$MNT/etc/apt/keyrings"
+	wget -nv --timeout=60 -O "$MNT/etc/apt/keyrings/docker.asc" "$DOCKER_APT/gpg"
+	[ "$(sha256sum < "$MNT/etc/apt/keyrings/docker.asc" | sed 's/ .*//')" = "$DOCKER_KEY_SHA256" ] ||
+		die "Docker's apt signing key does not match DOCKER_KEY_SHA256"
+	chmod a+r "$MNT/etc/apt/keyrings/docker.asc"
+	cat > "$MNT/etc/apt/sources.list.d/docker.sources" <<EOF
+Types: deb
+URIs: $DOCKER_APT
+Suites: $DOCKER_SUITE
+Components: stable
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+	chroot "$MNT" apt-get update
+	vm_apt install $DOCKER_PACKAGES
+	chroot "$MNT" systemctl enable docker.service
 }
 
 vm_configure () {
@@ -1136,10 +1181,6 @@ vm_finish () {
 	local pkgdb
 	case "$DISTRO" in
 	debian)
-		chroot "$MNT" dpkg --purge --force-depends --force-remove-essential perl-base init-system-helpers
-		# debconf's Perl modules (dpkg-preconfigure needed them during the
-		# build) cannot run without Perl
-		rm -rf "$MNT/usr/share/perl5"
 		# no kernel and no initramfs-tools in the image: kernel-install's
 		# configuration and plugins and initramfs-tools hooks are of no use
 		rm -rf "$MNT/usr/lib/kernel" "$MNT/usr/share/initramfs-tools"
@@ -1325,6 +1366,7 @@ vm_main () {
 	vm_make_disk
 	vm_install_packages
 	vm_install_tailscale
+	vm_install_docker
 	vm_configure
 	vm_build_uki
 	vm_copy_modules

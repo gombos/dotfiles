@@ -37,6 +37,7 @@ f crypttab
 d debuginfod
 f debuginfod/archlinux.urls
 d default
+f default/tailscaled
 f default/useradd
 d depmod.d
 f e2scrub.conf
@@ -213,8 +214,10 @@ l systemd/system/dbus-org.freedesktop.resolve1.service
 d systemd/system/getty.target.wants
 l systemd/system/getty.target.wants/getty@tty1.service
 d systemd/system/multi-user.target.wants
+l systemd/system/multi-user.target.wants/docker.service
 l systemd/system/multi-user.target.wants/remote-fs.target
 l systemd/system/multi-user.target.wants/systemd-networkd.service
+l systemd/system/multi-user.target.wants/tailscaled.service
 d systemd/system/network-online.target.wants
 l systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
 d systemd/system/sockets.target.wants
